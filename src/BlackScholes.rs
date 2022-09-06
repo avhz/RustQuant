@@ -1,4 +1,11 @@
-fn main() {}
+
+use statrs::function::erf
+
+
+
+fn main() {
+    println!("Standard normal cdf at 0.3 = {}", normalCDF(0.3));
+}
 
 struct BlackScholes {
     volatility: f64,
@@ -10,7 +17,7 @@ struct BlackScholes {
 }
 
 fn normalCDF(x: f64) -> f64 {
-
+    0.5 + 0.5 * erf( x / SQRT_2 )
 }
 
 // Black-Scholes European Call Option Price
