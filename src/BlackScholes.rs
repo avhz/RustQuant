@@ -76,14 +76,12 @@ mod tests {
     #[test]
     fn black_scholes_call() {
         let BSC = BlackScholesCall(100.0, 110.0, 0.2, 0.05, 0.5, 0.02);
-        // println!("Black-Scholes call = \t{}", BSC);
         assert!(BSC - 2.586 < 0.001);
     }
 
     #[test]
     fn black_scholes_put() {
         let BSP = BlackScholesPut(100.0, 110.0, 0.2, 0.05, 0.5, 0.02);
-        // println!("Black-Scholes put = \t{}", BSP);
         assert!(BSP - 10.865 < 0.001);
     }
 }
