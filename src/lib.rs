@@ -2,8 +2,8 @@
 // #[cfg(test)]
 // mod tests;
 
-mod BlackScholes;
-mod normalDistribution;
+mod Math_Normal_Distribution;
+mod Options_European;
 
-pub use normalDistribution::*;
-pub use BlackScholes::*;
+pub use Math_Normal_Distribution::*;
+pub use Options_European::*;

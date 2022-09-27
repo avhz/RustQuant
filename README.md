@@ -3,10 +3,17 @@ Rust package for quantitative finance.
 
 # Features
 
+## Mathematics & Statistics
+
++ :heavy_check_mark: Normal Distribution: Cumulative Distribution Function
++ :x: Normal Distribution: Density Function
++ :x: Fast Fourier Transform
+
 ## Algorithmic Adjoint Differentiation
 
 ## Option Pricers
 
-+ :heavy_check_mark: Black-Scholes European Option Pricer
-+ :x: Barrier Option Pricer
-+ :x: Asian Option Pricer
++ :x: American Options
++ :x: Asian Options
++ :x: Barrier Options
++ :heavy_check_mark: European Options
