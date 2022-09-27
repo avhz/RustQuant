@@ -1,9 +1,9 @@
-// Only run test when 'cargo test' not 'cargo build/run'.
-// #[cfg(test)]
-// mod tests;
+#![allow(non_snake_case)]
 
 mod Math_Normal_Distribution;
+mod Options_Barrier;
 mod Options_European;
 
 pub use Math_Normal_Distribution::*;
+pub use Options_Barrier::*;
 pub use Options_European::*;

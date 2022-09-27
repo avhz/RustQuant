@@ -1,6 +1,8 @@
-use statrs::function::erf;
-use std::f64::consts::{PI, SQRT_2};
+#![allow(non_snake_case)]
 
-pub fn normalCDF(x: f64) -> f64 {
+use statrs::function::erf;
+use std::f64::consts::SQRT_2; // PI
+
+pub fn pnorm(x: f64) -> f64 {
     0.5 + 0.5 * erf::erf(x / SQRT_2)
 }

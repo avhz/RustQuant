@@ -1,6 +1,5 @@
 #![allow(non_snake_case)]
 
-// mod normalDistribution;
 use super::*;
 
 // ############################################################################
@@ -29,8 +28,8 @@ fn BlackScholesCall(
     let d: f64 = (Ff / K).ln() / std;
     let d1: f64 = d + 0.5 * std;
     let d2: f64 = d1 - std;
-    let nd1: f64 = normalCDF(d1);
-    let nd2: f64 = normalCDF(d2);
+    let nd1: f64 = pnorm(d1);
+    let nd2: f64 = pnorm(d2);
     let c: f64 = df * (Ff * nd1 - K * nd2);
 
     return c;
@@ -58,8 +57,8 @@ fn BlackScholesPut(
     let d: f64 = (Ff / K).ln() / std;
     let d1: f64 = d + 0.5 * std;
     let d2: f64 = d1 - std;
-    let nd1: f64 = normalCDF(-d1);
-    let nd2: f64 = normalCDF(-d2);
+    let nd1: f64 = pnorm(-d1);
+    let nd2: f64 = pnorm(-d2);
     let p: f64 = df * (-Ff * nd1 + K * nd2);
 
     return p;
