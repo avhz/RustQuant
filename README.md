@@ -16,5 +16,5 @@ Rust library for quantitative finance tools.
 
 + :x: American Options
 + :x: Asian Options
-+ :x: Barrier Options
++ :heavy_check_mark: Barrier Options
 + :heavy_check_mark: European Options
