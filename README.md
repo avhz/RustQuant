@@ -1,5 +1,6 @@
 # RustQuant
-Rust package for quantitative finance.
+
+Rust library for quantitative finance tools.
 
 # Features
 
