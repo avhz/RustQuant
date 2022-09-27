@@ -1,22 +1,23 @@
-
 use statrs::function::erf;
 use std::f64::consts::{PI, SQRT_2};
 
-
-
 fn main() {
     println!("Standard normal cdf at 0.3 = {}", normalCDF(0.3));
-    
-    let BSC_params = BlackScholes(
-        volatility: 0.2,
-        risk_free_rate: 0.05,
-        time_to_expiry: 0.5,
-        underlying_price: 100,
-        strike_price: 110,
-        dividend_yield: 0.02,
-    );
-    let BSC = BlackScholesCall( BSC_params );
-    println!("Black scholes call = {}", BSC);
+
+    // let BSC_params = BlackScholes(
+    //     volatility: 0.2,
+    //     risk_free_rate: 0.05,
+    //     time_to_expiry: 0.5,
+    //     underlying_price: 100,
+    //     strike_price: 110,
+    //     dividend_yield: 0.02,
+    // );
+
+    let BSC = BlackScholesCall(100.0, 110.0, 0.2, 0.05, 0.5, 0.02);
+    println!("Black-Scholes call = \t{}", BSC);
+
+    let BSP = BlackScholesPut(100.0, 110.0, 0.2, 0.05, 0.5, 0.02);
+    println!("Black-Scholes put = \t{}", BSP);
 }
 
 struct BlackScholes {
@@ -29,39 +30,63 @@ struct BlackScholes {
 }
 
 fn normalCDF(x: f64) -> f64 {
-    0.5 + 0.5 * erf::erf( x / SQRT_2 )
+    0.5 + 0.5 * erf::erf(x / SQRT_2)
 }
 
 // Black-Scholes European Call Option Price
 fn BlackScholesCall(
-    parameters: BlackScholes
-    // const underlying_price: f64,
-    // const strike_price: f64,
-    // const volatility: f64,
-    // const risk_free_rate: f64,
-    // const time_to_expiry: f64,
-    // const dividend_yield: f64,
+    underlying_price: f64,
+    strike_price: f64,
+    volatility: f64,
+    risk_free_rate: f64,
+    time_to_expiry: f64,
+    dividend_yield: f64,
 ) -> f64 {
+    let S0 = underlying_price;
+    let K = strike_price;
+    let r = risk_free_rate;
+    let v = volatility;
+    let t = time_to_expiry;
+    let q = dividend_yield;
 
-    let S0 = parameters.underlying_price;
-    let K = parameters.strike_price;
-    let r = parameters.risk_free_rate;
-    let v = parameters.volatility;
-    let t = parameters.time_to_expiry;
-    let q = parameters.dividend_yield;
-
-
-    let df: f64   = exp( - r * t );
-    let Ff: f64   = S0 * exp((r-q)*t);
-    let std: f64  = v * sqrt(t);
-    let d: f64    = log(Ff/K) / std;
-    let d1: f64   = d + 0.5 * std;
-    let d2: f64   = d1 - std;
-    let nd1: f64  = normalCDF(d1);
-    let nd2: f64  = normalCDF(d2);
-    let c: f64    = df * (Ff * nd1 - K * nd2);
+    let df: f64 = (-r * t).exp();
+    let Ff: f64 = S0 * ((r - q) * t).exp();
+    let std: f64 = v * (t).sqrt();
+    let d: f64 = (Ff / K).ln() / std;
+    let d1: f64 = d + 0.5 * std;
+    let d2: f64 = d1 - std;
+    let nd1: f64 = normalCDF(d1);
+    let nd2: f64 = normalCDF(d2);
+    let c: f64 = df * (Ff * nd1 - K * nd2);
 
     return c;
 }
 
 // Black-Scholes European Put Option Price
+fn BlackScholesPut(
+    underlying_price: f64,
+    strike_price: f64,
+    volatility: f64,
+    risk_free_rate: f64,
+    time_to_expiry: f64,
+    dividend_yield: f64,
+) -> f64 {
+    let S0 = underlying_price;
+    let K = strike_price;
+    let r = risk_free_rate;
+    let v = volatility;
+    let t = time_to_expiry;
+    let q = dividend_yield;
+
+    let df: f64 = (-r * t).exp();
+    let Ff: f64 = S0 * ((r - q) * t).exp();
+    let std: f64 = v * (t).sqrt();
+    let d: f64 = (Ff / K).ln() / std;
+    let d1: f64 = d + 0.5 * std;
+    let d2: f64 = d1 - std;
+    let nd1: f64 = normalCDF(-d1);
+    let nd2: f64 = normalCDF(-d2);
+    let p: f64 = df * (-Ff * nd1 + K * nd2);
+
+    return p;
+}
