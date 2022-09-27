@@ -7,7 +7,7 @@ use super::*;
 // ############################################################################
 
 // Black-Scholes European Call Option Price
-fn BlackScholesCall(
+pub fn BlackScholesCall(
     underlying_price: f64,
     strike_price: f64,
     volatility: f64,
@@ -36,7 +36,7 @@ fn BlackScholesCall(
 }
 
 // Black-Scholes European Put Option Price
-fn BlackScholesPut(
+pub fn BlackScholesPut(
     underlying_price: f64,
     strike_price: f64,
     volatility: f64,

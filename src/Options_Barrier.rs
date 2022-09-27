@@ -2,11 +2,13 @@
 
 use super::*;
 
+/// Adapted from closed-form solutions provided in Haug's Option Pricing Formulas.
+
 // ############################################################################
 // FUNCTIONS
 // ############################################################################
 
-fn BarrierOption(
+pub fn BarrierOption(
     // Function arguments:
     S: f64,          // Underlying price
     X: f64,          // Strike price

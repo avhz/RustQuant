@@ -1,3 +1,5 @@
+//! RustQuant: A Rust-lang library for quantitative finance tools.
+
 #![allow(non_snake_case)]
 
 mod Math_Normal_Distribution;
