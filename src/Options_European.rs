@@ -15,7 +15,7 @@ pub fn BlackScholesCall(
     time_to_expiry: f64,
     dividend_yield: f64,
 ) -> f64 {
-    let S0 = underlying_price;
+    let S = underlying_price;
     let K = strike_price;
     let r = risk_free_rate;
     let v = volatility;
@@ -23,7 +23,7 @@ pub fn BlackScholesCall(
     let q = dividend_yield;
 
     let df: f64 = (-r * t).exp();
-    let Ff: f64 = S0 * ((r - q) * t).exp();
+    let Ff: f64 = S * ((r - q) * t).exp();
     let std: f64 = v * (t).sqrt();
     let d: f64 = (Ff / K).ln() / std;
     let d1: f64 = d + 0.5 * std;
@@ -44,7 +44,7 @@ pub fn BlackScholesPut(
     time_to_expiry: f64,
     dividend_yield: f64,
 ) -> f64 {
-    let S0 = underlying_price;
+    let S = underlying_price;
     let K = strike_price;
     let r = risk_free_rate;
     let v = volatility;
@@ -52,7 +52,7 @@ pub fn BlackScholesPut(
     let q = dividend_yield;
 
     let df: f64 = (-r * t).exp();
-    let Ff: f64 = S0 * ((r - q) * t).exp();
+    let Ff: f64 = S * ((r - q) * t).exp();
     let std: f64 = v * (t).sqrt();
     let d: f64 = (Ff / K).ln() / std;
     let d1: f64 = d + 0.5 * std;

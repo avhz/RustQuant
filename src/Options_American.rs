@@ -6,7 +6,15 @@
 // FUNCTIONS
 // ############################################################################
 
-pub fn american_put(S0: f64, K: f64, T: f64, r: f64, sigma: f64, q: f64, n: usize) -> f64 {
+pub fn AmericanPutBinomialTree(
+    S0: f64,
+    K: f64,
+    T: f64,
+    r: f64,
+    sigma: f64,
+    q: f64,
+    n: usize,
+) -> f64 {
     //   '  T... expiration time
     //   '  S... stock price
     //   '  K... strike price
@@ -51,9 +59,9 @@ mod tests {
     use super::*;
 
     #[test]
-    fn american_put_test() {
-        let price = american_put(100., 110., 180. / 365., 0.05, 0.2, 0.0, 10000);
+    fn AmericanPutBinomialTree_test() {
+        let price = AmericanPutBinomialTree(100., 110., 180. / 365., 0.05, 0.2, 0.0, 100);
         println!("{}", price);
-        assert!(price - 10.9546 < 0.01);
+        assert!(price - 10.9546 < 0.1);
     }
 }

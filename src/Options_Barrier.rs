@@ -8,17 +8,31 @@ use super::*;
 // FUNCTIONS
 // ############################################################################
 
-pub fn BarrierOption(
-    // Function arguments:
-    S: f64,          // Underlying price
-    X: f64,          // Strike price
-    H: f64,          // Barrier
-    t: f64,          // Time to expiry
-    r: f64,          // Risk-free rate
-    v: f64,          // Volatility
-    K: f64,          // Rebate
-    q: f64,          // Dividend yield
-    type_flag: &str, // One of: cui, cuo, pui, puo, cdi, cdo, pdi, pdo
+/// # Arguments:
+///
+/// * `S` - Initial underlying price.
+/// * `X` - Strike price.
+/// * `H` - Barrier.
+/// * `t` - Time to expiry.
+/// * `r` - Risk-free rate.
+/// * `v` - Volatility.
+/// * `K` - Rebate (paid if the option is not able to be exercised).
+/// * `q` - Dividend yield.
+/// * `type_flag` - One of: `cui`, `cuo`, `pui`, `puo`, `cdi`, `cdo`, `pdi`, `pdo`.
+///
+/// # Note:
+///
+/// * `b = r - q` - The cost of carry.
+pub fn BarrierOptionClosedForm(
+    S: f64,
+    X: f64,
+    H: f64,
+    t: f64,
+    r: f64,
+    v: f64,
+    K: f64,
+    q: f64,
+    type_flag: &str,
 ) -> f64 {
     // Cost of carry = risk-free rate - dividend yield
     let b: f64 = r - q;
@@ -144,14 +158,14 @@ mod tests {
 
     #[test]
     fn cdi() {
-        let price = BarrierOption(110.0, 100.0, 105.0, 1.0, 0.05, 0.2, 0.0, 0.01, "cdi");
+        let price = BarrierOptionClosedForm(110.0, 100.0, 105.0, 1.0, 0.05, 0.2, 0.0, 0.01, "cdi");
         assert!(price - 9.5048 < 0.0001);
     }
 
     #[test]
     #[should_panic(expected = "Barrier touched - check barrier and type flag.")]
     fn cdi_panic() {
-        BarrierOption(90.0, 100.0, 105.0, 1.0, 0.05, 0.2, 0.0, 0.01, "cdi");
+        BarrierOptionClosedForm(90.0, 100.0, 105.0, 1.0, 0.05, 0.2, 0.0, 0.01, "cdi");
     }
 
     // ########################################################################
@@ -160,14 +174,14 @@ mod tests {
 
     #[test]
     fn cui() {
-        let price = BarrierOption(90.0, 100.0, 105.0, 1.0, 0.05, 0.2, 0.0, 0.01, "cui");
+        let price = BarrierOptionClosedForm(90.0, 100.0, 105.0, 1.0, 0.05, 0.2, 0.0, 0.01, "cui");
         assert!(price - 4.6926 < 0.0001);
     }
 
     #[test]
     #[should_panic(expected = "Barrier touched - check barrier and type flag.")]
     fn cui_panic() {
-        BarrierOption(110.0, 100.0, 105.0, 1.0, 0.05, 0.2, 0.0, 0.01, "cui");
+        BarrierOptionClosedForm(110.0, 100.0, 105.0, 1.0, 0.05, 0.2, 0.0, 0.01, "cui");
     }
 
     // ########################################################################
@@ -176,14 +190,14 @@ mod tests {
 
     #[test]
     fn pdi() {
-        let price = BarrierOption(110.0, 100.0, 105.0, 1.0, 0.05, 0.2, 0.0, 0.01, "pdi");
+        let price = BarrierOptionClosedForm(110.0, 100.0, 105.0, 1.0, 0.05, 0.2, 0.0, 0.01, "pdi");
         assert!(price - 3.0173 < 0.0001);
     }
 
     #[test]
     #[should_panic(expected = "Barrier touched - check barrier and type flag.")]
     fn pdi_panic() {
-        BarrierOption(90.0, 100.0, 105.0, 1.0, 0.05, 0.2, 0.0, 0.01, "pdi");
+        BarrierOptionClosedForm(90.0, 100.0, 105.0, 1.0, 0.05, 0.2, 0.0, 0.01, "pdi");
     }
 
     // ########################################################################
@@ -192,14 +206,14 @@ mod tests {
 
     #[test]
     fn pui() {
-        let price = BarrierOption(90.0, 100.0, 105.0, 1.0, 0.05, 0.2, 0.0, 0.01, "pui");
+        let price = BarrierOptionClosedForm(90.0, 100.0, 105.0, 1.0, 0.05, 0.2, 0.0, 0.01, "pui");
         assert!(price - 1.3596 < 0.0001);
     }
 
     #[test]
     #[should_panic(expected = "Barrier touched - check barrier and type flag.")]
     fn pui_panic() {
-        BarrierOption(110.0, 100.0, 105.0, 1.0, 0.05, 0.2, 0.0, 0.01, "pui");
+        BarrierOptionClosedForm(110.0, 100.0, 105.0, 1.0, 0.05, 0.2, 0.0, 0.01, "pui");
     }
 
     // ########################################################################
@@ -208,14 +222,14 @@ mod tests {
 
     #[test]
     fn cdo() {
-        let price = BarrierOption(110.0, 100.0, 105.0, 1.0, 0.05, 0.2, 0.0, 0.01, "cdo");
+        let price = BarrierOptionClosedForm(110.0, 100.0, 105.0, 1.0, 0.05, 0.2, 0.0, 0.01, "cdo");
         assert!(price - 7.295 < 0.0001);
     }
 
     #[test]
     #[should_panic(expected = "Barrier touched - check barrier and type flag.")]
     fn cdo_panic() {
-        BarrierOption(90.0, 100.0, 105.0, 1.0, 0.05, 0.2, 0.0, 0.01, "cdo");
+        BarrierOptionClosedForm(90.0, 100.0, 105.0, 1.0, 0.05, 0.2, 0.0, 0.01, "cdo");
     }
 
     // ########################################################################
@@ -224,14 +238,14 @@ mod tests {
 
     #[test]
     fn cuo() {
-        let price = BarrierOption(90.0, 100.0, 105.0, 1.0, 0.05, 0.2, 0.0, 0.01, "cuo");
+        let price = BarrierOptionClosedForm(90.0, 100.0, 105.0, 1.0, 0.05, 0.2, 0.0, 0.01, "cuo");
         assert!(price - 0.0224 < 0.0001);
     }
 
     #[test]
     #[should_panic(expected = "Barrier touched - check barrier and type flag.")]
     fn cuo_panic() {
-        BarrierOption(110.0, 100.0, 105.0, 1.0, 0.05, 0.2, 0.0, 0.01, "cuo");
+        BarrierOptionClosedForm(110.0, 100.0, 105.0, 1.0, 0.05, 0.2, 0.0, 0.01, "cuo");
     }
 
     // ########################################################################
@@ -242,14 +256,14 @@ mod tests {
 
     #[test]
     fn pdo() {
-        let price = BarrierOption(150.0, 100.0, 40.0, 1.0, 0.05, 0.2, 0.0, 0.01, "pdo");
+        let price = BarrierOptionClosedForm(150.0, 100.0, 40.0, 1.0, 0.05, 0.2, 0.0, 0.01, "pdo");
         assert!(price - 0.107 < 0.0001);
     }
 
     #[test]
     #[should_panic(expected = "Barrier touched - check barrier and type flag.")]
     fn pdo_panic() {
-        BarrierOption(30.0, 100.0, 40.0, 1.0, 0.05, 0.2, 0.0, 0.01, "pdo");
+        BarrierOptionClosedForm(30.0, 100.0, 40.0, 1.0, 0.05, 0.2, 0.0, 0.01, "pdo");
     }
 
     // ########################################################################
@@ -258,13 +272,13 @@ mod tests {
 
     #[test]
     fn puo() {
-        let price = BarrierOption(30.0, 80.0, 100.0, 1.0, 0.05, 0.2, 0.0, 0.01, "puo");
+        let price = BarrierOptionClosedForm(30.0, 80.0, 100.0, 1.0, 0.05, 0.2, 0.0, 0.01, "puo");
         assert!(price - 46.3969 < 0.0001);
     }
 
     #[test]
     #[should_panic(expected = "Barrier touched - check barrier and type flag.")]
     fn puo_panic() {
-        BarrierOption(110.0, 80.0, 100.0, 1.0, 0.05, 0.2, 0.0, 0.01, "puo");
+        BarrierOptionClosedForm(110.0, 80.0, 100.0, 1.0, 0.05, 0.2, 0.0, 0.01, "puo");
     }
 }
