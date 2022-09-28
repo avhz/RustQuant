@@ -22,7 +22,7 @@ pub fn american_put(S0: f64, K: f64, T: f64, r: f64, sigma: f64, q: f64, n: usiz
 
     //   ' initial values at time T
     for i in 0..=n {
-        p[i] = K - S0 * up.powf(2. * i as f64 - n as f64);
+        p[i] = K - S0 * up.powi(2 * i as i32 - n as i32);
         if p[i] < 0.0 {
             p[i] = 0.0;
         };
@@ -33,7 +33,7 @@ pub fn american_put(S0: f64, K: f64, T: f64, r: f64, sigma: f64, q: f64, n: usiz
             //   ' binomial value
             p[i] = p0 * p[i + 1] + p1 * p[i];
             //   ' exercise value
-            let exercise: f64 = K - S0 * up.powf(2. * i as f64 - j as f64);
+            let exercise: f64 = K - S0 * up.powi(2 * i as i32 - j as i32);
             if p[i] < exercise {
                 p[i] = exercise;
             };
@@ -52,7 +52,7 @@ mod tests {
 
     #[test]
     fn american_put_test() {
-        let price = american_put(100., 110., 180. / 365., 0.05, 0.2, 0.0, 5000);
+        let price = american_put(100., 110., 180. / 365., 0.05, 0.2, 0.0, 10000);
         println!("{}", price);
         assert!(price - 10.9546 < 0.01);
     }
