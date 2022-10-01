@@ -1,4 +1,4 @@
-//! RustQuant: A Rust-lang library for quantitative finance tools.
+//! RustQuant: A Rust library for quantitative finance tools.
 
 #![allow(non_snake_case)]
 

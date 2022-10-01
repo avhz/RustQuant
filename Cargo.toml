@@ -1,6 +1,6 @@
 [package]
 name = "RustQuant"
-description = "A Rust-lang library for quantitative finance tools."
+description = "A Rust library for quantitative finance tools."
 version = "0.1.0"
 edition = "2021"
 readme = "README.md"

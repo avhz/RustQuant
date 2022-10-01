@@ -6,6 +6,8 @@
 
 /// Cox-Ross-Rubinstein binomial option pricing model.
 ///
+/// Adapted from Haug's *Complete Guide to Option Pricing Formulas*.
+///
 /// # Arguments:
 ///
 /// * `S` - Initial underlying price.

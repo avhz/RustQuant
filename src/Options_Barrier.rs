@@ -2,12 +2,14 @@
 
 use super::*;
 
-/// Adapted from closed-form solutions provided in Haug's Option Pricing Formulas.
-
 // ############################################################################
 // FUNCTIONS
 // ############################################################################
 
+/// Closed-form solution for path-dependent barrier options.
+///
+/// Adapted from Haug's *Complete Guide to Option Pricing Formulas*.
+///
 /// # Arguments:
 ///
 /// * `S` - Initial underlying price.
@@ -34,7 +36,6 @@ pub fn BarrierOptionClosedForm(
     q: f64,
     type_flag: &str,
 ) -> f64 {
-    // Cost of carry = risk-free rate - dividend yield
     let b: f64 = r - q;
 
     // Common terms:
@@ -159,7 +160,7 @@ mod tests {
     #[test]
     fn cdi() {
         let price = BarrierOptionClosedForm(110.0, 100.0, 105.0, 1.0, 0.05, 0.2, 0.0, 0.01, "cdi");
-        assert!(price - 9.5048 < 0.0001);
+        assert_approx_equal(price, 9.5048, 0.0001);
     }
 
     #[test]
@@ -175,7 +176,7 @@ mod tests {
     #[test]
     fn cui() {
         let price = BarrierOptionClosedForm(90.0, 100.0, 105.0, 1.0, 0.05, 0.2, 0.0, 0.01, "cui");
-        assert!(price - 4.6926 < 0.0001);
+        assert_approx_equal(price, 4.6926, 0.0001);
     }
 
     #[test]
@@ -191,7 +192,7 @@ mod tests {
     #[test]
     fn pdi() {
         let price = BarrierOptionClosedForm(110.0, 100.0, 105.0, 1.0, 0.05, 0.2, 0.0, 0.01, "pdi");
-        assert!(price - 3.0173 < 0.0001);
+        assert_approx_equal(price, 3.0173, 0.0001);
     }
 
     #[test]
@@ -207,7 +208,7 @@ mod tests {
     #[test]
     fn pui() {
         let price = BarrierOptionClosedForm(90.0, 100.0, 105.0, 1.0, 0.05, 0.2, 0.0, 0.01, "pui");
-        assert!(price - 1.3596 < 0.0001);
+        assert_approx_equal(price, 1.3596, 0.0001);
     }
 
     #[test]
@@ -223,7 +224,7 @@ mod tests {
     #[test]
     fn cdo() {
         let price = BarrierOptionClosedForm(110.0, 100.0, 105.0, 1.0, 0.05, 0.2, 0.0, 0.01, "cdo");
-        assert!(price - 7.295 < 0.0001);
+        assert_approx_equal(price, 7.295, 0.0001);
     }
 
     #[test]
@@ -239,7 +240,7 @@ mod tests {
     #[test]
     fn cuo() {
         let price = BarrierOptionClosedForm(90.0, 100.0, 105.0, 1.0, 0.05, 0.2, 0.0, 0.01, "cuo");
-        assert!(price - 0.0224 < 0.0001);
+        assert_approx_equal(price, 0.0224, 0.0001);
     }
 
     #[test]
@@ -252,12 +253,10 @@ mod tests {
     // Down-and-Out Put
     // ########################################################################
 
-    // und, str, bar
-
     #[test]
     fn pdo() {
         let price = BarrierOptionClosedForm(150.0, 100.0, 40.0, 1.0, 0.05, 0.2, 0.0, 0.01, "pdo");
-        assert!(price - 0.107 < 0.0001);
+        assert_approx_equal(price, 0.107, 0.0001);
     }
 
     #[test]
@@ -273,7 +272,8 @@ mod tests {
     #[test]
     fn puo() {
         let price = BarrierOptionClosedForm(30.0, 80.0, 100.0, 1.0, 0.05, 0.2, 0.0, 0.01, "puo");
-        assert!(price - 46.3969 < 0.0001);
+        println!("PUO {}", price);
+        assert_approx_equal(price, 46.3969, 0.0001);
     }
 
     #[test]
