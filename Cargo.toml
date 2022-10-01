@@ -4,7 +4,13 @@ description = "A Rust library for quantitative finance tools."
 version = "0.1.0"
 edition = "2021"
 readme = "README.md"
-keywords = ["finance", "quantitative", "options", "", ""]
+keywords = [
+    "finance",
+    "quantitative",
+    "option-pricing",
+    "statistics",
+    "quantlib",
+]
 categories = ["mathematics", "science", "algorithms", "simulation"]
 license = "GPL-3.0-or-later"
 license-file = "LICENSE"
