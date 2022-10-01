@@ -6,15 +6,15 @@ Rust library for quantitative finance tools.
 
 ## Mathematics & Statistics
 
-+ :heavy_check_mark: Normal Distribution: Cumulative Distribution Function
-+ :x: Normal Distribution: Density Function
++ :heavy_check_mark: Standard Normal Distribution CDF
 
 ## Algorithmic Adjoint Differentiation
 
 ## Option Pricers
 
-+ :x: American Options
-+ :x: Asian Options
-+ :heavy_check_mark: Barrier Options
++ :x: American
++ :x: Asian
++ :heavy_check_mark: Barrier
++ :heavy_check_mark: Binomial Option Pricing Model (CRR)
 + :heavy_check_mark: European Options
-+ :heavy_check_mark: CRR Binomial Option Pricing Model
++ :x: Black-Scholes Greeks
