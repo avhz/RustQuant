@@ -28,9 +28,9 @@ pub fn BlackScholesCall(S: f64, K: f64, v: f64, r: f64, T: f64, q: f64) -> f64 {
     let d: f64 = (Fp / K).ln() / std;
     let d1: f64 = d + 0.5 * std;
     let d2: f64 = d1 - std;
-    let nd1: f64 = pnorm(d1);
-    let nd2: f64 = pnorm(d2);
-    let c: f64 = df * (Fp * nd1 - K * nd2);
+    let Nd1: f64 = pnorm(d1);
+    let Nd2: f64 = pnorm(d2);
+    let c: f64 = df * (Fp * Nd1 - K * Nd2);
 
     return c;
 }
@@ -57,9 +57,9 @@ pub fn BlackScholesPut(S: f64, K: f64, v: f64, r: f64, T: f64, q: f64) -> f64 {
     let d: f64 = (Fp / K).ln() / std;
     let d1: f64 = d + 0.5 * std;
     let d2: f64 = d1 - std;
-    let nd1: f64 = pnorm(-d1);
-    let nd2: f64 = pnorm(-d2);
-    let p: f64 = df * (-Fp * nd1 + K * nd2);
+    let Nd1: f64 = pnorm(-d1);
+    let Nd2: f64 = pnorm(-d2);
+    let p: f64 = df * (-Fp * Nd1 + K * Nd2);
 
     return p;
 }

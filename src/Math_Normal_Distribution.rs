@@ -1,7 +1,12 @@
 #![allow(non_snake_case)]
 
 use statrs::function::erf;
-use std::f64::consts::SQRT_2;
+use std::f64::consts::{PI, SQRT_2};
+
+/// Standard Normal Density Function
+pub fn dnorm(x: f64) -> f64 {
+    (-x * x / 2.0).exp() / (2.0 * PI).sqrt()
+}
 
 /// Standard Normal Distribution Function
 ///
