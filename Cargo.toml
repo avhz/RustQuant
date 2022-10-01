@@ -12,7 +12,6 @@ keywords = [
     "quantlib",
 ]
 categories = ["mathematics", "science", "algorithms", "simulation"]
-license = "GPL-3.0-or-later"
 license-file = "LICENSE"
 
 

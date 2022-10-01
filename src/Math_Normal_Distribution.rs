@@ -1,7 +1,7 @@
 #![allow(non_snake_case)]
 
 use statrs::function::erf;
-use std::f64::consts::SQRT_2; // PI
+use std::f64::consts::SQRT_2;
 
 /// Standard Normal Distribution Function
 ///
