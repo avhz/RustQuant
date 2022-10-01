@@ -1,9 +1,14 @@
 [package]
 name = "RustQuant"
+description = "A Rust-lang library for quantitative finance tools."
 version = "0.1.0"
 edition = "2021"
+readme = "README.md"
+keywords = ["finance", "quantitative", "options", "", ""]
+categories = ["mathematics", "science", "algorithms", "simulation"]
+license = "GPL-3.0-or-later"
+license-file = "LICENSE"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
 statrs = "0.16.0"

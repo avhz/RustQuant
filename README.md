@@ -8,7 +8,6 @@ Rust library for quantitative finance tools.
 
 + :heavy_check_mark: Normal Distribution: Cumulative Distribution Function
 + :x: Normal Distribution: Density Function
-+ :x: Fast Fourier Transform
 
 ## Algorithmic Adjoint Differentiation
 
@@ -18,3 +17,4 @@ Rust library for quantitative finance tools.
 + :x: Asian Options
 + :heavy_check_mark: Barrier Options
 + :heavy_check_mark: European Options
++ :heavy_check_mark: CRR Binomial Option Pricing Model
