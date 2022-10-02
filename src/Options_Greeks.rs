@@ -35,12 +35,12 @@ pub fn Greeks(S: f64, K: f64, v: f64, r: f64, T: f64, q: f64) -> Greeks {
     let d2: f64 = d1 - std;
 
     let nd1: f64 = dnorm(d1);
-    let nd2: f64 = dnorm(d2);
+    // let nd2: f64 = dnorm(d2);
     let Nd1: f64 = pnorm(d1);
     let Nd2: f64 = pnorm(d2);
 
-    let nd1_: f64 = dnorm(-d1);
-    let nd2_: f64 = dnorm(-d2);
+    // let nd1_: f64 = dnorm(-d1);
+    // let nd2_: f64 = dnorm(-d2);
     let Nd1_: f64 = pnorm(-d1);
     let Nd2_: f64 = pnorm(-d2);
 
