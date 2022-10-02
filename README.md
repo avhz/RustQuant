@@ -11,8 +11,6 @@ Rust library for quantitative finance tools.
 + :heavy_check_mark: Standard Normal Distribution CDF
 + :heavy_check_mark: Standard Normal Distribution PDF
 
-## Algorithmic Adjoint Differentiation
-
 ## Option Pricers
 
 + :x: American
