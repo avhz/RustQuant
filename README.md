@@ -7,9 +7,8 @@ Rust library for quantitative finance tools.
 ## Mathematics & Statistics
 
 + :x: Interpolation
-+ :heavy_check_mark: Risk-Reward Measures
-+ :heavy_check_mark: Standard Normal Distribution CDF
-+ :heavy_check_mark: Standard Normal Distribution PDF
++ :heavy_check_mark: Risk-Reward Measures (Sharpe, Treynor, Sortino, etc)
++ :heavy_check_mark: Standard Normal Distribution (Distribution and Density functions)
 
 ## Option Pricers
 
