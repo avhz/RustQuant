@@ -6,6 +6,8 @@ Rust library for quantitative finance tools.
 
 ## Mathematics & Statistics
 
++ :x: Interpolation
++ :heavy_check_mark: Risk-Reward Measures
 + :heavy_check_mark: Standard Normal Distribution CDF
 + :heavy_check_mark: Standard Normal Distribution PDF
 
@@ -18,4 +20,4 @@ Rust library for quantitative finance tools.
 + :heavy_check_mark: Barrier
 + :heavy_check_mark: Binomial Option Pricing Model (CRR)
 + :heavy_check_mark: European Options
-+ :x: Black-Scholes Greeks
++ :heavy_check_mark: Greeks/Sensitivities

@@ -1,4 +1,8 @@
-use crate::{dnorm, pnorm, BlackScholesCall, BlackScholesPut};
+use crate::{dnorm, pnorm, BlackScholes};
+
+// ############################################################################
+// STRUCTS
+// ############################################################################
 
 /// Struct to contain common Black-Scholes Greeks/sensitivities.
 ///
@@ -22,6 +26,10 @@ pub struct Greeks {
     Zeta: (f64, f64),
 }
 
+// ############################################################################
+// FUNCTIONS
+// ############################################################################
+
 /// Function that computes the Black-Scholes Greeks/sensitivities.
 pub fn Greeks(S: f64, K: f64, v: f64, r: f64, T: f64, q: f64) -> Greeks {
     let sqrtT: f64 = T.sqrt();
@@ -44,12 +52,11 @@ pub fn Greeks(S: f64, K: f64, v: f64, r: f64, T: f64, q: f64) -> Greeks {
     let Nd1_: f64 = pnorm(-d1);
     let Nd2_: f64 = pnorm(-d2);
 
+    let BS = BlackScholes(S, K, v, r, T, q);
+
     Greeks {
         Delta: (ebrT * Nd1, ebrT * (Nd1 - 1.0)),
-        Lambda: (
-            ebrT * Nd1 * S / BlackScholesCall(S, K, v, r, T, q),
-            ebrT * (Nd1 - 1.0) * S / BlackScholesPut(S, K, v, r, T, q),
-        ),
+        Lambda: (ebrT * Nd1 * S / BS.0, ebrT * (Nd1 - 1.0) * S / BS.1),
         Gamma: (
             (nd1 * ebrT) / (S * v * sqrtT),
             (nd1 * ebrT) / (S * v * sqrtT),
@@ -65,13 +72,17 @@ pub fn Greeks(S: f64, K: f64, v: f64, r: f64, T: f64, q: f64) -> Greeks {
     }
 }
 
+// ############################################################################
+// TESTS
+// ############################################################################
+
 #[cfg(test)]
 mod tests {
     use super::*;
     use crate::helpers::assert_approx_equal;
 
     #[test]
-    fn test_greeks() {
+    fn TEST_greeks() {
         for strike in 1..=1000 {
             let g = Greeks(100.0, strike as f64, 0.2, 0.05, 1.0, 0.03);
 

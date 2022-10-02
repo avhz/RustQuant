@@ -111,7 +111,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn CRRBinomial_test() {
+    fn TEST_CRRBinomial() {
         let c = CRRBinomial("p", "a", "c", 100., 95., 0.5, 0.08, 0.0, 0.3, 100);
         let p = CRRBinomial("p", "a", "p", 100., 95., 0.5, 0.08, 0.0, 0.3, 100);
 
