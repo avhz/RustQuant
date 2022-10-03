@@ -1,4 +1,5 @@
 #![allow(non_snake_case)]
+#![deny(missing_docs)]
 
 use crate::{cumsum, linspace, rnorm};
 
@@ -66,10 +67,9 @@ pub fn GeometricBrownianMotion(
 
 #[cfg(test)]
 mod tests {
-    use super::*;
-    use crate::helpers::*;
-
-    use std::process;
+    // use super::*;
+    // use crate::helpers::*;
+    // use std::process;
 
     #[test]
     fn TEST_GBM() {

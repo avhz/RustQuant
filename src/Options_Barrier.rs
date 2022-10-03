@@ -1,4 +1,5 @@
 #![allow(non_snake_case)]
+#![deny(missing_docs)]
 
 use super::*;
 

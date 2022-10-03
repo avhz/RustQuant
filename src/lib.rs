@@ -1,6 +1,7 @@
 //! RustQuant: A Rust library for quantitative finance tools.
 
 #![allow(non_snake_case)]
+#![deny(missing_docs)]
 
 // ################################################################
 // Mathematics and statistics modules:

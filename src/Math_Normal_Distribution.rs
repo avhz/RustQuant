@@ -1,4 +1,5 @@
 #![allow(non_snake_case)]
+#![deny(missing_docs)]
 
 use rand::thread_rng;
 use rand_distr::{Distribution, Normal};

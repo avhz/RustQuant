@@ -1,7 +1,9 @@
+#![allow(non_snake_case)]
+#![deny(missing_docs)]
+
 use std::error::Error;
 use std::fs::File;
 use std::io::Write;
-// use std::process;
 
 // ############################################################################
 // FUNCTIONS
