@@ -6,14 +6,21 @@ use crate::{cumsum, linspace, rnorm};
 // STRUCTS
 // ############################################################################
 
-// pub struct GeometricBrownianMotionParameters {
-
-// }
+// pub struct GeometricBrownianMotionParameters {}
 
 // ############################################################################
 // FUNCTIONS
 // ############################################################################
 
+/// Generates a vector of length `N` of a Geometric Brownian Motion trajectory.
+///
+/// # Arguments:
+///
+/// * `S` - Initial value.
+/// * `T` - Time period.
+/// * `r` - Drift/rate.
+/// * `v` - Volatility.
+/// * `N` - Time steps in the trajectory.
 pub fn GeometricBrownianMotion(
     S: f64,   // initial stock price
     T: f64,   // time to expiry
@@ -26,10 +33,11 @@ pub fn GeometricBrownianMotion(
 
     // Vector for GBM paths
     let mut St: Vec<f64> = vec![0.0; N + 1];
+
     St[0] = S;
 
     // vector of time points
-    let time = linspace(0.0, T, N);
+    let time = linspace(0.0, T, N + 1);
 
     // standard normal sample of N elements
     let Z: Vec<f64> = rnorm(N);
@@ -42,16 +50,14 @@ pub fn GeometricBrownianMotion(
     }
 
     // Brownian motion at each time (N+1 elements)
-    let mut W: Vec<f64> = cumsum(dW);
+    let mut W: Vec<f64> = cumsum(&dW);
     W.insert(0, 0.0);
 
     for i in 1..(St.len()) {
         St[i] = S * ((r - v * v / 2.0) * time[i] + v * W[i]).exp();
     }
 
-    // St = St.pop();
-
-    return (St);
+    return St;
 }
 
 // ############################################################################
@@ -67,11 +73,11 @@ mod tests {
 
     #[test]
     fn TEST_GBM() {
-        let v: Vec<f64> = GeometricBrownianMotion(100.0, 1.0, 0.05, 0.2, 100);
+        // let v: Vec<f64> = GeometricBrownianMotion(100.0, 1.0, 0.05, 0.2, 100);
 
-        if let Err(err) = write_vector(v) {
-            eprintln!("{}", err);
-            process::exit(1);
-        }
+        // if let Err(err) = write_vector(v) {
+        //     eprintln!("{}", err);
+        //     process::exit(1);
+        // }
     }
 }

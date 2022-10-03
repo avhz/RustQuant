@@ -30,7 +30,7 @@ pub fn linspace(a: f64, b: f64, num: usize) -> Vec<f64> {
 /// Cumulative sum helper function.
 ///
 /// Performs a cumulative sum of a vector.
-pub fn cumsum(v1: Vec<f64>) -> Vec<f64> {
+pub fn cumsum(v1: &Vec<f64>) -> Vec<f64> {
     let v2: Vec<f64> = v1
         .iter()
         .scan(0.0, |acc, &x| {
@@ -43,12 +43,17 @@ pub fn cumsum(v1: Vec<f64>) -> Vec<f64> {
 }
 
 /// Write vector to file.
-pub fn write_vector(v: Vec<f64>) -> Result<(), Box<dyn Error>> {
+pub fn write_vector(v: &Vec<f64>) -> Result<(), Box<dyn Error>> {
     let strings: Vec<String> = v.iter().map(|n| n.to_string()).collect();
 
     let mut file = File::create("/tmp/foobar")?;
     writeln!(file, "{}", strings.join(", "))?;
     Ok(())
+}
+
+/// Compute the mean of a vector.
+pub fn mean(v: &Vec<f64>) -> f64 {
+    v.iter().sum::<f64>() as f64 / v.len() as f64
 }
 
 // ############################################################################
@@ -63,6 +68,6 @@ mod tests {
     #[test]
     fn TEST_cumsum() {
         let v: Vec<f64> = vec![0.0, 1.0, 2.0, 11.5];
-        assert!(cumsum(v) == vec![0.0, 1.0, 3.0, 14.5]);
+        assert!(cumsum(&v) == vec![0.0, 1.0, 3.0, 14.5]);
     }
 }
