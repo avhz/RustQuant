@@ -1,5 +1,7 @@
 #![allow(non_snake_case)]
 
+use rand::thread_rng;
+use rand_distr::{Distribution, Normal};
 use statrs::function::erf;
 use std::f64::consts::{PI, SQRT_2};
 
@@ -18,6 +20,20 @@ pub fn dnorm(x: f64) -> f64 {
 /// subtractive cancellation that leads to inaccuracy in the tails.
 pub fn pnorm(x: f64) -> f64 {
     0.5 * erf::erfc(-x / SQRT_2)
+}
+
+/// Standard Normal Random Variates Generator
+pub fn rnorm(n: usize) -> Vec<f64> {
+    let mut rng = thread_rng();
+    let normal = Normal::new(0.0, 1.0).unwrap();
+
+    let mut variates: Vec<f64> = vec![0.0; n];
+
+    for i in 0..variates.len() {
+        variates[i] = normal.sample(&mut rng);
+    }
+
+    return variates;
 }
 
 // ############################################################################
@@ -55,5 +71,14 @@ mod tests {
         assert_approx_equal(dnorm(2.0), 0.05399097, 1e-8);
         assert_approx_equal(dnorm(3.0), 0.00443185, 1e-8);
         assert_approx_equal(dnorm(4.0), 0.00013383, 1e-8);
+    }
+
+    #[test]
+    fn TEST_rnorm() {
+        let v = rnorm(1000);
+        println!("{:?}", v);
+        let mean = (v.iter().sum::<f64>()) / (v.len() as f64);
+        println!("MEAN = {}", mean);
+        // assert!(5 == 6);
     }
 }

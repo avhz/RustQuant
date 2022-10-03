@@ -135,13 +135,14 @@ mod tests {
             // LAMBDA
             // ################################################################
 
-            println!("Lambda: \tCall = {}, \tPut = {}", g.Lambda.0, g.Lambda.1);
-            assert!(g.Lambda.0 >= 0.0 && g.Lambda.0 <= 1.0);
-            assert!(g.Lambda.1 >= 0.0 && g.Lambda.1 <= 1.0);
-
             // ################################################################
             // THETA
             // ################################################################
+
+            println!(
+                "strike = {}, call theta = {}, put theta = {}",
+                strike, g.Theta.0, g.Theta.1
+            );
 
             // ################################################################
             // PHI/EPSILON
@@ -151,12 +152,18 @@ mod tests {
             // ZETA
             // ################################################################
 
+            // println!(
+            //     "{} \t Lambda: \tCall = {}, \tPut = {}",
+            //     strike, g.Lambda.0, g.Lambda.1
+            // );
+            // assert_approx_equal(g.Lambda.0 - g.Lambda.1, 1.0, 0.5);
+            // assert!(g.Lambda.0 >= 0.0 && g.Lambda.0 <= 1.1);
+            // assert!(g.Lambda.1 >= 0.0 && g.Lambda.1 <= 1.0);
             // println!("DELTA PARITY = {}", g.Delta.0 - g.Delta.1);
             // println!("THETA = {}, {}", g.Theta.0, g.Theta.1);
             // assert!(g.Theta.1 == 69.0);
             // Greeks(S, K, v, r, T, q)
             // println!("strike = {}, call delta = {}, put delta = {}", strike, g.Delta.0, g.Delta.1);
-            // println!("strike = {}, call theta = {}, put theta = {}",strike, g.Theta.0, g.Theta.1);
             // assert!(g.Theta.0 <= 0.0 && g.Theta.1 <= 0.0);
         }
     }

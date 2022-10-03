@@ -7,10 +7,12 @@
 // ################################################################
 
 mod Math_Interpolation;
+mod Math_Monte_Carlo;
 mod Math_Normal_Distribution;
 mod Math_Risk_Reward;
 
 pub use Math_Interpolation::*;
+pub use Math_Monte_Carlo::*;
 pub use Math_Normal_Distribution::*;
 pub use Math_Risk_Reward::*;
 
