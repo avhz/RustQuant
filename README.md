@@ -6,7 +6,7 @@ Rust library for quantitative finance tools.
 
 ## Mathematics & Statistics
 
-+ :x: Monte-Carlo Engine
++ :heavy_check_mark: Monte-Carlo Engine
 + :x: Interpolation
 + :x: Newton-Raphson
 + :heavy_check_mark: Risk-Reward Measures (Sharpe, Treynor, Sortino, etc)
