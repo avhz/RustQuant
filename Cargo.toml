@@ -1,7 +1,7 @@
 [package]
 name = "RustQuant"
 description = "A Rust library for quantitative finance tools."
-version = "0.0.1"
+version = "0.0.2"
 edition = "2021"
 readme = "README.md"
 keywords = [
@@ -12,8 +12,7 @@ keywords = [
     "quantlib",
 ]
 categories = ["mathematics", "science", "algorithms", "simulation"]
-license-file = "LICENSE"
-
+license = "GPL-3.0-or-later"
 
 [dependencies]
 statrs = "0.16.0"
