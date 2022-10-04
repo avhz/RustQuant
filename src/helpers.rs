@@ -49,7 +49,7 @@ pub fn cumsum(v1: &Vec<f64>) -> Vec<f64> {
 pub fn write_vector(v: &Vec<f64>) -> Result<(), Box<dyn Error>> {
     let strings: Vec<String> = v.iter().map(|n| n.to_string()).collect();
 
-    let mut file = File::create("/tmp/foobar")?;
+    let mut file = File::create("vector.dat")?;
     writeln!(file, "{}", strings.join(", "))?;
     Ok(())
 }
