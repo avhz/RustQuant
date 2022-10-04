@@ -20,7 +20,7 @@ use crate::{cumsum, linspace, rnorm};
 /// * `S` - Initial value.
 /// * `T` - Time period.
 /// * `r` - Drift/rate.
-/// * `v` - Volatility.
+/// * `v` - Diffusion/volatility.
 /// * `N` - Time steps in the trajectory.
 pub fn GeometricBrownianMotion(
     S: f64,   // initial stock price
@@ -67,13 +67,15 @@ pub fn GeometricBrownianMotion(
 
 #[cfg(test)]
 mod tests {
-    // use super::*;
-    // use crate::helpers::*;
-    // use std::process;
+    use super::*;
+    use crate::helpers::*;
 
     #[test]
-    fn TEST_GBM() {
-        // let v: Vec<f64> = GeometricBrownianMotion(100.0, 1.0, 0.05, 0.2, 100);
+    fn TEST_GBM() -> Result<(), Box<dyn std::error::Error>> {
+        let v: Vec<f64> = GeometricBrownianMotion(10.0, 10.0, 0.1, 0.3, 500);
+
+        let file = "geometric_brownian_motion.png";
+        plot_vector(v, file)
 
         // if let Err(err) = write_vector(v) {
         //     eprintln!("{}", err);

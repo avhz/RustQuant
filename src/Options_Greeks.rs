@@ -21,6 +21,8 @@ pub struct Greeks {
     Vega: (f64, f64),
     /// Time sensitivity.
     Theta: (f64, f64),
+    // Driftless theta
+    Driftless_theta: (f64, f64),
     /// Interest rate sensitivity.
     Rho: (f64, f64),
     /// Dividend sensitivity.
@@ -35,6 +37,19 @@ pub struct Greeks {
 
 impl Greeks {
     /// Function that computes the Black-Scholes Greeks/sensitivities.
+    ///
+    /// # Arguments:
+    ///
+    /// * `S` - Initial underlying price.
+    /// * `K` - Strike price.
+    /// * `T` - Time to expiry.
+    /// * `r` - Risk-free rate.
+    /// * `v` - Volatility.
+    /// * `q` - Dividend yield.
+    ///
+    /// # Note:
+    ///
+    /// * `b = r - q` - The cost of carry.
     pub fn compute(S: f64, K: f64, v: f64, r: f64, T: f64, q: f64) -> Self {
         let sqrtT: f64 = T.sqrt();
         let df: f64 = (-r * T).exp();
@@ -73,6 +88,10 @@ impl Greeks {
                 -(S * ebrT * nd1 * v) / (2. * T.sqrt())
                     + (b - r) * S * ebrT * Nd1_
                     + r * K * df * Nd2_,
+            ),
+            Driftless_theta: (
+                -(S * nd1 * v) / (2.0 * T.sqrt()),
+                -(S * nd1 * v) / (2.0 * T.sqrt()),
             ),
             Rho: (T * K * df * Nd2, -T * K * df * Nd2_),
             Phi: (-T * S * ebrT * Nd1, T * S * ebrT * Nd1_),
@@ -144,23 +163,38 @@ mod tests {
             // LAMBDA
             // ################################################################
 
+            assert!(g.Lambda.0 > 1.0);
+            assert!(g.Lambda.1 < 1.0);
+
+            // ################################################################
+            // DRIFTLESS THETA
+            // ################################################################
+
+            assert!(g.Driftless_theta.0 <= 0.0);
+            assert!(g.Driftless_theta.1 <= 0.0);
+
             // ################################################################
             // THETA
             // ################################################################
-
-            // println!(
-            //     "strike = {}, call theta = {}, put theta = {}",
-            //     strike, g.Theta.0, g.Theta.1
-            // );
 
             // ################################################################
             // PHI/EPSILON
             // ################################################################
 
+            assert!(g.Phi.0 < 0.0);
+            assert!(g.Phi.1 > 0.0);
+
             // ################################################################
             // ZETA
             // ################################################################
 
+            assert!(g.Zeta.0 > 0.0);
+            assert!(g.Zeta.1 > 0.0);
+
+            // println!(
+            //     "strike = {}, call theta = {}, put theta = {}",
+            //     strike, g.Theta.0, g.Theta.1
+            // );
             // println!(
             //     "{} \t Lambda: \tCall = {}, \tPut = {}",
             //     strike, g.Lambda.0, g.Lambda.1
