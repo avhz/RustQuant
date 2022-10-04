@@ -37,3 +37,7 @@ Rust library for quantitative finance tools.
 + :x: Duration
 + :x: Convexity
 
+# Helper Functions
+
++ :: Plot a vector.
++ :: Write vector to file.
