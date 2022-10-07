@@ -7,7 +7,7 @@ Rust library for quantitative finance tools.
 
 ## Mathematics & Statistics
 
-+ [x] Monte-Carlo Engine
++ [x] Monte-Carlo Engine 
 + [ ] Interpolation
 + [ ] Newton-Raphson
 + [x] Risk-Reward Measures (Sharpe, Treynor, Sortino, etc)
@@ -21,6 +21,12 @@ Rust library for quantitative finance tools.
 + [x] Binomial Option Pricing Model (CRR)
 + [x] European Options
 + [x] Greeks/Sensitivities
++ [ ] Heston Model 
+
+## Automatic Differentiation
+
++ [ ] Forward Mode 
++ [ ] Reverse Mode
 
 ## Short-Rate Models
 
@@ -32,13 +38,13 @@ Rust library for quantitative finance tools.
 + [ ] Hull-White (1990)
 + [ ] Black-Derman-Toy (1990)
 
-# Bonds
+## Bonds
 
 + [ ] Price
 + [ ] Duration
 + [ ] Convexity
 
-# Helper Functions
+## Helper Functions
 
-+ [ ] Plot a vector.
-+ [ ] Write vector to file.
++ [x] Plot a vector.
++ [x] Write vector to file.
