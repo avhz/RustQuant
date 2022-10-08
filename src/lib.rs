@@ -1,7 +1,7 @@
 //! RustQuant: A Rust library for quantitative finance tools.
 
 #![allow(non_snake_case)]
-#![deny(missing_docs)]
+// #![deny(missing_docs)]
 
 // ################################################################
 // Mathematics and statistics modules:
@@ -16,6 +16,16 @@ pub use Math_Interpolation::*;
 pub use Math_Monte_Carlo::*;
 pub use Math_Normal_Distribution::*;
 pub use Math_Risk_Reward::*;
+
+// ################################################################
+// Automatic Differentiation modules:
+// ################################################################
+
+mod AD_Chain;
+mod AD_Tape;
+
+pub use AD_Chain::*;
+pub use AD_Tape::*;
 
 // ################################################################
 // Option pricing modules:
