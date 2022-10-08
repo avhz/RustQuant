@@ -106,6 +106,14 @@ impl<'t> Var<'t> {
             index: self.tape.push1(self.index, self.value.cos()),
         }
     }
+
+    // pub fn pow(self, i: isize) -> Self {
+    //     Var {
+    //         tape: self.tape,
+    //         value: self.value.pow(i),
+    //         index: self.tape.push1(self.index, self.value.cos()),
+    //     }
+    // }
 }
 
 impl Grad {
@@ -130,17 +138,17 @@ impl<'t> ::std::ops::Add for Var<'t> {
     }
 }
 
-impl<'t> ::std::ops::Sub for Var<'t> {
-    type Output = Var<'t>;
-    fn sub(self, other: Var<'t>) -> Self::Output {
-        assert_eq!(self.tape as *const Tape, other.tape as *const Tape);
-        Var {
-            tape: self.tape,
-            value: self.value - other.value,
-            index: self.tape.push2(self.index, 1.0, other.index, 1.0),
-        }
-    }
-}
+// impl<'t> ::std::ops::Sub for Var<'t> {
+//     type Output = Var<'t>;
+//     fn sub(self, other: Var<'t>) -> Self::Output {
+//         assert_eq!(self.tape as *const Tape, other.tape as *const Tape);
+//         Var {
+//             tape: self.tape,
+//             value: self.value - other.value,
+//             index: self.tape.push2(self.index, 1.0, other.index, 1.0),
+//         }
+//     }
+// }
 
 impl<'t> ::std::ops::Mul for Var<'t> {
     type Output = Var<'t>;
@@ -156,19 +164,19 @@ impl<'t> ::std::ops::Mul for Var<'t> {
     }
 }
 
-impl<'t> ::std::ops::Div for Var<'t> {
-    type Output = Var<'t>;
-    fn div(self, other: Var<'t>) -> Self::Output {
-        assert_eq!(self.tape as *const Tape, other.tape as *const Tape);
-        Var {
-            tape: self.tape,
-            value: self.value / other.value,
-            index: self
-                .tape
-                .push2(self.index, other.value, other.index, self.value),
-        }
-    }
-}
+// impl<'t> ::std::ops::Div for Var<'t> {
+//     type Output = Var<'t>;
+//     fn div(self, other: Var<'t>) -> Self::Output {
+//         assert_eq!(self.tape as *const Tape, other.tape as *const Tape);
+//         Var {
+//             tape: self.tape,
+//             value: self.value / other.value,
+//             index: self
+//                 .tape
+//                 .push2(self.index, other.value, other.index, self.value),
+//         }
+//     }
+// }
 
 // ################################################################
 // TESTS
@@ -186,25 +194,6 @@ mod tests {
         let z = x * y + x.sin();
         let grad = z.grad();
         assert!((z.value - 2.579425538604203).abs() <= 1e-15);
-        assert!((grad.wrt(x) - (y.value + x.value.cos())).abs() <= 1e-15);
-        assert!((grad.wrt(y) - x.value).abs() <= 1e-15);
-    }
-
-    #[test]
-    fn AAD_BlackScholes() {
-        let t = Tape::new();
-        let S = t.var(10.0);
-        let K = t.var(15.0);
-        let T = t.var(1.0);
-        let v = t.var(0.2);
-        let r = t.var(0.05);
-        let q = t.var(0.03);
-
-        let c: f64 = df * (Fp * Nd1 - K * Nd2);
-
-        let f = x * y + x.sin();
-        let grad = f.grad();
-        assert!((f.value - 2.579425538604203).abs() <= 1e-15);
         assert!((grad.wrt(x) - (y.value + x.value.cos())).abs() <= 1e-15);
         assert!((grad.wrt(y) - x.value).abs() <= 1e-15);
     }
