@@ -23,34 +23,34 @@ use crate::{cumsum, linspace, rnorm};
 /// * `v` - Diffusion/volatility.
 /// * `N` - Time steps in the trajectory.
 pub fn GeometricBrownianMotion(
-    S: f64,   // initial stock price
-    T: f64,   // time to expiry
-    r: f64,   // risk free rate
-    v: f64,   // volatility
+    S: f64,   // initial value
+    T: f64,   // time
+    r: f64,   // drift
+    v: f64,   // diffusion
     N: usize, // number of steps between 0 and T
 ) -> Vec<f64> {
-    // length of each time step
+    // Length of each time step.
     let dt: f64 = T / N as f64;
 
-    // Vector for GBM paths
+    // Vector for GBM trajectory.
     let mut St: Vec<f64> = vec![0.0; N + 1];
 
     St[0] = S;
 
-    // vector of time points
+    // Vector of time points.
     let time = linspace(0.0, T, N + 1);
 
-    // standard normal sample of N elements
+    // Standard normal sample of N elements.
     let Z: Vec<f64> = rnorm(N);
 
-    // Brownian motion increments
+    // Brownian Motion increments.
     let mut dW: Vec<f64> = vec![0.0; Z.len()];
 
     for i in 0..(Z.len()) {
         dW[i] = Z[i] * dt.sqrt();
     }
 
-    // Brownian motion at each time (N+1 elements)
+    // Brownian Motion at each time (N+1 elements).
     let mut W: Vec<f64> = cumsum(&dW);
     W.insert(0, 0.0);
 
