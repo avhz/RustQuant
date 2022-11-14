@@ -46,25 +46,24 @@ impl Default for GeometricBrownianMotion {
 
 impl GeometricBrownianMotion {
     /// Generates a vector of length `N` of a Geometric Brownian Motion trajectory.
-    pub fn generate_serial(&self) -> Vec<Vec<f64>> {
+    pub fn generate(&self) -> Vec<Vec<f64>> {
         let S = self.initial_value;
         let T = self.time_horizon;
         let r = self.drift;
         let v = self.diffusion;
         let N = self.time_steps;
+        let dt: f64 = T / N as f64;
 
         let mut output: Vec<Vec<f64>> = Vec::with_capacity(self.trajectories);
 
         // for i in output.par_iter() {
 
         for _ in 0..self.trajectories {
-            // Length of each time step.
-            let dt: f64 = T / N as f64;
-
             // Vector for GBM trajectory.
-            let mut St: Vec<f64> = vec![0.0; N + 1];
+            let mut St: Vec<f64> = Vec::with_capacity(N + 1);
 
-            St[0] = S;
+            // St[0] = S;
+            St.push(S);
 
             // Vector of time points.
             let time = linspace(0.0, T, N + 1);
@@ -73,68 +72,20 @@ impl GeometricBrownianMotion {
             let Z: Vec<f64> = rnorm(N);
 
             // Brownian Motion increments.
-            let mut dW: Vec<f64> = vec![0.0; Z.len()];
+            let mut dW: Vec<f64> = Vec::with_capacity(Z.len());
 
             for i in 0..(Z.len()) {
-                dW[i] = Z[i] * dt.sqrt();
+                dW.push(Z[i] * dt.sqrt());
             }
 
             // Brownian Motion at each time (N+1 elements).
             let mut W: Vec<f64> = cumsum(&dW);
-            W.insert(0, 0.0);
 
-            for i in 1..(St.len()) {
-                St[i] = S * ((r - v * v / 2.0) * time[i] + v * W[i]).exp();
+            for i in 1..(St.capacity() - 1) {
+                St.push(S * ((r - v * v / 2.0) * time[i] + v * W[i]).exp());
             }
-
             output.push(St);
         }
-
-        return output;
-    }
-
-    /// Generates a vector of length `N` of a Geometric Brownian Motion trajectory.
-    pub fn generate_parallel(&self) -> Vec<Vec<f64>> {
-        let S = self.initial_value;
-        let T = self.time_horizon;
-        let r = self.drift;
-        let v = self.diffusion;
-        let N = self.time_steps;
-
-        // Length of each time step.
-        let dt: f64 = T / N as f64;
-
-        let mut output: Vec<Vec<f64>> = Vec::with_capacity(self.trajectories);
-
-        (0..self.trajectories).into_par_iter().for_each(|i| {
-            // Vector for GBM trajectory.
-            let mut St: Vec<f64> = vec![0.0; N + 1];
-
-            St[0] = S;
-
-            // Vector of time points.
-            let time = linspace(0.0, T, N + 1);
-
-            // Standard normal sample of N elements.
-            let Z: Vec<f64> = rnorm(N);
-
-            // Brownian Motion increments.
-            let mut dW: Vec<f64> = vec![0.0; Z.len()];
-
-            for i in 0..(Z.len()) {
-                dW[i] = Z[i] * dt.sqrt();
-            }
-
-            // Brownian Motion at each time (N+1 elements).
-            let mut W: Vec<f64> = cumsum(&dW);
-            W.insert(0, 0.0);
-
-            for i in 1..(St.len()) {
-                St[i] = S * ((r - v * v / 2.0) * time[i] + v * W[i]).exp();
-            }
-
-            output[i] = St;
-        });
 
         return output;
     }
@@ -156,15 +107,17 @@ mod tests {
             time_horizon: 1.0,
             drift: 0.05,
             diffusion: 0.1,
-            time_steps: 1000,
-            trajectories: 3,
+            time_steps: 100,
+            trajectories: 2,
         };
 
-        let v1: Vec<Vec<f64>> = GBM.generate_serial();
-        let v2: Vec<Vec<f64>> = GBM.generate_parallel();
+        let trajectories: Vec<Vec<f64>> = GBM.generate();
 
-        let file = "GBM.png";
-        plot_vector(v1[0].clone(), file)
+        let file1 = "GBM1.png";
+        plot_vector(trajectories[0].clone(), file1);
+
+        let file2 = "GBM2.png";
+        plot_vector(trajectories[1].clone(), file2)
 
         // if let Err(err) = write_vector(v) {
         //     eprintln!("{}", err);
