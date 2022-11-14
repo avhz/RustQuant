@@ -2,9 +2,10 @@
 #![deny(missing_docs)]
 
 use {
-    crate::{cumsum, linspace, rnorm},
-    rayon::prelude::*,
-    std::sync::{Arc, Mutex},
+    crate::helpers::*,
+    crate::normal_distribution::*,
+    // rayon::prelude::*,
+    // std::sync::{Arc, Mutex},
 };
 
 // ############################################################################
@@ -79,7 +80,7 @@ impl GeometricBrownianMotion {
             }
 
             // Brownian Motion at each time (N+1 elements).
-            let mut W: Vec<f64> = cumsum(&dW);
+            let W: Vec<f64> = cumsum(&dW);
 
             for i in 1..(St.capacity() - 1) {
                 St.push(S * ((r - v * v / 2.0) * time[i] + v * W[i]).exp());
@@ -98,7 +99,6 @@ impl GeometricBrownianMotion {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::helpers::*;
 
     #[test]
     fn TEST_GBM() -> Result<(), Box<dyn std::error::Error>> {

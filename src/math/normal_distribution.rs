@@ -34,7 +34,11 @@ pub fn rnorm(n: usize) -> Vec<f64> {
         variates[i] = normal.sample(&mut rng);
     }
 
-    return variates;
+    for item in &mut variates {
+        item = normal.sample(&mut rng);
+    }
+
+    variates
 }
 
 // ############################################################################

@@ -1,7 +1,8 @@
 #![allow(non_snake_case)]
 #![deny(missing_docs)]
 
-use crate::{dnorm, pnorm, BlackScholes};
+use crate::normal_distribution::*;
+use crate::options::european::*;
 
 // ############################################################################
 // STRUCTS

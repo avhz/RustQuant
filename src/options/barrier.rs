@@ -1,7 +1,9 @@
 #![allow(non_snake_case)]
 #![deny(missing_docs)]
 
-use super::*;
+#[cfg(test)]
+use crate::helpers::*;
+use crate::normal_distribution::*;
 
 // ############################################################################
 // FUNCTIONS
@@ -17,7 +19,7 @@ use super::*;
 /// * `X` - Strike price.
 /// * `H` - Barrier.
 /// * `t` - Time to expiry.
-/// * `r` - Risk-free rate.
+/// * `r` - Risk-frE rate.
 /// * `v` - Volatility.
 /// * `K` - Rebate (paid if the option is not able to be exercised).
 /// * `q` - Dividend yield.
@@ -51,19 +53,19 @@ pub fn BarrierOptionClosedForm(
     let y2: f64 = (H / S).ln() / (v * t.sqrt()) + (1. + mu) * v * t.sqrt();
 
     // Common functions:
-    let AA = |phi: f64| -> f64 {
+    let A = |phi: f64| -> f64 {
         let term1: f64 = phi * S * ((b - r) * t).exp() * pnorm(phi * x1);
         let term2: f64 = phi * X * (-r * t).exp() * pnorm(phi * x1 - phi * v * (t).sqrt());
         return term1 - term2;
     };
 
-    let BB = |phi: f64| -> f64 {
+    let B = |phi: f64| -> f64 {
         let term1: f64 = phi * S * ((b - r) * t).exp() * pnorm(phi * x2);
         let term2: f64 = phi * X * (-r * t).exp() * pnorm(phi * x2 - phi * v * (t).sqrt());
         return term1 - term2;
     };
 
-    let CC = |phi: f64, eta: f64| -> f64 {
+    let C = |phi: f64, eta: f64| -> f64 {
         let term1: f64 =
             phi * S * ((b - r) * t).exp() * (H / S).powf(2. * (mu + 1.)) * pnorm(eta * y1);
         let term2: f64 =
@@ -71,7 +73,7 @@ pub fn BarrierOptionClosedForm(
         return term1 - term2;
     };
 
-    let DD = |phi: f64, eta: f64| -> f64 {
+    let D = |phi: f64, eta: f64| -> f64 {
         let term1: f64 =
             phi * S * ((b - r) * t).exp() * (H / S).powf(2. * (mu + 1.)) * pnorm(eta * y2);
         let term2: f64 = phi
@@ -82,13 +84,13 @@ pub fn BarrierOptionClosedForm(
         return term1 - term2;
     };
 
-    let EE = |eta: f64| -> f64 {
+    let E = |eta: f64| -> f64 {
         let term1: f64 = pnorm(eta * x2 - eta * v * (t).sqrt());
         let term2: f64 = (H / S).powf(2. * mu) * pnorm(eta * y2 - eta * v * t.sqrt());
         return K * (-r * t).exp() * (term1 - term2);
     };
 
-    let FF = |eta: f64| -> f64 {
+    let F = |eta: f64| -> f64 {
         let term1: f64 = (H / S).powf(mu + lambda) * pnorm(eta * z);
         let term2: f64 =
             (H / S).powf(mu - lambda) * pnorm(eta * z - 2. * eta * lambda * v * t.sqrt());
@@ -99,17 +101,17 @@ pub fn BarrierOptionClosedForm(
     if X >= H {
         match type_flag {
             // Knock-In calls:
-            "cdi" if S >= H => CC(1., 1.) + EE(1.),
-            "cui" if S <= H => AA(1.) + EE(-1.),
+            "cdi" if S >= H => C(1., 1.) + E(1.),
+            "cui" if S <= H => A(1.) + E(-1.),
             // Knock-In puts:
-            "pdi" if S >= H => BB(-1.) - CC(-1., 1.) + DD(-1., 1.) + EE(1.),
-            "pui" if S <= H => AA(-1.) - BB(-1.) + DD(-1., -1.) + EE(-1.),
+            "pdi" if S >= H => B(-1.) - C(-1., 1.) + D(-1., 1.) + E(1.),
+            "pui" if S <= H => A(-1.) - B(-1.) + D(-1., -1.) + E(-1.),
             // Knock-Out calls:
-            "cdo" if S >= H => AA(1.) - CC(1., 1.) + FF(1.),
-            "cuo" if S <= H => FF(-1.),
+            "cdo" if S >= H => A(1.) - C(1., 1.) + F(1.),
+            "cuo" if S <= H => F(-1.),
             // Knock-Out puts:
-            "pdo" if S >= H => AA(-1.) - BB(-1.) + CC(-1., 1.) - DD(-1., 1.) + FF(1.),
-            "puo" if S <= H => BB(-1.) - DD(-1., -1.) + FF(-1.),
+            "pdo" if S >= H => A(-1.) - B(-1.) + C(-1., 1.) - D(-1., 1.) + F(1.),
+            "puo" if S <= H => B(-1.) - D(-1., -1.) + F(-1.),
 
             _ => panic!("Barrier touched - check barrier and type flag."),
         }
@@ -118,17 +120,17 @@ pub fn BarrierOptionClosedForm(
     else {
         match type_flag {
             // Knock-In calls:
-            "cdi" if S >= H => AA(1.) - BB(1.) + DD(1., 1.) + EE(1.),
-            "cui" if S <= H => BB(1.) - CC(1., -1.) + DD(1., -1.) + EE(-1.),
+            "cdi" if S >= H => A(1.) - B(1.) + D(1., 1.) + E(1.),
+            "cui" if S <= H => B(1.) - C(1., -1.) + D(1., -1.) + E(-1.),
             // Knock-In puts:
-            "pdi" if S >= H => AA(-1.) + EE(1.),
-            "pui" if S <= H => CC(-1., -1.) + EE(-1.),
+            "pdi" if S >= H => A(-1.) + E(1.),
+            "pui" if S <= H => C(-1., -1.) + E(-1.),
             // Knock-Out calls:
-            "cdo" if S >= H => BB(1.) - DD(1., 1.) + FF(1.),
-            "cuo" if S <= H => AA(1.) - BB(1.) + CC(1., -1.) - DD(1., -1.) + FF(-1.),
+            "cdo" if S >= H => B(1.) - D(1., 1.) + F(1.),
+            "cuo" if S <= H => A(1.) - B(1.) + C(1., -1.) - D(1., -1.) + F(-1.),
             // Knock-Out puts:
-            "pdo" if S >= H => FF(1.),
-            "puo" if S <= H => AA(-1.) - CC(-1., -1.) + FF(-1.),
+            "pdo" if S >= H => F(1.),
+            "puo" if S <= H => A(-1.) - C(-1., -1.) + F(-1.),
 
             _ => panic!("Barrier touched - check barrier and type flag."),
         }
@@ -148,7 +150,7 @@ mod tests {
     // X: f64,            // Strike price
     // H: f64,            // Barrier
     // t: f64,            // Time to expiry
-    // r: f64,            // Risk-free rate
+    // r: f64,            // Risk-frE rate
     // v: f64,            // Volatility
     // K: f64,            // Rebate
     // q: f64,            // Dividend yield

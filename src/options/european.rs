@@ -1,7 +1,9 @@
 #![allow(non_snake_case)]
 #![deny(missing_docs)]
 
-use super::*;
+#[cfg(test)]
+use crate::helpers::*;
+use crate::normal_distribution::*;
 
 // ############################################################################
 // FUNCTIONS
@@ -52,6 +54,7 @@ pub fn BlackScholes(S: f64, K: f64, v: f64, r: f64, T: f64, q: f64) -> (f64, f64
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::helpers::*;
 
     #[test]
     fn TEST_black_scholes() {
