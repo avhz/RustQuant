@@ -56,13 +56,13 @@ pub fn BarrierOptionClosedForm(
     let A = |phi: f64| -> f64 {
         let term1: f64 = phi * S * ((b - r) * t).exp() * pnorm(phi * x1);
         let term2: f64 = phi * X * (-r * t).exp() * pnorm(phi * x1 - phi * v * (t).sqrt());
-        return term1 - term2;
+        term1 - term2
     };
 
     let B = |phi: f64| -> f64 {
         let term1: f64 = phi * S * ((b - r) * t).exp() * pnorm(phi * x2);
         let term2: f64 = phi * X * (-r * t).exp() * pnorm(phi * x2 - phi * v * (t).sqrt());
-        return term1 - term2;
+        term1 - term2
     };
 
     let C = |phi: f64, eta: f64| -> f64 {
@@ -70,7 +70,7 @@ pub fn BarrierOptionClosedForm(
             phi * S * ((b - r) * t).exp() * (H / S).powf(2. * (mu + 1.)) * pnorm(eta * y1);
         let term2: f64 =
             phi * X * (-r * t).exp() * (H / S).powf(2. * mu) * pnorm(eta * y1 - eta * v * t.sqrt());
-        return term1 - term2;
+        term1 - term2
     };
 
     let D = |phi: f64, eta: f64| -> f64 {
@@ -81,20 +81,23 @@ pub fn BarrierOptionClosedForm(
             * (-r * t).exp()
             * (H / S).powf(2. * mu)
             * pnorm(eta * y2 - eta * v * (t).sqrt());
-        return term1 - term2;
+
+        term1 - term2
     };
 
     let E = |eta: f64| -> f64 {
         let term1: f64 = pnorm(eta * x2 - eta * v * (t).sqrt());
         let term2: f64 = (H / S).powf(2. * mu) * pnorm(eta * y2 - eta * v * t.sqrt());
-        return K * (-r * t).exp() * (term1 - term2);
+
+        K * (-r * t).exp() * (term1 - term2)
     };
 
     let F = |eta: f64| -> f64 {
         let term1: f64 = (H / S).powf(mu + lambda) * pnorm(eta * z);
         let term2: f64 =
             (H / S).powf(mu - lambda) * pnorm(eta * z - 2. * eta * lambda * v * t.sqrt());
-        return K * (term1 + term2);
+
+        K * (term1 + term2)
     };
 
     // Strike above barrier (X >= H):

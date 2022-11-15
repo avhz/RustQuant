@@ -11,25 +11,27 @@ use crate::options::european::*;
 /// Struct to contain common Black-Scholes Greeks/sensitivities.
 ///
 /// Implemented using the closed-form derivatives from the Black-Scholes model.
+#[derive(Debug)]
+
 pub struct Greeks {
     /// Price sensitivity.
-    Delta: (f64, f64),
+    pub Delta: (f64, f64),
     /// Price elasticity (measure of leverage, gearing).
-    Lambda: (f64, f64),
+    pub Lambda: (f64, f64),
     /// Price convexity.
-    Gamma: (f64, f64),
+    pub Gamma: (f64, f64),
     /// Volatility sensitivity.
-    Vega: (f64, f64),
+    pub Vega: (f64, f64),
     /// Time sensitivity.
-    Theta: (f64, f64),
-    // Driftless theta
-    Driftless_theta: (f64, f64),
+    pub Theta: (f64, f64),
+    /// Driftless theta
+    pub Driftless_theta: (f64, f64),
     /// Interest rate sensitivity.
-    Rho: (f64, f64),
+    pub Rho: (f64, f64),
     /// Dividend sensitivity.
-    Phi: (f64, f64),
+    pub Phi: (f64, f64),
     /// In-the-money probabilities: N(d2), N(-d2).
-    Zeta: (f64, f64),
+    pub Zeta: (f64, f64),
 }
 
 // ############################################################################
@@ -72,7 +74,15 @@ impl Greeks {
         let Nd1_: f64 = pnorm(-d1);
         let Nd2_: f64 = pnorm(-d2);
 
-        let BS = BlackScholes(S, K, v, r, T, q);
+        let VanillaOption = EuropeanOption {
+            initial_price: S,
+            strike_price: K,
+            risk_free_rate: r,
+            volatility: v,
+            dividend_rate: q,
+            time_to_maturity: T,
+        };
+        let BS = VanillaOption.price();
 
         Greeks {
             Delta: (ebrT * Nd1, ebrT * (Nd1 - 1.0)),

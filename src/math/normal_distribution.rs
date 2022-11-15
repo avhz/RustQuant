@@ -28,15 +28,17 @@ pub fn rnorm(n: usize) -> Vec<f64> {
     let mut rng = thread_rng();
     let normal = Normal::new(0.0, 1.0).unwrap();
 
-    let mut variates: Vec<f64> = vec![0.0; n];
+    // let mut variates: Vec<f64> = vec![0.0; n];
+    let mut variates: Vec<f64> = Vec::with_capacity(n);
 
-    for i in 0..variates.len() {
-        variates[i] = normal.sample(&mut rng);
+    for _ in 0..variates.capacity() {
+        // variates[i] = normal.sample(&mut rng);
+        variates.push(normal.sample(&mut rng));
     }
 
-    for item in &mut variates {
-        item = normal.sample(&mut rng);
-    }
+    // for item in &mut variates {
+    //     item = normal.sample(&mut rng);
+    // }
 
     variates
 }

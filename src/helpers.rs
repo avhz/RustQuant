@@ -19,34 +19,36 @@ pub fn assert_approx_equal(x: f64, y: f64, tol: f64) {
 
 /// Linspace helper function.
 ///
-/// Generates a sequence from `a` to `b` with `num` elements.
-pub fn linspace(a: f64, b: f64, num: usize) -> Vec<f64> {
-    let mut v: Vec<f64> = vec![0.0; num];
+/// Generates a sequence from `a` to `b` with `n` elements.
+pub fn linspace(a: f64, b: f64, n: usize) -> Vec<f64> {
+    // let mut v: Vec<f64> = vec![0.0; num];
+    let mut v: Vec<f64> = Vec::with_capacity(n);
 
-    for i in 0..num {
-        v[i] = a + i as f64 * ((b - a) / num as f64);
+    for i in 0..n {
+        // v[i] = a + i as f64 * ((b - a) / num as f64);
+        v.push(a + i as f64 * ((b - a) / n as f64));
     }
 
-    return v;
+    v
 }
 
 /// Cumulative sum helper function.
 ///
 /// Performs a cumulative sum of a vector.
-pub fn cumsum(v1: &Vec<f64>) -> Vec<f64> {
+pub fn cumsum(v1: &[f64]) -> Vec<f64> {
     let v2: Vec<f64> = v1
         .iter()
         .scan(0.0, |acc, &x| {
-            *acc = *acc + x;
+            *acc += x;
             Some(*acc)
         })
         .collect();
 
-    return v2;
+    v2
 }
 
 /// Write vector to file.
-pub fn write_vector(v: &Vec<f64>) -> Result<(), Box<dyn Error>> {
+pub fn write_vector(v: &[f64]) -> Result<(), Box<dyn Error>> {
     let strings: Vec<String> = v.iter().map(|n| n.to_string()).collect();
 
     let mut file = File::create("vector.dat")?;
@@ -56,7 +58,7 @@ pub fn write_vector(v: &Vec<f64>) -> Result<(), Box<dyn Error>> {
 
 /// Compute the mean of a vector.
 pub fn mean(v: &Vec<f64>) -> f64 {
-    v.iter().sum::<f64>() as f64 / v.len() as f64
+    v.iter().sum::<f64>() / v.len() as f64
 }
 
 /// Prepare vector for plotting in `plot_vector()`.
@@ -73,7 +75,7 @@ fn prepare_vec(vals: Vec<f64>) -> (Vec<(f64, f64)>, f64, f64) {
             min = vals[i]
         }
     }
-    return (out, min, max);
+    (out, min, max)
 }
 
 /// Plot a vector of values.
@@ -93,12 +95,12 @@ pub fn plot_vector(v: Vec<f64>, file: &str) -> Result<(), Box<dyn std::error::Er
 
     chart.configure_mesh().draw()?;
 
-    chart.draw_series(LineSeries::new(vec2d, &RED))?.label(file);
+    chart.draw_series(LineSeries::new(vec2d, RED))?.label(file);
 
     chart
         .configure_series_labels()
-        .background_style(&WHITE.mix(0.8))
-        .border_style(&BLACK)
+        .background_style(WHITE.mix(0.8))
+        .border_style(BLACK)
         .draw()?;
 
     Ok(())

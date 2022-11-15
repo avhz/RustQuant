@@ -13,7 +13,8 @@ use {
 // ############################################################################
 
 /// Struct for the Geometric Brownian Motion parameters and methods.
-struct GeometricBrownianMotion {
+#[derive(Debug)]
+pub struct GeometricBrownianMotion {
     /// Initial value for the trajectory.
     pub initial_value: f64,
     /// Length of the time period that the trajectory covers.
