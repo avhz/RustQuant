@@ -15,9 +15,13 @@ use std::io::Write;
 /// Checks whether the absolute difference between two floats is within a specified tolerance.
 macro_rules! assert_approx_equal {
     ($x:expr, $y:expr, $d:expr) => {
-        if !($x - $y < $d || $y - $x < $d) {
-            panic!();
-        }
+        assert!(
+            ($x - $y <= $d) && ($y - $x <= $d),
+            "\nLeft: \t{}, \nRight: \t{}, \nDelta: \t{}\n",
+            $x,
+            $y,
+            $d
+        )
     };
 }
 

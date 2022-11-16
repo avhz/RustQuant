@@ -76,8 +76,9 @@ impl GeometricBrownianMotion {
             // Brownian Motion increments.
             let mut dW: Vec<f64> = Vec::with_capacity(Z.len());
 
-            for i in 0..(Z.len()) {
-                dW.push(Z[i] * dt.sqrt());
+            // for i in 0..(Z.len()) {
+            for item in Z {
+                dW.push(item * dt.sqrt());
             }
 
             // Brownian Motion at each time (N+1 elements).
