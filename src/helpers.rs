@@ -6,13 +6,12 @@ use std::error::Error;
 use std::fs::File;
 use std::io::Write;
 
-// ############################################################################
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // FUNCTIONS
-// ############################################################################
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-/// Helper macro for tests.
-///
-/// Checks whether the absolute difference between two floats is within a specified tolerance.
+/// Helper macro for tests to test floating point approximate equality.
+#[macro_export]
 macro_rules! assert_approx_equal {
     ($x:expr, $y:expr, $d:expr) => {
         assert!(
@@ -26,23 +25,16 @@ macro_rules! assert_approx_equal {
 }
 
 /// Linspace helper function.
-///
 /// Generates a sequence from `a` to `b` with `n` elements.
 pub fn linspace(a: f64, b: f64, n: usize) -> Vec<f64> {
-    // let mut v: Vec<f64> = vec![0.0; num];
     let mut v: Vec<f64> = Vec::with_capacity(n);
-
     for i in 0..n {
-        // v[i] = a + i as f64 * ((b - a) / num as f64);
         v.push(a + i as f64 * ((b - a) / n as f64));
     }
-
     v
 }
 
-/// Cumulative sum helper function.
-///
-/// Performs a cumulative sum of a vector.
+/// Cumulative sum of a vector helper function.
 pub fn cumsum(v1: &[f64]) -> Vec<f64> {
     let v2: Vec<f64> = v1
         .iter()
@@ -114,14 +106,13 @@ pub fn plot_vector(v: Vec<f64>, file: &str) -> Result<(), Box<dyn std::error::Er
     Ok(())
 }
 
-// ############################################################################
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // TESTS
-// ############################################################################
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 #[cfg(test)]
 mod tests {
     use super::*;
-    // use crate::helpers::assert_approx_equal;
 
     #[test]
     fn TEST_cumsum() {

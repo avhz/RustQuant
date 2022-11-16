@@ -53,7 +53,7 @@ pub fn Sortino_Ratio(r_p: f64, r: f64, sigma_down: f64) -> f64 {
 /// * `r_p` is the average return of the portfolio.
 /// * `r` is the risk-free return over the same period.
 /// * `SSDrawdowns` is the sum of the squared drawdowns.
-pub fn Burke_Ratio(r_p: f64, r: f64, drawdowns: &mut Vec<f64>) -> f64 {
+pub fn Burke_Ratio(r_p: f64, r: f64, drawdowns: &mut [f64]) -> f64 {
     let SSDrawdowns = drawdowns.iter().map(|x| x.powi(2)).sum::<f64>();
 
     (r_p - r) / SSDrawdowns

@@ -1,9 +1,7 @@
 #![allow(non_snake_case)]
 #![deny(missing_docs)]
 
-#[cfg(test)]
-use crate::helpers::*;
-use crate::normal_distribution::*;
+use crate::normal_distribution::pnorm;
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // EUROPEAN OPTION STRUCT
@@ -32,13 +30,9 @@ pub struct EuropeanOption {
 
 impl EuropeanOption {
     /// Black-Scholes European Call Option Price
-    ///
     /// Returns a tuple: `(call_price, put_price)`
-    ///
     /// # Note:
-    ///
     /// * `b = r - q` - The cost of carry.
-    ///
     pub fn price(&self) -> (f64, f64) {
         let S = self.initial_price;
         let K = self.strike_price;
@@ -75,7 +69,6 @@ impl EuropeanOption {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::*;
 
     #[test]
     fn TEST_black_scholes() {

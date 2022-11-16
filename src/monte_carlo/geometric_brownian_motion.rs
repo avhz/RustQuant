@@ -1,12 +1,7 @@
 #![allow(non_snake_case)]
 #![deny(missing_docs)]
 
-use {
-    crate::helpers::*,
-    crate::normal_distribution::*,
-    // rayon::prelude::*,
-    // std::sync::{Arc, Mutex},
-};
+use {crate::helpers::*, crate::normal_distribution::*};
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // STRUCTS
@@ -58,13 +53,9 @@ impl GeometricBrownianMotion {
 
         let mut output: Vec<Vec<f64>> = Vec::with_capacity(self.trajectories);
 
-        // for i in output.par_iter() {
-
         for _ in 0..self.trajectories {
             // Vector for GBM trajectory.
             let mut St: Vec<f64> = Vec::with_capacity(N + 1);
-
-            // St[0] = S;
             St.push(S);
 
             // Vector of time points.
@@ -90,7 +81,7 @@ impl GeometricBrownianMotion {
             output.push(St);
         }
 
-        return output;
+        output
     }
 }
 

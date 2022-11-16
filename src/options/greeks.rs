@@ -9,7 +9,6 @@ use crate::options::european::*;
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 /// Struct to contain common Black-Scholes Greeks/sensitivities.
-///
 /// Implemented using the closed-form derivatives from the Black-Scholes model.
 #[derive(Debug)]
 
@@ -42,9 +41,7 @@ impl Greeks {
     /// Function that computes the Black-Scholes Greeks/sensitivities.
     ///
     /// # Arguments:
-    ///
     /// * `option` - A `EuropeanOption` struct containing the parameters.
-    ///
     pub fn compute(option: EuropeanOption) -> Self {
         let S = option.initial_price;
         let K = option.strike_price;
@@ -117,7 +114,6 @@ impl Greeks {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::helpers::*;
 
     #[test]
     fn TEST_greeks() {
@@ -203,24 +199,6 @@ mod tests {
 
             assert!(g.Zeta.0 > 0.0);
             assert!(g.Zeta.1 > 0.0);
-
-            // println!(
-            //     "strike = {}, call theta = {}, put theta = {}",
-            //     strike, g.Theta.0, g.Theta.1
-            // );
-            // println!(
-            //     "{} \t Lambda: \tCall = {}, \tPut = {}",
-            //     strike, g.Lambda.0, g.Lambda.1
-            // );
-            // assert_approx_equal(g.Lambda.0 - g.Lambda.1, 1.0, 0.5);
-            // assert!(g.Lambda.0 >= 0.0 && g.Lambda.0 <= 1.1);
-            // assert!(g.Lambda.1 >= 0.0 && g.Lambda.1 <= 1.0);
-            // println!("DELTA PARITY = {}", g.Delta.0 - g.Delta.1);
-            // println!("THETA = {}, {}", g.Theta.0, g.Theta.1);
-            // assert!(g.Theta.1 == 69.0);
-            // Greeks(S, K, v, r, T, q)
-            // println!("strike = {}, call delta = {}, put delta = {}", strike, g.Delta.0, g.Delta.1);
-            // assert!(g.Theta.0 <= 0.0 && g.Theta.1 <= 0.0);
         }
     }
 }

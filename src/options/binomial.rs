@@ -1,103 +1,120 @@
 #![allow(non_snake_case)]
 #![deny(missing_docs)]
 
-// ############################################################################
-// FUNCTIONS
-// ############################################################################
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// BINOMIAL OPTION PRICING PARAMETER STRUCT
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-/// Cox-Ross-Rubinstein binomial option pricing model.
-///
-/// Adapted from Haug's *Complete Guide to Option Pricing Formulas*.
-///
-/// # Arguments:
-///
-/// * `S` - Initial underlying price.
-/// * `X` - Strike price.
-/// * `T` - Time to expiry.
-/// * `r` - Risk-free rate.
-/// * `v` - Volatility.
-/// * `q` - Dividend yield.
-/// * `n` - Height of the binomial tree.
-///
-/// # Note:
-///
-/// * `b = r - q` - The cost of carry.
-pub fn CRRBinomial(
-    OutputFlag: &str,
-    AmeEurFlag: &str,
-    CallPutFlag: &str,
-    S: f64,
-    X: f64,
-    T: f64,
-    r: f64,
-    q: f64,
-    v: f64,
-    n: usize,
-) -> f64 {
-    let mut OptionValue: Vec<f64> = vec![0.0; n + 1];
-    let mut ReturnValue: Vec<f64> = vec![0.0; 5];
+/// Struct containing the parameters to price an option via binomial tree method.
+pub struct BinomialOption {
+    initial_price: f64,
+    strike_price: f64,
+    time_to_expiry: f64,
+    risk_free_rate: f64,
+    dividend_yield: f64,
+    volatility: f64,
+}
 
-    let b: f64 = r - q;
-    let (u, d, p, dt, Df): (f64, f64, f64, f64, f64);
-    let z: isize;
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// BINOMIAL OPTION PRICING IMPLEMENTATION
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    if CallPutFlag == "c" {
-        z = 1;
-    } else if CallPutFlag == "p" {
-        z = -1;
-    } else {
-        panic!("Check call/put flag. Should be either 'c' or 'p'.");
-    }
+impl BinomialOption {
+    /// Cox-Ross-Rubinstein binomial option pricing model.
+    ///
+    /// Adapted from Haug's *Complete Guide to Option Pricing Formulas*.
+    ///
+    /// # Arguments:
+    ///
+    /// * `OutputFlag` - `&str`: one of `p` (price), `d` (delta), `g` (gamma), or `t` (theta).
+    /// * `AmeEurFlag` - `&str`: either `a` or `e` for American/European price.
+    /// * `CallPutFlag` - `&str`: either `c` (call) or `p` (put).
+    /// * `n` - Height of the binomial tree.
+    ///
+    ///
+    /// # Note:
+    ///
+    /// * `b = r - q` - The cost of carry.
+    pub fn price_CoxRossRubinstein(
+        &self,
+        OutputFlag: &str,
+        AmeEurFlag: &str,
+        CallPutFlag: &str,
+        n: usize,
+    ) -> f64 {
+        let S = self.initial_price;
+        let X = self.strike_price;
+        let T = self.time_to_expiry;
+        let r = self.risk_free_rate;
+        let q = self.dividend_yield;
+        let v = self.volatility;
 
-    dt = T / n as f64;
-    u = (v * dt.sqrt()).exp();
-    d = 1.0 / u;
-    p = ((b * dt).exp() - d) / (u - d);
-    Df = (-r * dt).exp();
+        let mut OptionValue: Vec<f64> = vec![0.0; n + 1];
+        let mut ReturnValue: Vec<f64> = vec![0.0; 5];
 
-    for i in 0..=n {
-        OptionValue[i] = (z as f64 * (S * u.powi(i as i32) * d.powi((n - i) as i32) - X)).max(0.0);
-    }
+        let b: f64 = r - q;
+        let (u, d, p, dt, Df): (f64, f64, f64, f64, f64);
+        let z: isize;
 
-    for j in (0..n).rev() {
-        for i in 0..=j {
-            if AmeEurFlag == "e" {
-                OptionValue[i] = Df * (p * (OptionValue[i + 1]) + (1.0 - p) * OptionValue[i]);
-            } else if AmeEurFlag == "a" {
-                OptionValue[i] = (z as f64
-                    * (S * u.powi(i as i32) * d.powi(j as i32 - i as i32) - X))
-                    .max(Df * (p * (OptionValue[i + 1]) + (1.0 - p) * OptionValue[i]));
+        if CallPutFlag == "c" {
+            z = 1;
+        } else if CallPutFlag == "p" {
+            z = -1;
+        } else {
+            panic!("Check call/put flag. Should be either 'c' or 'p'.");
+        }
+
+        dt = T / n as f64;
+        u = (v * dt.sqrt()).exp();
+        d = 1.0 / u;
+        p = ((b * dt).exp() - d) / (u - d);
+        Df = (-r * dt).exp();
+
+        for i in 0..=n {
+            OptionValue[i] =
+                (z as f64 * (S * u.powi(i as i32) * d.powi((n - i) as i32) - X)).max(0.0);
+        }
+
+        for j in (0..n).rev() {
+            for i in 0..=j {
+                if AmeEurFlag == "e" {
+                    OptionValue[i] = Df * (p * (OptionValue[i + 1]) + (1.0 - p) * OptionValue[i]);
+                } else if AmeEurFlag == "a" {
+                    OptionValue[i] = (z as f64
+                        * (S * u.powi(i as i32) * d.powi(j as i32 - i as i32) - X))
+                        .max(Df * (p * (OptionValue[i + 1]) + (1.0 - p) * OptionValue[i]));
+                }
+            }
+            if j == 2 {
+                ReturnValue[2] = (OptionValue[2] - OptionValue[1]) / (S * u * u - S)
+                    - (OptionValue[1] - OptionValue[0])
+                        / (S - S * d * d)
+                        / (0.5 * (S * u * u - S * d * d));
+                ReturnValue[3] = OptionValue[1];
+            }
+            if j == 1 {
+                ReturnValue[1] = (OptionValue[1] - OptionValue[0]) / (S * u - S * d);
             }
         }
-        if j == 2 {
-            ReturnValue[2] = (OptionValue[2] - OptionValue[1]) / (S * u * u - S)
-                - (OptionValue[1] - OptionValue[0])
-                    / (S - S * d * d)
-                    / (0.5 * (S * u * u - S * d * d));
-            ReturnValue[3] = OptionValue[1];
-        }
-        if j == 1 {
-            ReturnValue[1] = (OptionValue[1] - OptionValue[0]) / (S * u - S * d);
-        }
-    }
 
-    ReturnValue[3] = (OptionValue[3] - OptionValue[0]) / (2.0 * dt) / 365.0;
-    ReturnValue[0] = OptionValue[0];
+        ReturnValue[3] = (OptionValue[3] - OptionValue[0]) / (2.0 * dt) / 365.0;
+        ReturnValue[0] = OptionValue[0];
 
-    if OutputFlag == "p" {
-        // Return the option value.
-        ReturnValue[0]
-    } else if OutputFlag == "d" {
-        // Return the Delta ().
-        ReturnValue[1]
-    } else if OutputFlag == "g" {
-        // Return the Gamma ().
-        ReturnValue[2]
-    } else if OutputFlag == "t" {
-        // Return the Theta ().
-        ReturnValue[3]
-    } else {
-        panic!("Check OutputFlag. Should be one of: 'p', 'd', 'g', 't'.")
+        if OutputFlag == "p" {
+            // Return the option value.
+            ReturnValue[0]
+        } else if OutputFlag == "d" {
+            // Return the Delta ().
+            ReturnValue[1]
+        } else if OutputFlag == "g" {
+            // Return the Gamma ().
+            ReturnValue[2]
+        } else if OutputFlag == "t" {
+            // Return the Theta ().
+            ReturnValue[3]
+        } else {
+            panic!("Check OutputFlag. Should be one of: 'p', 'd', 'g', 't'.")
+        }
     }
 }
 
@@ -112,8 +129,17 @@ mod tests {
 
     #[test]
     fn TEST_CRRBinomial() {
-        let c = CRRBinomial("p", "a", "c", 100., 95., 0.5, 0.08, 0.0, 0.3, 100);
-        let p = CRRBinomial("p", "a", "p", 100., 95., 0.5, 0.08, 0.0, 0.3, 100);
+        let BinOpt = BinomialOption {
+            initial_price: 100.0,
+            strike_price: 95.0,
+            time_to_expiry: 0.5,
+            risk_free_rate: 0.08,
+            dividend_yield: 0.0,
+            volatility: 0.3,
+        };
+
+        let c = BinOpt.price_CoxRossRubinstein("p", "a", "c", 100);
+        let p = BinOpt.price_CoxRossRubinstein("p", "a", "p", 100);
 
         let c_intrinsic = (100_f64 - 95_f64).max(0.0);
         let p_intrinsic = (95_f64 - 100_f64).max(0.0);
