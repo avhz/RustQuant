@@ -147,6 +147,7 @@ pub fn BarrierOptionClosedForm(
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::*;
 
     // // Function arguments:
     // S: f64,            // Underlying price
@@ -166,7 +167,7 @@ mod tests {
     #[test]
     fn cdi() {
         let price = BarrierOptionClosedForm(110.0, 100.0, 105.0, 1.0, 0.05, 0.2, 0.0, 0.01, "cdi");
-        assert_approx_equal(price, 9.5048, 0.0001);
+        assert_approx_equal!(price, 9.5048, 0.0001);
     }
 
     #[test]
@@ -182,7 +183,7 @@ mod tests {
     #[test]
     fn cui() {
         let price = BarrierOptionClosedForm(90.0, 100.0, 105.0, 1.0, 0.05, 0.2, 0.0, 0.01, "cui");
-        assert_approx_equal(price, 4.6926, 0.0001);
+        assert_approx_equal!(price, 4.6926, 0.0001);
     }
 
     #[test]
@@ -198,7 +199,7 @@ mod tests {
     #[test]
     fn pdi() {
         let price = BarrierOptionClosedForm(110.0, 100.0, 105.0, 1.0, 0.05, 0.2, 0.0, 0.01, "pdi");
-        assert_approx_equal(price, 3.0173, 0.0001);
+        assert_approx_equal!(price, 3.0173, 0.0001);
     }
 
     #[test]
@@ -214,7 +215,7 @@ mod tests {
     #[test]
     fn pui() {
         let price = BarrierOptionClosedForm(90.0, 100.0, 105.0, 1.0, 0.05, 0.2, 0.0, 0.01, "pui");
-        assert_approx_equal(price, 1.3596, 0.0001);
+        assert_approx_equal!(price, 1.3596, 0.0001);
     }
 
     #[test]
@@ -230,7 +231,7 @@ mod tests {
     #[test]
     fn cdo() {
         let price = BarrierOptionClosedForm(110.0, 100.0, 105.0, 1.0, 0.05, 0.2, 0.0, 0.01, "cdo");
-        assert_approx_equal(price, 7.295, 0.0001);
+        assert_approx_equal!(price, 7.295, 0.0001);
     }
 
     #[test]
@@ -246,7 +247,7 @@ mod tests {
     #[test]
     fn cuo() {
         let price = BarrierOptionClosedForm(90.0, 100.0, 105.0, 1.0, 0.05, 0.2, 0.0, 0.01, "cuo");
-        assert_approx_equal(price, 0.0224, 0.0001);
+        assert_approx_equal!(price, 0.0224, 0.0001);
     }
 
     #[test]
@@ -262,7 +263,7 @@ mod tests {
     #[test]
     fn pdo() {
         let price = BarrierOptionClosedForm(150.0, 100.0, 40.0, 1.0, 0.05, 0.2, 0.0, 0.01, "pdo");
-        assert_approx_equal(price, 0.107, 0.0001);
+        assert_approx_equal!(price, 0.107, 0.0001);
     }
 
     #[test]
@@ -279,7 +280,7 @@ mod tests {
     fn puo() {
         let price = BarrierOptionClosedForm(30.0, 80.0, 100.0, 1.0, 0.05, 0.2, 0.0, 0.01, "puo");
         println!("PUO {}", price);
-        assert_approx_equal(price, 46.3969, 0.0001);
+        assert_approx_equal!(price, 46.3969, 0.0001);
     }
 
     #[test]

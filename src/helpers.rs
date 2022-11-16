@@ -10,11 +10,15 @@ use std::io::Write;
 // FUNCTIONS
 // ############################################################################
 
-/// Helper function for tests.
+/// Helper macro for tests.
 ///
 /// Checks whether the absolute difference between two floats is within a specified tolerance.
-pub fn assert_approx_equal(x: f64, y: f64, tol: f64) {
-    assert!((x - y).abs() < tol);
+macro_rules! assert_approx_equal {
+    ($x:expr, $y:expr, $d:expr) => {
+        if !($x - $y < $d || $y - $x < $d) {
+            panic!();
+        }
+    };
 }
 
 /// Linspace helper function.

@@ -107,9 +107,8 @@ pub fn CRRBinomial(
 
 #[cfg(test)]
 mod tests {
-    use crate::assert_approx_equal;
-
     use super::*;
+    use crate::*;
 
     #[test]
     fn TEST_CRRBinomial() {
@@ -128,6 +127,6 @@ mod tests {
         assert!(p >= p_intrinsic);
 
         // Very weak parity due to discrete time steps.
-        assert_approx_equal(parity, 0.0, 0.5);
+        assert_approx_equal!(parity, 0.0, 0.5);
     }
 }

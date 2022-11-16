@@ -118,7 +118,7 @@ impl Greeks {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::helpers::assert_approx_equal;
+    use crate::helpers::*;
 
     #[test]
     fn TEST_greeks() {
@@ -142,14 +142,14 @@ mod tests {
             assert!(g.Delta.1 >= -1.0 && g.Delta.1 <= 0.0);
 
             // Delta: D_call - D_put = 1
-            assert_approx_equal(g.Delta.0 - g.Delta.1, 1.0, 0.1);
+            assert_approx_equal!(g.Delta.0 - g.Delta.1, 1.0, 0.1);
 
             // ################################################################
             // VEGA
             // ################################################################
 
             // Vega is the same for calls/puts, and always positive.
-            assert_approx_equal(g.Vega.0, g.Vega.1, 1e-10);
+            assert_approx_equal!(g.Vega.0, g.Vega.1, 1e-10);
             assert!(g.Vega.0 >= 0.0 && g.Vega.1 >= 0.0);
 
             // ################################################################

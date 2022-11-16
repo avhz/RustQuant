@@ -84,7 +84,7 @@ impl EuropeanOption {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::helpers::*;
+    use crate::*;
 
     #[test]
     fn TEST_black_scholes() {
@@ -98,7 +98,7 @@ mod tests {
         };
 
         let prices = VanillaOption.price();
-        assert_approx_equal(prices.0, 2.586, 0.001);
-        assert_approx_equal(prices.1, 10.865, 0.001);
+        assert_approx_equal!(prices.0, 2.586, 0.001);
+        assert_approx_equal!(prices.1, 10.865, 0.001);
     }
 }
