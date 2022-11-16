@@ -167,7 +167,7 @@ impl BarrierOption {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::*;
+    // use crate::*;
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // Initial underlying price ABOVE the barrier.

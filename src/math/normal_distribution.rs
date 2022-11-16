@@ -6,9 +6,9 @@ use rand_distr::{Distribution, Normal};
 use statrs::function::erf;
 use std::f64::consts::{PI, SQRT_2};
 
-// ############################################################################
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // FUNCTIONS
-// ############################################################################
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 /// Standard Normal Density Function
 pub fn dnorm(x: f64) -> f64 {
@@ -27,30 +27,23 @@ pub fn pnorm(x: f64) -> f64 {
 pub fn rnorm(n: usize) -> Vec<f64> {
     let mut rng = thread_rng();
     let normal = Normal::new(0.0, 1.0).unwrap();
-
-    // let mut variates: Vec<f64> = vec![0.0; n];
     let mut variates: Vec<f64> = Vec::with_capacity(n);
 
     for _ in 0..variates.capacity() {
-        // variates[i] = normal.sample(&mut rng);
         variates.push(normal.sample(&mut rng));
     }
-
-    // for item in &mut variates {
-    //     item = normal.sample(&mut rng);
-    // }
 
     variates
 }
 
-// ############################################################################
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // TESTS
-// ############################################################################
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::*;
+    // use crate::*;
 
     #[test]
     fn TEST_pnorm() {

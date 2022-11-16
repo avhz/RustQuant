@@ -5,44 +5,35 @@
 use crate::helpers::*;
 use crate::normal_distribution::*;
 
-// ############################################################################
-// STRUCTS
-// ############################################################################
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// EUROPEAN OPTION STRUCT
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 /// Black-Scholes Vanilla European Option
 #[derive(Debug)]
 pub struct EuropeanOption {
-    /// Initial price of the underlying.
+    /// `S` - Initial price of the underlying.
     pub initial_price: f64,
-    /// Strike price.
+    /// `K` - Strike price.
     pub strike_price: f64,
-    /// Risk-free rate parameter.
+    /// `r` - Risk-free rate parameter.
     pub risk_free_rate: f64,
-    /// Volatility parameter.
+    /// `v` - Volatility parameter.
     pub volatility: f64,
-    /// Dividend rate.
+    /// `q` - Dividend rate.
     pub dividend_rate: f64,
-    /// Time to expiry/maturity.
+    /// `T` - Time to expiry/maturity.
     pub time_to_maturity: f64,
 }
 
-// ############################################################################
-// IMPLEMENTATION
-// ############################################################################
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// EUROPEAN OPTION IMPLEMENTATION
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 impl EuropeanOption {
     /// Black-Scholes European Call Option Price
     ///
     /// Returns a tuple: `(call_price, put_price)`
-    ///
-    /// # Arguments:
-    ///
-    /// * `S` - Initial underlying price.
-    /// * `K` - Strike price.
-    /// * `T` - Time to expiry.
-    /// * `r` - Risk-free rate.
-    /// * `v` - Volatility.
-    /// * `q` - Dividend yield.
     ///
     /// # Note:
     ///
@@ -77,9 +68,9 @@ impl EuropeanOption {
     }
 }
 
-// ############################################################################
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // TESTS
-// ############################################################################
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 #[cfg(test)]
 mod tests {

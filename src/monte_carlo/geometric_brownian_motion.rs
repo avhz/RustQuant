@@ -8,9 +8,9 @@ use {
     // std::sync::{Arc, Mutex},
 };
 
-// ############################################################################
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // STRUCTS
-// ############################################################################
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 /// Struct for the Geometric Brownian Motion parameters and methods.
 #[derive(Debug)]
@@ -94,9 +94,9 @@ impl GeometricBrownianMotion {
     }
 }
 
-// ############################################################################
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // TESTS
-// ############################################################################
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 #[cfg(test)]
 mod tests {
@@ -109,14 +109,14 @@ mod tests {
             time_horizon: 1.0,
             drift: 0.05,
             diffusion: 0.1,
-            time_steps: 100,
+            time_steps: 1000,
             trajectories: 2,
         };
 
         let trajectories: Vec<Vec<f64>> = GBM.generate();
 
         let file1 = "GBM1.png";
-        plot_vector(trajectories[0].clone(), file1);
+        plot_vector(trajectories[0].clone(), file1).unwrap();
 
         let file2 = "GBM2.png";
         plot_vector(trajectories[1].clone(), file2)
