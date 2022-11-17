@@ -49,8 +49,11 @@ impl BinomialOption {
         let q = self.dividend_yield;
         let v = self.volatility;
 
-        let mut OptionValue: Vec<f64> = vec![0.0; n + 1];
+        // let mut OptionValue: Vec<f64> = vec![0.0; n + 1];
+        let mut OptionValue: Vec<f64> = Vec::with_capacity(n + 1);
+
         let mut ReturnValue: Vec<f64> = vec![0.0; 5];
+        // let mut ReturnValue: Vec<f64> = Vec::with_capacity(5);
 
         let b: f64 = r - q;
         let (u, d, p, dt, Df): (f64, f64, f64, f64, f64);
@@ -70,9 +73,9 @@ impl BinomialOption {
         p = ((b * dt).exp() - d) / (u - d);
         Df = (-r * dt).exp();
 
-        for i in 0..=n {
-            OptionValue[i] =
-                (z as f64 * (S * u.powi(i as i32) * d.powi((n - i) as i32) - X)).max(0.0);
+        for i in 0..OptionValue.capacity() {
+            OptionValue
+                .push((z as f64 * (S * u.powi(i as i32) * d.powi((n - i) as i32) - X)).max(0.0));
         }
 
         for j in (0..n).rev() {
@@ -138,8 +141,8 @@ mod tests {
             volatility: 0.3,
         };
 
-        let c = BinOpt.price_CoxRossRubinstein("p", "a", "c", 100);
-        let p = BinOpt.price_CoxRossRubinstein("p", "a", "p", 100);
+        let c = BinOpt.price_CoxRossRubinstein("p", "a", "c", 10000);
+        let p = BinOpt.price_CoxRossRubinstein("p", "a", "p", 10000);
 
         let c_intrinsic = (100_f64 - 95_f64).max(0.0);
         let p_intrinsic = (95_f64 - 100_f64).max(0.0);
@@ -154,5 +157,7 @@ mod tests {
 
         // Very weak parity due to discrete time steps.
         assert_approx_equal!(parity, 0.0, 0.5);
+
+        assert!(1 == 2)
     }
 }
