@@ -1,4 +1,3 @@
-#![allow(non_snake_case)]
 #![deny(missing_docs)]
 
 use rand::thread_rng;
@@ -43,10 +42,10 @@ pub fn rnorm(n: usize) -> Vec<f64> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    // use crate::*;
+    use crate::assert_approx_equal;
 
     #[test]
-    fn TEST_pnorm() {
+    fn test_pnorm() {
         // Values from WolframAlpha
         assert_approx_equal!(pnorm(-4.0), 0.00003167, 1e-8);
         assert_approx_equal!(pnorm(-3.0), 0.00134990, 1e-8);
@@ -60,7 +59,7 @@ mod tests {
     }
 
     #[test]
-    fn TEST_dnorm() {
+    fn test_dnorm() {
         // Values from WolframAlpha
         assert_approx_equal!(dnorm(-4.0), 0.00013383, 1e-8);
         assert_approx_equal!(dnorm(-3.0), 0.00443185, 1e-8);
@@ -74,7 +73,7 @@ mod tests {
     }
 
     #[test]
-    fn TEST_rnorm() {
+    fn test_rnorm() {
         let v = rnorm(1000);
         println!("{:?}", v);
         let mean = (v.iter().sum::<f64>()) / (v.len() as f64);

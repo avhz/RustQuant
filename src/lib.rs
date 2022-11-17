@@ -1,16 +1,23 @@
 //! RustQuant: A Rust library for quantitative finance tools.
 
-#![allow(non_snake_case)]
-#![deny(missing_docs)]
-
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Miscellaneous modules:
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-#[macro_use]
-mod helpers;
-
 pub use helpers::*;
+
+/// Parent module containing: helper functions used throughout the library.
+#[macro_use]
+pub mod helpers {
+    /// Submodule of `helpers` that implements the cumulative sum of a vector.
+    pub mod cumsum;
+    /// Submodule of `helpers` that implements generating a linearly spaced sequence.
+    pub mod linspace;
+    /// Submodule of `helpers` that implements useful macros, such as `assert_approx_equal`.
+    pub mod macros;
+    /// Submodule of `helpers` that implements plotting/writing vectors to files.
+    pub mod plot;
+}
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Mathematics and statistics modules:
@@ -18,8 +25,8 @@ pub use helpers::*;
 
 pub use math::*;
 
-/// Module for mathematical and statistical tools.
-mod math {
+/// Parent module containing: mathematical and statistical tools.
+pub mod math {
     /// Submodule of `math` that implements interpolation solvers.
     pub mod interpolation;
     /// Submodule of `math` that implements Newton-Raphson method.
@@ -34,13 +41,13 @@ mod math {
 // Monte Carlo simulators/engines.
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-pub use monte_carlo::*;
+pub use simulation::*;
 
-/// Module for Monte Carlo engines to generate time series.
-mod monte_carlo {
-    /// Submodule of `monte_carlo` to simulate Geometric Brownian Motion.
+/// Parent module containing: Monte Carlo engines to simulate/generate time series.
+pub mod simulation {
+    /// Submodule of `simulation` that implements Geometric Brownian Motion.
     pub mod geometric_brownian_motion;
-    // /// Submodule of `monte_carlo` to simulate Ornstein-Uhlenbeck process.
+    //  Submodule of `simulation` that implements Ornstein-Uhlenbeck process.
     // pub mod ornstein_uhlenbeck;
 }
 
@@ -48,22 +55,14 @@ mod monte_carlo {
 // Automatic Differentiation modules:
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-// pub use AAD::*;
-
-// mod AAD {
-//     pub mod chain;
-//     pub mod dcc;
-//     pub mod tape;
-// }
-
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Option pricing modules:
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 pub use options::*;
 
-/// Module containing option pricers and sensitivity functions.
-mod options {
+/// Parent module containing: option pricers and sensitivity functions.
+pub mod options {
     /// Submodule of `options` that implements American option pricers.
     pub mod american;
     /// Submodule of `options` that implements Asian option pricers.

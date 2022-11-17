@@ -164,6 +164,8 @@ impl BarrierOption {
 
 #[cfg(test)]
 mod tests {
+    use crate::assert_approx_equal;
+
     use super::*;
     // use crate::*;
 

@@ -1,4 +1,3 @@
-#![allow(non_snake_case)]
 #![deny(missing_docs)]
 
 // ############################################################################
@@ -14,7 +13,7 @@
 /// * `r_p` is the average return of the portfolio.
 /// * `r` is the risk-free return over the same period.
 /// * `beta_p` is the beta of the portfolio.
-pub fn Treynors_Ratio(r_p: f64, r: f64, beta_p: f64) -> f64 {
+pub fn treynors_ratio(r_p: f64, r: f64, beta_p: f64) -> f64 {
     (r_p - r) / beta_p
 }
 
@@ -27,7 +26,7 @@ pub fn Treynors_Ratio(r_p: f64, r: f64, beta_p: f64) -> f64 {
 /// * `r_p` is the average return of the portfolio.
 /// * `r` is the risk-free return over the same period.
 /// * `sigma_p` is the standard deviation of the portfolio returns.
-pub fn Sharpe_Ratio(r_p: f64, r: f64, sigma_p: f64) -> f64 {
+pub fn sharpe_ratio(r_p: f64, r: f64, sigma_p: f64) -> f64 {
     (r_p - r) / sigma_p
 }
 
@@ -40,35 +39,35 @@ pub fn Sharpe_Ratio(r_p: f64, r: f64, sigma_p: f64) -> f64 {
 /// * `r_p` is the average return of the portfolio.
 /// * `r` is the risk-free return over the same period.
 /// * `sigma_down` is the *downside* standard deviation of the portfolio returns, also known as semistandard deviation.
-pub fn Sortino_Ratio(r_p: f64, r: f64, sigma_down: f64) -> f64 {
+pub fn sortino_ratio(r_p: f64, r: f64, sigma_down: f64) -> f64 {
     (r_p - r) / sigma_down
 }
 
 /// Burke's (1994) risk-reward ratio.
 ///
-/// `Burke ratio = (r_p - r) / SSDrawdowns`
+/// `Burke ratio = (r_p - r) / ss_drawdowns`
 ///
 /// Where:
 ///
 /// * `r_p` is the average return of the portfolio.
 /// * `r` is the risk-free return over the same period.
-/// * `SSDrawdowns` is the sum of the squared drawdowns.
-pub fn Burke_Ratio(r_p: f64, r: f64, drawdowns: &mut [f64]) -> f64 {
-    let SSDrawdowns = drawdowns.iter().map(|x| x.powi(2)).sum::<f64>();
+/// * `ss_drawdowns` is the sum of the squared drawdowns.
+pub fn burke_ratio(r_p: f64, r: f64, drawdowns: &mut [f64]) -> f64 {
+    let ss_drawdowns = drawdowns.iter().map(|x| x.powi(2)).sum::<f64>();
 
-    (r_p - r) / SSDrawdowns
+    (r_p - r) / ss_drawdowns
 }
 
-/// Return on VaR.
+/// Return on VaR (value-at-risk).
 ///
-/// `Return on VaR = r_p / VaR`
+/// `Return on var = r_p / var`
 ///
 /// Where:
 ///
 /// * `r_p` is the average return of the portfolio.
-/// * `VaR` is the Value-at-Risk.
-pub fn Return_on_VaR(r_p: f64, VaR: f64) -> f64 {
-    r_p / VaR
+/// * `var` is the Value-at-Risk.
+pub fn return_on_var(r_p: f64, var: f64) -> f64 {
+    r_p / var
 }
 
 /// Jensen's Measure (alpha).
@@ -81,7 +80,7 @@ pub fn Return_on_VaR(r_p: f64, VaR: f64) -> f64 {
 /// * `r` is the risk-free return over the same period.
 /// * `beta_p` is the beta of the portfolio.
 /// * `r_m` is the expected market return.
-pub fn Jensens_Alpha(r_p: f64, r_m: f64, r: f64, beta_p: f64) -> f64 {
+pub fn jensens_alpha(r_p: f64, r_m: f64, r: f64, beta_p: f64) -> f64 {
     r_p - (r + beta_p * (r_m - r))
 }
 

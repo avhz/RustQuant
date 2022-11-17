@@ -141,8 +141,8 @@ mod tests {
             volatility: 0.3,
         };
 
-        let c = BinOpt.price_CoxRossRubinstein("p", "a", "c", 10000);
-        let p = BinOpt.price_CoxRossRubinstein("p", "a", "p", 10000);
+        let c = BinOpt.price_CoxRossRubinstein("p", "a", "c", 100);
+        let p = BinOpt.price_CoxRossRubinstein("p", "a", "p", 100);
 
         let c_intrinsic = (100_f64 - 95_f64).max(0.0);
         let p_intrinsic = (95_f64 - 100_f64).max(0.0);
@@ -157,7 +157,5 @@ mod tests {
 
         // Very weak parity due to discrete time steps.
         assert_approx_equal!(parity, 0.0, 0.5);
-
-        assert!(1 == 2)
     }
 }

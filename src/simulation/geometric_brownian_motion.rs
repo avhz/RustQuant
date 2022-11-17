@@ -1,7 +1,9 @@
-#![allow(non_snake_case)]
 #![deny(missing_docs)]
 
-use {crate::helpers::*, crate::normal_distribution::*};
+use {
+    crate::helpers::{cumsum::*, linspace::*},
+    crate::normal_distribution::*,
+};
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // STRUCTS
@@ -92,10 +94,11 @@ impl GeometricBrownianMotion {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::plot::plot_vector;
 
     #[test]
-    fn TEST_GBM() -> Result<(), Box<dyn std::error::Error>> {
-        let GBM = GeometricBrownianMotion {
+    fn test_gbm() -> Result<(), Box<dyn std::error::Error>> {
+        let gbm = GeometricBrownianMotion {
             initial_value: 10.0,
             time_horizon: 1.0,
             drift: 0.05,
@@ -104,7 +107,7 @@ mod tests {
             trajectories: 2,
         };
 
-        let trajectories: Vec<Vec<f64>> = GBM.generate();
+        let trajectories: Vec<Vec<f64>> = gbm.generate();
 
         let file1 = "GBM1.png";
         plot_vector(trajectories[0].clone(), file1).unwrap();
