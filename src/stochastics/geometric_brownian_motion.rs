@@ -20,11 +20,11 @@ impl GeometricBrownianMotion {
 
 impl StochasticProcess for GeometricBrownianMotion {
     fn drift(&self, x: f64) -> f64 {
-        (*self).mu * x
+        self.mu * x
     }
 
     fn diffusion(&self, x: f64) -> f64 {
-        (*self).sigma * x
+        self.sigma * x
     }
 }
 
@@ -43,10 +43,10 @@ mod tests {
 
         let output = (&gbm).euler_maruyama(10.0, 0.0, 0.5, 1000, 2);
 
-        let file1 = "./Images/GBM_new1.png";
+        let file1 = "./Images/GBM1.png";
         plot_vector((&output.trajectories[0]).clone(), file1).unwrap();
 
-        let file2 = "./Images/GBM_new2.png";
+        let file2 = "./Images/GBM2.png";
         plot_vector((&output.trajectories[1]).clone(), file2)
     }
 }

@@ -1,3 +1,5 @@
+#![deny(missing_docs)]
+
 //! RustQuant: A Rust library for quantitative finance tools.
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -45,6 +47,8 @@ pub use stochastics::*;
 
 /// Parent module containing: Monte Carlo engines to simulate stochastic processes.
 pub mod stochastics {
+    /// Submodule of `stochastics`: implements the Cox-Ingersoll-Ross process.
+    pub mod cox_ingersoll_ross;
     /// Submodule of `stochastics`: implements Geometric Brownian Motion.
     pub mod geometric_brownian_motion;
     /// Submodule of `stochastics`: implements the Ornstein-Uhlenbeck process.

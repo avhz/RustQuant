@@ -3,7 +3,7 @@
 use crate::process::StochasticProcess;
 
 /// Struct containing the Ornstein-Uhlenbeck process parameters.
-pub struct OrnsteinUhlenbeck {
+pub struct CoxIngersollRoss {
     /// The long-run mean ($\mu$).
     pub mu: f64,
 
@@ -15,20 +15,20 @@ pub struct OrnsteinUhlenbeck {
     pub theta: f64,
 }
 
-impl OrnsteinUhlenbeck {
-    /// Create a new Ornstein-Uhlenbeck process.
+impl CoxIngersollRoss {
+    /// Create a new Cox-Ingersoll-Ross process.
     pub fn new(mu: f64, sigma: f64, theta: f64) -> Self {
         Self { mu, sigma, theta }
     }
 }
 
-impl StochasticProcess for OrnsteinUhlenbeck {
+impl StochasticProcess for CoxIngersollRoss {
     fn drift(&self, x: f64) -> f64 {
         self.theta * (self.mu - x)
     }
 
-    fn diffusion(&self, _x: f64) -> f64 {
-        self.sigma
+    fn diffusion(&self, x: f64) -> f64 {
+        self.sigma * x.sqrt()
     }
 }
 
@@ -42,15 +42,15 @@ mod tests {
     use crate::plot::plot_vector;
 
     #[test]
-    fn test_ornstein_uhlenbeck() -> Result<(), Box<dyn std::error::Error>> {
-        let ou = OrnsteinUhlenbeck::new(0.15, 0.45, 0.01);
+    fn test_cox_ingersoll_ross() -> Result<(), Box<dyn std::error::Error>> {
+        let cir = CoxIngersollRoss::new(0.15, 0.45, 0.01);
 
-        let output = ou.euler_maruyama(10.0, 0.0, 0.5, 1000, 2);
+        let output = cir.euler_maruyama(10.0, 0.0, 0.5, 1000, 2);
 
-        let file1 = "./Images/OU1.png";
+        let file1 = "./Images/CIR1.png";
         plot_vector((&output.trajectories[0]).clone(), file1).unwrap();
 
-        let file2 = "./Images/OU2.png";
+        let file2 = "./Images/CIR2.png";
         plot_vector((&output.trajectories[1]).clone(), file2)
     }
 }
