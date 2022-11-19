@@ -41,13 +41,13 @@ pub mod math {
 // Monte Carlo simulators/engines.
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-pub use simulation::*;
+pub use stochastics::*;
 
-/// Parent module containing: Monte Carlo engines to simulate/generate time series.
-pub mod simulation {
-    /// Submodule of `simulation` that implements Geometric Brownian Motion.
+/// Parent module containing: Monte Carlo engines to simulate stochastic processes.
+pub mod stochastics {
+    /// Submodule of `stochastics` that implements Geometric Brownian Motion.
     pub mod geometric_brownian_motion;
-    //  Submodule of `simulation` that implements Ornstein-Uhlenbeck process.
+    //  Submodule of `stochastics` that implements Ornstein-Uhlenbeck process.
     // pub mod ornstein_uhlenbeck;
 }
 
