@@ -45,7 +45,7 @@ mod tests {
     fn test_cox_ingersoll_ross() -> Result<(), Box<dyn std::error::Error>> {
         let cir = CoxIngersollRoss::new(0.15, 0.45, 0.01);
 
-        let output = cir.euler_maruyama(10.0, 0.0, 0.5, 1000, 2);
+        let output = cir.euler_maruyama(10.0, 0.0, 0.5, 1000, 2, false);
 
         let file1 = "./Images/CIR1.png";
         plot_vector((&output.trajectories[0]).clone(), file1).unwrap();

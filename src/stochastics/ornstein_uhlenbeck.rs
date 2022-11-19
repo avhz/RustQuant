@@ -45,7 +45,7 @@ mod tests {
     fn test_ornstein_uhlenbeck() -> Result<(), Box<dyn std::error::Error>> {
         let ou = OrnsteinUhlenbeck::new(0.15, 0.45, 0.01);
 
-        let output = ou.euler_maruyama(10.0, 0.0, 0.5, 1000, 2);
+        let output = ou.euler_maruyama(10.0, 0.0, 0.5, 1000, 2, false);
 
         let file1 = "./Images/OU1.png";
         plot_vector((&output.trajectories[0]).clone(), file1).unwrap();

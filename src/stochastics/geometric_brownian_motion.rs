@@ -41,7 +41,7 @@ mod tests {
     fn test_geometric_brownian_motion() -> Result<(), Box<dyn std::error::Error>> {
         let gbm = GeometricBrownianMotion::new(0.05, 0.9);
 
-        let output = (&gbm).euler_maruyama(10.0, 0.0, 0.5, 1000, 2);
+        let output = (&gbm).euler_maruyama(10.0, 0.0, 0.5, 1000, 2, false);
 
         let file1 = "./Images/GBM1.png";
         plot_vector((&output.trajectories[0]).clone(), file1).unwrap();
