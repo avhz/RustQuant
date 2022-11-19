@@ -2,15 +2,6 @@
 //! Non-autonomous refers to differential equations that are an explicit
 //! function of time `t`.
 //!
-
-//! Module containing various stochastic processes.
-
-/// Base trait for a stochastic process.
-
-/// Non-autonomous stochastic process.
-///
-/// A non-autonomous stochastic process is a stochastic process in which the drift and
-/// diffusion are functions that depend on time.
 pub trait NonautonomousStochasticProcess: StochasticProcess {
     fn drift(&self, t: f32, x: f32) -> f32;
 
