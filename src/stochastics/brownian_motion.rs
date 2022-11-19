@@ -35,7 +35,7 @@ impl StochasticProcess for BrownianMotion {
 
 #[cfg(test)]
 mod tests {
-    use std::time::Instant;
+    // use std::time::Instant;
 
     use super::*;
     use crate::plot::plot_vector;
