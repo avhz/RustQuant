@@ -3,6 +3,26 @@
 
 Rust library for quantitative finance tools.
 
+# How-tos:
+
+## Compute gradients:
+
+```rust
+todo!()
+```
+
+## Price options:
+
+```rust
+todo!()
+```
+
+## Generate stochastic processes:
+
+```rust
+todo!()
+```
+
 # Features
 
 ## Mathematics & Statistics
