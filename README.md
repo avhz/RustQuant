@@ -5,7 +5,7 @@ Rust library for quantitative finance tools.
 
 # Features
 
-Below is a checklist of features that are currently implemented (- [x]) and that I would like to implement in the future (- [ ]).
+Below is a checklist of features that are currently implemented (&#9745;) and that I would like to implement in the future (&#9744;).
 
 ## Automatic Differentiation
 
