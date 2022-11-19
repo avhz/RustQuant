@@ -1,11 +1,13 @@
 #![allow(non_snake_case)]
 #![deny(missing_docs)]
 
-use crate::normal_distribution::pnorm;
+// use crate::normal_distribution::pnorm;
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // EUROPEAN OPTION STRUCT
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+use crate::normal_distribution::StandarNormal;
 
 /// Black-Scholes Vanilla European Option
 #[derive(Debug)]
@@ -49,11 +51,13 @@ impl EuropeanOption {
         let d1: f64 = d + 0.5 * std;
         let d2: f64 = d1 - std;
 
-        let Nd1: f64 = pnorm(d1);
-        let Nd2: f64 = pnorm(d2);
+        let norm = StandarNormal::new();
 
-        let Nd1_: f64 = pnorm(-d1);
-        let Nd2_: f64 = pnorm(-d2);
+        let Nd1: f64 = norm.cdf(d1);
+        let Nd2: f64 = norm.cdf(d2);
+
+        let Nd1_: f64 = norm.cdf(-d1);
+        let Nd2_: f64 = norm.cdf(-d2);
 
         let c: f64 = df * (Fp * Nd1 - K * Nd2);
         let p: f64 = df * (-Fp * Nd1_ + K * Nd2_);

@@ -18,6 +18,7 @@ pub struct OrnsteinUhlenbeck {
 impl OrnsteinUhlenbeck {
     /// Create a new Ornstein-Uhlenbeck process.
     pub fn new(mu: f64, sigma: f64, theta: f64) -> Self {
+        assert!(sigma >= 0.0);
         Self { mu, sigma, theta }
     }
 }

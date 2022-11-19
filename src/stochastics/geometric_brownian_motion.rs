@@ -14,6 +14,7 @@ pub struct GeometricBrownianMotion {
 impl GeometricBrownianMotion {
     /// Create a new Geometric Brownian Motion process.
     pub fn new(mu: f64, sigma: f64) -> Self {
+        assert!(sigma >= 0.0);
         Self { mu, sigma }
     }
 }

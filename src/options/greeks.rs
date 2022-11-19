@@ -60,15 +60,17 @@ impl Greeks {
         let d1: f64 = d + 0.5 * std;
         let d2: f64 = d1 - std;
 
-        let nd1: f64 = dnorm(d1);
-        // let nd2: f64 = dnorm(d2);
-        let Nd1: f64 = pnorm(d1);
-        let Nd2: f64 = pnorm(d2);
+        let norm = StandarNormal::new();
 
-        // let nd1_: f64 = dnorm(-d1);
-        // let nd2_: f64 = dnorm(-d2);
-        let Nd1_: f64 = pnorm(-d1);
-        let Nd2_: f64 = pnorm(-d2);
+        let nd1: f64 = norm.pdf(d1);
+        // let nd2: f64 = norm.pdf(d2);
+        let Nd1: f64 = norm.cdf(d1);
+        let Nd2: f64 = norm.cdf(d2);
+
+        // let nd1_: f64 = norm.pdf(-d1);
+        // let nd2_: f64 = norm.pdf(-d2);
+        let Nd1_: f64 = norm.cdf(-d1);
+        let Nd2_: f64 = norm.cdf(-d2);
 
         let VanillaOption = EuropeanOption {
             initial_price: S,

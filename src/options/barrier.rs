@@ -66,53 +66,55 @@ impl BarrierOption {
         let y1: f64 = (H * H / (S * X)).ln() / (v * t.sqrt()) + (1. + mu) * v * t.sqrt();
         let y2: f64 = (H / S).ln() / (v * t.sqrt()) + (1. + mu) * v * t.sqrt();
 
+        let norm = StandarNormal::new();
+
         // Common functions:
         let A = |phi: f64| -> f64 {
-            let term1: f64 = phi * S * ((b - r) * t).exp() * pnorm(phi * x1);
-            let term2: f64 = phi * X * (-r * t).exp() * pnorm(phi * x1 - phi * v * (t).sqrt());
+            let term1: f64 = phi * S * ((b - r) * t).exp() * norm.cdf(phi * x1);
+            let term2: f64 = phi * X * (-r * t).exp() * norm.cdf(phi * x1 - phi * v * (t).sqrt());
             term1 - term2
         };
 
         let B = |phi: f64| -> f64 {
-            let term1: f64 = phi * S * ((b - r) * t).exp() * pnorm(phi * x2);
-            let term2: f64 = phi * X * (-r * t).exp() * pnorm(phi * x2 - phi * v * (t).sqrt());
+            let term1: f64 = phi * S * ((b - r) * t).exp() * norm.cdf(phi * x2);
+            let term2: f64 = phi * X * (-r * t).exp() * norm.cdf(phi * x2 - phi * v * (t).sqrt());
             term1 - term2
         };
 
         let C = |phi: f64, eta: f64| -> f64 {
             let term1: f64 =
-                phi * S * ((b - r) * t).exp() * (H / S).powf(2. * (mu + 1.)) * pnorm(eta * y1);
+                phi * S * ((b - r) * t).exp() * (H / S).powf(2. * (mu + 1.)) * norm.cdf(eta * y1);
             let term2: f64 = phi
                 * X
                 * (-r * t).exp()
                 * (H / S).powf(2. * mu)
-                * pnorm(eta * y1 - eta * v * t.sqrt());
+                * norm.cdf(eta * y1 - eta * v * t.sqrt());
             term1 - term2
         };
 
         let D = |phi: f64, eta: f64| -> f64 {
             let term1: f64 =
-                phi * S * ((b - r) * t).exp() * (H / S).powf(2. * (mu + 1.)) * pnorm(eta * y2);
+                phi * S * ((b - r) * t).exp() * (H / S).powf(2. * (mu + 1.)) * norm.cdf(eta * y2);
             let term2: f64 = phi
                 * X
                 * (-r * t).exp()
                 * (H / S).powf(2. * mu)
-                * pnorm(eta * y2 - eta * v * (t).sqrt());
+                * norm.cdf(eta * y2 - eta * v * (t).sqrt());
 
             term1 - term2
         };
 
         let E = |eta: f64| -> f64 {
-            let term1: f64 = pnorm(eta * x2 - eta * v * (t).sqrt());
-            let term2: f64 = (H / S).powf(2. * mu) * pnorm(eta * y2 - eta * v * t.sqrt());
+            let term1: f64 = norm.cdf(eta * x2 - eta * v * (t).sqrt());
+            let term2: f64 = (H / S).powf(2. * mu) * norm.cdf(eta * y2 - eta * v * t.sqrt());
 
             K * (-r * t).exp() * (term1 - term2)
         };
 
         let F = |eta: f64| -> f64 {
-            let term1: f64 = (H / S).powf(mu + lambda) * pnorm(eta * z);
+            let term1: f64 = (H / S).powf(mu + lambda) * norm.cdf(eta * z);
             let term2: f64 =
-                (H / S).powf(mu - lambda) * pnorm(eta * z - 2. * eta * lambda * v * t.sqrt());
+                (H / S).powf(mu - lambda) * norm.cdf(eta * z - 2. * eta * lambda * v * t.sqrt());
 
             K * (term1 + term2)
         };

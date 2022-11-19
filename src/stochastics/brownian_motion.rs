@@ -3,6 +3,7 @@
 use crate::process::StochasticProcess;
 
 /// Struct containin the Geometric Brownian Motion parameters.
+#[derive(Debug)]
 pub struct BrownianMotion {}
 
 impl Default for BrownianMotion {

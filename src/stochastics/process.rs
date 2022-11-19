@@ -1,7 +1,5 @@
 #![deny(missing_docs)]
 
-//! Module that contains the struct `Trajectories` and trait `StochasticProcess`.
-//!
 //! `Trajectories` is the return type of all the stochastic processes.
 //! `StochasticProcess` is the base trait for all the stochastic processes.
 //!
@@ -47,6 +45,8 @@ pub trait StochasticProcess: Sync {
     ) -> Trajectories {
         use rand::prelude::Distribution;
         use rayon::prelude::*;
+
+        assert!(t_0 < t_n);
 
         let dt: f64 = (t_n - t_0) / (n as f64);
 

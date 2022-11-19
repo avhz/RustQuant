@@ -3,6 +3,7 @@
 use crate::process::StochasticProcess;
 
 /// Struct containing the Ornstein-Uhlenbeck process parameters.
+#[derive(Debug)]
 pub struct CoxIngersollRoss {
     /// The long-run mean ($\mu$).
     pub mu: f64,
@@ -18,6 +19,7 @@ pub struct CoxIngersollRoss {
 impl CoxIngersollRoss {
     /// Create a new Cox-Ingersoll-Ross process.
     pub fn new(mu: f64, sigma: f64, theta: f64) -> Self {
+        assert!(sigma >= 0.0);
         Self { mu, sigma, theta }
     }
 }
