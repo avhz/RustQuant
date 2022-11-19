@@ -47,6 +47,8 @@ pub use stochastics::*;
 
 /// Parent module containing: Monte Carlo engines to simulate stochastic processes.
 pub mod stochastics {
+    /// Submodule of `stochastics`: implements Standard Brownian Motion.
+    pub mod brownian_motion;
     /// Submodule of `stochastics`: implements the Cox-Ingersoll-Ross process.
     pub mod cox_ingersoll_ross;
     /// Submodule of `stochastics`: implements Geometric Brownian Motion.

@@ -3,28 +3,22 @@
 use crate::process::StochasticProcess;
 
 /// Struct containin the Geometric Brownian Motion parameters.
-pub struct GeometricBrownianMotion {
-    /// The drift ($\mu$) in percentage.
-    pub mu: f64,
+pub struct BrownianMotion {}
 
-    /// The volatility ($\sigma$) in percentage.
-    pub sigma: f64,
-}
-
-impl GeometricBrownianMotion {
+impl BrownianMotion {
     /// Create a new Geometric Brownian Motion process.
-    pub fn new(mu: f64, sigma: f64) -> Self {
-        Self { mu, sigma }
+    pub fn new() -> Self {
+        Self {}
     }
 }
 
-impl StochasticProcess for GeometricBrownianMotion {
+impl StochasticProcess for BrownianMotion {
     fn drift(&self, x: f64) -> f64 {
-        self.mu * x
+        0_f64
     }
 
     fn diffusion(&self, x: f64) -> f64 {
-        self.sigma * x
+        1_f64
     }
 }
 
@@ -38,15 +32,15 @@ mod tests {
     use crate::plot::plot_vector;
 
     #[test]
-    fn test_geometric_brownian_motion() -> Result<(), Box<dyn std::error::Error>> {
-        let gbm = GeometricBrownianMotion::new(0.05, 0.9);
+    fn test_brownian_motion() -> Result<(), Box<dyn std::error::Error>> {
+        let bm = BrownianMotion::new();
 
-        let output = (&gbm).euler_maruyama(10.0, 0.0, 0.5, 1000, 2);
+        let output = (&bm).euler_maruyama(10.0, 0.0, 0.5, 1000, 2);
 
-        let file1 = "./Images/GBM1.png";
+        let file1 = "./Images/BM1.png";
         plot_vector((&output.trajectories[0]).clone(), file1).unwrap();
 
-        let file2 = "./Images/GBM2.png";
+        let file2 = "./Images/BM2.png";
         plot_vector((&output.trajectories[1]).clone(), file2)
     }
 }
