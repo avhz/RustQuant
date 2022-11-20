@@ -55,19 +55,19 @@ The following is a list of stochastic processes that can be generated, along wit
     + $dX_t = \mu X_t dt + \sigma X_t dW_t$
     + Models: Black-Scholes (1973), Rendleman-Bartter (1980)
 + [x] Cox-Ingersoll-Ross (1985)
-    + $dr_t = (\theta - \alpha r_t)dt + \sqrt{r_t} \sigma dW_t$
+    + $dX_t = (\theta - \alpha X_t)dt + \sqrt{r_t} \sigma dW_t$
 + [x] Ornstein-Uhlenbeck process
-    + $dx_t = \theta(\mu - x_t)dt + \sigma dW_t$
+    + $dX_t = \theta(\mu - X_t)dt + \sigma dW_t$
     + Models: Vasicek (1977)
 + [ ] Ho-Lee (1986)
-    + $dr_t = \theta_t dt + \sigma dW_t$
+    + $dX_t = \theta_t dt + \sigma dW_t$
 + [ ] Hull-White (1990)
-    + $dr_t = (\theta - \alpha r_t)dt + \sigma_t dW_t$
+    + $dX_t = (\theta - \alpha X_t)dt + \sigma_t dW_t$
 + [ ] Black-Derman-Toy (1990)
-    + $d\ln(r) = \left[ \theta_t + \frac{\sigma_t'}{\sigma_t}\ln(r) \right]dt + \sigma_t dW_t$
-    + $d\ln(r) = \theta_t dt + \sigma dW_t$
+    + $d\ln(X) = \left[ \theta_t + \frac{\sigma_t'}{\sigma_t}\ln(X) \right]dt + \sigma_t dW_t$
+    + $d\ln(X) = \theta_t dt + \sigma dW_t$
 + [ ] Merton's model (1973)
-    + $r_t = r_0 + at + \sigma W_t^*$
+    + $X_t = X_0 + at + \sigma W_t^*$
 
 ## Helper Functions/Macros
 
