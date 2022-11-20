@@ -55,7 +55,7 @@ Below is a checklist of features that are currently implemented (&#9745;) and th
 + [ ] Vasicek (1977)
     + $dr_t = (\theta - \alpha r_t)dt + \sigma dW_t$
 + [ ] Rendleman-Bartter (1980)
-    + $dr_t = \thera r_t dt + \sigma r_t dW_t$
+    + $dr_t = \theta r_t dt + \sigma r_t dW_t$
 + [ ] Ho-Lee (1986)
     + $dr_t = \theta_t dt + \sigma dW_t$
 + [ ] Hull-White (1990)
