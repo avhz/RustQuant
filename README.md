@@ -46,17 +46,17 @@ Below is a checklist of features that are:
 
 ## Stochastic Processes and Short Rate Models
 
+The following is a list of stochastic processes that can be generated, along with notable models they are used in.
+
 + [x] Brownian Motion
 + [x] Geometric Brownian Motion
     + $dX_t = \mu X_t dt + \sigma X_t dW_t$
+    + Models: Black-Scholes (19973), Rendleman-Bartter (1980)
 + [x] Cox-Ingersoll-Ross (1985)
     + $dr_t = (\theta - \alpha r_t)dt + \sqrt{r_t} \sigma dW_t$
 + [x] Ornstein-Uhlenbeck process
     + $dx_t = \theta(\mu - x_t)dt + \sigma dW_t$
-+ [X] Vasicek (1977)
-    + $dr_t = \alpha(\beta - r_t)dt + \sigma dW_t$
-+ [ ] Rendleman-Bartter (1980)
-    + $dr_t = \theta r_t dt + \sigma r_t dW_t$
+    + Models: Vasicek (1977)
 + [ ] Ho-Lee (1986)
     + $dr_t = \theta_t dt + \sigma dW_t$
 + [ ] Hull-White (1990)
