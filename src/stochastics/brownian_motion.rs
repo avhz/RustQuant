@@ -38,7 +38,8 @@ mod tests {
     // use std::time::Instant;
 
     use super::*;
-    use crate::plot::plot_vector;
+    // use crate::plot::plot_vector;
+    use crate::prelude::plot::*;
 
     #[test]
     fn test_brownian_motion() -> Result<(), Box<dyn std::error::Error>> {

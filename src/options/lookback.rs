@@ -1,4 +1,4 @@
-use crate::{
+use crate::prelude::{
     geometric_brownian_motion::GeometricBrownianMotion, option::PathDependentOption,
     process::StochasticProcess,
 };

@@ -40,7 +40,7 @@ impl StochasticProcess for OrnsteinUhlenbeck {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::plot::plot_vector;
+    use crate::prelude::plot::*;
 
     #[test]
     fn test_ornstein_uhlenbeck() -> Result<(), Box<dyn std::error::Error>> {

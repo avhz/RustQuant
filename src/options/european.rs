@@ -1,13 +1,11 @@
 #![allow(non_snake_case)]
 #![deny(missing_docs)]
 
-// use crate::normal_distribution::pnorm;
-
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // EUROPEAN OPTION STRUCT
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use crate::normal_distribution::StandarNormal;
+use crate::prelude::normal_distribution::*;
 
 /// Black-Scholes Vanilla European Option
 #[derive(Debug)]

@@ -1,7 +1,7 @@
 #![allow(non_snake_case)]
 #![deny(missing_docs)]
 
-use crate::normal_distribution::*;
+use crate::prelude::normal_distribution::*;
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // BARRIER OPTION STRUCT

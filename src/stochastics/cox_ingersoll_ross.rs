@@ -41,7 +41,7 @@ impl StochasticProcess for CoxIngersollRoss {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::plot::plot_vector;
+    use crate::prelude::plot::*;
 
     #[test]
     fn test_cox_ingersoll_ross() -> Result<(), Box<dyn std::error::Error>> {

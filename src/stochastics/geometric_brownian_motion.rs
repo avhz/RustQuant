@@ -36,7 +36,7 @@ impl StochasticProcess for GeometricBrownianMotion {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::plot::plot_vector;
+    use crate::prelude::plot::*;
 
     #[test]
     fn test_geometric_brownian_motion() -> Result<(), Box<dyn std::error::Error>> {

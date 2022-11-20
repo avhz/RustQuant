@@ -1,8 +1,8 @@
 #![allow(non_snake_case)]
 #![deny(missing_docs)]
 
-use crate::normal_distribution::*;
-use crate::options::european::*;
+use crate::prelude::european::*;
+use crate::prelude::normal_distribution::*;
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // GREEKS STRUCT

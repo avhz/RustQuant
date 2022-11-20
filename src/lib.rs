@@ -2,11 +2,19 @@
 
 //! RustQuant: A Rust library for quantitative finance tools.
 
+/// Global import for user convenience.
+pub mod prelude {
+    // use crate::bonds;
+    // use crate::gradients;
+    pub use crate::helpers::*;
+    pub use crate::math::*;
+    pub use crate::options::*;
+    pub use crate::stochastics::*;
+}
+
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Miscellaneous modules:
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-pub use helpers::*;
 
 /// Parent module containing: helper functions used throughout the library.
 #[macro_use]
@@ -25,7 +33,7 @@ pub mod helpers {
 // Mathematics and statistics modules:
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-pub use math::*;
+// pub use math::*;
 
 /// Parent module containing: mathematical and statistical tools.
 pub mod math {
@@ -67,7 +75,7 @@ pub mod stochastics {
 // Option pricing modules:
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-pub use options::*;
+// pub use options::*;
 
 /// Parent module containing: option pricers and sensitivity functions.
 pub mod options {
