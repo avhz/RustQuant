@@ -62,8 +62,8 @@ The following is a list of stochastic processes that can be generated, along wit
 + [ ] Hull-White (1990)
     + $dr_t = (\theta - \alpha r_t)dt + \sigma_t dW_t$
 + [ ] Black-Derman-Toy (1990)
-    + d\ln(r) = \left[ \theta_t + \frac{\sigma_t'}{\sigma_t}\ln(r) \right]dt + \sigma_t dW_t
-    + d\ln(r) = \theta_t dt + \sigma dW_t
+    + $d\ln(r) = \left[ \theta_t + \frac{\sigma_t'}{\sigma_t}\ln(r) \right]dt + \sigma_t dW_t$
+    + $d\ln(r) = \theta_t dt + \sigma dW_t$
 + [ ] Merton's model (1973)
     + $r_t = r_0 + at + \sigma W_t^*$
 
