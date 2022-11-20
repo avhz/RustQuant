@@ -9,8 +9,10 @@ Below is a checklist of features that are currently implemented (&#9745;) and th
 
 ## Automatic Differentiation
 
-+ [ ] Forward Mode 
-+ [ ] Reverse Mode
++ [ ] Forward Mode (using Dual Numbers)
+    + Useful when number of outputs is *larger* than number of inputs. 
++ [ ] Reverse Mode (using Operator/Function Overloading)
+    + Useful when number of outputs is *smaller* than number of inputs. 
 
 ## Bonds
 
@@ -35,19 +37,15 @@ Below is a checklist of features that are currently implemented (&#9745;) and th
 + [ ] Asian
 + [ ] Heston Model 
 
-## Stochastic Processes
+## Stochastic Processes and Short Rate Models
 
 + [x] Brownian Motion
 + [x] Geometric Brownian Motion
-+ [x] Cox-Ingersoll-Ross
++ [x] Cox-Ingersoll-Ross (1985)
 + [x] Ornstein-Uhlenbeck process
-
-## Short-Rate Models
-
 + [ ] Merton's (1973)
 + [ ] Vasicek (1977)
 + [ ] Rendleman-Bartter (1980)
-+ [ ] Cox-Ingersoll-Ross (1985)
 + [ ] Ho-Lee (1986)
 + [ ] Hull-White (1990)
 + [ ] Black-Derman-Toy (1990)
