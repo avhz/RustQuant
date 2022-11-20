@@ -35,16 +35,25 @@ Below is a checklist of features that are:
 
 ## Option Pricers
 
-+ [x] Barrier
-+ [x] Binomial Option Pricing Model (CRR)
-+ [x] European Options
-+ [x] Greeks/Sensitivities
-+ [ ] Basket
-+ [ ] Lookback
-+ [ ] Rainbow
-+ [ ] American
-+ [ ] Asian
-+ [ ] Heston Model 
++ Closed-form price solutions:
+    + [x] Barrier
+    + [x] European Options
+    + [x] Greeks/Sensitivities
+    + [ ] Basket
+    + [ ] Rainbow
+    + [ ] American
+    + [ ] Heston Model 
+
++ Lattice models:
+    + [x] Binomial Tree (Cox-Ross-Rubinstein)
+
+The stochastic process generators can be used to price path-dependent options via Monte-Carlo.
+
++ Monte Carlo pricing:
+    + [x] Lookback
+    + [ ] Asian
+    + [ ] Chooser
+    + [ ] Barrier
 
 ## Stochastic Processes and Short Rate Models
 

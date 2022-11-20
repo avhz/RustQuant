@@ -83,4 +83,8 @@ pub mod options {
     pub mod european;
     /// Submodule of `options`: implements option Greeks/sensitivities.
     pub mod greeks;
+    /// Submodule of `options`: implements Lookback options.
+    pub mod lookback;
+    /// Submodule of `options`: base option traits.
+    pub mod option;
 }
