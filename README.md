@@ -3,6 +3,8 @@
 
 Rust library for quantitative finance tools.
 
+**Disclaimer**: This is currently a free-time project and not a professional financial software library. Nothing in this library should be taken as financial advice, and I do not recommend you to use it for trading or making financial decisions. 
+
 # Features
 
 Below is a checklist of features that are:
@@ -51,7 +53,7 @@ The following is a list of stochastic processes that can be generated, along wit
 + [x] Brownian Motion
 + [x] Geometric Brownian Motion
     + $dX_t = \mu X_t dt + \sigma X_t dW_t$
-    + Models: Black-Scholes (19973), Rendleman-Bartter (1980)
+    + Models: Black-Scholes (1973), Rendleman-Bartter (1980)
 + [x] Cox-Ingersoll-Ross (1985)
     + $dr_t = (\theta - \alpha r_t)dt + \sqrt{r_t} \sigma dW_t$
 + [x] Ornstein-Uhlenbeck process
