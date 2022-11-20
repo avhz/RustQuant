@@ -11,10 +11,10 @@ Below is a checklist of features that are currently implemented (&#9745;) and th
 
 + [ ] Forward Mode (using Dual Numbers)
     + Useful when number of outputs is *larger* than number of inputs. 
-    + Useful for functions $f:\mathbb{R}^n \rightarrow \mathbb{R}^m$, where $m \gg n$
+        + i.e. for functions $f:\mathbb{R}^n \rightarrow \mathbb{R}^m$, where $m \gg n$
 + [ ] Reverse Mode (using Operator/Function Overloading)
     + Useful when number of outputs is *smaller* than number of inputs. 
-    + Useful for functions $f:\mathbb{R}^n \rightarrow \mathbb{R}^m$, where $m \ll n$
+        + i.e for functions $f:\mathbb{R}^n \rightarrow \mathbb{R}^m$, where $m \ll n$
 
 ## Bonds
 
