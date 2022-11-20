@@ -57,6 +57,8 @@ pub mod stochastics {
     pub mod ornstein_uhlenbeck;
     /// Submodule of `stochastics`: defines `Trajectories` and `StochasticProcess`.
     pub mod process;
+    /// Submodule of `stochastics`: implements the Vasicek short rate model.
+    pub mod vasicek;
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

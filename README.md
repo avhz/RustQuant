@@ -47,15 +47,14 @@ Below is a checklist of features that are:
 ## Stochastic Processes and Short Rate Models
 
 + [x] Brownian Motion
-    + $$
 + [x] Geometric Brownian Motion
     + $dX_t = \mu X_t dt + \sigma X_t dW_t$
 + [x] Cox-Ingersoll-Ross (1985)
     + $dr_t = (\theta - \alpha r_t)dt + \sqrt{r_t} \sigma dW_t$
 + [x] Ornstein-Uhlenbeck process
     + $dx_t = \theta(\mu - x_t)dt + \sigma dW_t$
-+ [ ] Vasicek (1977)
-    + $dr_t = (\theta - \alpha r_t)dt + \sigma dW_t$
++ [X] Vasicek (1977)
+    + $dr_t = \alpha(\beta - r_t)dt + \sigma dW_t$
 + [ ] Rendleman-Bartter (1980)
     + $dr_t = \theta r_t dt + \sigma r_t dW_t$
 + [ ] Ho-Lee (1986)
@@ -63,7 +62,8 @@ Below is a checklist of features that are:
 + [ ] Hull-White (1990)
     + $dr_t = (\theta - \alpha r_t)dt + \sigma_t dW_t$
 + [ ] Black-Derman-Toy (1990)
-    + 
+    + d\ln(r) = \left[ \theta_t + \frac{\sigma_t'}{\sigma_t}\ln(r) \right]dt + \sigma_t dW_t
+    + d\ln(r) = \theta_t dt + \sigma dW_t
 + [ ] Merton's model (1973)
     + $r_t = r_0 + at + \sigma W_t^*$
 
