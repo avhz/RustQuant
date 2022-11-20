@@ -44,19 +44,26 @@ Below is a checklist of features that are currently implemented (&#9745;) and th
 
 ## Stochastic Processes and Short Rate Models
 
-+ Autonomous (time invariant) processes:
-    + [x] Brownian Motion
-    + [x] Geometric Brownian Motion
-    + [x] Cox-Ingersoll-Ross (1985)
-    + [x] Ornstein-Uhlenbeck process
-    + [ ] Vasicek (1977)
-    + [ ] Rendleman-Bartter (1980)
-    + [ ] Ho-Lee (1986)
-    + [ ] Hull-White (1990)
-    + [ ] Black-Derman-Toy (1990)
-
-+ Non-autonomous (time variant) processes:
-    + [ ] Merton's (1973)
++ [x] Brownian Motion
+    + $$
++ [x] Geometric Brownian Motion
+    + $dX_t = \mu X_t dt + \sigma X_t dW_t$
++ [x] Cox-Ingersoll-Ross (1985)
+    + $dr_t = (\theta - \alpha r_t)dt + \sqrt{r_t} \sigma dW_t$
++ [x] Ornstein-Uhlenbeck process
+    + $dx_t = \theta(\mu - x_t)dt + \sigma dW_t$
++ [ ] Vasicek (1977)
+    + $dr_t = (\theta - \alpha r_t)dt + \sigma dW_t$
++ [ ] Rendleman-Bartter (1980)
+    + $dr_t = \thera r_t dt + \sigma r_t dW_t$
++ [ ] Ho-Lee (1986)
+    + $dr_t = \theta_t dt + \sigma dW_t$
++ [ ] Hull-White (1990)
+    + $dr_t = (\theta - \alpha r_t)dt + \sigma_t dW_t$
++ [ ] Black-Derman-Toy (1990)
+    + 
++ [ ] Merton's model (1973)
+    + $r_t = r_0 + at + \sigma W_t^*$
 
 ## Helper Functions/Macros
 
