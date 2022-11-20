@@ -1,5 +1,5 @@
 use crate::prelude::{
-    geometric_brownian_motion::GeometricBrownianMotion, option::PathDependentOption,
+    geometric_brownian_motion::GeometricBrownianMotion, mean::mean, option::PathDependentOption,
     process::StochasticProcess,
 };
 
@@ -40,21 +40,21 @@ pub struct LookbackOptionFixedStrike {
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 impl PathDependentOption for LookbackOptionFloatingStrike {
+    fn call_payoff(&self, path: &Vec<f64>) -> f64 {
+        // let s_min = path.iter().fold(f64::INFINITY, |a, &b| a.min(b));
+        let s_min = path.iter().copied().fold(f64::NAN, f64::min);
+        let s_n = path.last().unwrap();
+        s_n - s_min
+    }
+
+    fn put_payoff(&self, path: &Vec<f64>) -> f64 {
+        // let s_max = path.iter().fold(f64::INFINITY, |a, &b| a.max(b));
+        let s_max = path.iter().copied().fold(f64::NAN, f64::max);
+        let s_n = path.last().unwrap();
+        s_max - s_n
+    }
+
     fn prices(&self, n_steps: usize, n_sims: usize, parallel: bool) -> (f64, f64) {
-        fn call_payoff(path: &Vec<f64>) -> f64 {
-            // let s_min = path.iter().fold(f64::INFINITY, |a, &b| a.min(b));
-            let s_min = path.iter().copied().fold(f64::NAN, f64::min);
-            let s_n = path.last().unwrap();
-            s_n - s_min
-        }
-
-        fn put_payoff(path: &Vec<f64>) -> f64 {
-            // let s_max = path.iter().fold(f64::INFINITY, |a, &b| a.max(b));
-            let s_max = path.iter().copied().fold(f64::NAN, f64::max);
-            let s_n = path.last().unwrap();
-            s_max - s_n
-        }
-
         let x_0 = self.initial_price;
         let r = self.risk_free_rate;
         let v = self.volatility;
@@ -69,11 +69,12 @@ impl PathDependentOption for LookbackOptionFloatingStrike {
 
         for i in 0..paths.trajectories.len() {
             let path = paths.trajectories[i].clone();
-            call_payoffs.push(call_payoff(&path));
-            put_payoffs.push(put_payoff(&path));
+            call_payoffs.push(Self::call_payoff(&self, &path));
+            put_payoffs.push(Self::put_payoff(&self, &path));
         }
 
-        let mean_call_payoff = call_payoffs.iter().sum::<f64>() as f64 / call_payoffs.len() as f64;
+        let mean_call_payoff = mean(&call_payoffs);
+        // let mean_call_payoff = call_payoffs.iter().sum::<f64>() as f64 / call_payoffs.len() as f64;
         let mean_put_payoff = put_payoffs.iter().sum::<f64>() as f64 / put_payoffs.len() as f64;
 
         (
@@ -84,21 +85,20 @@ impl PathDependentOption for LookbackOptionFloatingStrike {
 }
 
 impl PathDependentOption for LookbackOptionFixedStrike {
-    fn prices(&self, n_steps: usize, n_sims: usize, parallel: bool) -> (f64, f64) {
-        fn call_payoff(strike: f64, path: &Vec<f64>) -> f64 {
-            let s_max = path.iter().copied().fold(f64::NAN, f64::max);
-
-            f64::max(s_max - strike, 0.0)
-        }
-
-        fn put_payoff(strike: f64, path: &Vec<f64>) -> f64 {
-            let s_min = path.iter().copied().fold(f64::NAN, f64::min);
-
-            f64::max(strike - s_min, 0.0)
-        }
-
-        let x_0 = self.initial_price;
+    fn call_payoff(&self, path: &Vec<f64>) -> f64 {
+        let s_max = path.iter().copied().fold(f64::NAN, f64::max);
         let k = self.strike_price;
+        f64::max(s_max - k, 0.0)
+    }
+
+    fn put_payoff(&self, path: &Vec<f64>) -> f64 {
+        let s_min = path.iter().copied().fold(f64::NAN, f64::min);
+        let k = self.strike_price;
+        f64::max(k - s_min, 0.0)
+    }
+
+    fn prices(&self, n_steps: usize, n_sims: usize, parallel: bool) -> (f64, f64) {
+        let x_0 = self.initial_price;
         let r = self.risk_free_rate;
         let v = self.volatility;
         let t_n = self.time_to_maturity;
@@ -112,8 +112,8 @@ impl PathDependentOption for LookbackOptionFixedStrike {
 
         for i in 0..paths.trajectories.len() {
             let path = paths.trajectories[i].clone();
-            call_payoffs.push(call_payoff(k, &path));
-            put_payoffs.push(put_payoff(k, &path));
+            call_payoffs.push(Self::call_payoff(&self, &path));
+            put_payoffs.push(Self::put_payoff(&self, &path));
         }
 
         let mean_call_payoff = call_payoffs.iter().sum::<f64>() as f64 / call_payoffs.len() as f64;

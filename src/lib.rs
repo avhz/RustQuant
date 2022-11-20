@@ -25,6 +25,10 @@ pub mod helpers {
     pub mod linspace;
     /// Submodule of `helpers`: implements useful macros, such as `assert_approx_equal`.
     pub mod macros;
+    /// Submodule of `helpers`: mean of a vector.
+    pub mod mean;
+    /// Submodule of `helpers`: min and max of a vector.
+    pub mod minmax;
     /// Submodule of `helpers`: implements plotting/writing vectors to files.
     pub mod plot;
 }
