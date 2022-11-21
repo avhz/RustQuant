@@ -1,9 +1,6 @@
-use crate::{
-    math::normal_distribution::StandarNormal,
-    prelude::{
-        geometric_brownian_motion::GeometricBrownianMotion, mean::mean,
-        option::PathDependentOption, process::StochasticProcess,
-    },
+use crate::prelude::{
+    geometric_brownian_motion::GeometricBrownianMotion, mean::mean,
+    normal_distribution::StandardNormal, option::PathDependentOption, process::StochasticProcess,
 };
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -83,7 +80,7 @@ impl PathDependentOption for LookbackOptionFloatingStrike {
         let b1 = ((s / s_max).ln() + (b + v * v / 2.0) * t) / (v * t.sqrt());
         let b2 = b1 - v * t.sqrt();
 
-        let norm = StandarNormal::new();
+        let norm = StandardNormal::new();
 
         if b != 0.0 {
             call = s * ((b - r) * t).exp() * norm.cdf(a1) - s_min * (-r * t).exp() * norm.cdf(a2)
@@ -177,7 +174,7 @@ impl PathDependentOption for LookbackOptionFixedStrike {
         let b1 = ((s / s_max).ln() + (b + v * v / 2.0) * t) / (v * t.sqrt());
         let b2 = b1 - v * t.sqrt();
 
-        let norm = StandarNormal::new();
+        let norm = StandardNormal::new();
 
         if b != 0.0 {
             call = s * ((b - r) * t).exp() * norm.cdf(a1) - s_min * (-r * t).exp() * norm.cdf(a2)

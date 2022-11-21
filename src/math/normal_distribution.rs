@@ -14,19 +14,19 @@ use {
 /// Base struct for a Standard Normal distribution.
 /// Gaussian with mean = 0, variance = 1.
 #[derive(Debug)]
-pub struct StandarNormal {}
+pub struct StandardNormal {}
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // FUNCTIONS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-impl Default for StandarNormal {
+impl Default for StandardNormal {
     fn default() -> Self {
         Self::new()
     }
 }
 
-impl StandarNormal {
+impl StandardNormal {
     /// New standard normal distribution.
     pub fn new() -> Self {
         Self {}
@@ -70,7 +70,7 @@ mod tests {
 
     #[test]
     fn test_pnorm() {
-        let normal = StandarNormal::new();
+        let normal = StandardNormal::new();
 
         // Values from WolframAlpha
         assert_approx_equal!(normal.cdf(-4.0), 0.00003167, 1e-8);
@@ -86,7 +86,7 @@ mod tests {
 
     #[test]
     fn test_dnorm() {
-        let normal = StandarNormal::new();
+        let normal = StandardNormal::new();
 
         // Values from WolframAlpha
         assert_approx_equal!(normal.pdf(-4.0), 0.00013383, 1e-8);
@@ -102,7 +102,7 @@ mod tests {
 
     #[test]
     fn test_rnorm() {
-        let normal = StandarNormal::new();
+        let normal = StandardNormal::new();
 
         let v = normal.variates(1000);
 

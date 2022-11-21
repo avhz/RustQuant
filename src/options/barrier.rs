@@ -66,7 +66,7 @@ impl BarrierOption {
         let y1: f64 = (H * H / (S * X)).ln() / (v * t.sqrt()) + (1. + mu) * v * t.sqrt();
         let y2: f64 = (H / S).ln() / (v * t.sqrt()) + (1. + mu) * v * t.sqrt();
 
-        let norm = StandarNormal::new();
+        let norm = StandardNormal::new();
 
         // Common functions:
         let A = |phi: f64| -> f64 {
