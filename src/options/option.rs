@@ -25,6 +25,9 @@ pub trait PathDependentOption {
     /// Base method for path-dependent put option payoff.
     fn put_payoff(&self, path: &Vec<f64>) -> f64;
 
-    /// Base method for path-dependent option prices (call and put).
-    fn prices(&self, n_steps: usize, n_sims: usize, parallel: bool) -> (f64, f64);
+    /// Base method for path-dependent option prices using closed-form solution (call and put).
+    fn closed_form_prices(&self) -> (f64, f64);
+
+    /// Base method for path-dependent option prices using Monte Carlo (call and put).
+    fn monte_carlo_prices(&self, n_steps: usize, n_sims: usize, parallel: bool) -> (f64, f64);
 }

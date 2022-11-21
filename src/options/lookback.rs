@@ -1,6 +1,9 @@
-use crate::prelude::{
-    geometric_brownian_motion::GeometricBrownianMotion, mean::mean, option::PathDependentOption,
-    process::StochasticProcess,
+use crate::{
+    math::normal_distribution::StandarNormal,
+    prelude::{
+        geometric_brownian_motion::GeometricBrownianMotion, mean::mean,
+        option::PathDependentOption, process::StochasticProcess,
+    },
 };
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -18,6 +21,16 @@ pub struct LookbackOptionFloatingStrike {
     pub volatility: f64,
     /// `T` - Time to expiry/maturity.
     pub time_to_maturity: f64,
+    /// `q` - dividend yield.
+    pub dividend_yield: f64,
+    /// Minimum value of the underlying price observed **so far**.
+    /// If the contract starts at t=0, then `S_min = S_0`.
+    /// Used for the closed-form put price.
+    pub s_min: f64,
+    /// Maximum value of the underlying price observed **so far**.
+    /// If the contract starts at t=0, then `S_max = S_0`.
+    /// Used for the closed-form call price.
+    pub s_max: f64,
 }
 
 /// Struct containing Fixed-Strike Lookback Option parameters.
@@ -33,6 +46,16 @@ pub struct LookbackOptionFixedStrike {
     pub volatility: f64,
     /// `T` - Time to expiry/maturity.
     pub time_to_maturity: f64,
+    /// `q` - dividend yield.
+    pub dividend_yield: f64,
+    /// Minimum value of the underlying price observed **so far**.
+    /// If the contract starts at t=0, then `S_min = S_0`.
+    /// Used for the closed-form put price.
+    pub s_min: f64,
+    /// Maximum value of the underlying price observed **so far**.
+    /// If the contract starts at t=0, then `S_max = S_0`.
+    /// Used for the closed-form call price.
+    pub s_max: f64,
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -40,6 +63,55 @@ pub struct LookbackOptionFixedStrike {
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 impl PathDependentOption for LookbackOptionFloatingStrike {
+    fn closed_form_prices(&self) -> (f64, f64) {
+        let s = self.initial_price;
+        let r = self.risk_free_rate;
+        let t = self.time_to_maturity;
+        let v = self.volatility;
+        let q = self.dividend_yield;
+        let s_min = self.s_min;
+        let s_max = self.s_max;
+
+        let b = r - q; // Cost of carry
+
+        let call: f64;
+        let put: f64;
+
+        let a1 = ((s / s_min).ln() + (b + v * v / 2.0) * t) / (v * t.sqrt());
+        let a2 = a1 - v * t.sqrt();
+
+        let b1 = ((s / s_max).ln() + (b + v * v / 2.0) * t) / (v * t.sqrt());
+        let b2 = b1 - v * t.sqrt();
+
+        let norm = StandarNormal::new();
+
+        if b != 0.0 {
+            call = s * ((b - r) * t).exp() * norm.cdf(a1) - s_min * (-r * t).exp() * norm.cdf(a2)
+                + s * (-r * t).exp()
+                    * (v * v / (2.0 * b))
+                    * ((s / s_min).powf(-2.0 * b / (v * v))
+                        * norm.cdf(-a1 + 2.0 * b * t.sqrt() / v)
+                        - (b * t).exp() * norm.cdf(-a1));
+
+            put = -s * ((b - r) * t).exp() * norm.cdf(-b1)
+                + s_max * (-r * t).exp() * norm.cdf(-b2)
+                + s * (-r * t).exp()
+                    * (v * v / (2.0 * b))
+                    * (-(s / s_max).powf(-2.0 * b / (v * v))
+                        * norm.cdf(b1 - 2.0 * b * t.sqrt() / v)
+                        + (b * t).exp() * norm.cdf(b1));
+        } else {
+            call = s * (-r * t).exp() * norm.cdf(a1) - s_min * (-r * t).exp() * norm.cdf(a2)
+                + s * (-r * t).exp() * v * t.sqrt() * (norm.pdf(a1) + a1 * (norm.cdf(a1) - 1.0));
+
+            put = -s * ((b - r) * t).exp() * norm.cdf(-b1)
+                + s_max * (-r * t).exp() * norm.cdf(-b2)
+                + s * (-r * t).exp() * v * t.sqrt() * (norm.pdf(b1) + b1 * norm.cdf(b1));
+        }
+
+        (call, put)
+    }
+
     fn call_payoff(&self, path: &Vec<f64>) -> f64 {
         // let s_min = path.iter().fold(f64::INFINITY, |a, &b| a.min(b));
         let s_min = path.iter().copied().fold(f64::NAN, f64::min);
@@ -54,7 +126,7 @@ impl PathDependentOption for LookbackOptionFloatingStrike {
         s_max - s_n
     }
 
-    fn prices(&self, n_steps: usize, n_sims: usize, parallel: bool) -> (f64, f64) {
+    fn monte_carlo_prices(&self, n_steps: usize, n_sims: usize, parallel: bool) -> (f64, f64) {
         let x_0 = self.initial_price;
         let r = self.risk_free_rate;
         let v = self.volatility;
@@ -85,6 +157,55 @@ impl PathDependentOption for LookbackOptionFloatingStrike {
 }
 
 impl PathDependentOption for LookbackOptionFixedStrike {
+    fn closed_form_prices(&self) -> (f64, f64) {
+        let s = self.initial_price;
+        let r = self.risk_free_rate;
+        let t = self.time_to_maturity;
+        let v = self.volatility;
+        let q = self.dividend_yield;
+        let s_min = self.s_min;
+        let s_max = self.s_max;
+
+        let b = r - q; // Cost of carry
+
+        let call: f64;
+        let put: f64;
+
+        let a1 = ((s / s_min).ln() + (b + v * v / 2.0) * t) / (v * t.sqrt());
+        let a2 = a1 - v * t.sqrt();
+
+        let b1 = ((s / s_max).ln() + (b + v * v / 2.0) * t) / (v * t.sqrt());
+        let b2 = b1 - v * t.sqrt();
+
+        let norm = StandarNormal::new();
+
+        if b != 0.0 {
+            call = s * ((b - r) * t).exp() * norm.cdf(a1) - s_min * (-r * t).exp() * norm.cdf(a2)
+                + s * (-r * t).exp()
+                    * (v * v / (2.0 * b))
+                    * ((s / s_min).powf(-2.0 * b / (v * v))
+                        * norm.cdf(-a1 + 2.0 * b * t.sqrt() / v)
+                        - (b * t).exp() * norm.cdf(-a1));
+
+            put = -s * ((b - r) * t).exp() * norm.cdf(-b1)
+                + s_max * (-r * t).exp() * norm.cdf(-b2)
+                + s * (-r * t).exp()
+                    * (v * v / (2.0 * b))
+                    * (-(s / s_max).powf(-2.0 * b / (v * v))
+                        * norm.cdf(b1 - 2.0 * b * t.sqrt() / v)
+                        + (b * t).exp() * norm.cdf(b1));
+        } else {
+            call = s * (-r * t).exp() * norm.cdf(a1) - s_min * (-r * t).exp() * norm.cdf(a2)
+                + s * (-r * t).exp() * v * t.sqrt() * (norm.pdf(a1) + a1 * (norm.cdf(a1) - 1.0));
+
+            put = -s * ((b - r) * t).exp() * norm.cdf(-b1)
+                + s_max * (-r * t).exp() * norm.cdf(-b2)
+                + s * (-r * t).exp() * v * t.sqrt() * (norm.pdf(b1) + b1 * norm.cdf(b1));
+        }
+
+        (call, put)
+    }
+
     fn call_payoff(&self, path: &Vec<f64>) -> f64 {
         let s_max = path.iter().copied().fold(f64::NAN, f64::max);
         let k = self.strike_price;
@@ -97,7 +218,7 @@ impl PathDependentOption for LookbackOptionFixedStrike {
         f64::max(k - s_min, 0.0)
     }
 
-    fn prices(&self, n_steps: usize, n_sims: usize, parallel: bool) -> (f64, f64) {
+    fn monte_carlo_prices(&self, n_steps: usize, n_sims: usize, parallel: bool) -> (f64, f64) {
         let x_0 = self.initial_price;
         let r = self.risk_free_rate;
         let v = self.volatility;
@@ -141,35 +262,51 @@ mod tests {
             time_to_maturity: 1.0,
             risk_free_rate: 0.05,
             volatility: 0.2,
+            s_min: 10.0,
+            s_max: 10.0,
+            dividend_yield: 0.0,
         };
 
-        let prices = lbo_floating.prices(1000, 1000, false);
+        let prices_mc = lbo_floating.monte_carlo_prices(2000, 10000, true);
+        let prices_cf = lbo_floating.closed_form_prices();
 
         println!(
-            "Lookback call (floating): {}, Lookback put (floating): {}",
-            prices.0, prices.1
+            "MONTE CARLO\nLookback call (float): {}, Lookback put (float): {}",
+            prices_mc.0, prices_mc.1
+        );
+        println!(
+            "CLOSED FORM\nLookback call (float): {}, Lookback put (float): {}",
+            prices_cf.0, prices_cf.1
         );
 
         assert!(1 == 0);
     }
 
-    #[test]
-    fn test_lookback_fixed() {
-        let lbo_fixed = LookbackOptionFixedStrike {
-            initial_price: 10.0,
-            strike_price: 15.0,
-            time_to_maturity: 1.0,
-            risk_free_rate: 0.05,
-            volatility: 0.2,
-        };
+    // #[test]
+    // fn test_lookback_fixed() {
+    //     let lbo_fixed = LookbackOptionFixedStrike {
+    //         initial_price: 10.0,
+    //         strike_price: 15.0,
+    //         time_to_maturity: 1.0,
+    //         risk_free_rate: 0.05,
+    //         volatility: 0.2,
+    //         s_min: 10.0,
+    //         s_max: 10.0,
+    //         dividend_yield: 0.0,
+    //     };
 
-        let prices = lbo_fixed.prices(1000, 1000, false);
+    //     let prices_mc = lbo_fixed.monte_carlo_prices(1000, 1000, false);
+    //     let prices_cf = lbo_fixed.closed_form_prices();
 
-        println!(
-            "Lookback call (fixed): {}, Lookback put (fixed): {}",
-            prices.0, prices.1
-        );
+    //     println!(
+    //         "MONTE CARLO\nLookback call (fixed): {}, Lookback put (fixed): {}",
+    //         prices_mc.0, prices_mc.1
+    //     );
+    //     println!(
+    //         "CLOSED FORM\nLookback call (fixed): {}, Lookback put (fixed): {}",
+    //         prices_cf.0, prices_cf.1
+    //     );
 
-        assert!(1 == 0);
-    }
+    //     assert!(1 == 0);
+    // }
 }
