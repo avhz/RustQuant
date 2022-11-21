@@ -1,6 +1,6 @@
 #![deny(missing_docs)]
 
-use crate::process::StochasticProcess;
+use crate::prelude::process::StochasticProcess;
 
 /// Struct containin the Geometric Brownian Motion parameters.
 #[derive(Debug)]

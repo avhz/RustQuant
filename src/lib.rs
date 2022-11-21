@@ -55,8 +55,6 @@ pub mod math {
 // Monte Carlo simulators/engines.
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-pub use stochastics::*;
-
 /// Parent module containing: Monte Carlo engines to simulate stochastic processes.
 pub mod stochastics {
     /// Submodule of `stochastics`: implements Standard Brownian Motion.
