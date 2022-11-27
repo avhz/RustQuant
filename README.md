@@ -1,5 +1,5 @@
 
-# `RustQuant`
+# `<RustQuant>`
 
 Rust library for quantitative finance tools.
 
