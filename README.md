@@ -13,10 +13,12 @@ Below is a checklist of features that are:
 
 ## Automatic Differentiation
 
-+ [ ] Forward Mode (using Dual Numbers)
+Currently only gradients can be computed. I welcome suggestions/PRs on how to extend the functionality to Hessian matrices. 
+
++ [ ] Forward (Tangent) Mode (using Dual Numbers)
     + Useful when number of outputs is *larger* than number of inputs. 
         + i.e. for functions $f:\mathbb{R}^n \rightarrow \mathbb{R}^m$, where $m \gg n$
-+ [ ] Reverse Mode (using Operator/Function Overloading)
++ [ ] Reverse (Adjoint) Mode (using Operator/Function Overloading)
     + Useful when number of outputs is *smaller* than number of inputs. 
         + i.e for functions $f:\mathbb{R}^n \rightarrow \mathbb{R}^m$, where $m \ll n$
 
@@ -30,6 +32,7 @@ Below is a checklist of features that are:
 
 + [x] Risk-Reward Measures (Sharpe, Treynor, Sortino, etc)
 + [x] Standard Normal Distribution (Distribution/Density functions, and generation of variates)
++ [ ] Numerical Integration (needed for Heston model)
 + [ ] Interpolation
 + [ ] Newton-Raphson
 
@@ -39,6 +42,8 @@ Below is a checklist of features that are:
     + [x] Barrier
     + [x] European Options
     + [x] Greeks/Sensitivities
+    + [x] Lookback 
+    + [ ] Heston Model
     + [ ] Basket
     + [ ] Rainbow
     + [ ] American
@@ -77,8 +82,11 @@ The following is a list of stochastic processes that can be generated, along wit
     + $d\ln(X) = \theta_t dt + \sigma dW_t$
 + [ ] Merton's model (1973)
     + $X_t = X_0 + at + \sigma W_t^*$
+    + $dX_t = adt + \sigma dW_t^*$
 
 ## Helper Functions/Macros
+
+A collection of utility functions and macros. 
 
 + [x] Plot a vector.
 + [x] Write vector to file.
