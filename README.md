@@ -1,5 +1,5 @@
 
-# `<RustQuant>`
+# `RustQuant`
 
 Rust library for quantitative finance tools.
 
@@ -15,10 +15,12 @@ Below is a checklist of features that are:
 
 Currently only gradients can be computed. I welcome suggestions/PRs on how to extend the functionality to Hessian matrices. 
 
-+ [ ] Forward (Tangent) Mode (using Dual Numbers)
++ [ ] Forward (Tangent) Mode
+    + Implementation via Dual Numbers.
     + Useful when number of outputs is *larger* than number of inputs. 
         + i.e. for functions $f:\mathbb{R}^n \rightarrow \mathbb{R}^m$, where $m \gg n$
-+ [ ] Reverse (Adjoint) Mode (using Operator/Function Overloading)
++ [ ] Reverse (Adjoint) Mode
+    + Implementation via Operator and Function Overloading.
     + Useful when number of outputs is *smaller* than number of inputs. 
         + i.e for functions $f:\mathbb{R}^n \rightarrow \mathbb{R}^m$, where $m \ll n$
 
