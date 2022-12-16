@@ -1,0 +1,22 @@
+[package]
+name = "RustQuant"
+description = "A Rust library for quantitative finance tools."
+version = "0.0.2"
+edition = "2021"
+readme = "README.md"
+keywords = [
+    "finance",
+    "quantitative",
+    "option-pricing",
+    "statistics",
+    "quantlib",
+]
+categories = ["mathematics", "science", "algorithms", "simulation"]
+license = "GPL-3.0-or-later"
+
+[dependencies]
+statrs = "0.16.0"
+rand = "0.8.5"
+rand_distr = "0.4.3"
+plotters = "0.3.4"
+rayon = "1.6.0"
