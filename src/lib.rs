@@ -8,10 +8,12 @@
 
 /// Parent module containing: bond pricing models.
 pub mod bonds {
-    pub use crate::bonds::{bond::*, vasicek::*};
+    pub use crate::bonds::{bond::*, cox_ingersoll_ross::*, vasicek::*};
 
     /// Submodule of `bonds`: contains the generic bond traits.
     pub mod bond;
+    /// Submodule of `bonds`: implements Cox-Ingersoll-Ross bond pricing model.
+    pub mod cox_ingersoll_ross;
     /// Submodule of `bonds`: implements Vasicek bond pricing model.
     pub mod vasicek;
 }
