@@ -94,8 +94,8 @@ Most will follow the notation and formulas in John C. Hull's *Options, Futures, 
 
 + [ ] Prices:
     + [X] The Vasicek Model
+    + [x] The Cox, Ingersoll, and Ross Model
     + [ ] The Rendleman and Bartter Model
-    + [ ] The Cox, Ingersoll, and Ross Model
     + [ ] The Ho–Lee Model
     + [ ] The Hull–White (One-Factor) Model
     + [ ] The Black–Derman–Toy Model
