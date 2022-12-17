@@ -5,6 +5,11 @@ Rust library for quantitative finance tools.
 
 Contact: rustquantcontact@gmail.com 
 
+## `v0.0.8` additions:
+
++ Characteristic functions for common distributions:
+    + Gaussian, Bernoulli, Binomial, Poisson, Uniform, Chi-Squared, Gamma, and Exponential.
+
 **Disclaimer**: This is currently a free-time project and not a professional financial software library. Nothing in this library should be taken as financial advice, and I do not recommend you to use it for trading or making financial decisions. 
 
 Some references used:
@@ -107,7 +112,7 @@ Most will follow the notation and formulas in John C. Hull's *Options, Futures, 
 
 + [x] Risk-Reward Measures (Sharpe, Treynor, Sortino, etc)
 + [x] Standard Normal Distribution (Distribution/Density functions, and generation of variates)
-+ [ ] Characteristic functions:
++ [x] Characteristic functions:
     + [x] Gaussian
     + [x] Bernoulli
     + [x] Binomial
