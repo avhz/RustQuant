@@ -326,6 +326,7 @@ impl<'v> Div<f64> for Variable<'v> {
     /// assert_eq!(grad.wrt(&x), 1.0 / 2.0);
     /// ```
     #[inline]
+    #[allow(clippy::suspicious_arithmetic_impl)]
     fn div(self, other: f64) -> Self::Output {
         self * other.recip()
     }

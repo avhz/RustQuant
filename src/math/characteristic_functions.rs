@@ -6,7 +6,7 @@ use num_complex::Complex;
 
 /// Bernoulli: Bern(p)
 pub fn cf_bernoulli(t: f64, p: f64) -> Complex<f64> {
-    assert!(p >= 0_f64 && p <= 1_f64);
+    assert!((0_f64..=1_f64).contains(&p));
 
     let i: Complex<f64> = Complex::i();
     1_f64 - p + p * (i * t).exp()
@@ -15,7 +15,7 @@ pub fn cf_bernoulli(t: f64, p: f64) -> Complex<f64> {
 /// Binomial: B(n, p)
 pub fn cf_binomial(t: f64, p: f64, n: i32) -> Complex<f64> {
     assert!(n >= 0);
-    assert!(p >= 0_f64 && p <= 1_f64);
+    assert!((0_f64..=1_f64).contains(&p));
 
     let i: Complex<f64> = Complex::i();
     (1_f64 - p + p * (i * t).exp()).powi(n)

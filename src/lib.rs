@@ -1,4 +1,5 @@
 #![deny(missing_docs)]
+#![allow(non_snake_case)]
 
 //! RustQuant: A Rust library for quantitative finance tools.
 
