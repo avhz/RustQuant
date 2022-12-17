@@ -17,19 +17,15 @@ Some references used:
 + *Option Pricing Formulas* - Espen Gaarder Haug
 + *Modern Computational Finance: AAD and Parallel Simulations* - Antoine Savine
 
-# Features
-
-Below is a checklist of features that are:
-+ [x] currently implemented, or
-+ [ ] I would like to implement in the future.
-
 # Table of Contents
+
 1. [Automatic Differentiation](#autodiff)
 2. [Option Pricers](#options)
 3. [Stochastic Processes and Short Rate Models](#stochastics)
 4. [Bonds](#bonds)
 5. [Mathematics and Statistics](#maths)
 6. [Helper Functions and Macros](#helpers)
+7. [How-tos](#howto)
 
 ## Automatic Differentiation <a name="autodiff"></a>
 
@@ -126,7 +122,7 @@ A collection of utility functions and macros.
 + [x] `assert_approx_equal!`
 
 
-# How-tos:
+# How-tos <a name="howto"></a>
 
 ## Compute gradients:
 
