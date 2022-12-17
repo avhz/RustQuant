@@ -7,13 +7,31 @@ Contact: rustquantcontact@gmail.com
 
 **Disclaimer**: This is currently a free-time project and not a professional financial software library. Nothing in this library should be taken as financial advice, and I do not recommend you to use it for trading or making financial decisions. 
 
+Some references used:
+
++ *Options, Futures, and Other Derivatives* - John C. Hull 
++ *Interest Rate Models - Theory and Practice (With Smile, Inflation and Credit)* - Damiano Brigo & Fabio Mercurio
++ *Monte Carlo Methods in Financial Engineering* - Paul Glasserman
++ *Evaluating Derivatives - Principles and Techniques of Algorithmic Differentiation* - Andreas Griewank & Andrea Walther
++ *Stochastic Calculus for Finance II: Continuous-Time Models* - Steven E. Shreve
++ *Option Pricing Formulas* - Espen Gaarder Haug
++ *Modern Computational Finance: AAD and Parallel Simulations* - Antoine Savine
+
 # Features
 
 Below is a checklist of features that are:
 + [x] currently implemented, or
 + [ ] I would like to implement in the future.
 
-## Automatic Differentiation
+# Table of Contents
+1. [Automatic Differentiation](#autodiff)
+2. [Option Pricers](#options)
+3. [Stochastic Processes and Short Rate Models](#stochastics)
+4. [Bonds](#bonds)
+5. [Mathematics and Statistics](#maths)
+6. [Helper Functions and Macros](#helpers)
+
+## Automatic Differentiation <a name="autodiff"></a>
 
 Currently only gradients can be computed. Suggestions on how to extend the functionality to Hessian matrices are definitely welcome. 
 
@@ -26,7 +44,7 @@ Currently only gradients can be computed. Suggestions on how to extend the funct
     + Useful when number of outputs is *smaller* than number of inputs. 
         + i.e for functions $f:\mathbb{R}^n \rightarrow \mathbb{R}^m$, where $m \ll n$
 
-## Option Pricers
+## Option Pricers <a name="options"></a>
 
 + Closed-form price solutions:
     + [x] Barrier
@@ -50,7 +68,7 @@ The stochastic process generators can be used to price path-dependent options vi
     + [ ] Chooser
     + [ ] Barrier
 
-## Stochastic Processes and Short Rate Models
+## Stochastic Processes and Short Rate Models <a name="stochastics"></a>
 
 The following is a list of stochastic processes that can be generated.
 
@@ -74,7 +92,7 @@ The following is a list of stochastic processes that can be generated.
     + $X_t = X_0 + at + \sigma W_t^*$
     + $dX_t = adt + \sigma dW_t^*$
 
-## Bonds
+## Bonds <a name="bonds"></a>
 
 Most will follow the notation and formulas in John C. Hull's *Options, Futures, and Other Derivatives*.
 
@@ -89,7 +107,7 @@ Most will follow the notation and formulas in John C. Hull's *Options, Futures, 
 + [ ] Duration
 + [ ] Convexity
 
-## Mathematics & Statistics
+## Mathematics and Statistics <a name="maths"></a>
 
 + [x] Risk-Reward Measures (Sharpe, Treynor, Sortino, etc)
 + [x] Standard Normal Distribution (Distribution/Density functions, and generation of variates)
@@ -97,7 +115,7 @@ Most will follow the notation and formulas in John C. Hull's *Options, Futures, 
 + [ ] Interpolation
 + [ ] Newton-Raphson
 
-## Helper Functions/Macros
+## Helper Functions and Macros <a name="helpers"></a>
 
 A collection of utility functions and macros. 
 
