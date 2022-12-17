@@ -3,6 +3,20 @@
 //! RustQuant: A Rust library for quantitative finance tools.
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Bonds modules.
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+/// Parent module containing: bond pricing models.
+pub mod bonds {
+    pub use crate::bonds::{bond::*, vasicek::*};
+
+    /// Submodule of `bonds`: contains the generic bond traits.
+    pub mod bond;
+    /// Submodule of `bonds`: implements Vasicek bond pricing model.
+    pub mod vasicek;
+}
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Helper/utility module:
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -28,8 +42,6 @@ pub mod helpers {
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Mathematics and statistics modules:
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-// pub use math::*;
 
 /// Parent module containing: mathematical and statistical tools.
 pub mod math {
@@ -91,8 +103,6 @@ pub mod autodiff {
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Option pricing modules:
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-// pub use options::*;
 
 /// Parent module containing: option pricers and sensitivity functions.
 pub mod options {

@@ -76,9 +76,11 @@ The following is a list of stochastic processes that can be generated.
 
 ## Bonds
 
+Most will follow the notation and formulas in John C. Hull's *Options, Futures, and Other Derivatives*.
+
 + [ ] Prices:
+    + [X] The Vasicek Model
     + [ ] The Rendleman and Bartter Model
-    + [ ] The Vasicek Model
     + [ ] The Cox, Ingersoll, and Ross Model
     + [ ] The Ho–Lee Model
     + [ ] The Hull–White (One-Factor) Model
