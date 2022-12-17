@@ -33,14 +33,13 @@ impl ZeroCouponBond for Vasicek {
 
         let tau = maturity - t;
 
-        let B_tT = (1_f64 - (-a * tau).exp()) / a;
-        let A_tT = (((B_tT - tau) * (a * a * b - sigma * sigma / 2_f64)) / (a * a)
-            - (sigma * sigma * B_tT * B_tT) / (4_f64 * a))
+        let b_t = (1_f64 - (-a * tau).exp()) / a;
+        let a_t = (((b_t - tau) * (a * a * b - sigma * sigma / 2_f64)) / (a * a)
+            - (sigma * sigma * b_t * b_t) / (4_f64 * a))
             .exp();
 
-        let P_tT = A_tT * (-B_tT * r).exp();
-
-        P_tT
+        // Price:
+        a_t * (-b_t * r).exp()
     }
 
     // fn duration(&self) -> f64 {}

@@ -38,15 +38,14 @@ impl ZeroCouponBond for CoxIngersollRoss {
         let tau = maturity - t;
         let gamma = (a * a + 2_f64 * sigma.powi(2)).sqrt();
 
-        let B_tT = 2_f64 * ((gamma * tau).exp() - 1_f64)
+        let b_t = 2_f64 * ((gamma * tau).exp() - 1_f64)
             / ((gamma + a) * ((gamma * tau).exp() - 1_f64) + 2_f64 * gamma);
-        let A_tT = (2_f64 * gamma * ((a + gamma) * tau / 2_f64).exp()
+        let a_t = (2_f64 * gamma * ((a + gamma) * tau / 2_f64).exp()
             / ((gamma + a) * ((gamma * tau).exp() - 1_f64) + 2_f64 * gamma))
             .powf(2_f64 * a * b / sigma.powi(2));
 
-        let P_tT = A_tT * (-B_tT * r).exp();
-
-        P_tT
+        // Price:
+        a_t * (-b_t * r).exp()
     }
 
     // fn duration(&self) -> f64 {}
