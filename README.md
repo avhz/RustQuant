@@ -107,7 +107,16 @@ Most will follow the notation and formulas in John C. Hull's *Options, Futures, 
 
 + [x] Risk-Reward Measures (Sharpe, Treynor, Sortino, etc)
 + [x] Standard Normal Distribution (Distribution/Density functions, and generation of variates)
-+ [ ] Numerical Integration (needed for Heston model)
++ [ ] Characteristic functions:
+    + [x] Gaussian
+    + [x] Bernoulli
+    + [x] Binomial
+    + [x] Poisson
+    + [x] Uniform (discrete & continuous)
+    + [x] Chi-Squared
+    + [x] Gamma
+    + [x] Exponential
++ [ ] Numerical Integration (needed for Heston model, for example)
 + [ ] Interpolation
 + [ ] Newton-Raphson
 

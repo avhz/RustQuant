@@ -48,9 +48,12 @@ pub mod helpers {
 /// Parent module containing: mathematical and statistical tools.
 pub mod math {
     pub use crate::math::{
-        interpolation::*, newton_raphson::*, normal_distribution::*, risk_reward::*,
+        characteristic_functions::*, interpolation::*, newton_raphson::*, normal_distribution::*,
+        risk_reward::*,
     };
 
+    /// Submodule of `math`: implements characteristic functions of common distributions.
+    pub mod characteristic_functions;
     /// Submodule of `math`: implements interpolation solvers.
     pub mod interpolation;
     /// Submodule of `math`: implements Newton-Raphson method.
