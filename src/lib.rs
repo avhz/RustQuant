@@ -1,24 +1,33 @@
 #![deny(missing_docs)]
+#![allow(non_snake_case)]
 
 //! RustQuant: A Rust library for quantitative finance tools.
 
-/// Global import for user convenience.
-pub mod prelude {
-    // use crate::bonds;
-    // use crate::gradients;
-    pub use crate::helpers::*;
-    pub use crate::math::*;
-    pub use crate::options::*;
-    pub use crate::stochastics::*;
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Bonds modules.
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+/// Parent module containing: bond pricing models.
+pub mod bonds {
+    pub use crate::bonds::{bond::*, cox_ingersoll_ross::*, vasicek::*};
+
+    /// Submodule of `bonds`: contains the generic bond traits.
+    pub mod bond;
+    /// Submodule of `bonds`: implements Cox-Ingersoll-Ross bond pricing model.
+    pub mod cox_ingersoll_ross;
+    /// Submodule of `bonds`: implements Vasicek bond pricing model.
+    pub mod vasicek;
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// Miscellaneous modules:
+// Helper/utility module:
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 /// Parent module containing: helper functions used throughout the library.
 #[macro_use]
 pub mod helpers {
+    pub use crate::helpers::{cumsum::*, linspace::*, macros::*, mean::*, minmax::*, plot::*};
+
     /// Submodule of `helpers`: implements the cumulative sum of a vector.
     pub mod cumsum;
     /// Submodule of `helpers`: implements generating a linearly spaced sequence.
@@ -34,13 +43,24 @@ pub mod helpers {
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// Mathematics and statistics modules:
+// Mathematics modules:
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-// pub use math::*;
 
 /// Parent module containing: mathematical and statistical tools.
 pub mod math {
+    pub use crate::math::{
+        integration::*, interpolation::*, newton_raphson::*, normal_distribution::*, risk_reward::*,
+    };
+
+    /// Submodule of `math`: implements numerical integration prodecures.
+    pub mod integration {
+        /// Composite Midpoint rule.
+        pub mod midpoint;
+        /// Composite Simpson's 3/8 rule.
+        pub mod simpsons;
+        /// Composite Trapezoidal rule.
+        pub mod trapezoid;
+    }
     /// Submodule of `math`: implements interpolation solvers.
     pub mod interpolation;
     /// Submodule of `math`: implements Newton-Raphson method.
@@ -52,11 +72,34 @@ pub mod math {
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Random modules:
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+/// Parent module containing: random related stuff (random variables, PDFs, CDFs, CFs, etc).
+pub mod random {
+    pub use crate::random::{
+        characteristic_functions::*, density_functions::*, distribution_functions::*,
+    };
+
+    /// Submodule of `random`: characteristic functions (CFs) of common distributions.
+    pub mod characteristic_functions;
+    /// Submodule of `random`: density and mass functions (PDFs & PMFs) of common distributions.
+    pub mod density_functions;
+    /// Submodule of `random`: distribution functions (CDFs) of common distributions.
+    pub mod distribution_functions;
+}
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Monte Carlo simulators/engines.
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 /// Parent module containing: Monte Carlo engines to simulate stochastic processes.
 pub mod stochastics {
+    pub use crate::stochastics::{
+        brownian_motion::*, cox_ingersoll_ross::*, geometric_brownian_motion::*,
+        ornstein_uhlenbeck::*, process::*,
+    };
+
     /// Submodule of `stochastics`: implements Standard Brownian Motion.
     pub mod brownian_motion;
     /// Submodule of `stochastics`: implements the Cox-Ingersoll-Ross process.
@@ -73,14 +116,31 @@ pub mod stochastics {
 // Automatic Differentiation modules:
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+/// Parent module containing: automatic differentation modules.
+pub mod autodiff {
+    pub use crate::autodiff::{gradient::*, overload::*, tape::*, variable::*};
+
+    /// Submodule of `autodiff`: implements the gradient computation.
+    pub mod gradient;
+    /// Submodule of `autodiff`: implements operator/function overloading.
+    pub mod overload;
+    /// Submodule of `autodiff`: implements the Tape (Wengert List).
+    pub mod tape;
+    /// Submodule of `autodiff`: implements `Variable`s for `autodiff`.
+    pub mod variable;
+}
+
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Option pricing modules:
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-// pub use options::*;
-
 /// Parent module containing: option pricers and sensitivity functions.
 pub mod options {
+    pub use crate::options::{
+        american::*, asian::*, barrier::*, binomial::*, european::*, greeks::*, lookback::*,
+        option::*,
+    };
+
     /// Submodule of `options`: implements American option pricers.
     pub mod american;
     /// Submodule of `options`: implements Asian option pricers.

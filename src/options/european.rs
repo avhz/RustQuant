@@ -5,7 +5,7 @@
 // EUROPEAN OPTION STRUCT
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use crate::prelude::normal_distribution::*;
+use crate::math::*;
 
 /// Black-Scholes Vanilla European Option
 #[derive(Debug)]

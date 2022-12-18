@@ -1,9 +1,11 @@
 [package]
 name = "RustQuant"
 description = "A Rust library for quantitative finance tools."
-version = "0.0.2"
+version = "0.0.8"
 edition = "2021"
 readme = "README.md"
+repository = "https://github.com/avhz/RustQuant"
+# documentation = "https://docs.rs/RustQuant"
 keywords = [
     "finance",
     "quantitative",
@@ -20,3 +22,4 @@ rand = "0.8.5"
 rand_distr = "0.4.3"
 plotters = "0.3.4"
 rayon = "1.6.0"
+num-complex = "0.4.2"

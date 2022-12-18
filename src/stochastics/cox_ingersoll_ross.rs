@@ -1,6 +1,6 @@
 #![deny(missing_docs)]
 
-use crate::prelude::process::StochasticProcess;
+use crate::stochastics::*;
 
 /// Struct containing the Ornstein-Uhlenbeck process parameters.
 #[derive(Debug)]
@@ -41,13 +41,13 @@ impl StochasticProcess for CoxIngersollRoss {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::prelude::plot::*;
+    use crate::helpers::*;
 
     #[test]
     fn test_cox_ingersoll_ross() -> Result<(), Box<dyn std::error::Error>> {
         let cir = CoxIngersollRoss::new(0.15, 0.45, 0.01);
 
-        let output = cir.euler_maruyama(10.0, 0.0, 0.5, 1000, 2, false);
+        let output = cir.euler_maruyama(10.0, 0.0, 0.5, 100, 2, false);
 
         let file1 = "./Images/CIR1.png";
         plot_vector((&output.trajectories[0]).clone(), file1).unwrap();

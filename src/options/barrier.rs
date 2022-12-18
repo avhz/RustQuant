@@ -1,7 +1,7 @@
 #![allow(non_snake_case)]
 #![deny(missing_docs)]
 
-use crate::prelude::normal_distribution::*;
+use crate::math::normal_distribution::*;
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // BARRIER OPTION STRUCT
@@ -166,10 +166,8 @@ impl BarrierOption {
 
 #[cfg(test)]
 mod tests {
-    use crate::assert_approx_equal;
-
     use super::*;
-    // use crate::*;
+    use crate::assert_approx_equal;
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // Initial underlying price ABOVE the barrier.

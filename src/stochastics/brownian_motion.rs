@@ -1,6 +1,6 @@
 #![deny(missing_docs)]
 
-use crate::prelude::process::StochasticProcess;
+use crate::stochastics::*;
 
 /// Struct containin the Geometric Brownian Motion parameters.
 #[derive(Debug)]
@@ -38,8 +38,7 @@ mod tests {
     // use std::time::Instant;
 
     use super::*;
-    // use crate::plot::plot_vector;
-    use crate::prelude::plot::*;
+    use crate::helpers::*;
 
     #[test]
     fn test_brownian_motion() -> Result<(), Box<dyn std::error::Error>> {
@@ -67,8 +66,8 @@ mod tests {
         // }
         // assert!(1 == 2);
 
-        let output_serial = (&bm).euler_maruyama(10.0, 0.0, 0.5, 100, 1000, false);
-        let output_parallel = (&bm).euler_maruyama(10.0, 0.0, 0.5, 100, 1000, true);
+        let output_serial = (&bm).euler_maruyama(10.0, 0.0, 0.5, 100, 10, false);
+        let output_parallel = (&bm).euler_maruyama(10.0, 0.0, 0.5, 100, 10, true);
 
         let file1 = "./Images/BM1.png";
         plot_vector((&output_serial.trajectories[0]).clone(), file1).unwrap();

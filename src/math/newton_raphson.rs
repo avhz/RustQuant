@@ -23,20 +23,22 @@ impl NewtonRaphson {}
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 /// Find a root using the Newton-Raphson algorithm.
-pub fn find_root(f: fn(f64) -> f64, fd: fn(f64) -> f64, guess: f64, iterations: i32) -> f64 {
+pub fn find_root(f: fn(f64) -> f64, df: fn(f64) -> f64, guess: f64, iterations: i32) -> f64 {
     let mut result = guess;
 
     let iteration =
-        |f: fn(f64) -> f64, fd: fn(f64) -> f64, guess: f64| -> f64 { guess - f(guess) / fd(guess) };
+        |f: fn(f64) -> f64, df: fn(f64) -> f64, guess: f64| -> f64 { guess - f(guess) / df(guess) };
 
     for _ in 0..iterations {
-        result = iteration(f, fd, result);
+        result = iteration(f, df, result);
     }
     result
 }
 
 #[cfg(test)]
 mod tests {
+    use crate::assert_approx_equal;
+
     use super::*;
 
     #[test]
@@ -48,7 +50,7 @@ mod tests {
             2.0 * x
         }
         let root = find_root(f, df, 10.0, 100);
+        assert_approx_equal!(root, 0_f64, 1e-10);
         println!("ROOT = {}", root);
-        assert_eq!(1, 2)
     }
 }

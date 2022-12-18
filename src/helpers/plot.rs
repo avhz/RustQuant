@@ -7,7 +7,7 @@ use std::io::Write;
 pub fn write_vector(v: &[f64]) -> Result<(), Box<dyn Error>> {
     let strings: Vec<String> = v.iter().map(|n| n.to_string()).collect();
 
-    let mut file = File::create("vector.dat")?;
+    let mut file = File::create("vector.out")?;
     writeln!(file, "{}", strings.join(", "))?;
     Ok(())
 }

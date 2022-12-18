@@ -1,8 +1,8 @@
 #![allow(non_snake_case)]
 #![deny(missing_docs)]
 
-use crate::prelude::european::*;
-use crate::prelude::normal_distribution::*;
+use crate::math::normal_distribution::*;
+use crate::options::european::*;
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // GREEKS STRUCT
@@ -121,7 +121,7 @@ mod tests {
 
     #[test]
     fn TEST_greeks() {
-        for strike in 1..=1000 {
+        for strike in 1..=100 {
             let option = EuropeanOption {
                 initial_price: 100.0,
                 strike_price: strike as f64,
