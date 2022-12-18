@@ -43,18 +43,24 @@ pub mod helpers {
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// Mathematics and statistics modules:
+// Mathematics modules:
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 /// Parent module containing: mathematical and statistical tools.
 pub mod math {
     pub use crate::math::{
-        characteristic_functions::*, interpolation::*, newton_raphson::*, normal_distribution::*,
-        risk_reward::*,
+        integration::*, interpolation::*, newton_raphson::*, normal_distribution::*, risk_reward::*,
     };
 
-    /// Submodule of `math`: implements characteristic functions of common distributions.
-    pub mod characteristic_functions;
+    /// Submodule of `math`: implements numerical integration prodecures.
+    pub mod integration {
+        /// Composite Midpoint rule.
+        pub mod midpoint;
+        /// Composite Simpson's 3/8 rule.
+        pub mod simpsons;
+        /// Composite Trapezoidal rule.
+        pub mod trapezoid;
+    }
     /// Submodule of `math`: implements interpolation solvers.
     pub mod interpolation;
     /// Submodule of `math`: implements Newton-Raphson method.
@@ -63,6 +69,24 @@ pub mod math {
     pub mod normal_distribution;
     /// Submodule of `math`: implements simple risk/reward functions.
     pub mod risk_reward;
+}
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Random modules:
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+/// Parent module containing: random related stuff (random variables, PDFs, CDFs, CFs, etc).
+pub mod random {
+    pub use crate::random::{
+        characteristic_functions::*, density_functions::*, distribution_functions::*,
+    };
+
+    /// Submodule of `random`: characteristic functions (CFs) of common distributions.
+    pub mod characteristic_functions;
+    /// Submodule of `random`: density and mass functions (PDFs & PMFs) of common distributions.
+    pub mod density_functions;
+    /// Submodule of `random`: distribution functions (CDFs) of common distributions.
+    pub mod distribution_functions;
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -28,7 +28,8 @@ Some references used:
 2. [Option Pricers](#options)
 3. [Stochastic Processes and Short Rate Models](#stochastics)
 4. [Bonds](#bonds)
-5. [Mathematics and Statistics](#maths)
+5. [Random](#random)
+5. [Mathematics](#maths)
 6. [Helper Functions and Macros](#helpers)
 7. [How-tos](#howto)
 
@@ -108,11 +109,9 @@ Most will follow the notation and formulas in John C. Hull's *Options, Futures, 
 + [ ] Duration
 + [ ] Convexity
 
-## Mathematics and Statistics <a name="maths"></a>
+## Random <a name="random"></a>
 
-+ [x] Risk-Reward Measures (Sharpe, Treynor, Sortino, etc)
-+ [x] Standard Normal Distribution (Distribution/Density functions, and generation of variates)
-+ [x] Characteristic functions:
++ Characteristic functions:
     + [x] Gaussian
     + [x] Bernoulli
     + [x] Binomial
@@ -121,9 +120,36 @@ Most will follow the notation and formulas in John C. Hull's *Options, Futures, 
     + [x] Chi-Squared
     + [x] Gamma
     + [x] Exponential
-+ [ ] Numerical Integration (needed for Heston model, for example)
++ Density/mass functions:
+    + [x] Bernoulli
+    + [x] Binomial
+    + [x] Poisson
+    + [ ] Gaussian
+    + [ ] Uniform (discrete & continuous)
+    + [ ] Chi-Squared
+    + [ ] Gamma
+    + [ ] Exponential
++ Distribution functions:
+    + [ ] Gaussian
+    + [ ] Bernoulli
+    + [ ] Binomial
+    + [ ] Poisson
+    + [ ] Uniform (discrete & continuous)
+    + [ ] Chi-Squared
+    + [ ] Gamma
+    + [ ] Exponential
+
+## Mathematics <a name="maths"></a>
+
++ Numerical Integration (needed for Heston model, for example):
+    + [x] Composite Midpoint Rule
+    + [x] Composite Trapezoidal Rule
+    + [x] Composite Simpson's 3/8 Rule
+    + [ ] Tanh-Sinh (double exponential) quadrature 
++ [x] Risk-Reward Measures (Sharpe, Treynor, Sortino, etc)
++ [x] Newton-Raphson
++ [x] Standard Normal Distribution (Distribution/Density functions, and generation of variates)
 + [ ] Interpolation
-+ [ ] Newton-Raphson
 
 ## Helper Functions and Macros <a name="helpers"></a>
 
@@ -134,7 +160,6 @@ A collection of utility functions and macros.
 + [x] Cumulative sum of vector.
 + [x] Linearly spaced sequence.
 + [x] `assert_approx_equal!`
-
 
 # How-tos <a name="howto"></a>
 
