@@ -5,7 +5,15 @@ Rust library for quantitative finance tools.
 
 Contact: rustquantcontact@gmail.com 
 
-## `v0.0.8` additions:
+## Release notes:
+
+### `v0.0.9`
+
++ Basic numerical integrators (midpoint, trapezoid, Simpson's 3/8).
++ Density functions for common distributions:
+    + Gaussian, Bernoulli, Binomial, Poisson, Uniform, Chi-Squared, Gamma, and Exponential.
+
+### `v0.0.8`
 
 + Characteristic functions for common distributions:
     + Gaussian, Bernoulli, Binomial, Poisson, Uniform, Chi-Squared, Gamma, and Exponential.
