@@ -11,7 +11,7 @@ Contact: rustquantcontact@gmail.com
 
 + Basic numerical integrators (midpoint, trapezoid, Simpson's 3/8).
 + Density functions for common distributions:
-    + Gaussian, Bernoulli, Binomial, Poisson, Uniform, Chi-Squared, Gamma, and Exponential.
+    + Gaussian, Bernoulli, Binomial, Poisson.
 
 ### `v0.0.8`
 
