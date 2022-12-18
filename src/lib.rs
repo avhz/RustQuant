@@ -4,7 +4,7 @@
 //! RustQuant: A Rust library for quantitative finance tools.
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// Bonds modules.
+// BONDS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 /// Parent module containing: bond pricing models.
@@ -20,7 +20,7 @@ pub mod bonds {
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// Helper/utility module:
+// HELPERS AND UTILITIES
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 /// Parent module containing: helper functions used throughout the library.
@@ -43,21 +43,27 @@ pub mod helpers {
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// Mathematics modules:
+// MATHEMATICS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 /// Parent module containing: mathematical and statistical tools.
 pub mod math {
     pub use crate::math::{
-        integration::*, interpolation::*, newton_raphson::*, normal_distribution::*, risk_reward::*,
+        integration::midpoint::*, integration::simpsons::*, integration::tanhsinh::*,
+        integration::trapezoid::*, interpolation::*, newton_raphson::*, normal_distribution::*,
+        risk_reward::*,
     };
 
     /// Submodule of `math`: implements numerical integration prodecures.
+    /// The primary integrator is the Tanh-Sinh implementation.
+    /// The midpoint, trapezoid, and Simpson integrators are very innacurate.
     pub mod integration {
         /// Composite Midpoint rule.
         pub mod midpoint;
         /// Composite Simpson's 3/8 rule.
         pub mod simpsons;
+        /// Tanh-Sinh (double exponential) quadrature.
+        pub mod tanhsinh;
         /// Composite Trapezoidal rule.
         pub mod trapezoid;
     }
@@ -72,7 +78,7 @@ pub mod math {
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// Random modules:
+// RANDOM
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 /// Parent module containing: random related stuff (random variables, PDFs, CDFs, CFs, etc).
@@ -90,7 +96,7 @@ pub mod random {
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// Monte Carlo simulators/engines.
+// MONTE CARLO SIMULATION AND STOCHASTIC PROCESSES
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 /// Parent module containing: Monte Carlo engines to simulate stochastic processes.
@@ -113,7 +119,7 @@ pub mod stochastics {
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// Automatic Differentiation modules:
+// AUTOMATIC DIFFERENTIATION
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 /// Parent module containing: automatic differentation modules.
@@ -131,7 +137,7 @@ pub mod autodiff {
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// Option pricing modules:
+// OPTION PRICING
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 /// Parent module containing: option pricers and sensitivity functions.

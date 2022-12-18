@@ -7,7 +7,7 @@ pub fn trapezoid<F>(f: F, a: f64, b: f64, n: usize) -> f64
 where
     F: Fn(f64) -> f64,
 {
-    let h = (b - a) as f64 / n as f64;
+    let h = (b - a) / n as f64;
     let x = linspace(a, b, n + 1);
 
     let mut integral = 0.0;

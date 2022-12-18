@@ -10,7 +10,7 @@ where
     assert!(n % 3 == 0, "'n' must be a multiple of 3.");
 
     let x = linspace(a, b, n + 1);
-    let h = (b - a) as f64 / n as f64;
+    let h = (b - a) / n as f64;
 
     let mut integral = 0.0;
 
