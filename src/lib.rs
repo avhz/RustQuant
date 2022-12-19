@@ -143,8 +143,8 @@ pub mod autodiff {
 /// Parent module containing: option pricers and sensitivity functions.
 pub mod options {
     pub use crate::options::{
-        american::*, asian::*, barrier::*, binomial::*, european::*, greeks::*, lookback::*,
-        option::*,
+        american::*, asian::*, barrier::*, binomial::*, european::*, greeks::*, heston::*,
+        lookback::*, option::*,
     };
 
     /// Submodule of `options`: implements American option pricers.
@@ -159,6 +159,8 @@ pub mod options {
     pub mod european;
     /// Submodule of `options`: implements option Greeks/sensitivities.
     pub mod greeks;
+    /// Submodule of `options`: implements the Heston model.
+    pub mod heston;
     /// Submodule of `options`: implements Lookback options.
     pub mod lookback;
     /// Submodule of `options`: base option traits.

@@ -1,5 +1,8 @@
 #![deny(missing_docs)]
 
+use crate::math::*;
+use num_complex::Complex;
+
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // STRUCTS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -8,6 +11,124 @@
 // IMPLEMENTATIONS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+/// Heston model for option pricing.
+pub fn heston(
+    S0: f64,
+    V0: f64,
+    K: f64,
+    tau: f64,
+    r: f64,
+    q: f64,
+    rho: f64,
+    sigma: f64,
+    kappa: f64,
+    theta: f64,
+) -> (f64, f64) {
+    let lambda = 0.0; // Market price of volatility risk (set to 0 for simplicity).
+    let i: Complex<f64> = Complex::i();
+
+    let u = |j: u8| -> f64 {
+        match j {
+            1 => 0.5,
+            2 => -0.5,
+            _ => panic!("`j` should be: 1 or 2."),
+        }
+    };
+
+    let b = |j: u8| -> f64 {
+        match j {
+            1 => kappa + lambda - rho * sigma,
+            2 => kappa + lambda,
+            _ => panic!("`j` should be: 1 or 2."),
+        }
+    };
+
+    let d = |j: u8, phi: f64| -> Complex<f64> {
+        ((rho * sigma * i * phi).powi(2) - sigma.powi(2) * (2.0 * u(j) * i * phi - phi.powi(2)))
+            .sqrt()
+    };
+
+    let g = |j: u8, phi: f64| -> Complex<f64> {
+        assert!(j == 1 || j == 2);
+
+        (b(j) - rho * sigma * i * phi + d(j, phi)) / (b(j) - rho * sigma * i * phi - d(j, phi))
+    };
+
+    let C = |j: u8, phi: f64| -> Complex<f64> {
+        assert!(j == 1 || j == 2);
+
+        (r - q) * i * phi * tau
+            + (kappa * theta / sigma.powi(2))
+                * ((b(j) - rho * sigma * i * phi) * tau
+                    - 2.0 * ((1.0 - g(j, phi) * (d(j, phi) * tau).exp()) / (1.0 - g(j, phi))).ln())
+    };
+
+    let D = |j: u8, phi: f64| -> Complex<f64> {
+        assert!(j == 1 || j == 2);
+
+        ((b(j) - rho * sigma * i * phi + d(j, phi)) * (1.0 - (d(j, phi) * tau).exp()))
+            / (sigma.powi(2) * (1.0 - g(j, phi) * (d(j, phi) * tau).exp()))
+    };
+
+    let f = |j: u8, phi: f64| -> Complex<f64> {
+        assert!(j == 1 || j == 2);
+
+        (C(j, phi) + D(j, phi) * V0 + i * phi * S0.ln()).exp()
+    };
+
+    let Re1 = |phi: f64| -> f64 {
+        let j = 1;
+
+        (f(j, phi) * (-i * phi * K.ln()).exp() / (i * phi)).re
+    };
+    let Re2 = |phi: f64| -> f64 {
+        let j = 2;
+
+        (f(j, phi) * (-i * phi * K.ln()).exp() / (i * phi)).re
+    };
+
+    let P1 = 0.5 + std::f64::consts::FRAC_1_PI * integrate(Re1, 0.00001, 50.0);
+    let P2 = 0.5 + std::f64::consts::FRAC_1_PI * integrate(Re2, 0.00001, 50.0);
+
+    let call = S0 * (-q * tau).exp() * P1 - K * (-r * tau).exp() * P2;
+    let put = call + K * (-r * tau).exp() - S0 * (-q * tau).exp();
+
+    (call, put)
+}
+
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // TESTS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+/*
+TEST VALUES:
+
+""
+For example, the price a 6-month European put with strike K = 100 on a
+dividend-paying stock with spot price S = 100 and yield q = 0.02,
+when the risk-free rate is r = 0.03 and using the parameters
+κ =5, σ =0.5, ρ =−0.8, θ =v0 =0.05, and λ=0,
+along with the integration grid φ ∈ [0.00001, 50] in increments of 0.001 is 5.7590.
+The price of the call with identical features is 6.2528.
+If there is no dividend yield so that q = 0, then as expected,
+the put price decreases, to 5.3790, and the call price increases, to 6.8678.
+""
+
+*/
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_heston_call() {
+        println!(
+            "Call: \t{}\nPut: \t{}",
+            // heston(100.0, 0.05, 100.0, 0.5, 0.03, 0.02, -0.5, 0.0, 5.0, 0.05)
+            heston(100.0, 0.05, 100.0, 0.5, 0.03, 0.02, -0.8, 0.5, 5.0, 0.05).0,
+            heston(100.0, 0.05, 100.0, 0.5, 0.03, 0.02, -0.8, 0.5, 5.0, 0.05).1
+        );
+
+        assert!(1 == 0);
+    }
+}
