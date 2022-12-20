@@ -7,11 +7,10 @@ Contact: rustquantcontact@gmail.com
 
 ## Latest additions:
 
++ Heston Model option pricer (uses the tanh-sinh quadrature numerical integrator).
 + Tanh-sinh (double exponential) quadrature for evaluating integrals.
     + Plus other basic numerical integrators (midpoint, trapezoid, Simpson's 3/8).
-+ Density functions for common distributions:
-    + Gaussian, Bernoulli, Binomial, Poisson, Uniform, Chi-Squared, Gamma, and Exponential.
-+ Characteristic functions for common distributions:
++ Characteristic functions and density functions for common distributions:
     + Gaussian, Bernoulli, Binomial, Poisson, Uniform, Chi-Squared, Gamma, and Exponential.
 
 **Disclaimer**: This is currently a free-time project and not a professional financial software library. Nothing in this library should be taken as financial advice, and I do not recommend you to use it for trading or making financial decisions. 
@@ -46,11 +45,11 @@ Currently only gradients can be computed. Suggestions on how to extend the funct
 ## Option Pricers <a name="options"></a>
 
 + Closed-form price solutions:
+    + [x] Heston Model
     + [x] Barrier
     + [x] European Options
     + [x] Greeks/Sensitivities
     + [x] Lookback 
-    + [ ] Heston Model
     + [ ] Basket
     + [ ] Rainbow
     + [ ] American
@@ -95,7 +94,7 @@ The following is a list of stochastic processes that can be generated.
 
 Most will follow the notation and formulas in John C. Hull's *Options, Futures, and Other Derivatives*.
 
-+ [ ] Prices:
++ Prices:
     + [X] The Vasicek Model
     + [x] The Cox, Ingersoll, and Ross Model
     + [ ] The Rendleman and Bartter Model
@@ -108,20 +107,11 @@ Most will follow the notation and formulas in John C. Hull's *Options, Futures, 
 
 ## Random <a name="random"></a>
 
-+ Characteristic functions:
++ Characteristic functions (CFs) and density/mass functions (PDFs/PMFs):
     + [x] Gaussian
     + [x] Bernoulli
     + [x] Binomial
     + [x] Poisson
-    + [x] Uniform (discrete & continuous)
-    + [x] Chi-Squared
-    + [x] Gamma
-    + [x] Exponential
-+ Density/mass functions:
-    + [x] Bernoulli
-    + [x] Binomial
-    + [x] Poisson
-    + [x] Gaussian
     + [x] Uniform (discrete & continuous)
     + [x] Chi-Squared
     + [x] Gamma
