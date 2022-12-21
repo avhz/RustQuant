@@ -8,6 +8,7 @@ use num_complex::Complex;
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 /// Heston model for option pricing.
+#[allow(clippy::too_many_arguments)]
 pub fn heston(
     S0: f64,    // Initial asset value.
     V0: f64,    // Initial variance value.
