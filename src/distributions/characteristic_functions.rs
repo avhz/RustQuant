@@ -12,14 +12,14 @@ use num_complex::Complex;
 //     1_f64 - p + p * (i * t).exp()
 // }
 
-/// Binomial: B(n, p)
-pub fn cf_binomial(t: f64, p: f64, n: i32) -> Complex<f64> {
-    assert!(n >= 0);
-    assert!((0_f64..=1_f64).contains(&p));
+// /// Binomial: B(n, p)
+// pub fn cf_binomial(t: f64, p: f64, n: i32) -> Complex<f64> {
+//     assert!(n >= 0);
+//     assert!((0_f64..=1_f64).contains(&p));
 
-    let i: Complex<f64> = Complex::i();
-    (1_f64 - p + p * (i * t).exp()).powi(n)
-}
+//     let i: Complex<f64> = Complex::i();
+//     (1_f64 - p + p * (i * t).exp()).powi(n)
+// }
 
 /// Poisson: Pois(lambda)
 pub fn cf_poisson(t: f64, lambda: f64) -> Complex<f64> {
@@ -90,12 +90,12 @@ mod tests {
     //     assert_approx_equal!(cf.im, 0.84147098480, 1e-10);
     // }
 
-    #[test]
-    fn test_cf_binomial() {
-        let cf = cf_binomial(1.0, 1.0, 1);
-        assert_approx_equal!(cf.re, 0.54030230586, 1e-10);
-        assert_approx_equal!(cf.im, 0.84147098480, 1e-10);
-    }
+    // #[test]
+    // fn test_cf_binomial() {
+    //     let cf = cf_binomial(1.0, 1.0, 1);
+    //     assert_approx_equal!(cf.re, 0.54030230586, 1e-10);
+    //     assert_approx_equal!(cf.im, 0.84147098480, 1e-10);
+    // }
 
     #[test]
     fn test_cf_poisson() {

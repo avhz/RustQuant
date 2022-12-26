@@ -13,17 +13,17 @@ use std::f64::consts::PI;
 //     p.powi(k) * (1_f64 - p).powi(1 - k)
 // }
 
-/// Binomial: B(n, p)
-pub fn pmf_binomial(n: u32, k: u32, p: f64) -> f64 {
-    assert!((0..=n).contains(&k));
-    assert!((0_f64..=1_f64).contains(&p));
+// /// Binomial: B(n, p)
+// pub fn pmf_binomial(n: u32, k: u32, p: f64) -> f64 {
+//     assert!((0..=n).contains(&k));
+//     assert!((0_f64..=1_f64).contains(&p));
 
-    let n_C_k = |n: u32, k: u32| -> u32 {
-        (1..=n).product::<u32>() / ((1..=k).product::<u32>() * (1..=(n - k)).product::<u32>())
-    };
+//     let n_C_k = |n: u32, k: u32| -> u32 {
+//         (1..=n).product::<u32>() / ((1..=k).product::<u32>() * (1..=(n - k)).product::<u32>())
+//     };
 
-    n_C_k(n, k) as f64 * p.powi(k as i32) * (1_f64 - p).powi((n - k) as i32)
-}
+//     n_C_k(n, k) as f64 * p.powi(k as i32) * (1_f64 - p).powi((n - k) as i32)
+// }
 
 /// Poisson: Pois(lambda)
 pub fn pmf_poisson(lambda: f64, k: u32) -> f64 {
@@ -102,11 +102,11 @@ mod tests {
     //     assert_approx_equal!(value, 0.5, 1e-10);
     // }
 
-    #[test]
-    fn test_pmf_binomial() {
-        let value = pmf_binomial(1, 1, 0.5);
-        assert_approx_equal!(value, 0.5, 1e-10);
-    }
+    // #[test]
+    // fn test_pmf_binomial() {
+    //     let value = pmf_binomial(1, 1, 0.5);
+    //     assert_approx_equal!(value, 0.5, 1e-10);
+    // }
 
     #[test]
     fn test_pmf_poisson() {
