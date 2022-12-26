@@ -56,7 +56,7 @@ pub mod math {
 
     /// Submodule of `math`: implements numerical integration prodecures.
     /// The primary integrator is the Tanh-Sinh implementation.
-    /// The midpoint, trapezoid, and Simpson integrators are very innacurate.
+    /// The midpoint, trapezoid, and Simpson integrators are innacurate.
     pub mod integration {
         /// Composite Midpoint rule.
         pub mod midpoint;
@@ -82,17 +82,18 @@ pub mod math {
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 /// Parent module containing: random related stuff (random variables, PDFs, CDFs, CFs, etc).
-pub mod random {
-    pub use crate::random::{
-        characteristic_functions::*, density_functions::*, distribution_functions::*,
+pub mod distributions {
+    pub use crate::distributions::{
+        bernoulli::*, characteristic_functions::*, density_functions::*,
     };
 
     /// Submodule of `random`: characteristic functions (CFs) of common distributions.
     pub mod characteristic_functions;
     /// Submodule of `random`: density and mass functions (PDFs & PMFs) of common distributions.
     pub mod density_functions;
-    /// Submodule of `random`: distribution functions (CDFs) of common distributions.
-    pub mod distribution_functions;
+
+    /// Submodule of `distributions`: the Bernoulli distribution.
+    pub mod bernoulli;
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

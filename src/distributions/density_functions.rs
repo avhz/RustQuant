@@ -5,13 +5,13 @@
 use statrs::function::gamma::gamma;
 use std::f64::consts::PI;
 
-/// Bernoulli: Bern(p)
-pub fn pmf_bernoulli(k: i32, p: f64) -> f64 {
-    assert!((0_f64..=1_f64).contains(&p));
-    assert!(k == 0 || k == 1);
+// /// Bernoulli: Bern(p)
+// pub fn pmf_bernoulli(k: i32, p: f64) -> f64 {
+//     assert!((0_f64..=1_f64).contains(&p));
+//     assert!(k == 0 || k == 1);
 
-    p.powi(k) * (1_f64 - p).powi(1 - k)
-}
+//     p.powi(k) * (1_f64 - p).powi(1 - k)
+// }
 
 /// Binomial: B(n, p)
 pub fn pmf_binomial(n: u32, k: u32, p: f64) -> f64 {
@@ -96,11 +96,11 @@ mod tests {
     use super::*;
     use crate::assert_approx_equal;
 
-    #[test]
-    fn test_pmf_bernoulli() {
-        let value = pmf_bernoulli(1, 0.5);
-        assert_approx_equal!(value, 0.5, 1e-10);
-    }
+    // #[test]
+    // fn test_pmf_bernoulli() {
+    //     let value = pmf_bernoulli(1, 0.5);
+    //     assert_approx_equal!(value, 0.5, 1e-10);
+    // }
 
     #[test]
     fn test_pmf_binomial() {

@@ -4,13 +4,13 @@ use num_complex::Complex;
 // Characteristic Functions
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-/// Bernoulli: Bern(p)
-pub fn cf_bernoulli(t: f64, p: f64) -> Complex<f64> {
-    assert!((0_f64..=1_f64).contains(&p));
+// /// Bernoulli: Bern(p)
+// pub fn cf_bernoulli(t: f64, p: f64) -> Complex<f64> {
+//     assert!((0_f64..=1_f64).contains(&p));
 
-    let i: Complex<f64> = Complex::i();
-    1_f64 - p + p * (i * t).exp()
-}
+//     let i: Complex<f64> = Complex::i();
+//     1_f64 - p + p * (i * t).exp()
+// }
 
 /// Binomial: B(n, p)
 pub fn cf_binomial(t: f64, p: f64, n: i32) -> Complex<f64> {
@@ -83,12 +83,12 @@ mod tests {
     use super::*;
     use crate::assert_approx_equal;
 
-    #[test]
-    fn test_cf_bernoulli() {
-        let cf = cf_bernoulli(1.0, 1.0);
-        assert_approx_equal!(cf.re, 0.54030230586, 1e-10);
-        assert_approx_equal!(cf.im, 0.84147098480, 1e-10);
-    }
+    // #[test]
+    // fn test_cf_bernoulli() {
+    //     let cf = cf_bernoulli(1.0, 1.0);
+    //     assert_approx_equal!(cf.re, 0.54030230586, 1e-10);
+    //     assert_approx_equal!(cf.im, 0.84147098480, 1e-10);
+    // }
 
     #[test]
     fn test_cf_binomial() {
