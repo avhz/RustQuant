@@ -1,7 +1,9 @@
 #![deny(missing_docs)]
 #![allow(non_snake_case)]
 
-//! RustQuant: A Rust library for quantitative finance tools.
+//! RustQuant: A Rust library for quantitative finance.
+//!
+//! Contact: rustquantcontact@gmail.com
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // BONDS
@@ -78,10 +80,10 @@ pub mod math {
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// RANDOM
+// DISTRIBUTIONS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-/// Parent module containing: random related stuff (random variables, PDFs, CDFs, CFs, etc).
+/// Parent module containing: random variable distributions (PDFs, CDFs, CFs, etc).
 pub mod distributions {
     pub use crate::distributions::{
         bernoulli::*, binomial::*, characteristic_functions::*, density_functions::*, poisson::*,

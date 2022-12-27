@@ -30,7 +30,7 @@ use super::variable::Variable;
 
 /// Return the derivative/s *with-respect-to* the chosen variables.
 pub trait Gradient<T, S> {
-    /// Returns the derivative/s 'with-respect-to' the chosen variables.
+    /// Returns the derivative/s *with-respect-to* the chosen variables.
     fn wrt(&self, v: T) -> S;
 }
 
