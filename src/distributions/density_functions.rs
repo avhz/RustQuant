@@ -114,17 +114,17 @@ mod tests {
     //     assert_approx_equal!(value, 0.367879441171, 1e-10);
     // }
 
-    #[test]
-    fn test_pdf_uniform_continuous() {
-        let value = pdf_uniform_continuous(1.0, 0.0, 1.0);
-        assert_approx_equal!(value, 1_f64, 1e-10);
-    }
+    // #[test]
+    // fn test_pdf_uniform_continuous() {
+    //     let value = pdf_uniform_continuous(1.0, 0.0, 1.0);
+    //     assert_approx_equal!(value, 1_f64, 1e-10);
+    // }
 
-    #[test]
-    fn test_pmf_uniform_discrete() {
-        let value = pmf_uniform_discrete(0, 1);
-        assert_approx_equal!(value, 0.5, 1e-10);
-    }
+    // #[test]
+    // fn test_pmf_uniform_discrete() {
+    //     let value = pmf_uniform_discrete(0, 1);
+    //     assert_approx_equal!(value, 0.5, 1e-10);
+    // }
 
     #[test]
     fn test_pdf_gaussian() {

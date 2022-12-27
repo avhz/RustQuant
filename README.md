@@ -22,7 +22,7 @@ Contact: rustquantcontact@gmail.com
 2. [Option Pricers](#options)
 3. [Stochastic Processes and Short Rate Models](#stochastics)
 4. [Bonds](#bonds)
-5. [Random](#random)
+5. [Distributions](#distributions)
 5. [Mathematics](#maths)
 6. [Helper Functions and Macros](#helpers)
 7. [How-tos](#howto)
@@ -105,26 +105,18 @@ Most will follow the notation and formulas in John C. Hull's *Options, Futures, 
 + [ ] Duration
 + [ ] Convexity
 
-## Random <a name="random"></a>
+## Distributions <a name="distributions"></a>
 
-+ Characteristic functions (CFs) and density/mass functions (PDFs/PMFs):
-    + [x] Gaussian
-    + [x] Bernoulli
-    + [x] Binomial
-    + [x] Poisson
-    + [x] Uniform (discrete & continuous)
-    + [x] Chi-Squared
-    + [x] Gamma
-    + [x] Exponential
-+ Distribution functions:
-    + [ ] Gaussian
-    + [ ] Bernoulli
-    + [ ] Binomial
-    + [ ] Poisson
-    + [ ] Uniform (discrete & continuous)
-    + [ ] Chi-Squared
-    + [ ] Gamma
-    + [ ] Exponential
+Probability density/mass functions, distribution functions, characteristic functions, etc. 
+
++ [x] Gaussian
++ [x] Bernoulli
++ [x] Binomial
++ [x] Poisson
++ [x] Uniform (discrete & continuous)
++ [ ] Chi-Squared
++ [ ] Gamma
++ [ ] Exponential
 
 ## Mathematics <a name="maths"></a>
 
