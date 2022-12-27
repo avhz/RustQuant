@@ -43,7 +43,11 @@ impl Binomial {
 
     /// Binomial distribution function.
     pub fn cdf(&self, k: i32) -> f64 {
-        todo!()
+        statrs::function::beta::beta_reg(
+            (self.n - k as usize) as f64,
+            (1 + k) as f64,
+            1_f64 - self.p,
+        )
     }
 }
 
@@ -54,19 +58,22 @@ mod tests {
 
     #[test]
     fn test_binomial_distribution() {
-        let binomial: Binomial = Binomial::new(1, 1.0);
+        // n = 2 trials, p = 0.5 probability
+        let binomial: Binomial = Binomial::new(2, 0.5);
 
         // Characteristic function
         let cf = binomial.cf(1.0);
-        assert_approx_equal!(cf.re, 0.54030230586, 1e-10);
-        assert_approx_equal!(cf.im, 0.84147098480, 1e-10);
+        assert_approx_equal!(cf.re, 0.41611444379, 1e-10);
+        assert_approx_equal!(cf.im, 0.64805984911, 1e-10);
 
         // Probability mass function
+        // k = 1 successes.
         let pmf = binomial.pmf(1);
-        assert_approx_equal!(pmf, 1.0, 1e-10);
+        assert_approx_equal!(pmf, 0.5, 1e-10);
 
         // Distribution function
-        // let cdf = binomial.cdf(1);
-        // assert_approx_equal!(cdf, 1.0, 1e-10);
+        // k = 1 successes.
+        let cdf = binomial.cdf(1);
+        assert_approx_equal!(cdf, 0.75, 1e-10);
     }
 }
