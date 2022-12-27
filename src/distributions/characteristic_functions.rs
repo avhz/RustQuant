@@ -104,19 +104,19 @@ mod tests {
     //     assert_approx_equal!(cf.im, 0.47084264330, 1e-10);
     // }
 
-    #[test]
-    fn test_cf_uniform_continuous() {
-        let cf = cf_uniform_continuous(1.0, 0.0, 1.0);
-        assert_approx_equal!(cf.re, 0.84147098480, 1e-10);
-        assert_approx_equal!(cf.im, 0.45969769413, 1e-10);
-    }
+    // #[test]
+    // fn test_cf_uniform_continuous() {
+    //     let cf = cf_uniform_continuous(1.0, 0.0, 1.0);
+    //     assert_approx_equal!(cf.re, 0.84147098480, 1e-10);
+    //     assert_approx_equal!(cf.im, 0.45969769413, 1e-10);
+    // }
 
-    #[test]
-    fn test_cf_uniform_discrete() {
-        let cf = cf_uniform_discrete(1.0, 0.0, 1.0);
-        assert_approx_equal!(cf.re, 0.77015115293, 1e-10);
-        assert_approx_equal!(cf.im, 0.42073549240, 1e-10);
-    }
+    // #[test]
+    // fn test_cf_uniform_discrete() {
+    //     let cf = cf_uniform_discrete(1.0, 0.0, 1.0);
+    //     assert_approx_equal!(cf.re, 0.77015115293, 1e-10);
+    //     assert_approx_equal!(cf.im, 0.42073549240, 1e-10);
+    // }
 
     #[test]
     fn test_cf_gaussian() {

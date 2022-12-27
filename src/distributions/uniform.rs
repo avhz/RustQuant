@@ -50,7 +50,7 @@ impl Uniform<'_> {
     /// Uniform mass function.
     pub fn pmf(&self, x: f64) -> f64 {
         if self.class == "discrete" {
-            1_f64 / self.b - self.a + 1_f64
+            1_f64 / (self.b - self.a + 1_f64)
         } else if self.class == "continuous" {
             if x >= self.a && x <= self.b {
                 (self.b - self.a).recip()
@@ -63,8 +63,21 @@ impl Uniform<'_> {
     }
 
     /// Uniform distribution function.
-    pub fn cdf(&self) -> f64 {
-        todo!()
+    pub fn cdf(&self, x: f64) -> f64 {
+        if self.class == "discrete" {
+            assert!(x >= self.a && x <= self.b);
+            (x.floor() - self.a + 1.0) / (self.b - self.a + 1_f64)
+        } else if self.class == "continuous" {
+            if x < self.a {
+                0.0
+            } else if x >= self.a && x <= self.b {
+                (x - self.a) / (self.b - self.a)
+            } else {
+                1.0
+            }
+        } else {
+            panic!("Class should be either 'discrete' or 'continuous'.")
+        }
     }
 }
 
@@ -74,20 +87,38 @@ mod tests {
     use crate::assert_approx_equal;
 
     #[test]
-    fn test_poisson_distribution() {
+    fn test_uniform_distribution_continuous() {
+        let dist: Uniform = Uniform::new(0.0, 1.0, "continuous");
+
+        // Characteristic function
+        let cf = dist.cf(1.0);
+        assert_approx_equal!(cf.re, 0.84147098480, 1e-10);
+        assert_approx_equal!(cf.im, 0.45969769413, 1e-10);
+
+        // Probability mass function
+        let pmf = dist.pmf(0.5);
+        assert_approx_equal!(pmf, 1.0, 1e-10);
+
+        // Distribution function
+        let cdf = dist.cdf(0.5);
+        assert_approx_equal!(cdf, 0.5, 1e-10);
+    }
+
+    #[test]
+    fn test_uniform_distribution_discrete() {
         let dist: Uniform = Uniform::new(0.0, 1.0, "discrete");
 
         // Characteristic function
         let cf = dist.cf(1.0);
-        assert_approx_equal!(cf.re, 0.42079361743, 1e-10);
-        assert_approx_equal!(cf.im, 0.47084264330, 1e-10);
+        assert_approx_equal!(cf.re, 0.77015115293, 1e-10);
+        assert_approx_equal!(cf.im, 0.42073549240, 1e-10);
 
         // Probability mass function
-        let pmf = dist.pmf(1);
-        assert_approx_equal!(pmf, 0.367879441171, 1e-10);
+        let pmf = dist.pmf(0.5);
+        assert_approx_equal!(pmf, 0.5, 1e-10);
 
         // Distribution function
-        let cdf = dist.cdf(1);
-        assert_approx_equal!(cdf, 0.640859085770, 1e-10);
+        let cdf = dist.cdf(0.5);
+        assert_approx_equal!(cdf, 0.5, 1e-10);
     }
 }
