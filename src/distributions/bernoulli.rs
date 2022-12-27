@@ -51,19 +51,19 @@ mod tests {
 
     #[test]
     fn test_bernoulli_distribution() {
-        let bernoulli: Bernoulli = Bernoulli::new(1.0);
+        let dist: Bernoulli = Bernoulli::new(1.0);
 
         // Characteristic function
-        let cf = bernoulli.cf(1.0);
+        let cf = dist.cf(1.0);
         assert_approx_equal!(cf.re, 0.54030230586, 1e-10);
         assert_approx_equal!(cf.im, 0.84147098480, 1e-10);
 
         // Probability mass function
-        let pmf = bernoulli.pmf(1);
+        let pmf = dist.pmf(1);
         assert_approx_equal!(pmf, 1.0, 1e-10);
 
         // Distribution function
-        let cdf = bernoulli.cdf(1);
+        let cdf = dist.cdf(1);
         assert_approx_equal!(cdf, 1.0, 1e-10);
     }
 }

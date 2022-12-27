@@ -25,12 +25,12 @@ use std::f64::consts::PI;
 //     n_C_k(n, k) as f64 * p.powi(k as i32) * (1_f64 - p).powi((n - k) as i32)
 // }
 
-/// Poisson: Pois(lambda)
-pub fn pmf_poisson(lambda: f64, k: u32) -> f64 {
-    assert!(lambda > 0_f64);
+// /// Poisson: Pois(lambda)
+// pub fn pmf_poisson(lambda: f64, k: u32) -> f64 {
+//     assert!(lambda > 0_f64);
 
-    lambda.powi(k as i32) * (-lambda).exp() / ((1..=k).product::<u32>() as f64)
-}
+//     lambda.powi(k as i32) * (-lambda).exp() / ((1..=k).product::<u32>() as f64)
+// }
 
 /// Uniform (continuous): U(a, b)
 pub fn pdf_uniform_continuous(x: f64, a: f64, b: f64) -> f64 {
@@ -108,11 +108,11 @@ mod tests {
     //     assert_approx_equal!(value, 0.5, 1e-10);
     // }
 
-    #[test]
-    fn test_pmf_poisson() {
-        let value = pmf_poisson(1.0, 1);
-        assert_approx_equal!(value, 0.367879441171, 1e-10);
-    }
+    // #[test]
+    // fn test_pmf_poisson() {
+    //     let value = pmf_poisson(1.0, 1);
+    //     assert_approx_equal!(value, 0.367879441171, 1e-10);
+    // }
 
     #[test]
     fn test_pdf_uniform_continuous() {

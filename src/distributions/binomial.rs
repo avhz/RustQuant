@@ -59,21 +59,21 @@ mod tests {
     #[test]
     fn test_binomial_distribution() {
         // n = 2 trials, p = 0.5 probability
-        let binomial: Binomial = Binomial::new(2, 0.5);
+        let dist: Binomial = Binomial::new(2, 0.5);
 
         // Characteristic function
-        let cf = binomial.cf(1.0);
+        let cf = dist.cf(1.0);
         assert_approx_equal!(cf.re, 0.41611444379, 1e-10);
         assert_approx_equal!(cf.im, 0.64805984911, 1e-10);
 
         // Probability mass function
         // k = 1 successes.
-        let pmf = binomial.pmf(1);
+        let pmf = dist.pmf(1);
         assert_approx_equal!(pmf, 0.5, 1e-10);
 
         // Distribution function
         // k = 1 successes.
-        let cdf = binomial.cdf(1);
+        let cdf = dist.cdf(1);
         assert_approx_equal!(cdf, 0.75, 1e-10);
     }
 }

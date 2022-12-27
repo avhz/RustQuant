@@ -84,7 +84,8 @@ pub mod math {
 /// Parent module containing: random related stuff (random variables, PDFs, CDFs, CFs, etc).
 pub mod distributions {
     pub use crate::distributions::{
-        bernoulli::*, binomial::*, characteristic_functions::*, density_functions::*,
+        bernoulli::*, binomial::*, characteristic_functions::*, density_functions::*, poisson::*,
+        uniform::*,
     };
 
     /// Submodule of `random`: characteristic functions (CFs) of common distributions.
@@ -94,9 +95,12 @@ pub mod distributions {
 
     /// Submodule of `distributions`: the Bernoulli distribution.
     pub mod bernoulli;
-
     /// Submodule of `distributions`: the Binomial distribution.
     pub mod binomial;
+    /// Submodule of `distributions`: the Poisson distribution.
+    pub mod poisson;
+    /// Submodule of `distributions`: the Uniform distribution.
+    pub mod uniform;
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -21,25 +21,25 @@ use num_complex::Complex;
 //     (1_f64 - p + p * (i * t).exp()).powi(n)
 // }
 
-/// Poisson: Pois(lambda)
-pub fn cf_poisson(t: f64, lambda: f64) -> Complex<f64> {
-    assert!(lambda > 0_f64);
+// /// Poisson: Pois(lambda)
+// pub fn cf_poisson(t: f64, lambda: f64) -> Complex<f64> {
+//     assert!(lambda > 0_f64);
 
-    let i: Complex<f64> = Complex::i();
-    (lambda * ((i * t).exp() - 1_f64)).exp()
-}
+//     let i: Complex<f64> = Complex::i();
+//     (lambda * ((i * t).exp() - 1_f64)).exp()
+// }
 
-/// Uniform (continuous): U(a, b)
-pub fn cf_uniform_continuous(t: f64, a: f64, b: f64) -> Complex<f64> {
-    let i: Complex<f64> = Complex::i();
-    ((i * t * b).exp() - (i * t * a).exp()) / (i * t * (b - a))
-}
+// /// Uniform (continuous): U(a, b)
+// pub fn cf_uniform_continuous(t: f64, a: f64, b: f64) -> Complex<f64> {
+//     let i: Complex<f64> = Complex::i();
+//     ((i * t * b).exp() - (i * t * a).exp()) / (i * t * (b - a))
+// }
 
-/// Uniform (discrete): DU(a, b)
-pub fn cf_uniform_discrete(t: f64, a: f64, b: f64) -> Complex<f64> {
-    let i: Complex<f64> = Complex::i();
-    ((i * t * a).exp() - (i * t * (b + 1_f64)).exp()) / ((1_f64 - (i * t).exp()) * (b - a + 1_f64))
-}
+// /// Uniform (discrete): DU(a, b)
+// pub fn cf_uniform_discrete(t: f64, a: f64, b: f64) -> Complex<f64> {
+//     let i: Complex<f64> = Complex::i();
+//     ((i * t * a).exp() - (i * t * (b + 1_f64)).exp()) / ((1_f64 - (i * t).exp()) * (b - a + 1_f64))
+// }
 
 /// Normal (univariate): N(mu,sigma^2)
 pub fn cf_gaussian(t: f64, mu: f64, sigma_sq: f64) -> Complex<f64> {
@@ -97,12 +97,12 @@ mod tests {
     //     assert_approx_equal!(cf.im, 0.84147098480, 1e-10);
     // }
 
-    #[test]
-    fn test_cf_poisson() {
-        let cf = cf_poisson(1.0, 1.0);
-        assert_approx_equal!(cf.re, 0.42079361743, 1e-10);
-        assert_approx_equal!(cf.im, 0.47084264330, 1e-10);
-    }
+    // #[test]
+    // fn test_cf_poisson() {
+    //     let cf = cf_poisson(1.0, 1.0);
+    //     assert_approx_equal!(cf.re, 0.42079361743, 1e-10);
+    //     assert_approx_equal!(cf.im, 0.47084264330, 1e-10);
+    // }
 
     #[test]
     fn test_cf_uniform_continuous() {
