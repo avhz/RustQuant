@@ -173,3 +173,15 @@ pub mod options {
     /// Submodule of `options`: base option traits.
     pub mod option;
 }
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// TRADING
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+/// Parent module containing: bond pricing models.
+pub mod trading {
+    pub use crate::trading::orderbook::*;
+
+    /// Submodule of `trading`: contains a limit orderbook (LOB) implementation.
+    pub mod orderbook;
+}
