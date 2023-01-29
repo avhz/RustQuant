@@ -7,6 +7,7 @@ Contact: rustquantcontact@gmail.com
 
 ## Latest additions:
 
++ Asian option pricer (closed-form solution for continuous geometric average).
 + Heston Model option pricer (uses the tanh-sinh quadrature numerical integrator).
 + Tanh-sinh (double exponential) quadrature for evaluating integrals.
     + Plus other basic numerical integrators (midpoint, trapezoid, Simpson's 3/8).
