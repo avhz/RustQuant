@@ -50,6 +50,8 @@ Currently only gradients can be computed. Suggestions on how to extend the funct
     + [x] European Options
     + [x] Greeks/Sensitivities
     + [x] Lookback 
+    + Asian
+        + [x] Continuous Geometric Average 
     + [ ] Basket
     + [ ] Rainbow
     + [ ] American
