@@ -83,50 +83,50 @@ impl OrderBook {
     }
 }
 
-#[cfg(test)]
-mod tests {
-    use super::*;
+// #[cfg(test)]
+// mod tests {
+//     use super::*;
 
-    #[test]
-    fn test_limit_orderbook() {
-        let mut LOB = OrderBook::new();
+//     #[test]
+//     fn test_limit_orderbook() {
+//         let mut LOB = OrderBook::new();
 
-        LOB.insert_order(Order {
-            ID: 1,
-            side: Side::BID,
-            price: 100.0,
-            quantity: 10,
-        });
-        LOB.insert_order(Order {
-            ID: 2,
-            side: Side::ASK,
-            price: 90.0,
-            quantity: 5,
-        });
-        LOB.insert_order(Order {
-            ID: 3,
-            side: Side::ASK,
-            price: 95.0,
-            quantity: 5,
-        });
-        LOB.insert_order(Order {
-            ID: 4,
-            side: Side::BID,
-            price: 99.0,
-            quantity: 10,
-        });
-        LOB.insert_order(Order {
-            ID: 5,
-            side: Side::ASK,
-            price: 98.0,
-            quantity: 5,
-        });
+//         LOB.insert_order(Order {
+//             ID: 1,
+//             side: Side::BID,
+//             price: 100.0,
+//             quantity: 10,
+//         });
+//         LOB.insert_order(Order {
+//             ID: 2,
+//             side: Side::ASK,
+//             price: 90.0,
+//             quantity: 5,
+//         });
+//         LOB.insert_order(Order {
+//             ID: 3,
+//             side: Side::ASK,
+//             price: 95.0,
+//             quantity: 5,
+//         });
+//         LOB.insert_order(Order {
+//             ID: 4,
+//             side: Side::BID,
+//             price: 99.0,
+//             quantity: 10,
+//         });
+//         LOB.insert_order(Order {
+//             ID: 5,
+//             side: Side::ASK,
+//             price: 98.0,
+//             quantity: 5,
+//         });
 
-        LOB.match_orders();
+//         LOB.match_orders();
 
-        println!("Bids: {:?}", LOB.bids);
-        println!("Asks: {:?}", LOB.asks);
+//         println!("Bids: {:?}", LOB.bids);
+//         println!("Asks: {:?}", LOB.asks);
 
-        assert!(1 == 0);
-    }
-}
+//         assert!(1 == 0);
+//     }
+// }

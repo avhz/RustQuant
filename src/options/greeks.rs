@@ -1,7 +1,8 @@
 #![allow(non_snake_case)]
 #![deny(missing_docs)]
 
-use crate::math::normal_distribution::*;
+use crate::distributions::Gaussian;
+// use crate::math::normal_distribution::*;
 use crate::options::european::*;
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -60,7 +61,7 @@ impl Greeks {
         let d1: f64 = d + 0.5 * std;
         let d2: f64 = d1 - std;
 
-        let norm = StandardNormal::new();
+        let norm = Gaussian::default();
 
         let nd1: f64 = norm.pdf(d1);
         // let nd2: f64 = norm.pdf(d2);

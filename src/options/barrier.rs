@@ -1,7 +1,8 @@
 #![allow(non_snake_case)]
 #![deny(missing_docs)]
 
-use crate::math::normal_distribution::*;
+use crate::distributions::gaussian::*;
+// use crate::math::normal_distribution::*;
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // BARRIER OPTION STRUCT
@@ -66,7 +67,7 @@ impl BarrierOption {
         let y1: f64 = (H * H / (S * X)).ln() / (v * t.sqrt()) + (1. + mu) * v * t.sqrt();
         let y2: f64 = (H / S).ln() / (v * t.sqrt()) + (1. + mu) * v * t.sqrt();
 
-        let norm = StandardNormal::new();
+        let norm = Gaussian::default();
 
         // Common functions:
         let A = |phi: f64| -> f64 {

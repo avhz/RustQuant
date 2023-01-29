@@ -52,8 +52,7 @@ pub mod helpers {
 pub mod math {
     pub use crate::math::{
         integration::midpoint::*, integration::simpsons::*, integration::tanhsinh::*,
-        integration::trapezoid::*, interpolation::*, newton_raphson::*, normal_distribution::*,
-        risk_reward::*,
+        integration::trapezoid::*, interpolation::*, newton_raphson::*, risk_reward::*,
     };
 
     /// Submodule of `math`: implements numerical integration prodecures.
@@ -74,7 +73,7 @@ pub mod math {
     /// Submodule of `math`: implements Newton-Raphson method.
     pub mod newton_raphson;
     /// Submodule of `math`: implements normal distribution functions.
-    pub mod normal_distribution;
+    // pub mod normal_distribution;
     /// Submodule of `math`: implements simple risk/reward functions.
     pub mod risk_reward;
 }
@@ -85,7 +84,9 @@ pub mod math {
 
 /// Parent module containing: random variable distributions (PDFs, CDFs, CFs, etc).
 pub mod distributions {
-    pub use crate::distributions::{bernoulli::*, binomial::*, poisson::*, uniform::*};
+    pub use crate::distributions::{
+        bernoulli::*, binomial::*, gaussian::*, poisson::*, uniform::*,
+    };
 
     // /// Submodule of `random`: characteristic functions (CFs) of common distributions.
     // pub mod characteristic_functions;
@@ -96,6 +97,8 @@ pub mod distributions {
     pub mod bernoulli;
     /// Submodule of `distributions`: the Binomial distribution.
     pub mod binomial;
+    /// Submodule of `distributions`: the Gaussian (normal) distribution.
+    pub mod gaussian;
     /// Submodule of `distributions`: the Poisson distribution.
     pub mod poisson;
     /// Submodule of `distributions`: the Uniform distribution.

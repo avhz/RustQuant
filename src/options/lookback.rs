@@ -1,4 +1,4 @@
-use crate::{helpers::*, math::*, options::*, stochastics::*};
+use crate::{distributions::Gaussian, helpers::*, math::*, options::*, stochastics::*};
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // LOOKBACK OPTION STRUCTS
@@ -77,7 +77,7 @@ impl PathDependentOption for LookbackOptionFloatingStrike {
         let b1 = ((s / s_max).ln() + (b + v * v / 2.0) * t) / (v * t.sqrt());
         let b2 = b1 - v * t.sqrt();
 
-        let norm = StandardNormal::new();
+        let norm = Gaussian::default();
 
         if b != 0.0 {
             call = s * ((b - r) * t).exp() * norm.cdf(a1) - s_min * (-r * t).exp() * norm.cdf(a2)
@@ -171,7 +171,7 @@ impl PathDependentOption for LookbackOptionFixedStrike {
         let b1 = ((s / s_max).ln() + (b + v * v / 2.0) * t) / (v * t.sqrt());
         let b2 = b1 - v * t.sqrt();
 
-        let norm = StandardNormal::new();
+        let norm = Gaussian::default();
 
         if b != 0.0 {
             call = s * ((b - r) * t).exp() * norm.cdf(a1) - s_min * (-r * t).exp() * norm.cdf(a2)
