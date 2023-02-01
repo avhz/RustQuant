@@ -7,6 +7,7 @@ Contact: rustquantcontact@gmail.com
 
 ## Latest additions:
 
++ Gap option and cash-or-nothing option pricers (currently adding more binary options)
 + Asian option pricer (closed-form solution for continuous geometric average).
 + Heston Model option pricer (uses the tanh-sinh quadrature numerical integrator).
 + Tanh-sinh (double exponential) quadrature for evaluating integrals.
