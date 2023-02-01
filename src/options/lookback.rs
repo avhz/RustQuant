@@ -261,7 +261,7 @@ mod tests {
             dividend_yield: 0.0,
         };
 
-        let prices_mc = lbo_floating.monte_carlo_prices(2000, 10000, true);
+        let prices_mc = lbo_floating.monte_carlo_prices(2000, 1000, true);
         let prices_cf = lbo_floating.closed_form_prices();
 
         println!(

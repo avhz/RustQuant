@@ -21,13 +21,29 @@ pub struct GapOption {
     pub risk_free_rate: f64,
     /// `v` - Volatility parameter.
     pub volatility: f64,
-    /// `q` - Dividend rate.
-    pub dividend_rate: f64,
+    /// `b` - Cost-of-carry.
+    pub cost_of_carry: f64,
     /// `T` - Time to expiry/maturity.
     pub time_to_maturity: f64,
 }
 
-struct CashOrNothingOption {}
+/// Cash-or-Nothing option parameters.
+struct CashOrNothingOption {
+    /// `S` - Initial price of the underlying.
+    pub initial_price: f64,
+    /// `X` - Strike price.
+    pub strike_price: f64,
+    /// `K` - Cash payout amount.
+    pub payout_value: f64,
+    /// `r` - Risk-free rate parameter.
+    pub risk_free_rate: f64,
+    /// `v` - Volatility parameter.
+    pub volatility: f64,
+    /// `b` - Cost-of-carry.
+    pub cost_of_carry: f64,
+    /// `T` - Time to expiry/maturity.
+    pub time_to_maturity: f64,
+}
 struct AssetOrNothingOption {}
 struct SupershareOption {}
 struct BinaryBarrierOption {}
@@ -47,9 +63,7 @@ impl GapOption {
         let T = self.time_to_maturity;
         let r = self.risk_free_rate;
         let v = self.volatility;
-        let q = self.dividend_rate;
-
-        let b = r - q;
+        let b = self.cost_of_carry;
 
         let d1 = ((S / K_1).ln() + (b + 0.5 * v * v) * T) / (v * (T).sqrt());
         let d2 = d1 - v * (T).sqrt();
@@ -58,6 +72,30 @@ impl GapOption {
 
         let c = S * ((b - r) * T).exp() * N.cdf(d1) - K_2 * (-r * T).exp() * N.cdf(d2);
         let p = -S * ((b - r) * T).exp() * N.cdf(-d1) + K_2 * (-r * T).exp() * N.cdf(-d2);
+
+        (c, p)
+    }
+}
+
+impl CashOrNothingOption {
+    /// Cah-or-Nothing option pricer.
+    /// The payoff from a call is 0 if S < X and K if S > X.
+    /// The payoff from a put is 0 if S > X and K if S < X.
+    pub fn price(&self) -> (f64, f64) {
+        let S = self.initial_price;
+        let X = self.strike_price;
+        let K = self.payout_value;
+        let T = self.time_to_maturity;
+        let r = self.risk_free_rate;
+        let v = self.volatility;
+        let b = self.cost_of_carry;
+
+        let d = ((S / X).ln() + (b - 0.5 * v * v) * T) / (v * (T).sqrt());
+
+        let N = Gaussian::default();
+
+        let c = K * (-r * T).exp() * N.cdf(d);
+        let p = K * (-r * T).exp() * N.cdf(-d);
 
         (c, p)
     }
@@ -81,12 +119,30 @@ mod tests {
             risk_free_rate: 0.09,
             volatility: 0.2,
             time_to_maturity: 0.5,
-            dividend_rate: 0.0,
+            cost_of_carry: 0.09,
         };
 
         let prices = gap.price();
 
         // Value from Haug's book (note: gap option payoffs can be negative).
         assert_approx_equal!(prices.0, -0.0053, 0.0001);
+    }
+
+    #[test]
+    fn test_cash_or_nothing_option() {
+        let CON = CashOrNothingOption {
+            initial_price: 100.0,
+            payout_value: 10.0,
+            strike_price: 80.0,
+            risk_free_rate: 0.06,
+            volatility: 0.35,
+            time_to_maturity: 0.75,
+            cost_of_carry: 0.0,
+        };
+
+        let prices = CON.price();
+
+        // Value from Haug's book.
+        assert_approx_equal!(prices.1, 2.6710, 0.0001);
     }
 }
