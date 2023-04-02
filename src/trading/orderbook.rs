@@ -1,3 +1,5 @@
+use time::{self, OffsetDateTime};
+
 /// Order struct containing parameters for a given order in the LOB.
 #[derive(Debug)]
 pub struct Order {
@@ -9,6 +11,8 @@ pub struct Order {
     pub price: f64,
     /// Order quantity.
     pub quantity: u64,
+    /// Order timestamp.
+    pub timestamp: time::OffsetDateTime,
 }
 
 /// Enum to indicate which side of the book the order falls on.
@@ -21,6 +25,43 @@ pub enum Side {
     BID,
     /// Ask (sell) side.
     ASK,
+}
+
+/// Order type enum.
+pub enum OrderType {
+    /// Market order: submits at best current price for immediate execution.
+    MARKET {
+        id: usize,
+        side: Side,
+        volume: usize,
+        timestamp: time::OffsetDateTime,
+    },
+    /// Limit order: places order outside of the bid-ask spread.
+    LIMIT {
+        id: usize,
+        side: Side,
+        volume: usize,
+        price: usize,
+        timestamp: time::OffsetDateTime,
+    },
+    /// Cancels an existing order.
+    CANCEL { id: usize },
+    /// Fill as much as possible, kill the remaining unfilled volume.
+    FILL_OR_KILL {
+        id: usize,
+        side: Side,
+        volume: usize,
+        price: usize,
+        timestamp: time::OffsetDateTime,
+    },
+    /// Only executes if entire order can be filled, otherwise killed.
+    IMMEDIATE_OR_CANCEL {
+        id: usize,
+        side: Side,
+        volume: usize,
+        price: usize,
+        timestamp: time::OffsetDateTime,
+    },
 }
 
 /// Orderbook struct containing the two 'half-books' (bid and ask sides).
@@ -49,6 +90,11 @@ impl OrderBook {
         }
     }
 
+    // /// Cancel an `Order` within the `OrderBook`.
+    // pub fn cancel_order(&mut self, id: Order::ID) {}
+    // /// Amend an `Order` within the `OrderBook`.
+    // pub fn amend_order(&mut self, id: Order::ID, price: f64, volume: i32) {}
+
     /// Match orders within an existing `OrderBook`.
     pub fn match_orders(&mut self) {
         while let (Some(bid), Some(ask)) = (self.bids.pop_front(), self.asks.pop_front()) {
@@ -65,12 +111,14 @@ impl OrderBook {
                     side: bid.side,
                     price,
                     quantity: bid.quantity - quantity,
+                    timestamp: OffsetDateTime::now_utc(),
                 });
                 self.asks.push_front(Order {
                     ID: ask.ID,
                     side: ask.side,
                     price,
                     quantity: ask.quantity - quantity,
+                    timestamp: OffsetDateTime::now_utc(),
                 });
             }
             // If price is not right, add to `OrderBook`.
@@ -83,50 +131,58 @@ impl OrderBook {
     }
 }
 
-// #[cfg(test)]
-// mod tests {
-//     use super::*;
+#[cfg(test)]
+mod tests {
+    use super::*;
 
-//     #[test]
-//     fn test_limit_orderbook() {
-//         let mut LOB = OrderBook::new();
+    #[test]
+    fn test_limit_orderbook() {
+        let mut LOB = OrderBook::new();
 
-//         LOB.insert_order(Order {
-//             ID: 1,
-//             side: Side::BID,
-//             price: 100.0,
-//             quantity: 10,
-//         });
-//         LOB.insert_order(Order {
-//             ID: 2,
-//             side: Side::ASK,
-//             price: 90.0,
-//             quantity: 5,
-//         });
-//         LOB.insert_order(Order {
-//             ID: 3,
-//             side: Side::ASK,
-//             price: 95.0,
-//             quantity: 5,
-//         });
-//         LOB.insert_order(Order {
-//             ID: 4,
-//             side: Side::BID,
-//             price: 99.0,
-//             quantity: 10,
-//         });
-//         LOB.insert_order(Order {
-//             ID: 5,
-//             side: Side::ASK,
-//             price: 98.0,
-//             quantity: 5,
-//         });
+        println!("Adding orders:");
 
-//         LOB.match_orders();
+        LOB.insert_order(Order {
+            ID: 1,
+            side: Side::BID,
+            price: 100.0,
+            quantity: 10,
+            timestamp: OffsetDateTime::now_utc(),
+        });
+        LOB.insert_order(Order {
+            ID: 2,
+            side: Side::ASK,
+            price: 90.0,
+            quantity: 5,
+            timestamp: OffsetDateTime::now_utc(),
+        });
+        LOB.insert_order(Order {
+            ID: 3,
+            side: Side::ASK,
+            price: 95.0,
+            quantity: 5,
+            timestamp: OffsetDateTime::now_utc(),
+        });
+        LOB.insert_order(Order {
+            ID: 4,
+            side: Side::BID,
+            price: 99.0,
+            quantity: 10,
+            timestamp: OffsetDateTime::now_utc(),
+        });
+        LOB.insert_order(Order {
+            ID: 5,
+            side: Side::ASK,
+            price: 98.0,
+            quantity: 5,
+            timestamp: OffsetDateTime::now_utc(),
+        });
 
-//         println!("Bids: {:?}", LOB.bids);
-//         println!("Asks: {:?}", LOB.asks);
+        println!("Matching orders:");
+        LOB.match_orders();
 
-//         assert!(1 == 0);
-//     }
-// }
+        println!("Bids: {:?}", LOB.bids);
+        println!("Asks: {:?}", LOB.asks);
+
+        assert!(1 == 0);
+    }
+}
