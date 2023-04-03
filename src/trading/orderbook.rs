@@ -27,43 +27,6 @@ pub enum Side {
     ASK,
 }
 
-/// Order type enum.
-pub enum OrderType {
-    /// Market order: submits at best current price for immediate execution.
-    MARKET {
-        id: usize,
-        side: Side,
-        volume: usize,
-        timestamp: time::OffsetDateTime,
-    },
-    /// Limit order: places order outside of the bid-ask spread.
-    LIMIT {
-        id: usize,
-        side: Side,
-        volume: usize,
-        price: usize,
-        timestamp: time::OffsetDateTime,
-    },
-    /// Cancels an existing order.
-    CANCEL { id: usize },
-    /// Fill as much as possible, kill the remaining unfilled volume.
-    FILL_OR_KILL {
-        id: usize,
-        side: Side,
-        volume: usize,
-        price: usize,
-        timestamp: time::OffsetDateTime,
-    },
-    /// Only executes if entire order can be filled, otherwise killed.
-    IMMEDIATE_OR_CANCEL {
-        id: usize,
-        side: Side,
-        volume: usize,
-        price: usize,
-        timestamp: time::OffsetDateTime,
-    },
-}
-
 /// Orderbook struct containing the two 'half-books' (bid and ask sides).
 #[derive(Debug)]
 pub struct OrderBook {
