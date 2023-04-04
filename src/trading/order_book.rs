@@ -1,31 +1,6 @@
-use time::{self, OffsetDateTime};
+use time::OffsetDateTime;
 
-/// Order struct containing parameters for a given order in the LOB.
-#[derive(Debug)]
-pub struct Order {
-    /// Order ID number.
-    pub ID: u64,
-    /// Order side (bid, ask).
-    pub side: Side,
-    /// Order price.
-    pub price: f64,
-    /// Order quantity.
-    pub quantity: u64,
-    /// Order timestamp.
-    pub timestamp: time::OffsetDateTime,
-}
-
-/// Enum to indicate which side of the book the order falls on.
-///
-/// `BID`: The side containing buy orders.
-/// `ASK`: The side containing sell orders.
-#[derive(Debug)]
-pub enum Side {
-    /// Bid (buy) side.
-    BID,
-    /// Ask (sell) side.
-    ASK,
-}
+use super::{order::Order, order_side::Side};
 
 /// Orderbook struct containing the two 'half-books' (bid and ask sides).
 #[derive(Debug)]

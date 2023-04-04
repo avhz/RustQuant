@@ -185,8 +185,16 @@ pub mod options {
 
 /// Parent module containing: bond pricing models.
 pub mod trading {
-    pub use crate::trading::orderbook::*;
+    // pub use crate::trading::order_book::*;
 
+    /// Submodule of `trading`: order definition.
+    pub mod order;
     /// Submodule of `trading`: contains a limit orderbook (LOB) implementation.
-    pub mod orderbook;
+    pub mod order_book;
+    /// Submodule of `trading`: order lifespan definitions.
+    pub mod order_lifespan;
+    /// Submodule of `trading`: order side definitions.
+    pub mod order_side;
+    /// Submodule of `trading`: order types definitions.
+    pub mod order_types;
 }

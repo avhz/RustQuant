@@ -1,3 +1,5 @@
+use super::order_side::Side;
+
 /// Order type enum.
 /// Definitions from:
 ///     - https://www.investor.gov/introduction-investing/investing-basics/glossary
