@@ -14,28 +14,28 @@ pub enum TypeFlag {
 /// such as lookback options (S_min, S_max).
 pub struct OptionParameters {
     /// `S` - Initial price of the underlying.
-    pub S: f64,
+    pub S: Vec<f64>,
     /// `K` - Strike price.
-    pub K: f64,
+    pub K: Vec<f64>,
     /// `T` - Time to expiry/maturity.
-    pub T: f64,
+    pub T: Vec<f64>,
     /// `r` - Risk-free rate parameter.
-    pub r: f64,
+    pub r: Vec<f64>,
     /// `v` - Volatility parameter.
-    pub v: f64,
+    pub v: Vec<f64>,
     /// `q` - Dividend rate.
-    pub q: f64,
+    pub q: Vec<f64>,
 }
 
 impl OptionParameters {
     /// New option parameters struct initialiser.
     pub fn new(
-        initial_price: f64,
-        strike_price: f64,
-        risk_free_rate: f64,
-        volatility: f64,
-        dividend_rate: f64,
-        time_to_maturity: f64,
+        initial_price: Vec<f64>,
+        strike_price: Vec<f64>,
+        risk_free_rate: Vec<f64>,
+        volatility: Vec<f64>,
+        dividend_rate: Vec<f64>,
+        time_to_maturity: Vec<f64>,
     ) -> Self {
         Self {
             S: initial_price,

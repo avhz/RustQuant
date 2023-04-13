@@ -28,7 +28,7 @@ pub struct GapOption {
 }
 
 /// Cash-or-Nothing option parameters.
-struct CashOrNothingOption {
+pub struct CashOrNothingOption {
     /// `S` - Initial price of the underlying.
     pub initial_price: f64,
     /// `X` - Strike price.
@@ -44,9 +44,10 @@ struct CashOrNothingOption {
     /// `T` - Time to expiry/maturity.
     pub time_to_maturity: f64,
 }
-struct AssetOrNothingOption {}
-struct SupershareOption {}
-struct BinaryBarrierOption {}
+
+// pub struct AssetOrNothingOption {}
+// pub struct SupershareOption {}
+// pub struct BinaryBarrierOption {}
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // IMPLEMENTATIONS
