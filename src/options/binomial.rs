@@ -31,7 +31,6 @@ impl BinomialOption {
     /// * `CallPutFlag` - `&str`: either `c` (call) or `p` (put).
     /// * `n` - Height of the binomial tree.
     ///
-    ///
     /// # Note:
     ///
     /// * `b = r - q` - The cost of carry.
@@ -43,28 +42,24 @@ impl BinomialOption {
         n: usize,
     ) -> f64 {
         let S = self.initial_price;
-        let X = self.strike_price;
+        let K = self.strike_price;
         let T = self.time_to_expiry;
         let r = self.risk_free_rate;
         let q = self.dividend_yield;
         let v = self.volatility;
 
-        // let mut OptionValue: Vec<f64> = vec![0.0; n + 1];
         let mut OptionValue: Vec<f64> = Vec::with_capacity(n + 1);
 
         let mut ReturnValue: Vec<f64> = vec![0.0; 5];
-        // let mut ReturnValue: Vec<f64> = Vec::with_capacity(5);
 
         let b: f64 = r - q;
         let (u, d, p, dt, Df): (f64, f64, f64, f64, f64);
         let z: isize;
 
-        if CallPutFlag == "c" {
-            z = 1;
-        } else if CallPutFlag == "p" {
-            z = -1;
-        } else {
-            panic!("Check call/put flag. Should be either 'c' or 'p'.");
+        match CallPutFlag {
+            "c" => z = 1,
+            "p" => z = -1,
+            _ => panic!("Check call/put flag. Should be either 'c' or 'p'."),
         }
 
         dt = T / n as f64;
@@ -75,7 +70,7 @@ impl BinomialOption {
 
         for i in 0..OptionValue.capacity() {
             OptionValue
-                .push((z as f64 * (S * u.powi(i as i32) * d.powi((n - i) as i32) - X)).max(0.0));
+                .push((z as f64 * (S * u.powi(i as i32) * d.powi((n - i) as i32) - K)).max(0.0));
         }
 
         for j in (0..n).rev() {
@@ -84,7 +79,7 @@ impl BinomialOption {
                     OptionValue[i] = Df * (p * (OptionValue[i + 1]) + (1.0 - p) * OptionValue[i]);
                 } else if AmeEurFlag == "a" {
                     OptionValue[i] = (z as f64
-                        * (S * u.powi(i as i32) * d.powi(j as i32 - i as i32) - X))
+                        * (S * u.powi(i as i32) * d.powi(j as i32 - i as i32) - K))
                         .max(Df * (p * (OptionValue[i + 1]) + (1.0 - p) * OptionValue[i]));
                 }
             }
@@ -103,20 +98,17 @@ impl BinomialOption {
         ReturnValue[3] = (OptionValue[3] - OptionValue[0]) / (2.0 * dt) / 365.0;
         ReturnValue[0] = OptionValue[0];
 
-        if OutputFlag == "p" {
+        match OutputFlag {
             // Return the option value.
-            ReturnValue[0]
-        } else if OutputFlag == "d" {
-            // Return the Delta ().
-            ReturnValue[1]
-        } else if OutputFlag == "g" {
-            // Return the Gamma ().
-            ReturnValue[2]
-        } else if OutputFlag == "t" {
-            // Return the Theta ().
-            ReturnValue[3]
-        } else {
-            panic!("Check OutputFlag. Should be one of: 'p', 'd', 'g', 't'.")
+            "p" => ReturnValue[0],
+            // Return the Delta.
+            "d" => ReturnValue[1],
+            // Return the Gamma.
+            "g" => ReturnValue[2],
+            // Return the Theta.
+            "t" => ReturnValue[3],
+            // Capture edge cases.
+            _ => panic!("Check OutputFlag. Should be one of: 'p', 'd', 'g', 't'."),
         }
     }
 }

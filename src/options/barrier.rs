@@ -29,6 +29,26 @@ pub struct BarrierOption {
     pub dividend_yield: f64,
 }
 
+/// Barrier option type enum.
+pub enum BarrierType {
+    /// Call (up-and-in)
+    CUI,
+    /// Call (down-and-in)
+    CDI,
+    /// Call (up-and-out)
+    CUO,
+    /// Call (down-and-out)
+    CDO,
+    /// Put (up-and-in)
+    PUI,
+    /// Put (down-and-in)
+    PDI,
+    /// Put (up-and-out)
+    PUO,
+    /// Put (down-and-out)
+    PDO,
+}
+
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // BARRIER OPTION IMPLEMENTATION
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -44,7 +64,7 @@ impl BarrierOption {
     ///
     /// # Note:
     /// * `b = r - q` - The cost of carry.
-    pub fn price(&self, type_flag: &str) -> f64 {
+    pub fn price(&self, type_flag: BarrierType) -> f64 {
         let S = self.initial_price;
         let X = self.strike_price;
         let H = self.barrier;
@@ -124,17 +144,17 @@ impl BarrierOption {
         if X >= H {
             match type_flag {
                 // Knock-In calls:
-                "cdi" if S >= H => C(1., 1.) + E(1.),
-                "cui" if S <= H => A(1.) + E(-1.),
+                BarrierType::CDI if S >= H => C(1., 1.) + E(1.),
+                BarrierType::CUI if S <= H => A(1.) + E(-1.),
                 // Knock-In puts:
-                "pdi" if S >= H => B(-1.) - C(-1., 1.) + D(-1., 1.) + E(1.),
-                "pui" if S <= H => A(-1.) - B(-1.) + D(-1., -1.) + E(-1.),
+                BarrierType::PDI if S >= H => B(-1.) - C(-1., 1.) + D(-1., 1.) + E(1.),
+                BarrierType::PUI if S <= H => A(-1.) - B(-1.) + D(-1., -1.) + E(-1.),
                 // Knock-Out calls:
-                "cdo" if S >= H => A(1.) - C(1., 1.) + F(1.),
-                "cuo" if S <= H => F(-1.),
+                BarrierType::CDO if S >= H => A(1.) - C(1., 1.) + F(1.),
+                BarrierType::CUO if S <= H => F(-1.),
                 // Knock-Out puts:
-                "pdo" if S >= H => A(-1.) - B(-1.) + C(-1., 1.) - D(-1., 1.) + F(1.),
-                "puo" if S <= H => B(-1.) - D(-1., -1.) + F(-1.),
+                BarrierType::PDO if S >= H => A(-1.) - B(-1.) + C(-1., 1.) - D(-1., 1.) + F(1.),
+                BarrierType::PUO if S <= H => B(-1.) - D(-1., -1.) + F(-1.),
 
                 _ => panic!("Barrier touched - check barrier and type flag."),
             }
@@ -143,17 +163,17 @@ impl BarrierOption {
         else {
             match type_flag {
                 // Knock-In calls:
-                "cdi" if S >= H => A(1.) - B(1.) + D(1., 1.) + E(1.),
-                "cui" if S <= H => B(1.) - C(1., -1.) + D(1., -1.) + E(-1.),
+                BarrierType::CDI if S >= H => A(1.) - B(1.) + D(1., 1.) + E(1.),
+                BarrierType::CUI if S <= H => B(1.) - C(1., -1.) + D(1., -1.) + E(-1.),
                 // Knock-In puts:
-                "pdi" if S >= H => A(-1.) + E(1.),
-                "pui" if S <= H => C(-1., -1.) + E(-1.),
+                BarrierType::PDI if S >= H => A(-1.) + E(1.),
+                BarrierType::PUI if S <= H => C(-1., -1.) + E(-1.),
                 // Knock-Out calls:
-                "cdo" if S >= H => B(1.) - D(1., 1.) + F(1.),
-                "cuo" if S <= H => A(1.) - B(1.) + C(1., -1.) - D(1., -1.) + F(-1.),
+                BarrierType::CDO if S >= H => B(1.) - D(1., 1.) + F(1.),
+                BarrierType::CUO if S <= H => A(1.) - B(1.) + C(1., -1.) - D(1., -1.) + F(-1.),
                 // Knock-Out puts:
-                "pdo" if S >= H => F(1.),
-                "puo" if S <= H => A(-1.) - C(-1., -1.) + F(-1.),
+                BarrierType::PDO if S >= H => F(1.),
+                BarrierType::PUO if S <= H => A(-1.) - C(-1., -1.) + F(-1.),
 
                 _ => panic!("Barrier touched - check barrier and type flag."),
             }
@@ -191,10 +211,10 @@ mod tests {
 
     #[test]
     fn test_S_above_H() {
-        let cdi = S_ABOVE_H.price("cdi");
-        let cdo = S_ABOVE_H.price("cdo");
-        let pdi = S_ABOVE_H.price("pdi");
-        let pdo = S_ABOVE_H.price("pdo");
+        let cdi = S_ABOVE_H.price(BarrierType::CDI);
+        let cdo = S_ABOVE_H.price(BarrierType::CDO);
+        let pdi = S_ABOVE_H.price(BarrierType::PDI);
+        let pdo = S_ABOVE_H.price(BarrierType::PDO);
 
         assert_approx_equal!(cdi, 9.504815, 0.000001);
         assert_approx_equal!(cdo, 7.295022, 0.000001);
@@ -205,22 +225,22 @@ mod tests {
     #[test]
     #[should_panic(expected = "Barrier touched - check barrier and type flag.")]
     fn cui_panic() {
-        S_ABOVE_H.price("cui");
+        S_ABOVE_H.price(BarrierType::CUI);
     }
     #[test]
     #[should_panic(expected = "Barrier touched - check barrier and type flag.")]
     fn cuo_panic() {
-        S_ABOVE_H.price("cuo");
+        S_ABOVE_H.price(BarrierType::CUO);
     }
     #[test]
     #[should_panic(expected = "Barrier touched - check barrier and type flag.")]
     fn pui_panic() {
-        S_ABOVE_H.price("pui");
+        S_ABOVE_H.price(BarrierType::PUI);
     }
     #[test]
     #[should_panic(expected = "Barrier touched - check barrier and type flag.")]
     fn puo_panic() {
-        S_ABOVE_H.price("puo");
+        S_ABOVE_H.price(BarrierType::PUO);
     }
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -244,10 +264,10 @@ mod tests {
 
     #[test]
     fn test_S_below_H() {
-        let cui = S_BELOW_H.price("cui");
-        let cuo = S_BELOW_H.price("cuo");
-        let pui = S_BELOW_H.price("pui");
-        let puo = S_BELOW_H.price("puo");
+        let cui = S_BELOW_H.price(BarrierType::CUI);
+        let cuo = S_BELOW_H.price(BarrierType::CUO);
+        let pui = S_BELOW_H.price(BarrierType::PUI);
+        let puo = S_BELOW_H.price(BarrierType::PUO);
 
         assert_approx_equal!(cui, 4.692603, 0.000001);
         assert_approx_equal!(cuo, 0.022449, 0.000001);
@@ -258,21 +278,21 @@ mod tests {
     #[test]
     #[should_panic(expected = "Barrier touched - check barrier and type flag.")]
     fn cdi_panic() {
-        S_BELOW_H.price("cdi");
+        S_BELOW_H.price(BarrierType::CDI);
     }
     #[test]
     #[should_panic(expected = "Barrier touched - check barrier and type flag.")]
     fn cdo_panic() {
-        S_BELOW_H.price("cdo");
+        S_BELOW_H.price(BarrierType::CDO);
     }
     #[test]
     #[should_panic(expected = "Barrier touched - check barrier and type flag.")]
     fn pdi_panic() {
-        S_BELOW_H.price("pdi");
+        S_BELOW_H.price(BarrierType::PDI);
     }
     #[test]
     #[should_panic(expected = "Barrier touched - check barrier and type flag.")]
     fn pdo_panic() {
-        S_BELOW_H.price("pdo");
+        S_BELOW_H.price(BarrierType::PDO);
     }
 }
