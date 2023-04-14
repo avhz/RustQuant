@@ -5,6 +5,8 @@ Rust library for quantitative finance tools.
 
 Contact: rustquantcontact@gmail.com 
 
+**Disclaimer**: This is currently a free-time project and not a professional financial software library. Nothing in this library should be taken as financial advice, and I do not recommend you to use it for trading or making financial decisions. 
+
 ## Latest additions:
 
 + Forward start option pricer (Rubinstein 1990 formula).
@@ -15,9 +17,6 @@ Contact: rustquantcontact@gmail.com
     + Plus other basic numerical integrators (midpoint, trapezoid, Simpson's 3/8).
 + Characteristic functions and density functions for common distributions:
     + Gaussian, Bernoulli, Binomial, Poisson, Uniform, Chi-Squared, Gamma, and Exponential.
-
-**Disclaimer**: This is currently a free-time project and not a professional financial software library. Nothing in this library should be taken as financial advice, and I do not recommend you to use it for trading or making financial decisions. 
-
 
 # Table of Contents
 
