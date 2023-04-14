@@ -54,13 +54,12 @@ impl BinomialOption {
 
         let b: f64 = r - q;
         let (u, d, p, dt, Df): (f64, f64, f64, f64, f64);
-        let z: isize;
 
-        match CallPutFlag {
-            "c" => z = 1,
-            "p" => z = -1,
+        let z = match CallPutFlag {
+            "c" => 1,
+            "p" => -1,
             _ => panic!("Check call/put flag. Should be either 'c' or 'p'."),
-        }
+        };
 
         dt = T / n as f64;
         u = (v * dt.sqrt()).exp();

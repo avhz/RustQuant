@@ -28,10 +28,7 @@ impl Gaussian {
     pub fn new(mean: f64, variance: f64) -> Gaussian {
         assert!(variance > 0.0);
 
-        Gaussian {
-            mean: mean,
-            variance: variance,
-        }
+        Gaussian { mean, variance }
     }
 
     /// Gaussian characteristic function.

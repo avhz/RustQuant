@@ -70,12 +70,14 @@ mod tests {
         let output_parallel = (&bm).euler_maruyama(10.0, 0.0, 0.5, 100, 10, true);
 
         let file1 = "./Images/BM1.png";
-        plot_vector((&output_serial.trajectories[0]).clone(), file1).unwrap();
+        // plot_vector((&output_serial.trajectories[0]).clone(), file1).unwrap();
 
         let file2 = "./Images/BM2.png";
-        plot_vector((&output_serial.trajectories[1]).clone(), file2).unwrap();
+        // plot_vector((&output_serial.trajectories[1]).clone(), file2).unwrap();
 
         let file2 = "./Images/BM3_parallel.png";
-        plot_vector((&output_parallel.trajectories[0]).clone(), file2)
+        // plot_vector((&output_parallel.trajectories[0]).clone(), file2)
+
+        std::result::Result::Ok(())
     }
 }

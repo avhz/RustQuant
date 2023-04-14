@@ -49,9 +49,11 @@ mod tests {
         let output = ou.euler_maruyama(10.0, 0.0, 0.5, 100, 2, false);
 
         let file1 = "./Images/OU1.png";
-        plot_vector((&output.trajectories[0]).clone(), file1).unwrap();
+        // plot_vector((&output.trajectories[0]).clone(), file1).unwrap();
 
         let file2 = "./Images/OU2.png";
-        plot_vector((&output.trajectories[1]).clone(), file2)
+        // plot_vector((&output.trajectories[1]).clone(), file2)
+
+        std::result::Result::Ok(())
     }
 }

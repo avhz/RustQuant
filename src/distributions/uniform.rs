@@ -20,14 +20,10 @@ impl Uniform<'_> {
             Uniform {
                 a: a.round(),
                 b: b.round(),
-                class: class,
+                class,
             }
         } else if class == "continuous" {
-            Uniform {
-                a: a,
-                b: b,
-                class: class,
-            }
+            Uniform { a, b, class }
         } else {
             panic!("Class should be either 'discrete' or 'continuous'.")
         }

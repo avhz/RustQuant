@@ -36,7 +36,7 @@ impl Bernoulli {
 
         if k < 0 {
             0_f64
-        } else if k >= 0 && k < 1 {
+        } else if (0..1).contains(&k) {
             1_f64 - self.p
         } else {
             1_f64
