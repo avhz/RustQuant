@@ -7,7 +7,8 @@ Contact: rustquantcontact@gmail.com
 
 ## Latest additions:
 
-+ Gap option and cash-or-nothing option pricers (currently adding more binary options)
++ Forward start option pricer (Rubinstein 1990 formula).
++ Gap option and cash-or-nothing option pricers (currently adding more binary options).
 + Asian option pricer (closed-form solution for continuous geometric average).
 + Heston Model option pricer (uses the tanh-sinh quadrature numerical integrator).
 + Tanh-sinh (double exponential) quadrature for evaluating integrals.
@@ -49,11 +50,11 @@ Currently only gradients can be computed. Suggestions on how to extend the funct
 + Closed-form price solutions:
     + [x] Heston Model
     + [x] Barrier
-    + [x] European Options
+    + [x] European
     + [x] Greeks/Sensitivities
-    + [x] Lookback 
-    + Asian
-        + [x] Continuous Geometric Average 
+    + [x] Lookback
+    + [x] Asian: Continuous Geometric Average 
+    + [x] Forward Start 
     + [ ] Basket
     + [ ] Rainbow
     + [ ] American
