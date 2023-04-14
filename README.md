@@ -57,7 +57,6 @@ Currently only gradients can be computed. Suggestions on how to extend the funct
     + [ ] Basket
     + [ ] Rainbow
     + [ ] American
-    + [ ] Heston Model 
 
 + Lattice models:
     + [x] Binomial Tree (Cox-Ross-Rubinstein)

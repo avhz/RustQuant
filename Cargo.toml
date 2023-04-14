@@ -13,7 +13,7 @@ keywords = [
     "statistics",
     "quantlib",
 ]
-categories = ["mathematics", "science", "algorithms", "simulation"]
+categories = ["finance", "mathematics", "science", "algorithms", "simulation"]
 license = "GPL-3.0-or-later"
 
 [dependencies]

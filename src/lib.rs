@@ -22,6 +22,30 @@ pub mod bonds {
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// CURRENCIES
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+/// Parent module containing: global currencies.
+pub mod currencies {
+    pub use crate::currencies::{
+        africa::*, america::*, asia::*, currency::*, europe::*, oceania::*,
+    };
+
+    /// Submodule of `currencies`: African currencies.
+    pub mod africa;
+    /// Submodule of `currencies`: American currencies.
+    pub mod america;
+    /// Submodule of `currencies`: Asian currencies.
+    pub mod asia;
+    /// Submodule of `currencies`: currency data struct.
+    pub mod currency;
+    /// Submodule of `currencies`: European currencies.
+    pub mod europe;
+    /// Submodule of `currencies`: Oceanian currencies.
+    pub mod oceania;
+}
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // HELPERS AND UTILITIES
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
