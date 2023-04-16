@@ -1,11 +1,40 @@
+/// General option trait.
+/// All option types must implement this trait.
+/// All option contracts have:
+///     - `Prices` struct to store the option prices (call, put).
+///     - `Parameters` struct to store the option parameters (S, K, T, etc...).
+///     - `TypeFlag` enum to store the option type (call, put).
+///     - `Greeks` struct to store the option Greeks (sensitivities).
+///     - `prices` method to compute the option prices (call, put).
+///     - `set_parameters` method to set the option parameters.
+///     - `option_type` method to set the option type.
+///     - `greeks` method to compute the option Greeks (sensitivities).
+pub trait Option {
+    /// Option prices struct.
+    type Prices;
+    /// Option parameters struct.
+    type Parameters;
+    /// Option type enum (call or put).
+    type Type;
+    /// Option Greeks struct.
+    type Greeks;
+
+    /// Base method for computing the options prices (call and put).
+    fn prices(&self) -> Self::Prices;
+    /// Base method for setting the option parameters.
+    fn set_parameters(&self) -> Self::Parameters;
+    /// Base method for setting the option type.
+    fn option_type(&self) -> Self::Type;
+    /// Base method for computing the Greeks (sensitivities).
+    fn greeks(&self) -> Self::Greeks;
+}
+
 /// Option type enum.
 pub enum TypeFlag {
     /// Call option (right to BUY the underlying asset).
     CALL,
     /// Put option (right to SELL the underlying asset).
     PUT,
-    /// Used to return both call and put prices.
-    BOTH,
 }
 
 /// Generic option parameters struct.
