@@ -32,30 +32,30 @@ use std::f64::consts::PI;
 //     lambda.powi(k as i32) * (-lambda).exp() / ((1..=k).product::<u32>() as f64)
 // }
 
-/// Uniform (continuous): U(a, b)
-pub fn pdf_uniform_continuous(x: f64, a: f64, b: f64) -> f64 {
-    if x >= a && x <= b {
-        (b - a).recip()
-    } else {
-        0.0
-    }
-}
+// /// Uniform (continuous): U(a, b)
+// pub fn pdf_uniform_continuous(x: f64, a: f64, b: f64) -> f64 {
+//     if x >= a && x <= b {
+//         (b - a).recip()
+//     } else {
+//         0.0
+//     }
+// }
 
-/// Uniform (discrete): DU(a, b)
-pub fn pmf_uniform_discrete(a: isize, b: isize) -> f64 {
-    assert!(a <= b);
+// /// Uniform (discrete): DU(a, b)
+// pub fn pmf_uniform_discrete(a: isize, b: isize) -> f64 {
+//     assert!(a <= b);
 
-    let n = b - a + 1;
+//     let n = b - a + 1;
 
-    1_f64 / n as f64
-}
+//     1_f64 / n as f64
+// }
 
-/// Normal (univariate): N(mean, variance)
-pub fn pdf_gaussian(x: f64, mean: f64, variance: f64) -> f64 {
-    assert!(variance >= 0_f64);
+// /// Normal (univariate): N(mean, variance)
+// pub fn pdf_gaussian(x: f64, mean: f64, variance: f64) -> f64 {
+//     assert!(variance >= 0_f64);
 
-    (2_f64 * variance * PI).sqrt().recip() * (-0.5 * (x - mean).powi(2) / variance).exp()
-}
+//     (2_f64 * variance * PI).sqrt().recip() * (-0.5 * (x - mean).powi(2) / variance).exp()
+// }
 
 /// Chi-Squared: X^2(k)
 pub fn pdf_chi_squared(x: f64, k: usize) -> f64 {
@@ -70,83 +70,83 @@ pub fn pdf_chi_squared(x: f64, k: usize) -> f64 {
         * (-0.5 * x).exp()
 }
 
-/// Gamma: Gamma(k, theta)
-pub fn pdf_gamma(x: f64, k: f64, theta: f64) -> f64 {
-    assert!(x > 0_f64);
-    assert!(k > 0_f64);
-    assert!(theta > 0_f64);
+// /// Gamma: Gamma(k, theta)
+// pub fn pdf_gamma(x: f64, k: f64, theta: f64) -> f64 {
+//     assert!(x > 0_f64);
+//     assert!(k > 0_f64);
+//     assert!(theta > 0_f64);
 
-    (gamma(k) * theta.powf(k)).recip() * x.powf(k - 1_f64) * (-x / theta).exp()
-}
+//     (gamma(k) * theta.powf(k)).recip() * x.powf(k - 1_f64) * (-x / theta).exp()
+// }
 
-/// Exponential: Exp(lambda)
-pub fn pdf_exponential(x: f64, lambda: f64) -> f64 {
-    assert!(lambda > 0_f64);
-    assert!(x >= 0_f64);
+// /// Exponential: Exp(lambda)
+// pub fn pdf_exponential(x: f64, lambda: f64) -> f64 {
+//     assert!(lambda > 0_f64);
+//     assert!(x >= 0_f64);
 
-    lambda * (-lambda * x).exp()
-}
+//     lambda * (-lambda * x).exp()
+// }
 
 // // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // // TESTS: Characteristic Functions
 // // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-#[cfg(test)]
-mod tests {
-    use super::*;
-    use crate::assert_approx_equal;
+// #[cfg(test)]
+// mod tests {
+//     use super::*;
+//     use crate::assert_approx_equal;
 
-    // #[test]
-    // fn test_pmf_bernoulli() {
-    //     let value = pmf_bernoulli(1, 0.5);
-    //     assert_approx_equal!(value, 0.5, 1e-10);
-    // }
+//     // #[test]
+//     // fn test_pmf_bernoulli() {
+//     //     let value = pmf_bernoulli(1, 0.5);
+//     //     assert_approx_equal!(value, 0.5, 1e-10);
+//     // }
 
-    // #[test]
-    // fn test_pmf_binomial() {
-    //     let value = pmf_binomial(1, 1, 0.5);
-    //     assert_approx_equal!(value, 0.5, 1e-10);
-    // }
+//     // #[test]
+//     // fn test_pmf_binomial() {
+//     //     let value = pmf_binomial(1, 1, 0.5);
+//     //     assert_approx_equal!(value, 0.5, 1e-10);
+//     // }
 
-    // #[test]
-    // fn test_pmf_poisson() {
-    //     let value = pmf_poisson(1.0, 1);
-    //     assert_approx_equal!(value, 0.367879441171, 1e-10);
-    // }
+//     // #[test]
+//     // fn test_pmf_poisson() {
+//     //     let value = pmf_poisson(1.0, 1);
+//     //     assert_approx_equal!(value, 0.367879441171, 1e-10);
+//     // }
 
-    // #[test]
-    // fn test_pdf_uniform_continuous() {
-    //     let value = pdf_uniform_continuous(1.0, 0.0, 1.0);
-    //     assert_approx_equal!(value, 1_f64, 1e-10);
-    // }
+//     // #[test]
+//     // fn test_pdf_uniform_continuous() {
+//     //     let value = pdf_uniform_continuous(1.0, 0.0, 1.0);
+//     //     assert_approx_equal!(value, 1_f64, 1e-10);
+//     // }
 
-    // #[test]
-    // fn test_pmf_uniform_discrete() {
-    //     let value = pmf_uniform_discrete(0, 1);
-    //     assert_approx_equal!(value, 0.5, 1e-10);
-    // }
+//     // #[test]
+//     // fn test_pmf_uniform_discrete() {
+//     //     let value = pmf_uniform_discrete(0, 1);
+//     //     assert_approx_equal!(value, 0.5, 1e-10);
+//     // }
 
-    #[test]
-    fn test_pdf_gaussian() {
-        let value = pdf_gaussian(1.0, 0.0, 1.0);
-        assert_approx_equal!(value, 0.241970724519, 1e-10);
-    }
+//     #[test]
+//     fn test_pdf_gaussian() {
+//         let value = pdf_gaussian(1.0, 0.0, 1.0);
+//         assert_approx_equal!(value, 0.241970724519, 1e-10);
+//     }
 
-    #[test]
-    fn test_pdf_chi_square() {
-        let value = pdf_chi_squared(1.0, 1);
-        assert_approx_equal!(value, 0.241970724519, 1e-10);
-    }
+//     #[test]
+//     fn test_pdf_chi_square() {
+//         let value = pdf_chi_squared(1.0, 1);
+//         assert_approx_equal!(value, 0.241970724519, 1e-10);
+//     }
 
-    #[test]
-    fn test_pdf_gamma() {
-        let value = pdf_gamma(1.0, 1.0, 1.0);
-        assert_approx_equal!(value, 0.367879441171, 1e-10);
-    }
+//     #[test]
+//     fn test_pdf_gamma() {
+//         let value = pdf_gamma(1.0, 1.0, 1.0);
+//         assert_approx_equal!(value, 0.367879441171, 1e-10);
+//     }
 
-    #[test]
-    fn test_cf_exponential() {
-        let value = pdf_exponential(1.0, 1.0);
-        assert_approx_equal!(value, 0.367879441171, 1e-10);
-    }
-}
+//     #[test]
+//     fn test_cf_exponential() {
+//         let value = pdf_exponential(1.0, 1.0);
+//         assert_approx_equal!(value, 0.367879441171, 1e-10);
+//     }
+// }

@@ -9,6 +9,7 @@ Contact: rustquantcontact@gmail.com
 
 ## Latest additions:
 
++ Gamma, exponential, and chi-squared distributions.
 + Forward start option pricer (Rubinstein 1990 formula).
 + Gap option and cash-or-nothing option pricers (currently adding more binary options).
 + Asian option pricer (closed-form solution for continuous geometric average).
@@ -117,9 +118,9 @@ Probability density/mass functions, distribution functions, characteristic funct
 + [x] Binomial
 + [x] Poisson
 + [x] Uniform (discrete & continuous)
-+ [ ] Chi-Squared
-+ [ ] Gamma
-+ [ ] Exponential
++ [x] Chi-Squared
++ [x] Gamma
++ [x] Exponential
 
 ## Mathematics <a name="maths"></a>
 

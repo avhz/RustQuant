@@ -23,13 +23,13 @@ pub enum ISO_4217 {
     /// United Arab Emirates dirham
     AED = 784,
     /// Argentine peso
-    ARS = 032,
+    ARS = 32,
     /// Australian dollar
-    AUD = 036,
+    AUD = 36,
     /// Bulgarian lev
     BGN = 975,
     /// Brunei dollar
-    BND = 096,
+    BND = 96,
     /// Brazilian real
     BRL = 986,
     /// Canadian dollar

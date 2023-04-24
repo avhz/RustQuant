@@ -8,7 +8,7 @@ struct AUDCurrency {
 }
 
 impl AUDCurrency {
-    fn new() -> Self {
+    pub fn new() -> Self {
         Self {
             data: Currency {
                 name: "Australian Dollar".to_string(),
