@@ -2,7 +2,7 @@
 //!
 //! The risk-neutral short rate follows the process:
 //!
-//! dr = a(b-r)dt + sigma * sqrt(r) * dz
+//! dr = a(b-r)dt + sigma * sqrt(r) * dW
 //!
 //! It incorporates a mean-reversion factor into the drift term:
 //!

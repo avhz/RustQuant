@@ -1,4 +1,5 @@
 use {
+    super::Distribution as RQ_Distribution,
     num_complex::Complex,
     rand::thread_rng,
     rand_distr::{Distribution, Normal},
@@ -31,33 +32,8 @@ impl Gaussian {
         Gaussian { mean, variance }
     }
 
-    /// Gaussian characteristic function.
-    pub fn cf(&self, t: f64) -> Complex<f64> {
-        assert!(self.variance > 0.0);
-
-        let i: Complex<f64> = Complex::i();
-
-        (i * self.mean * t - 0.5 * (self.variance).powi(2) * (t).powi(2)).exp()
-    }
-
-    /// Gaussian density function.
-    pub fn pdf(&self, x: f64) -> f64 {
-        assert!(self.variance > 0.0);
-
-        (-0.5 * ((x - self.mean) / self.variance).powi(2)).exp() / (2.0 * PI * self.variance).sqrt()
-    }
-
-    /// Gaussian distribution function.
-    /// I used `erfc` (complementary error function) instead of `erf` to avoid
-    /// subtractive cancellation that leads to inaccuracy in the tails.
-    pub fn cdf(&self, x: f64) -> f64 {
-        assert!(self.variance > 0.0);
-
-        0.5 * erf::erfc(-(x - self.mean) / (SQRT_2 * self.variance.sqrt()))
-    }
-
     /// Standard Normal Random Variates Generator
-    pub fn variates(&self, n: usize) -> Vec<f64> {
+    pub fn sample(&self, n: usize) -> Vec<f64> {
         let mut rng = thread_rng();
         let normal = Normal::new(0.0, 1.0).unwrap();
         let mut variates: Vec<f64> = Vec::with_capacity(n);
@@ -70,8 +46,97 @@ impl Gaussian {
     }
 }
 
+impl RQ_Distribution for Gaussian {
+    /// Characteristic function of the Gaussian distribution.
+    fn cf(&self, t: f64) -> Complex<f64> {
+        assert!(self.variance > 0.0);
+
+        let i: Complex<f64> = Complex::i();
+
+        (i * self.mean * t - 0.5 * (self.variance).powi(2) * (t).powi(2)).exp()
+    }
+
+    /// Probability density function of the Gaussian distribution.
+    /// https://en.wikipedia.org/wiki/Normal_distribution
+    fn pdf(&self, x: f64) -> f64 {
+        assert!(self.variance > 0.0);
+
+        (-0.5 * ((x - self.mean) / self.variance).powi(2)).exp() / (2.0 * PI * self.variance).sqrt()
+    }
+
+    fn pmf(&self, x: f64) -> f64 {
+        panic!("Gaussian distribution is continuous. Use pdf() instead.");
+    }
+
+    /// Distribution function of the Gaussian distribution.
+    /// I used `erfc` (complementary error function) instead of `erf` to avoid
+    /// subtractive cancellation that leads to inaccuracy in the tails.
+    fn cdf(&self, x: f64) -> f64 {
+        assert!(self.variance > 0.0);
+
+        0.5 * erf::erfc(-(x - self.mean) / (SQRT_2 * self.variance.sqrt()))
+    }
+
+    /// Inverse distribution (quantile) function of the Gaussian distribution.
+    fn inv_cdf(&self, p: f64) -> f64 {
+        assert!(self.variance > 0.0);
+
+        self.mean + SQRT_2 * self.variance.sqrt() * erf::erfc_inv(2.0 * p - 1.0)
+    }
+
+    /// Returns the mean of the Gaussian distribution.
+    /// https://en.wikipedia.org/wiki/Mean
+    fn mean(&self) -> f64 {
+        self.mean
+    }
+
+    /// Returns the median of the Gaussian distribution.
+    /// https://en.wikipedia.org/wiki/Median
+    fn median(&self) -> f64 {
+        self.mean
+    }
+
+    /// Returns the mode of the Gaussian distribution.
+    /// https://en.wikipedia.org/wiki/Mode_(statistics)
+    fn mode(&self) -> f64 {
+        self.mean
+    }
+
+    /// Returns the variance of the Gaussian distribution.
+    /// https://en.wikipedia.org/wiki/Variance
+    fn variance(&self) -> f64 {
+        self.variance
+    }
+
+    /// Returns the skewness of the Gaussian distribution.
+    /// https://en.wikipedia.org/wiki/Skewness
+    fn skewness(&self) -> f64 {
+        0_f64
+    }
+
+    /// Returns the kurtosis of the Gaussian distribution.
+    /// https://en.wikipedia.org/wiki/Kurtosis
+    fn kurtosis(&self) -> f64 {
+        0_f64
+    }
+
+    /// Returns the entropy of the Gaussian distribution.
+    fn entropy(&self) -> f64 {
+        0.5 * (1.0 + (2.0 * PI * self.variance).ln())
+    }
+
+    /// Returns the moment generating function of the Gaussian distribution.
+    /// https://en.wikipedia.org/wiki/Moment-generating_function
+    /// M(t) = E(e^tX)
+    fn mgf(&self, t: f64) -> f64 {
+        assert!(self.variance > 0.0);
+
+        (self.mean * t + self.variance * t * t / 2_f64).exp()
+    }
+}
+
 #[cfg(test)]
-mod tests {
+mod gaussian_tests {
     use super::*;
     use crate::assert_approx_equal;
 
@@ -127,7 +192,7 @@ mod tests {
     fn test_gaussian_variate_generator() {
         let normal = Gaussian::default();
 
-        let v = normal.variates(1000);
+        let v = normal.sample(1000);
 
         let mean = (v.iter().sum::<f64>()) / (v.len() as f64);
 

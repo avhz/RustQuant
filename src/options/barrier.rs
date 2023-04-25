@@ -1,7 +1,7 @@
 #![allow(non_snake_case)]
 #![deny(missing_docs)]
 
-use crate::distributions::gaussian::*;
+use crate::distributions::{gaussian::*, Distribution};
 // use crate::math::normal_distribution::*;
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

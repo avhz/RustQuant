@@ -5,7 +5,7 @@
 // FORWARD START OPTION STRUCT
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use crate::distributions::Gaussian;
+use crate::distributions::{Distribution, Gaussian};
 
 /// Forward Start Option parameters struct
 #[derive(Debug)]

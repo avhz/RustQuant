@@ -5,7 +5,7 @@
 // EUROPEAN OPTION STRUCT
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use crate::distributions::Gaussian;
+use crate::distributions::{Distribution, Gaussian};
 
 /// Black-Scholes Vanilla European Option
 #[derive(Debug)]

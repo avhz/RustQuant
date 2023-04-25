@@ -1,4 +1,9 @@
-use crate::{distributions::Gaussian, helpers::*, options::*, stochastics::*};
+use crate::{
+    distributions::{Distribution, Gaussian},
+    helpers::*,
+    options::*,
+    stochastics::*,
+};
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // LOOKBACK OPTION STRUCTS

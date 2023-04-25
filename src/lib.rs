@@ -109,8 +109,8 @@ pub mod math {
 /// Parent module containing: random variable distributions (PDFs, CDFs, CFs, etc).
 pub mod distributions {
     pub use crate::distributions::{
-        bernoulli::*, binomial::*, chi_squared::*, exponential::*, gamma::*, gaussian::*,
-        poisson::*, uniform::*,
+        bernoulli::*, binomial::*, chi_squared::*, distribution::*, exponential::*, gamma::*,
+        gaussian::*, poisson::*, uniform::*,
     };
 
     /// Submodule of `distributions`: the Bernoulli distribution.
@@ -119,6 +119,8 @@ pub mod distributions {
     pub mod binomial;
     /// Submodule of `distributions`: the Chi-Squared distribution.
     pub mod chi_squared;
+    /// Submodule of `distributions`: base trait for all distributions.
+    pub mod distribution;
     /// Submodule of `distributions`: the Exponential distribution.
     pub mod exponential;
     /// Submodule of `distributions`: the Gamma distribution.

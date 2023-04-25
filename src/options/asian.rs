@@ -1,7 +1,6 @@
 #![deny(missing_docs)]
 
-use crate::distributions::gaussian::*;
-// use crate::math::normal_distribution::*;
+use crate::distributions::{gaussian::*, Distribution};
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // STRUCTS

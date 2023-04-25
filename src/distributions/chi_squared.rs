@@ -30,7 +30,7 @@ impl ChiSquared {
         let k = self.k;
 
         x.powf((k as f64 / 2_f64) - 1_f64) * (-x / 2_f64).exp()
-            / (2_f64.powf(k as f64 / 2_f64) * gamma(k as f64 / 2 as f64))
+            / (2_f64.powf(k as f64 / 2_f64) * gamma(k as f64 / 2.0))
     }
 
     /// Chi-Squared distribution function.
@@ -39,7 +39,7 @@ impl ChiSquared {
 
         let k = self.k;
 
-        gamma_li(k as f64 / 2 as f64, x / 2_f64) / gamma(k as f64 / 2_f64)
+        gamma_li(k as f64 / 2.0, x / 2_f64) / gamma(k as f64 / 2_f64)
     }
 }
 

@@ -1,3 +1,8 @@
+use num_complex::Complex;
+
+/// Base trait for all distributions.
+/// Provides common methods for all distributions.
+/// All distributions must implement this trait.
 pub trait Distribution {
     /// Characteristic function of the distribution.
     /// Returns the value of the characteristic function at t.
@@ -7,7 +12,13 @@ pub trait Distribution {
 
     /// Probability density function of the distribution.
     /// Returns the probability that a random variable is equal to x.
+    /// NOTE: Panics if the distribution is discrete.
     fn pdf(&self, x: f64) -> f64;
+
+    /// Probability mass function of the distribution.
+    /// Returns the probability that a random variable is equal to x.
+    /// NOTE: Panics if the distribution is continuous.
+    fn pmf(&self, x: f64) -> f64;
 
     /// Distribution function of the distribution.
     /// Returns the probability that a random variable is less than or equal to x.
