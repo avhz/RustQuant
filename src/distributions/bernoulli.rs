@@ -25,7 +25,7 @@ impl Distribution for Bernoulli {
         1_f64 - self.p + self.p * (i * t).exp()
     }
 
-    fn pdf(&self, x: f64) -> f64 {
+    fn pdf(&self, _x: f64) -> f64 {
         panic!("Bernoulli distribution is discrete. Use pmf() instead.");
     }
 
@@ -48,7 +48,7 @@ impl Distribution for Bernoulli {
         }
     }
 
-    fn inv_cdf(&self, p: f64) -> f64 {
+    fn inv_cdf(&self, _p: f64) -> f64 {
         panic!("Generalised inverse CDF not implemented for Bernoulli distribution.");
     }
 
