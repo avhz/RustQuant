@@ -237,8 +237,8 @@ impl LookbackOption {
 
         (
             // Discounted mean of the call and put payoffs.
-            (-r * t_n).exp() * mean(&call_payoffs),
-            (-r * t_n).exp() * mean(&put_payoffs),
+            (-r * t_n).exp() * mean(&call_payoffs, MeanType::Arithmetic),
+            (-r * t_n).exp() * mean(&put_payoffs, MeanType::Arithmetic),
         )
     }
 }

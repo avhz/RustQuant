@@ -6,6 +6,32 @@ use crate::distributions::{gaussian::*, Distribution};
 // STRUCTS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+/// Type of Asian option (fixed or floating strike).
+pub enum AsianStrike {
+    /// Floating strike Asian option.
+    /// Payoffs:
+    /// - Call: `max(S_T - A, 0)`
+    /// - Put: `max(A - S_T, 0)`
+    Floating,
+    /// Fixed strike Asian option.
+    /// Payoffs:
+    /// - Call: `max(A - K, 0)`
+    /// - Put: `max(K - A, 0)`
+    Fixed,
+}
+
+/// Method of averaging (arithmetic or geometric, and continuous or discrete).
+pub enum AveragingMethod {
+    /// Arithmetic Asian option with discrete averaging.
+    ArithmeticDiscrete,
+    /// Arithmetic Asian option with continuous averaging.
+    ArithmeticContinuous,
+    /// Geometric Asian option with discrete averaging.
+    GeometricDiscrete,
+    /// Geometric Asian option with continuous averaging.
+    GeometricContinuous,
+}
+
 /// Asian Option struct.
 #[derive(Debug)]
 pub struct AsianOption {
