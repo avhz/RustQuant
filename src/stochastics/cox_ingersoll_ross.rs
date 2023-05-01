@@ -32,6 +32,10 @@ impl StochasticProcess for CoxIngersollRoss {
     fn diffusion(&self, x: f64) -> f64 {
         self.sigma * x.sqrt()
     }
+
+    fn jump(&self, _x: f64) -> f64 {
+        0_f64
+    }
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

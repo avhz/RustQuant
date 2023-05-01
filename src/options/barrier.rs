@@ -2,7 +2,6 @@
 #![deny(missing_docs)]
 
 use crate::distributions::{gaussian::*, Distribution};
-// use crate::math::normal_distribution::*;
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // BARRIER OPTION STRUCT
@@ -32,20 +31,28 @@ pub struct BarrierOption {
 /// Barrier option type enum.
 pub enum BarrierType {
     /// Call (up-and-in)
+    /// Payoff: `max(S_T - X, 0) * I(max(S_t) > H)`
     CUI,
     /// Call (down-and-in)
+    /// Payoff: `max(S_T - X, 0) * I(min(S_t) < H)`
     CDI,
     /// Call (up-and-out)
+    /// Payoff: `max(S_T - X, 0) * I(max(S_t) < H)`
     CUO,
     /// Call (down-and-out)
+    /// Payoff: `max(S_T - X, 0) * I(min(S_t) > H)`
     CDO,
     /// Put (up-and-in)
+    /// Payoff: `max(X - S_T, 0) * I(max(S_t) > H)`
     PUI,
     /// Put (down-and-in)
+    /// Payoff: `max(X - S_T, 0) * I(min(S_t) < H)`
     PDI,
     /// Put (up-and-out)
+    /// Payoff: `max(X - S_T, 0) * I(max(S_t) < H)`
     PUO,
     /// Put (down-and-out)
+    /// Payoff: `max(X - S_T, 0) * I(min(S_t) > H)`
     PDO,
 }
 

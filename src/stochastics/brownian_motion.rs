@@ -27,6 +27,10 @@ impl StochasticProcess for BrownianMotion {
     fn diffusion(&self, _x: f64) -> f64 {
         1_f64
     }
+
+    fn jump(&self, _x: f64) -> f64 {
+        0_f64
+    }
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -34,7 +38,7 @@ impl StochasticProcess for BrownianMotion {
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 #[cfg(test)]
-mod tests {
+mod sde_tests {
     // use std::time::Instant;
 
     use super::*;

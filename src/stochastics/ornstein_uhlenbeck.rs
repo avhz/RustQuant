@@ -31,6 +31,10 @@ impl StochasticProcess for OrnsteinUhlenbeck {
     fn diffusion(&self, _x: f64) -> f64 {
         self.sigma
     }
+
+    fn jump(&self, _x: f64) -> f64 {
+        0_f64
+    }
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

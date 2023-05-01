@@ -9,7 +9,7 @@
 ///     - `set_parameters` method to set the option parameters.
 ///     - `option_type` method to set the option type.
 ///     - `greeks` method to compute the option Greeks (sensitivities).
-pub trait Option {
+pub trait OptionContract {
     /// Option prices struct.
     type Prices;
     /// Option parameters struct.

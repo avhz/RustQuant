@@ -7,6 +7,8 @@
 //! Autonomous refers to processes where the drift and diffusion
 //! do not explicitly depend on the time `t`.
 
+use rand::prelude::Distribution;
+use rayon::prelude::*;
 use statrs::distribution::Normal;
 
 /// Struct to contain the time points and path values of the process.
@@ -24,6 +26,9 @@ pub trait StochasticProcess: Sync {
 
     /// Base method for the process' diffusion.
     fn diffusion(&self, x: f64) -> f64;
+
+    /// Base method for the process' jump term (if applicable).
+    fn jump(&self, x: f64) -> f64;
 
     /// Euler-Maruyama discretisation scheme.
     ///
@@ -43,9 +48,6 @@ pub trait StochasticProcess: Sync {
         sims: usize,
         parallel: bool,
     ) -> Trajectories {
-        use rand::prelude::Distribution;
-        use rayon::prelude::*;
-
         assert!(t_0 < t_n);
 
         let dt: f64 = (t_n - t_0) / (n as f64);
