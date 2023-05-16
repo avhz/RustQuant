@@ -27,7 +27,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Generate code coverage report.
-        run: cargo +nightly tarpaulin --verbose --all-features --workspace --timeout 120 --out Xml
+        run: cargo tarpaulin --verbose --all-features --workspace --timeout 120 --out Xml
       - name: Upload coverage reports to Codecov.io
         uses: codecov/codecov-action@v3
         with:
