@@ -20,6 +20,8 @@ pub struct Currency {
 #[derive(Debug, Clone, Copy)]
 #[allow(non_camel_case_types)]
 pub enum ISO_4217 {
+    /// Antarctic dollar
+    AAD,
     /// United Arab Emirates dirham
     AED = 784,
     /// Argentine peso
