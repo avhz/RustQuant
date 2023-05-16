@@ -12,6 +12,8 @@
         <img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/avhz/RustQuant?style=plastic">
     <a href="#version" alt="version">
         <img alt="Crates.io" src="https://img.shields.io/crates/v/RustQuant?style=plastic">
+    <a href="#codecov" alt="codecov">
+        <img alt="Codecov" src="https://img.shields.io/codecov/c/gh/avhz/RustQuant">
 </p>
 
 
