@@ -1,6 +1,11 @@
 
 # `RustQuant`
 
+<p align="center">
+    <a href="#license" alt="license">
+        <img alt="GitHub" src="https://img.shields.io/github/license/avhz/RustQuant?style=plastic">
+</p>
+
 Rust library for quantitative finance tools. 
 
 Any feedback, suggestions, or contributions are strongly welcomed!
