@@ -3,12 +3,15 @@
 
 Rust library for quantitative finance tools. 
 
+Any feedback, suggestions, or contributions are strongly welcomed!
+
 Contact: rustquantcontact@gmail.com 
 
 **Disclaimer**: This is currently a free-time project and not a professional financial software library. Nothing in this library should be taken as financial advice, and I do not recommend you to use it for trading or making financial decisions. 
 
 ## Latest additions:
 
++ Arithmetic Brownian Motion generator. 
 + Gamma, exponential, and chi-squared distributions.
 + Forward start option pricer (Rubinstein 1990 formula).
 + Gap option and cash-or-nothing option pricers (currently adding more binary options).
@@ -75,6 +78,8 @@ The stochastic process generators can be used to price path-dependent options vi
 The following is a list of stochastic processes that can be generated.
 
 + [x] Brownian Motion
++ [x] Arithmetic Brownian Motion
+    + $dX_t = \mu dt + \sigma dW_t$
 + [x] Geometric Brownian Motion
     + $dX_t = \mu X_t dt + \sigma X_t dW_t$
     + Models: Black-Scholes (1973), Rendleman-Bartter (1980)
