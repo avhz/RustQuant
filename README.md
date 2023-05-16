@@ -23,7 +23,7 @@ Contact: rustquantcontact@gmail.com
 
 **Disclaimer**: This is currently a free-time project and not a professional financial software library. Nothing in this library should be taken as financial advice, and I do not recommend you to use it for trading or making financial decisions. 
 
-## Latest additions:
+## :newspaper: Latest features
 
 + Arithmetic Brownian Motion generator. 
 + Gamma, exponential, and chi-squared distributions.
