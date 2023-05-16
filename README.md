@@ -10,6 +10,8 @@
         <img alt="Crates.io" src="https://img.shields.io/crates/d/RustQuant?style=plastic">
     <a href="#stars" alt="stars">
         <img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/avhz/RustQuant?style=plastic">
+    <a href="#version" alt="version">
+        <img alt="Crates.io" src="https://img.shields.io/crates/v/RustQuant?style=plastic">
 </p>
 
 
