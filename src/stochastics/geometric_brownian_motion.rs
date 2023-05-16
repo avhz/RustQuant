@@ -48,7 +48,7 @@ mod tests_gbm {
     fn test_geometric_brownian_motion() -> Result<(), Box<dyn std::error::Error>> {
         let gbm = GeometricBrownianMotion::new(0.05, 0.9);
 
-        let output = (&gbm).euler_maruyama(10.0, 0.0, 0.5, 500, 1000, false);
+        let output = (&gbm).euler_maruyama(10.0, 0.0, 0.5, 125, 10000, false);
 
         // Test the distribution of the final values.
         let X_T: Vec<f64> = output
@@ -65,7 +65,7 @@ mod tests_gbm {
         assert_approx_equal!(
             V_XT,
             10. * 10. * (2. * 0.05 * 0.5 as f64).exp() * ((0.9 * 0.9 * 0.5 as f64).exp() - 1.),
-            5.
+            5.0
         );
 
         // let file1 = "./Images/GBM1.png";
