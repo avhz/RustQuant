@@ -3,8 +3,15 @@
 
 <p align="center">
     <a href="#license" alt="license">
-        <img alt="GitHub" src="https://img.shields.io/github/license/avhz/RustQuant?style=plastic">
+        <img alt="License" src="https://img.shields.io/github/license/avhz/RustQuant?style=plastic">
+    <a href="#build" alt="build">
+        <img alt="GitHub Workflow Status" src="https://img.shields.io/github/actions/workflow/status/avhz/RustQuant/rust.yml">
+    <a href="#downloads" alt="downloads">
+        <img alt="Crates.io" src="https://img.shields.io/crates/d/RustQuant?style=plastic">
+    <a href="#stars" alt="stars">
+        <img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/avhz/RustQuant?style=plastic">
 </p>
+
 
 Rust library for quantitative finance tools. 
 
