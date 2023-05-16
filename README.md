@@ -163,7 +163,7 @@ A collection of utility functions and macros.
 + [x] Linearly spaced sequence.
 + [x] `assert_approx_equal!`
 
-## How-tos <a name="howto"></a>
+## :heavy_check_mark: How-tos <a name="howto"></a>
 
 I would not recommend using RustQuant within any other libraries for some time, as it will most likely go through many breaking changes as I learn more Rust and settle on a decent structure for the library. 
 
@@ -251,7 +251,7 @@ fn main() {
 }
 ```
 
-## References: <a name="references"></a>
+## :book: References: <a name="references"></a>
 
 + John C. Hull - *Options, Futures, and Other Derivatives*
 + Damiano Brigo & Fabio Mercurio - *Interest Rate Models - Theory and Practice (With Smile, Inflation and Credit)*
