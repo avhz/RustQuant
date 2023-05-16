@@ -49,7 +49,7 @@ Contact: rustquantcontact@gmail.com
 8. [References](#references)
 
 
-## Automatic Differentiation <a name="autodiff"></a>
+## :link: Automatic Differentiation <a name="autodiff"></a>
 
 Currently only gradients can be computed. Suggestions on how to extend the functionality to Hessian matrices are definitely welcome. 
 
@@ -62,7 +62,7 @@ Currently only gradients can be computed. Suggestions on how to extend the funct
     + Useful when number of outputs is *larger* than number of inputs. 
         + i.e. for functions $f:\mathbb{R}^n \rightarrow \mathbb{R}^m$, where $m \gg n$
 
-## Option Pricers <a name="options"></a>
+## :money_with_wings: Option Pricers <a name="options"></a>
 
 + Closed-form price solutions:
     + [x] Heston Model
@@ -87,7 +87,7 @@ The stochastic process generators can be used to price path-dependent options vi
     + [ ] Chooser
     + [ ] Barrier
 
-## Stochastic Processes and Short Rate Models <a name="stochastics"></a>
+## :chart_with_upwards_trend: Stochastic Processes and Short Rate Models <a name="stochastics"></a>
 
 The following is a list of stochastic processes that can be generated.
 
@@ -113,7 +113,7 @@ The following is a list of stochastic processes that can be generated.
     + $X_t = X_0 + at + \sigma W_t^*$
     + $dX_t = adt + \sigma dW_t^*$
 
-## Bonds <a name="bonds"></a>
+## :chart_with_downwards_trend: Bonds <a name="bonds"></a>
 
 Most will follow the notation and formulas in John C. Hull's *Options, Futures, and Other Derivatives*.
 
@@ -128,7 +128,7 @@ Most will follow the notation and formulas in John C. Hull's *Options, Futures, 
 + [ ] Duration
 + [ ] Convexity
 
-## Distributions <a name="distributions"></a>
+## :bar_chart: Distributions <a name="distributions"></a>
 
 Probability density/mass functions, distribution functions, characteristic functions, etc. 
 
@@ -141,7 +141,7 @@ Probability density/mass functions, distribution functions, characteristic funct
 + [x] Gamma
 + [x] Exponential
 
-## Mathematics <a name="maths"></a>
+## :triangular_ruler: Mathematics <a name="maths"></a>
 
 + Numerical Integration (needed for Heston model, for example):
     + [x] Tanh-Sinh (double exponential) quadrature 
@@ -153,7 +153,7 @@ Probability density/mass functions, distribution functions, characteristic funct
 + [x] Standard Normal Distribution (Distribution/Density functions, and generation of variates)
 + [ ] Interpolation
 
-## Helper Functions and Macros <a name="helpers"></a>
+## :handshake: Helper Functions and Macros <a name="helpers"></a>
 
 A collection of utility functions and macros. 
 
