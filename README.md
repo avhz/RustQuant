@@ -3,15 +3,15 @@
 
 <p align="center">
     <a href="#license" alt="license">
-        <img alt="License" src="https://img.shields.io/github/license/avhz/RustQuant?style=plastic">
+        <img alt="License" src="https://img.shields.io/github/license/avhz/RustQuant">
     <a href="#build" alt="build">
         <img alt="GitHub Workflow Status" src="https://img.shields.io/github/actions/workflow/status/avhz/RustQuant/rust.yml">
     <a href="#downloads" alt="downloads">
-        <img alt="Crates.io" src="https://img.shields.io/crates/d/RustQuant?style=plastic">
+        <img alt="Crates.io" src="https://img.shields.io/crates/d/RustQuant">
     <a href="#stars" alt="stars">
-        <img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/avhz/RustQuant?style=plastic">
+        <img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/avhz/RustQuant">
     <a href="#version" alt="version">
-        <img alt="Crates.io" src="https://img.shields.io/crates/v/RustQuant?style=plastic">
+        <img alt="Crates.io" src="https://img.shields.io/crates/v/RustQuant">
     <a href="#codecov" alt="codecov">
         <img alt="Codecov" src="https://img.shields.io/codecov/c/gh/avhz/RustQuant">
 </p>
