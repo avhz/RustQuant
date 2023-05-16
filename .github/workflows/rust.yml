@@ -1,4 +1,4 @@
-name: Rust
+name: RustQuant
 
 on:
   push:
@@ -11,14 +11,19 @@ env:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v3
     - name: Build
       run: cargo build --release --verbose
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
     - name: Run tests
       run: cargo test --release --verbose
+  codecov:
+    runs-on: ubuntu-latest
+    steps:
     - name: Upload coverage reports to Codecov
       uses: codecov/codecov-action@v3
