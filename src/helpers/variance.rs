@@ -10,7 +10,7 @@ pub enum VarianceType {
 
 /// Variance of a vector.
 pub fn variance(v: &Vec<f64>, variance_type: VarianceType) -> f64 {
-    assert!(v.len() > 0, "Vector must have at least one element.");
+    assert!(!v.is_empty(), "Vector must have at least one element.");
 
     match variance_type {
         VarianceType::Population => {
@@ -27,7 +27,7 @@ pub fn variance(v: &Vec<f64>, variance_type: VarianceType) -> f64 {
 #[cfg(test)]
 mod tests_variance {
     use super::*;
-    use crate::{assert_approx_equal, helpers::*};
+    use crate::assert_approx_equal;
 
     #[test]
     fn test_variance() {
