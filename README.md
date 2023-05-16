@@ -17,7 +17,7 @@
 
 Rust library for quantitative finance tools. 
 
-Any feedback, suggestions, or contributions are strongly welcomed!
+:dart: I want to hit `v1.0.0` by the end of 2023, so any and all feedback, suggestions, or contributions are strongly welcomed! 
 
 Contact: rustquantcontact@gmail.com 
 
