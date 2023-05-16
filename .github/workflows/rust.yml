@@ -20,3 +20,5 @@ jobs:
       run: cargo build --release --verbose
     - name: Run tests
       run: cargo test --release --verbose
+    - name: Upload coverage reports to Codecov
+      uses: codecov/codecov-action@v3
