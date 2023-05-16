@@ -52,7 +52,9 @@ pub mod currencies {
 /// Parent module containing: helper functions used throughout the library.
 #[macro_use]
 pub mod helpers {
-    pub use crate::helpers::{cumsum::*, linspace::*, macros::*, mean::*, minmax::*, plot::*};
+    pub use crate::helpers::{
+        cumsum::*, linspace::*, macros::*, mean::*, minmax::*, plot::*, variance::*,
+    };
 
     /// Submodule of `helpers`: implements the cumulative sum of a vector.
     pub mod cumsum;
@@ -66,6 +68,8 @@ pub mod helpers {
     pub mod minmax;
     /// Submodule of `helpers`: implements plotting/writing vectors to files.
     pub mod plot;
+    /// Submodule of `helpers`: variance of a vector.
+    pub mod variance;
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -140,10 +144,12 @@ pub mod distributions {
 /// Parent module containing: Monte Carlo engines to simulate stochastic processes.
 pub mod stochastics {
     pub use crate::stochastics::{
-        brownian_motion::*, cox_ingersoll_ross::*, geometric_brownian_motion::*,
-        ornstein_uhlenbeck::*, process::*,
+        arithmetic_brownian_motion::*, brownian_motion::*, cox_ingersoll_ross::*,
+        geometric_brownian_motion::*, ornstein_uhlenbeck::*, process::*,
     };
 
+    /// Submodule of `stochastics`: implements Arithmetic Brownian Motion.
+    pub mod arithmetic_brownian_motion;
     /// Submodule of `stochastics`: implements Standard Brownian Motion.
     pub mod brownian_motion;
     /// Submodule of `stochastics`: implements the Cox-Ingersoll-Ross process.

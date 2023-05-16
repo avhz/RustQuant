@@ -43,20 +43,43 @@ impl StochasticProcess for CoxIngersollRoss {
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 #[cfg(test)]
-mod tests {
+mod tests_cir {
     use super::*;
-    use crate::helpers::*;
+    use crate::{assert_approx_equal, helpers::*};
 
     #[test]
     fn test_cox_ingersoll_ross() -> Result<(), Box<dyn std::error::Error>> {
         let cir = CoxIngersollRoss::new(0.15, 0.45, 0.01);
 
-        let output = cir.euler_maruyama(10.0, 0.0, 0.5, 100, 2, false);
+        let output = cir.euler_maruyama(10.0, 0.0, 0.5, 100, 100, false);
 
-        let file1 = "./Images/CIR1.png";
+        // Test the distribution of the final values.
+        let X_T: Vec<f64> = output
+            .trajectories
+            .iter()
+            .filter_map(|v| v.last().cloned())
+            .collect();
+
+        let E_XT = mean(&X_T, MeanType::Arithmetic);
+        let V_XT = variance(&X_T, VarianceType::Sample);
+        // E[X_T] = https://en.wikipedia.org/wiki/Cox%E2%80%93Ingersoll%E2%80%93Ross_model
+        assert_approx_equal!(
+            E_XT,
+            10. * (-0.01 * 0.5 as f64).exp() + 0.15 * (1. - (-0.01 * 0.5 as f64).exp()),
+            0.5
+        );
+        // V[X_T] = see https://en.wikipedia.org/wiki/Cox%E2%80%93Ingersoll%E2%80%93Ross_model
+        assert_approx_equal!(
+            V_XT,
+            10. * (0.45 * 0.45 / 0.01)
+                * ((-0.01 * 0.5 as f64).exp() - (-2. * 0.01 * 0.5 as f64).exp())
+                + (0.15 * 0.45 * 0.45 / (2. * 0.01)) * (1. - (-0.01 * 0.5 as f64).exp()).powi(2),
+            0.5
+        );
+
+        // let file1 = "./Images/CIR1.png";
         // plot_vector((&output.trajectories[0]).clone(), file1).unwrap();
-
-        let file2 = "./Images/CIR2.png";
+        // let file2 = "./Images/CIR2.png";
         // plot_vector((&output.trajectories[1]).clone(), file2)
 
         std::result::Result::Ok(())

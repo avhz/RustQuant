@@ -40,20 +40,37 @@ impl StochasticProcess for GeometricBrownianMotion {
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 #[cfg(test)]
-mod tests {
+mod tests_gbm {
     use super::*;
-    use crate::helpers::*;
+    use crate::{assert_approx_equal, helpers::*};
 
     #[test]
     fn test_geometric_brownian_motion() -> Result<(), Box<dyn std::error::Error>> {
         let gbm = GeometricBrownianMotion::new(0.05, 0.9);
 
-        let output = (&gbm).euler_maruyama(10.0, 0.0, 0.5, 100, 2, false);
+        let output = (&gbm).euler_maruyama(10.0, 0.0, 0.5, 100, 1000, false);
 
-        let file1 = "./Images/GBM1.png";
+        // Test the distribution of the final values.
+        let X_T: Vec<f64> = output
+            .trajectories
+            .iter()
+            .filter_map(|v| v.last().cloned())
+            .collect();
+
+        let E_XT = mean(&X_T, MeanType::Arithmetic);
+        let V_XT = variance(&X_T, VarianceType::Sample);
+        // E[X_T] = https://en.wikipedia.org/wiki/Geometric_Brownian_motion
+        assert_approx_equal!(E_XT, 10. * (0.05 * 0.5 as f64).exp(), 0.5);
+        // V[X_T] = https://en.wikipedia.org/wiki/Geometric_Brownian_motion
+        assert_approx_equal!(
+            V_XT,
+            10. * 10. * (2. * 0.05 * 0.5 as f64).exp() * ((0.9 * 0.9 * 0.5 as f64).exp() - 1.),
+            5.
+        );
+
+        // let file1 = "./Images/GBM1.png";
         // plot_vector((&output.trajectories[0]).clone(), file1).unwrap();
-
-        let file2 = "./Images/GBM2.png";
+        // let file2 = "./Images/GBM2.png";
         // plot_vector((&output.trajectories[1]).clone(), file2)
 
         std::result::Result::Ok(())

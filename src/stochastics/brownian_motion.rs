@@ -42,7 +42,7 @@ mod sde_tests {
     // use std::time::Instant;
 
     use super::*;
-    use crate::helpers::*;
+    use crate::{assert_approx_equal, helpers::*};
 
     #[test]
     fn test_brownian_motion() -> Result<(), Box<dyn std::error::Error>> {
@@ -70,17 +70,29 @@ mod sde_tests {
         // }
         // assert!(1 == 2);
 
-        let output_serial = (&bm).euler_maruyama(10.0, 0.0, 0.5, 100, 10, false);
-        let output_parallel = (&bm).euler_maruyama(10.0, 0.0, 0.5, 100, 10, true);
+        let output_serial = (&bm).euler_maruyama(0.0, 0.0, 0.5, 100, 1000, false);
+        // let output_parallel = (&bm).euler_maruyama(10.0, 0.0, 0.5, 100, 10, true);
 
-        let file1 = "./Images/BM1.png";
+        // let file1 = "./Images/BM1.png";
         // plot_vector((&output_serial.trajectories[0]).clone(), file1).unwrap();
-
-        let file2 = "./Images/BM2.png";
+        // let file2 = "./Images/BM2.png";
         // plot_vector((&output_serial.trajectories[1]).clone(), file2).unwrap();
-
-        let file2 = "./Images/BM3_parallel.png";
+        // let file2 = "./Images/BM3_parallel.png";
         // plot_vector((&output_parallel.trajectories[0]).clone(), file2)
+
+        // Test the distribution of the final values.
+        let X_T: Vec<f64> = output_serial
+            .trajectories
+            .iter()
+            .filter_map(|v| v.last().cloned())
+            .collect();
+
+        let E_XT = mean(&X_T, MeanType::Arithmetic);
+        let V_XT = variance(&X_T, VarianceType::Sample);
+        // E[X_T] = 0
+        assert_approx_equal!(E_XT, 0.0, 0.5);
+        // V[X_T] = T
+        assert_approx_equal!(V_XT, 0.5, 0.5);
 
         std::result::Result::Ok(())
     }
