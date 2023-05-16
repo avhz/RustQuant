@@ -21,12 +21,13 @@ jobs:
     - name: Run tests
       run: cargo test --release --verbose
     - name: Upload coverage reports to Codecov
-      env:
-        CODECOV_TOKEN: ${{secrets.CODECOV_TOKEN}}
-      run: |
-          # Replace `linux` below with the appropriate OS
-          # Options are `alpine`, `linux`, `macos`, `windows`
-          curl -Os https://uploader.codecov.io/latest/linux/codecov
-          chmod +x codecov
-          ./codecov -t ${CODECOV_TOKEN}
+      uses: codecov/codecov-action@v3
+      # env:
+      #   CODECOV_TOKEN: ${{secrets.CODECOV_TOKEN}}
+      # run: |
+      #     # Replace `linux` below with the appropriate OS
+      #     # Options are `alpine`, `linux`, `macos`, `windows`
+      #     curl -Os https://uploader.codecov.io/latest/linux/codecov
+      #     chmod +x codecov
+      #     ./codecov -t ${CODECOV_TOKEN}
       # uses: codecov/codecov-action@v3
