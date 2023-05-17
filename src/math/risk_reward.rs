@@ -112,4 +112,55 @@ impl Portfolio {
 // TESTS
 // ############################################################################
 
-// NEED TESTS HERE
+#[cfg(test)]
+mod tests_risk_reward {
+    use super::*;
+
+    static PORTFOLIO: Portfolio = Portfolio {
+        r_p: 0.12,
+        r: 0.05,
+        beta_p: 1.2,
+        sigma_p: 0.2,
+        sigma_down: 0.1,
+        var: 0.15,
+        r_m: 0.1,
+    };
+
+    #[test]
+    fn test_treynors_ratio() {
+        assert_eq!(PORTFOLIO.treynors_ratio(), (0.12 - 0.05) / 1.2);
+    }
+
+    #[test]
+    fn test_sharpe_ratio() {
+        assert_eq!(PORTFOLIO.sharpe_ratio(), (0.12 - 0.05) / 0.2);
+    }
+
+    #[test]
+    fn test_sortino_ratio() {
+        assert_eq!(PORTFOLIO.sortino_ratio(), (0.12 - 0.05) / 0.1);
+    }
+
+    #[test]
+    fn test_burke_ratio() {
+        let mut drawdowns = vec![0.05, 0.10, 0.20];
+        let ss_drawdowns = drawdowns.iter().map(|x| x * x).sum::<f64>();
+        assert_eq!(
+            PORTFOLIO.burke_ratio(&mut drawdowns),
+            (0.12 - 0.05) / ss_drawdowns
+        );
+    }
+
+    #[test]
+    fn test_return_on_var() {
+        assert_eq!(PORTFOLIO.return_on_var(), 0.12 / 0.15);
+    }
+
+    #[test]
+    fn test_jensens_alpha() {
+        assert_eq!(
+            PORTFOLIO.jensens_alpha(),
+            0.12 - (0.05 + 1.2 * (0.1 - 0.05))
+        );
+    }
+}
