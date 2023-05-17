@@ -248,7 +248,7 @@ impl LookbackOption {
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 #[cfg(test)]
-mod tests {
+mod tests_lookback {
     use super::*;
     use crate::assert_approx_equal;
 
@@ -335,5 +335,53 @@ mod tests {
         // Analytic prices.
         assert_approx_equal!(prices_cf.0, 18.3241, 0.0001);
         assert_approx_equal!(prices_cf.1, 1.0534, 0.0001);
+    }
+
+    #[test]
+    fn test_lookback_payoff_fixed() {
+        let lbo_fixed = LookbackOption {
+            initial_price: 50.0,
+            s_max: 50.0,
+            s_min: 50.0,
+            time_to_maturity: 0.25,
+            risk_free_rate: 0.1,
+            dividend_yield: 0.0,
+            volatility: 0.4,
+            strike_price: Some(60.0), // Fixed strike has a strike price input.
+            strike_type: LookbackStrike::Fixed,
+        };
+
+        let path = vec![50.0, 55.0, 52.0, 58.0, 54.0];
+
+        let call_payoff = lbo_fixed.payoff(TypeFlag::CALL, LookbackStrike::Fixed, &path);
+        let put_payoff = lbo_fixed.payoff(TypeFlag::PUT, LookbackStrike::Fixed, &path);
+
+        // Payoff values
+        assert_approx_equal!(call_payoff, 0.0, 0.1); // call payoff = max(S_max - K, 0) = max(58 - 60, 0) = 0
+        assert_approx_equal!(put_payoff, 10.0, 0.1); // put payoff = max(K - S_min, 0) = max(60 - 50, 0) = 10
+    }
+
+    #[test]
+    fn test_lookback_payoff_floating() {
+        let lbo_floating = LookbackOption {
+            initial_price: 50.0,
+            s_max: 50.0,
+            s_min: 50.0,
+            time_to_maturity: 0.25,
+            risk_free_rate: 0.1,
+            dividend_yield: 0.0,
+            volatility: 0.4,
+            strike_price: None, // Floating strike has no strike price input.
+            strike_type: LookbackStrike::Floating,
+        };
+
+        let path = vec![50.0, 55.0, 52.0, 58.0, 54.0];
+
+        let call_payoff = lbo_floating.payoff(TypeFlag::CALL, LookbackStrike::Floating, &path);
+        let put_payoff = lbo_floating.payoff(TypeFlag::PUT, LookbackStrike::Floating, &path);
+
+        // Payoff values
+        assert_approx_equal!(call_payoff, 4.0, 0.1); // call payoff = max(S_T - S_min, 0) = max(54 - 50, 0) = 4
+        assert_approx_equal!(put_payoff, 4.0, 0.1); // put payoff = max(S_max - S_T, 0) = max(58 - 54, 0) = 4
     }
 }
