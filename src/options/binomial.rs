@@ -5,6 +5,8 @@
 // BINOMIAL OPTION PRICING PARAMETER STRUCT
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+use super::{AmericanEuropeanFlag, TypeFlag};
+
 /// Struct containing the parameters to price an option via binomial tree method.
 pub struct BinomialOption {
     initial_price: f64,
@@ -37,8 +39,8 @@ impl BinomialOption {
     pub fn price_CoxRossRubinstein(
         &self,
         OutputFlag: &str,
-        AmeEurFlag: &str,
-        CallPutFlag: &str,
+        AmeEurFlag: AmericanEuropeanFlag,
+        CallPutFlag: TypeFlag,
         n: usize,
     ) -> f64 {
         let S = self.initial_price;
@@ -56,9 +58,9 @@ impl BinomialOption {
         let (u, d, p, dt, Df): (f64, f64, f64, f64, f64);
 
         let z = match CallPutFlag {
-            "c" => 1,
-            "p" => -1,
-            _ => panic!("Check call/put flag. Should be either 'c' or 'p'."),
+            TypeFlag::CALL => 1,
+            TypeFlag::PUT => -1,
+            // _ => panic!("Check call/put flag. Should be either 'c' or 'p'."),
         };
 
         dt = T / n as f64;
@@ -74,12 +76,16 @@ impl BinomialOption {
 
         for j in (0..n).rev() {
             for i in 0..=j {
-                if AmeEurFlag == "e" {
-                    OptionValue[i] = Df * (p * (OptionValue[i + 1]) + (1.0 - p) * OptionValue[i]);
-                } else if AmeEurFlag == "a" {
-                    OptionValue[i] = (z as f64
-                        * (S * u.powi(i as i32) * d.powi(j as i32 - i as i32) - K))
-                        .max(Df * (p * (OptionValue[i + 1]) + (1.0 - p) * OptionValue[i]));
+                match AmeEurFlag {
+                    AmericanEuropeanFlag::AMERICAN => {
+                        OptionValue[i] = (z as f64
+                            * (S * u.powi(i as i32) * d.powi(j as i32 - i as i32) - K))
+                            .max(Df * (p * (OptionValue[i + 1]) + (1.0 - p) * OptionValue[i]));
+                    }
+                    AmericanEuropeanFlag::EUROPEAN => {
+                        OptionValue[i] =
+                            Df * (p * (OptionValue[i + 1]) + (1.0 - p) * OptionValue[i]);
+                    }
                 }
             }
             if j == 2 {
@@ -117,7 +123,7 @@ impl BinomialOption {
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 #[cfg(test)]
-mod tests {
+mod tests_binomial {
     use super::*;
     use crate::*;
 
@@ -132,8 +138,14 @@ mod tests {
             volatility: 0.3,
         };
 
-        let c = BinOpt.price_CoxRossRubinstein("p", "a", "c", 100);
-        let p = BinOpt.price_CoxRossRubinstein("p", "a", "p", 100);
+        let c = BinOpt.price_CoxRossRubinstein(
+            "p",
+            AmericanEuropeanFlag::AMERICAN,
+            TypeFlag::CALL,
+            100,
+        );
+        let p =
+            BinOpt.price_CoxRossRubinstein("p", AmericanEuropeanFlag::AMERICAN, TypeFlag::PUT, 100);
 
         let c_intrinsic = (100_f64 - 95_f64).max(0.0);
         let p_intrinsic = (95_f64 - 100_f64).max(0.0);

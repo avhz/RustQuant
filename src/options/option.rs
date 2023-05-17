@@ -37,6 +37,14 @@ pub enum TypeFlag {
     PUT,
 }
 
+/// American/European option type enum.
+pub enum AmericanEuropeanFlag {
+    /// American option (can be exercised at any time before expiry).
+    AMERICAN,
+    /// European option (can only be exercised at expiry).
+    EUROPEAN,
+}
+
 /// Generic option parameters struct.
 /// Contains the common parameters (as in Black-Scholes).
 /// Other option types may have additional parameters,
