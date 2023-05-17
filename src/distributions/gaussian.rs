@@ -136,7 +136,7 @@ impl RQ_Distribution for Gaussian {
 }
 
 #[cfg(test)]
-mod gaussian_tests {
+mod tests_gaussian {
     use super::*;
     use crate::assert_approx_equal;
 
@@ -197,5 +197,42 @@ mod gaussian_tests {
         let mean = (v.iter().sum::<f64>()) / (v.len() as f64);
 
         assert_approx_equal!(mean, 0.0, 0.1);
+    }
+
+    #[test]
+    fn test_gaussian_moments() {
+        let normal = Gaussian::default();
+
+        assert_approx_equal!(normal.mean(), 0.0, 1e-8);
+        assert_approx_equal!(normal.median(), 0.0, 1e-8);
+        assert_approx_equal!(normal.mode(), 0.0, 1e-8);
+        assert_approx_equal!(normal.variance(), 1.0, 1e-8);
+        assert_approx_equal!(normal.skewness(), 0.0, 1e-8);
+        assert_approx_equal!(normal.kurtosis(), 0.0, 1e-8);
+        assert_approx_equal!(
+            normal.entropy(),
+            1.418938533204672741780329736405617639861397473637783412817,
+            1e-8
+        );
+    }
+
+    #[test]
+    fn test_gaussian_mgf() {
+        let normal = Gaussian::default();
+
+        assert_approx_equal!(normal.mgf(0.0), 1.0, 1e-8);
+        assert_approx_equal!(normal.mgf(1.0), (1.0 as f64).exp().sqrt(), 1e-8);
+        assert_approx_equal!(normal.mgf(2.0), (1.0 as f64).exp().powi(2), 1e-8);
+    }
+
+    #[test]
+    fn test_gaussian_entropy() {
+        let normal = Gaussian::default();
+
+        assert_approx_equal!(
+            normal.entropy(),
+            1.418938533204672741780329736405617639861397473637783412817,
+            1e-8
+        );
     }
 }

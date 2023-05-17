@@ -18,3 +18,40 @@ pub fn mean(v: &Vec<f64>, mean_type: MeanType) -> f64 {
         MeanType::Harmonic => v.len() as f64 / v.iter().map(|x| 1.0 / x).sum::<f64>(),
     }
 }
+
+#[cfg(test)]
+mod tests_mean {
+    use crate::assert_approx_equal;
+
+    use super::*;
+
+    #[test]
+    fn test_mean_arithmetic() {
+        let v = vec![1.0, 2.0, 3.0, 4.0, 5.0];
+        let m = mean(&v, MeanType::Arithmetic);
+        assert_eq!(m, 3.0);
+    }
+
+    #[test]
+    fn test_mean_geometric() {
+        let v = vec![1.0, 2.0, 4.0, 8.0, 16.0];
+        let m = mean(&v, MeanType::Geometric);
+        assert_approx_equal!(m, 4.0, 1e-10);
+        // assert!((m - 4.0).abs() < f64::EPSILON);
+    }
+
+    #[test]
+    fn test_mean_harmonic() {
+        let v = vec![1.0, 2.0, 4.0];
+        let m = mean(&v, MeanType::Harmonic);
+        assert_approx_equal!(m, 1.7142857, 1e-7);
+        // assert!((m - 1.7142857).abs() < f64::EPSILON);
+    }
+
+    #[test]
+    #[should_panic(expected = "Vector must have at least one element.")]
+    fn test_mean_empty_vector() {
+        let v: Vec<f64> = vec![];
+        mean(&v, MeanType::Arithmetic);
+    }
+}

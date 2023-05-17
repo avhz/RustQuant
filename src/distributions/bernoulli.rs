@@ -89,12 +89,12 @@ impl Distribution for Bernoulli {
 }
 
 #[cfg(test)]
-mod bernoulli_tests {
+mod tests_bernoulli {
     use super::*;
     use crate::assert_approx_equal;
 
     #[test]
-    fn test_bernoulli_distribution() {
+    fn test_bernoulli_functions() {
         let dist: Bernoulli = Bernoulli::new(1.0);
 
         // Characteristic function
@@ -102,12 +102,65 @@ mod bernoulli_tests {
         assert_approx_equal!(cf.re, 0.54030230586, 1e-10);
         assert_approx_equal!(cf.im, 0.84147098480, 1e-10);
 
+        let bernoulli = Bernoulli::new(0.5);
+
         // Probability mass function
         let pmf = dist.pmf(1.0);
         assert_approx_equal!(pmf, 1.0, 1e-10);
+        // Test pmf for k = 0.0 and 1.0
+        let pmf_zero = bernoulli.pmf(0.0);
+        let pmf_one = bernoulli.pmf(1.0);
+        assert_eq!(pmf_zero, 0.5);
+        assert_eq!(pmf_one, 0.5);
 
         // Distribution function
         let cdf = dist.cdf(1.0);
         assert_approx_equal!(cdf, 1.0, 1e-10);
+        // Test cdf for k = -1.0, 0.0, 0.5, 1.0 and 2.0
+        let cdf_neg = bernoulli.cdf(-1.0);
+        let cdf_zero = bernoulli.cdf(0.0);
+        let cdf_half = bernoulli.cdf(0.5);
+        let cdf_one = bernoulli.cdf(1.0);
+        let cdf_two = bernoulli.cdf(2.0);
+        assert_eq!(cdf_neg, 0.0);
+        assert_eq!(cdf_zero, 0.5);
+        assert_eq!(cdf_half, 0.5);
+        assert_eq!(cdf_one, 1.0);
+        assert_eq!(cdf_two, 1.0);
+
+        // Test moment generating function for t = 1.0
+        let mgf = bernoulli.mgf(1.0);
+        assert_eq!(mgf, 1.0 - 0.5 + 0.5 * (1_f64.exp()));
+
+        // Test characteristic function for t = 1.0
+        let cf = bernoulli.cf(1.0);
+        assert_eq!(
+            cf,
+            Complex::new(1.0 - 0.5 + 0.5 * (1_f64).cos(), 0.5 * (1_f64).sin())
+        );
+    }
+
+    #[test]
+    fn test_bernoulli_moments() {
+        let bernoulli = Bernoulli::new(0.5);
+
+        // Test mean and variance
+        assert_eq!(bernoulli.mean(), 0.5);
+        assert_eq!(bernoulli.variance(), 0.25);
+
+        // Test skewness and kurtosis
+        assert_eq!(bernoulli.skewness(), 0.0);
+        assert_eq!(bernoulli.kurtosis(), -2.0);
+    }
+
+    #[test]
+    fn test_bernoulli_entropy() {
+        let bernoulli = Bernoulli::new(0.5);
+
+        // Test entropy
+        assert_eq!(
+            bernoulli.entropy(),
+            -(0.5f64.ln() * 0.5 + (1.0 - 0.5 as f64).ln() * (1.0 - 0.5))
+        );
     }
 }

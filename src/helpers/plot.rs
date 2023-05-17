@@ -56,3 +56,52 @@ pub fn plot_vector(v: Vec<f64>, file: &str) -> Result<(), Box<dyn std::error::Er
 
     Ok(())
 }
+
+#[cfg(test)]
+mod tests_plotters {
+    use super::*;
+    use std::fs;
+    use tempfile::tempdir;
+
+    #[test]
+    fn test_write_vector() -> Result<(), Box<dyn std::error::Error>> {
+        let v = vec![1.0, 2.0, 3.0, 4.0, 5.0];
+        write_vector(&v)?;
+
+        // Check the file was created and has content.
+        let contents = fs::read_to_string("vector.out")?;
+        assert!(!contents.is_empty());
+
+        // Clean up after the test.
+        fs::remove_file("vector.out")?;
+
+        Ok(())
+    }
+
+    #[test]
+    fn test_prepare_vec() {
+        let v = vec![1.0, 2.0, 3.0, 4.0, 5.0];
+        let (out, min, max) = prepare_vec(v);
+
+        assert_eq!(out.len(), 5);
+        assert_eq!(min, 1.0);
+        assert_eq!(max, 5.0);
+    }
+
+    #[test]
+    fn test_plot_vector() -> Result<(), Box<dyn std::error::Error>> {
+        let dir = tempdir()?;
+
+        let v = vec![1.0, 2.0, 3.0, 4.0, 5.0];
+        let file_path = dir.path().join("plot.png");
+        let file_str = file_path.to_str().unwrap();
+        plot_vector(v, file_str)?;
+
+        // Check the file was created.
+        assert!(file_path.exists());
+
+        dir.close()?;
+
+        Ok(())
+    }
+}
