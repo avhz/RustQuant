@@ -1,3 +1,9 @@
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// RustQuant: A Rust library for quantitative finance tools.
+// Copyright (C) 2023 https://github.com/avhz
+// See LICENSE or <https://www.gnu.org/licenses/>.
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 /// Linspace helper function.
 /// Generates a sequence from `a` to `b` with `n` elements.
 pub fn linspace(a: f64, b: f64, n: usize) -> Vec<f64> {

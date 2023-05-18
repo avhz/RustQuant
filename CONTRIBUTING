@@ -1,0 +1,37 @@
+If you're reading this, I assume you're interested in contributing to this project. 
+If so, thank you very much! I would love to grow the project and have a solid, stable library by the end of 2023.
+
+Firstly, this contribution guide is a work in progress, so bare with me. 
+
+I welcome contributions of all kinds, including but not limited to:
+
+* Bug reports
+* Bug fixes
+* Feature requests
+* Feature implementations
+* Documentation improvements
+* Test cases
+
+If you have any ideas, feel free to make an issue to discuss it, or just make a pull request.
+
+Additionally, feel free to contact me directly at: rustquantcontact@gmail.com
+
+If you decide to contribute, please include the following license header in any files you create:
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// RustQuant: A Rust library for quantitative finance tools.
+// Copyright (C) 2023 https://github.com/avhz
+
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <https://www.gnu.org/licenses/>.
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -1,3 +1,9 @@
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// RustQuant: A Rust library for quantitative finance tools.
+// Copyright (C) 2023 https://github.com/avhz
+// See LICENSE or <https://www.gnu.org/licenses/>.
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 /// General option trait.
 /// All option types must implement this trait.
 /// All option contracts have:

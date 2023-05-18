@@ -1,3 +1,9 @@
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// RustQuant: A Rust library for quantitative finance tools.
+// Copyright (C) 2023 https://github.com/avhz
+// See LICENSE or <https://www.gnu.org/licenses/>.
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 //! Cox-Ingersoll-Ross model for zero-coupon bond prices.
 //!
 //! The risk-neutral short rate follows the process:

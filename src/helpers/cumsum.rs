@@ -1,3 +1,9 @@
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// RustQuant: A Rust library for quantitative finance tools.
+// Copyright (C) 2023 https://github.com/avhz
+// See LICENSE or <https://www.gnu.org/licenses/>.
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 /// Cumulative sum of a vector helper function.
 pub fn cumsum(v1: &[f64]) -> Vec<f64> {
     let v2: Vec<f64> = v1
