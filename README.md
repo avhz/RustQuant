@@ -1,6 +1,8 @@
 
 # `RustQuant`
 
+![](./Images/logo.png)
+
 <p align="center">
     <a href="#license" alt="license">
         <img alt="License" src="https://img.shields.io/github/license/avhz/RustQuant">
@@ -116,8 +118,6 @@ The following is a list of stochastic processes that can be generated.
     + $dX_t = adt + \sigma dW_t^*$
 
 ## :chart_with_downwards_trend: Bonds <a name="bonds"></a>
-
-Most will follow the notation and formulas in John C. Hull's *Options, Futures, and Other Derivatives*.
 
 + Prices:
     + [X] The Vasicek Model

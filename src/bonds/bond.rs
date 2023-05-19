@@ -4,6 +4,9 @@
 // See LICENSE or <https://www.gnu.org/licenses/>.
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+//! The bond module takes most of the notation and formulas from:
+//! *Interest Rate Models* by Brigo & Mercurio
+
 // pub struct Bond {
 //     price: f64,
 //     duration: f64,

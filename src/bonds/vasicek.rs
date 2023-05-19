@@ -8,44 +8,61 @@
 //!
 //! The risk-neutral short rate follows the process:
 //!
-//! dr = a(b-r)dt + sigma * dW
+//! dr(t) = k[θ − r(t)]dt + σdW (t)
+//! r(0) = r0
 //!
 //! It incorporates a mean-reversion factor into the drift term:
 //!
-//! - `a`: is the rate at which it gets pulled.
-//! - `b`: is the level to which it gets pulled.
-//! - `sigma`: is the diffusion coefficient.
+//! - `k`: is the rate at which it gets pulled.
+//! - `θ`: is the level to which it gets pulled.
+//! - `σ`: is the diffusion coefficient.
 
-use crate::bonds::*;
+use crate::{bonds::*, distributions::Gaussian};
 
 /// Struct containing the Vasicek model parameters.
 pub struct Vasicek {
-    a: f64,
-    b: f64,
+    r0: f64,
+    k: f64,
+    theta: f64,
     sigma: f64,
-    r: f64,
-    t: f64,
-    maturity: f64,
+    time_t: f64,
+    time_T: f64,
 }
 
 impl ZeroCouponBond for Vasicek {
     fn price(&self) -> f64 {
-        let a = self.a;
-        let b = self.b;
+        let k = self.k;
+        let theta = self.theta;
         let sigma = self.sigma;
-        let r = self.r;
-        let t = self.t;
-        let maturity = self.maturity;
+        let r0 = self.r0;
+        let time_t = self.time_t;
+        let time_T = self.time_T;
 
-        let tau = maturity - t;
+        let tau = time_T - time_t;
 
-        let b_t = (1_f64 - (-a * tau).exp()) / a;
-        let a_t = (((b_t - tau) * (a * a * b - sigma * sigma / 2_f64)) / (a * a)
-            - (sigma * sigma * b_t * b_t) / (4_f64 * a))
-            .exp();
+        let B = || (1_f64 - (-k * tau).exp()) / k;
+        let A = || {
+            (((B() - tau) * (k.powi(2) * theta - sigma.powi(2) / 2_f64)) / k.powi(2)
+                - (sigma.powi(2) * B().powi(2)) / (4_f64 * k))
+                .exp()
+        };
 
-        // Price:
-        a_t * (-b_t * r).exp()
+        A() * (-B() * r0).exp()
+
+        // Return the option price on the zero coupon bond?
+        // let N = Gaussian::default();
+
+        // let P_tS = self.price();
+        // self.time_T = maturity;
+        // let P_tT = self.price();
+
+        // let sigma_p = self.sigma * ().sqrt();
+        // let h = ;
+
+        // (
+        //     P_tS * N(h) - strike * P_tT * N(h - sigma_p),
+        //     -P_tS * N(-h) + strike * P_tT * N(sigma_p - h),
+        // )
     }
 
     // fn duration(&self) -> f64 {}
@@ -53,7 +70,7 @@ impl ZeroCouponBond for Vasicek {
 }
 
 #[cfg(test)]
-mod tests {
+mod tests_bond_vasicek {
     use crate::assert_approx_equal;
 
     use super::*;
@@ -61,12 +78,12 @@ mod tests {
     #[test]
     fn test_vasicek_zero_coupon_bond() {
         let vasicek = Vasicek {
-            a: 0.3,
-            b: 0.1,
+            r0: 0.03,
+            k: 0.3,
+            theta: 0.1,
             sigma: 0.03,
-            r: 0.03,
-            t: 0.0,
-            maturity: 1.0,
+            time_t: 0.0,
+            time_T: 1.0,
         };
 
         let vasicek_price = vasicek.price();
