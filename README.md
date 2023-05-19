@@ -1,6 +1,4 @@
 
-# `RustQuant`
-
 ![](./Images/logo.png)
 
 <p align="center">
