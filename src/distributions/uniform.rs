@@ -40,8 +40,8 @@ impl Uniform<'_> {
         let i: Complex<f64> = Complex::i();
 
         if self.class == "discrete" {
-            ((i * t * self.a).exp() - (i * t * (self.b + 1_f64)).exp())
-                / ((1_f64 - (i * t).exp()) * (self.b - self.a + 1_f64))
+            ((i * t * self.a).exp() - (i * t * (self.b + 1.0)).exp())
+                / ((1.0 - (i * t).exp()) * (self.b - self.a + 1.0))
         } else if self.class == "continuous" {
             ((i * t * self.b).exp() - (i * t * self.a).exp()) / (i * t * (self.b - self.a))
         } else {
@@ -52,7 +52,7 @@ impl Uniform<'_> {
     /// Uniform mass function.
     pub fn pmf(&self, x: f64) -> f64 {
         if self.class == "discrete" {
-            1_f64 / (self.b - self.a + 1_f64)
+            1.0 / (self.b - self.a + 1.0)
         } else if self.class == "continuous" {
             if x >= self.a && x <= self.b {
                 (self.b - self.a).recip()
@@ -68,7 +68,7 @@ impl Uniform<'_> {
     pub fn cdf(&self, x: f64) -> f64 {
         if self.class == "discrete" {
             assert!(x >= self.a && x <= self.b);
-            (x.floor() - self.a + 1.0) / (self.b - self.a + 1_f64)
+            (x.floor() - self.a + 1.0) / (self.b - self.a + 1.0)
         } else if self.class == "continuous" {
             if x < self.a {
                 0.0

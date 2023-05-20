@@ -39,7 +39,7 @@ impl StochasticProcess for OrnsteinUhlenbeck {
     }
 
     fn jump(&self, _x: f64) -> f64 {
-        0_f64
+        0.0
     }
 }
 

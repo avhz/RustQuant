@@ -26,26 +26,26 @@ impl ChiSquared {
         let i: Complex<f64> = Complex::i();
         let k = self.k;
 
-        (1_f64 - 2_f64 * i * t).powf(-(k as f64 / 2_f64))
+        (1.0 - 2.0 * i * t).powf(-(k as f64 / 2.0))
     }
 
     /// Chi-Squared probability density function.
     pub fn pdf(&self, x: f64) -> f64 {
-        assert!(if self.k == 1 { x > 0_f64 } else { x >= 0_f64 });
+        assert!(if self.k == 1 { x > 0.0 } else { x >= 0.0 });
 
         let k = self.k;
 
-        x.powf((k as f64 / 2_f64) - 1_f64) * (-x / 2_f64).exp()
-            / (2_f64.powf(k as f64 / 2_f64) * gamma(k as f64 / 2.0))
+        x.powf((k as f64 / 2.0) - 1.0) * (-x / 2.0).exp()
+            / (2_f64.powf(k as f64 / 2.0) * gamma(k as f64 / 2.0))
     }
 
     /// Chi-Squared distribution function.
     pub fn cdf(&self, x: f64) -> f64 {
-        assert!(if self.k == 1 { x > 0_f64 } else { x >= 0_f64 });
+        assert!(if self.k == 1 { x > 0.0 } else { x >= 0.0 });
 
         let k = self.k;
 
-        gamma_li(k as f64 / 2.0, x / 2_f64) / gamma(k as f64 / 2_f64)
+        gamma_li(k as f64 / 2.0, x / 2.0) / gamma(k as f64 / 2.0)
     }
 }
 

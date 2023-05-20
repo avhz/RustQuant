@@ -69,7 +69,7 @@ impl AsianOption {
         let v = self.volatility;
         let q = self.dividend_rate;
 
-        let v_a = v / (3_f64).sqrt();
+        let v_a = v / 3_f64.sqrt();
         let b = r - q;
         let b_a = 0.5 * (b - v * v / 6.0);
 
