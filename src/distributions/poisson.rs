@@ -20,7 +20,7 @@ pub struct Poisson {
 impl Poisson {
     /// New instance of a Poisson distribution.
     pub fn new(lambda: f64) -> Poisson {
-        assert!(lambda > 0_f64);
+        assert!(lambda > 0.0);
 
         Poisson { lambda }
     }
@@ -28,7 +28,7 @@ impl Poisson {
     /// Poisson characteristic function.
     pub fn cf(&self, t: f64) -> Complex<f64> {
         let i: Complex<f64> = Complex::i();
-        (self.lambda * ((i * t).exp() - 1_f64)).exp()
+        (self.lambda * ((i * t).exp() - 1.0)).exp()
     }
 
     /// Poisson mass function.
@@ -38,7 +38,7 @@ impl Poisson {
 
     /// Poisson distribution function.
     pub fn cdf(&self, k: usize) -> f64 {
-        1_f64 - gamma_li((k + 1) as f64, self.lambda) / gamma_ui((k + 1) as f64, self.lambda)
+        1.0 - gamma_li((k + 1) as f64, self.lambda) / gamma_ui((k + 1) as f64, self.lambda)
     }
 }
 

@@ -40,10 +40,10 @@ impl ZeroCouponBond for Vasicek {
 
         let tau = time_T - time_t;
 
-        let B = || (1_f64 - (-k * tau).exp()) / k;
+        let B = || (1.0 - (-k * tau).exp()) / k;
         let A = || {
-            (((B() - tau) * (k.powi(2) * theta - sigma.powi(2) / 2_f64)) / k.powi(2)
-                - (sigma.powi(2) * B().powi(2)) / (4_f64 * k))
+            (((B() - tau) * (k.powi(2) * theta - sigma.powi(2) / 2.0)) / k.powi(2)
+                - (sigma.powi(2) * B().powi(2)) / (4.0 * k))
                 .exp()
         };
 

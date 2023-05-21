@@ -21,10 +21,10 @@ where
     let mut integral = 0.0;
 
     for i in 1..=(n / 3) {
-        integral += f(x[3 * i - 3]) + 3_f64 * (f(x[3 * i - 2]) + f(x[3 * i - 1])) + f(x[3 * i]);
+        integral += f(x[3 * i - 3]) + 3.0 * (f(x[3 * i - 2]) + f(x[3 * i - 1])) + f(x[3 * i]);
     }
 
-    (3_f64 / 8_f64) * h * integral
+    (3.0 / 8.0) * h * integral
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -44,6 +44,6 @@ mod tests {
 
         let integral = simpsons(f, 0.0, 1.0, 3 * 3000);
 
-        assert_approx_equal!(integral, 1_f64 - (1_f64).cos(), 1e-4);
+        assert_approx_equal!(integral, 1.0 - 1_f64.cos(), 1e-4);
     }
 }

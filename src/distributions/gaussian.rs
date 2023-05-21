@@ -117,13 +117,13 @@ impl RQ_Distribution for Gaussian {
     /// Returns the skewness of the Gaussian distribution.
     /// https://en.wikipedia.org/wiki/Skewness
     fn skewness(&self) -> f64 {
-        0_f64
+        0.0
     }
 
     /// Returns the kurtosis of the Gaussian distribution.
     /// https://en.wikipedia.org/wiki/Kurtosis
     fn kurtosis(&self) -> f64 {
-        0_f64
+        0.0
     }
 
     /// Returns the entropy of the Gaussian distribution.
@@ -137,7 +137,7 @@ impl RQ_Distribution for Gaussian {
     fn mgf(&self, t: f64) -> f64 {
         assert!(self.variance > 0.0);
 
-        (self.mean * t + self.variance * t * t / 2_f64).exp()
+        (self.mean * t + self.variance * t * t / 2.0).exp()
     }
 }
 

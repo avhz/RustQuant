@@ -56,7 +56,7 @@ mod tests {
             2.0 * x
         }
         let root = find_root(f, df, 10.0, 100);
-        assert_approx_equal!(root, 0_f64, 1e-10);
+        assert_approx_equal!(root, 0.0, 1e-10);
         println!("ROOT = {}", root);
     }
 }

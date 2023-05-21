@@ -29,12 +29,12 @@ impl Gamma {
         let alpha = self.alpha;
         let beta = self.beta;
 
-        (1_f64 - i * t / beta).powf(-alpha)
+        (1.0 - i * t / beta).powf(-alpha)
     }
 
     /// Gamma probability density function.
     pub fn pdf(&self, x: f64) -> f64 {
-        assert!(x > 0_f64);
+        assert!(x > 0.0);
 
         let alpha = self.alpha;
         let beta = self.beta;
