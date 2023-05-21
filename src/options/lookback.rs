@@ -208,7 +208,7 @@ impl LookbackOption {
 
         match self.strike_type {
             LookbackStrike::Fixed => {
-                for path in &paths.trajectories {
+                for path in &paths.paths {
                     call_payoffs.push(Self::payoff(
                         self,
                         TypeFlag::CALL,
@@ -224,7 +224,7 @@ impl LookbackOption {
                 }
             }
             LookbackStrike::Floating => {
-                for path in &paths.trajectories {
+                for path in &paths.paths {
                     call_payoffs.push(Self::payoff(
                         self,
                         TypeFlag::CALL,

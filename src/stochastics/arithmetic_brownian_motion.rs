@@ -63,7 +63,7 @@ mod tests_abm {
 
         // Test the distribution of the final values.
         let X_T: Vec<f64> = output
-            .trajectories
+            .paths
             .iter()
             .filter_map(|v| v.last().cloned())
             .collect();

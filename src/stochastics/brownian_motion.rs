@@ -88,7 +88,7 @@ mod sde_tests {
 
         // Test the distribution of the final values.
         let X_T: Vec<f64> = output_serial
-            .trajectories
+            .paths
             .iter()
             .filter_map(|v| v.last().cloned())
             .collect();

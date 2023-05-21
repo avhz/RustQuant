@@ -20,9 +20,9 @@ use statrs::distribution::Normal;
 /// Struct to contain the time points and path values of the process.
 pub struct Trajectories {
     /// Vector of time points.
-    pub time: Vec<f64>,
-    /// Vector of process trajectories (can have more than one trajectory).
-    pub trajectories: Vec<Vec<f64>>,
+    pub times: Vec<f64>,
+    /// Vector of process trajectories.
+    pub paths: Vec<Vec<f64>>,
 }
 
 /// Trait to implement stochastic processes.
@@ -42,90 +42,75 @@ pub trait StochasticProcess: Sync {
     /// * `x_0` - The process' initial value at `t_0`.
     /// * `t_0` - The initial time point.
     /// * `t_n` - The terminal time point.
-    /// * `n` - The number of time steps between `t_0` and `t_n`.
-    /// * `sims` - How many process trajectories to simulate.
+    /// * `n_steps` - The number of time steps between `t_0` and `t_n`.
+    /// * `m_paths` - How many process trajectories to simulate.
     /// * `parallel` - Run in parallel or not (recommended for > 1000 paths).
     fn euler_maruyama(
         &self,
         x_0: f64,
         t_0: f64,
         t_n: f64,
-        n: usize,
-        sims: usize,
+        n_steps: usize,
+        m_paths: usize,
         parallel: bool,
     ) -> Trajectories {
         assert!(t_0 < t_n);
 
-        let dt: f64 = (t_n - t_0) / (n as f64);
+        let dt: f64 = (t_n - t_0) / (n_steps as f64);
 
-        // Initialise empty paths.
-        let mut paths = vec![vec![0.0; n + 1]; sims];
-        let mut times = vec![0.0; n + 1];
+        // Initialise empty paths and fill in the time points.
+        let mut paths = vec![vec![x_0; n_steps + 1]; m_paths];
+        let times: Vec<f64> = (0..=n_steps).map(|t| t_0 + dt * (t as f64)).collect();
 
-        // Fill time points.
-        times[0] = t_0;
-        times[n] = t_n;
-        if parallel {
-            times
-                .par_iter_mut()
-                .enumerate()
-                .skip(1)
-                .take(n)
-                .for_each(|(t, time)| {
-                    (*time) = t_0 + dt * (t as f64);
-                });
-        } else {
-            for (t, time) in times.iter_mut().enumerate().skip(1).take(n) {
-                (*time) = t_0 + dt * (t as f64);
-            }
-        }
-
-        // Generate trajectories:
-        if parallel {
-            paths.par_iter_mut().take(sims).for_each(|path| {
-                let mut rng = rand::thread_rng();
-                let increments: Vec<f64> = match Normal::new(0.0, 1.0) {
-                    Ok(dist) => dist,
-                    Err(_) => panic!("Please check the parameters ..."),
-                }
+        let path_generator = |path: &mut Vec<f64>| {
+            let mut rng = rand::thread_rng();
+            let scale = dt.sqrt();
+            let dW: Vec<f64> = Normal::new(0.0, 1.0)
+                .unwrap()
                 .sample_iter(&mut rng)
-                .take(n)
-                .map(|x| x * dt.sqrt())
+                .take(n_steps)
+                .map(|z| z * scale)
                 .collect();
 
-                path[0] = x_0;
-
-                for t in 0..n {
-                    path[t + 1] = path[t]
-                        + self.drift(path[t]) * (times[t + 1] - times[t])
-                        + self.diffusion(path[t]) * increments[t];
-                }
-            });
-        } else {
-            for path in paths.iter_mut().take(sims) {
-                let mut rng = rand::thread_rng();
-                let increments: Vec<f64> = match Normal::new(0.0, 1.0) {
-                    Ok(dist) => dist,
-                    Err(_) => panic!("Please check the parameters ..."),
-                }
-                .sample_iter(&mut rng)
-                .take(n)
-                .map(|x| x * dt.sqrt())
-                .collect();
-
-                path[0] = x_0;
-
-                for t in 0..n {
-                    path[t + 1] = path[t]
-                        + self.drift(path[t]) * (times[t + 1] - times[t])
-                        + self.diffusion(path[t]) * increments[t];
-                }
+            for t in 0..n_steps {
+                path[t + 1] = path[t] + self.drift(path[t]) * dt + self.diffusion(path[t]) * dW[t];
             }
+        };
+
+        if parallel {
+            paths.par_iter_mut().for_each(path_generator);
+        } else {
+            paths.iter_mut().for_each(path_generator);
         }
 
-        Trajectories {
-            time: times,
-            trajectories: paths,
-        }
+        Trajectories { times, paths }
+    }
+}
+
+#[cfg(test)]
+mod test_process {
+    use super::*;
+    use crate::stochastics::GeometricBrownianMotion;
+    use std::time::Instant;
+
+    #[test]
+    fn test_euler_maruyama() {
+        let gbm = GeometricBrownianMotion::new(0.05, 0.9);
+
+        let start = Instant::now();
+        (&gbm).euler_maruyama(10.0, 0.0, 1.0, 125, 10000, false);
+        let serial = start.elapsed();
+
+        println!("Serial: \t {:?}", serial);
+
+        let start = Instant::now();
+        (&gbm).euler_maruyama(10.0, 0.0, 1.0, 125, 10000, true);
+        let parallel = start.elapsed();
+
+        println!("Parallel: \t {:?}", parallel);
+
+        // Just checking that `parallel = true` actually works.
+        // To see the output of this "test", run:
+        // cargo test test_process -- --nocapture
     }
 }
