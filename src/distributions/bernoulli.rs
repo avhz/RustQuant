@@ -17,7 +17,7 @@ pub struct Bernoulli {
 impl Bernoulli {
     /// New instance of a Bernoulli distribution.
     pub fn new(probability: f64) -> Bernoulli {
-        assert!((0_f64..=1_f64).contains(&probability));
+        assert!((0.0..=1.0).contains(&probability));
 
         Bernoulli { p: probability }
     }
@@ -25,10 +25,10 @@ impl Bernoulli {
 
 impl Distribution for Bernoulli {
     fn cf(&self, t: f64) -> Complex<f64> {
-        assert!((0_f64..=1_f64).contains(&self.p));
+        assert!((0.0..=1.0).contains(&self.p));
 
         let i: Complex<f64> = Complex::i();
-        1_f64 - self.p + self.p * (i * t).exp()
+        1.0 - self.p + self.p * (i * t).exp()
     }
 
     fn pdf(&self, _x: f64) -> f64 {
@@ -36,21 +36,21 @@ impl Distribution for Bernoulli {
     }
 
     fn pmf(&self, k: f64) -> f64 {
-        assert!((0_f64..=1_f64).contains(&self.p));
+        assert!((0.0..=1.0).contains(&self.p));
         assert!(k == 0.0 || k == 1.0);
 
-        (self.p).powi(k as i32) * (1_f64 - self.p).powi(1 - k as i32)
+        (self.p).powi(k as i32) * (1.0 - self.p).powi(1 - k as i32)
     }
 
     fn cdf(&self, k: f64) -> f64 {
-        assert!((0_f64..=1_f64).contains(&self.p));
+        assert!((0.0..=1.0).contains(&self.p));
 
         if (k as i32) < 0 {
-            0_f64
+            0.0
         } else if (0..1).contains(&(k as i32)) {
-            1_f64 - self.p
+            1.0 - self.p
         } else {
-            1_f64
+            1.0
         }
     }
 
@@ -72,7 +72,7 @@ impl Distribution for Bernoulli {
     }
 
     fn variance(&self) -> f64 {
-        self.p * (1_f64 - self.p)
+        self.p * (1.0 - self.p)
     }
 
     fn skewness(&self) -> f64 {
@@ -136,13 +136,13 @@ mod tests_bernoulli {
 
         // Test moment generating function for t = 1.0
         let mgf = bernoulli.mgf(1.0);
-        assert_eq!(mgf, 1.0 - 0.5 + 0.5 * (1_f64.exp()));
+        assert_eq!(mgf, 1.0 - 0.5 + 0.5 * 1_f64.exp());
 
         // Test characteristic function for t = 1.0
         let cf = bernoulli.cf(1.0);
         assert_eq!(
             cf,
-            Complex::new(1.0 - 0.5 + 0.5 * (1_f64).cos(), 0.5 * (1_f64).sin())
+            Complex::new(1.0 - 0.5 + 0.5 * 1_f64.cos(), 0.5 * 1_f64.sin())
         );
     }
 

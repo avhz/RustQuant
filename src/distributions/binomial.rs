@@ -17,7 +17,7 @@ pub struct Binomial {
 impl Binomial {
     /// New instance of a Binomial distribution.
     pub fn new(trials: usize, probability: f64) -> Binomial {
-        assert!((0_f64..=1_f64).contains(&probability));
+        assert!((0.0..=1.0).contains(&probability));
 
         Binomial {
             n: trials,
@@ -27,16 +27,16 @@ impl Binomial {
 
     /// Binomial characteristic function.
     pub fn cf(&self, t: f64) -> Complex<f64> {
-        assert!((0_f64..=1_f64).contains(&self.p));
+        assert!((0.0..=1.0).contains(&self.p));
 
         let i: Complex<f64> = Complex::i();
-        (1_f64 - self.p + self.p * (i * t).exp()).powi(self.n as i32)
+        (1.0 - self.p + self.p * (i * t).exp()).powi(self.n as i32)
     }
 
     /// Binomial mass function.
     pub fn pmf(&self, k: usize) -> f64 {
         assert!(k <= self.n);
-        assert!((0_f64..=1_f64).contains(&self.p));
+        assert!((0.0..=1.0).contains(&self.p));
 
         let n_C_k = |n: u32, k: u32| -> u32 {
             (1..=n).product::<u32>() / ((1..=k).product::<u32>() * (1..=(n - k)).product::<u32>())
@@ -44,16 +44,12 @@ impl Binomial {
 
         n_C_k(self.n as u32, k as u32) as f64
             * self.p.powi(k as i32)
-            * (1_f64 - self.p).powi((self.n - k) as i32)
+            * (1.0 - self.p).powi((self.n - k) as i32)
     }
 
     /// Binomial distribution function.
     pub fn cdf(&self, k: i32) -> f64 {
-        statrs::function::beta::beta_reg(
-            (self.n - k as usize) as f64,
-            (1 + k) as f64,
-            1_f64 - self.p,
-        )
+        statrs::function::beta::beta_reg((self.n - k as usize) as f64, (1 + k) as f64, 1.0 - self.p)
     }
 }
 

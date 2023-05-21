@@ -23,12 +23,12 @@ impl Exponential {
     /// Exponential characteristic function.
     pub fn cf(&self, t: f64) -> Complex<f64> {
         let i: Complex<f64> = Complex::i();
-        1_f64 / (1_f64 - i * t / self.lambda)
+        1.0 / (1.0 - i * t / self.lambda)
     }
 
     /// Exponential probability density function.
     pub fn pdf(&self, x: f64) -> f64 {
-        assert!(x >= 0_f64);
+        assert!(x >= 0.0);
 
         self.lambda * (-self.lambda * x).exp()
     }
@@ -37,7 +37,7 @@ impl Exponential {
     pub fn cdf(&self, x: f64) -> f64 {
         assert!(x >= 0.0);
 
-        1_f64 - (-self.lambda * x).exp()
+        1.0 - (-self.lambda * x).exp()
     }
 }
 

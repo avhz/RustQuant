@@ -41,6 +41,6 @@ mod tests {
 
         let integral = midpoint(f, 0.0, 1.0, 10000);
 
-        assert_approx_equal!(integral, 1_f64 - (1_f64).cos(), 1e-4);
+        assert_approx_equal!(integral, 1.0 - 1_f64.cos(), 1e-4);
     }
 }
