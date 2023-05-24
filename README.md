@@ -186,7 +186,7 @@ fn main() {
     data.read().unwrap();
 
     // New path to write the data to. 
-    data.path = String::fromString::from("./file/path/write.csv")
+    data.path = String::from("./file/path/write.csv")
     data.write().unwrap();
 
     println!("{:?}", data.data)
