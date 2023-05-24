@@ -11,7 +11,7 @@ use polars::prelude::*;
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 /// Data struct.
-/// Contains data format and the file path to the data.
+/// Contains data format, the file path to the data, and the data itself.
 pub struct Data {
     /// Data format.
     pub format: DataFormat,
@@ -36,6 +36,7 @@ pub enum DataFormat {
 }
 
 /// Data reader trait.
+/// Eagerly reads data from the source.
 pub trait DataReader {
     /// Reads data from the source.
     fn read(&mut self) -> Result<(), std::io::Error>;
@@ -45,6 +46,13 @@ pub trait DataReader {
 pub trait DataWriter {
     /// Writes data to the source.
     fn write(&mut self) -> Result<(), std::io::Error>;
+}
+
+/// Data scanner trait.
+/// Lazily scans data from the source.
+pub trait DataScanner {
+    /// Scans data from the source.
+    fn scan(&mut self) -> Result<LazyFrame, std::io::Error>;
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -118,6 +126,18 @@ impl DataWriter for Data {
                     .unwrap();
 
                 Ok(())
+            }
+        }
+    }
+}
+
+impl DataScanner for Data {
+    fn scan(&mut self) -> Result<LazyFrame, std::io::Error> {
+        match self.format {
+            DataFormat::CSV => Ok(LazyCsvReader::new(&self.path).finish().unwrap()),
+            DataFormat::JSON => Ok(LazyJsonLineReader::new(self.path.clone()).finish().unwrap()),
+            DataFormat::PARQUET => {
+                Ok(LazyFrame::scan_parquet(&self.path, ScanArgsParquet::default()).unwrap())
             }
         }
     }

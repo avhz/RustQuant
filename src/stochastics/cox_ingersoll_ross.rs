@@ -51,7 +51,7 @@ impl StochasticProcess for CoxIngersollRoss {
 #[cfg(test)]
 mod tests_cir {
     use super::*;
-    use crate::{assert_approx_equal, helpers::*};
+    use crate::{assert_approx_equal, utilities::*};
 
     #[test]
     fn test_cox_ingersoll_ross() -> Result<(), Box<dyn std::error::Error>> {

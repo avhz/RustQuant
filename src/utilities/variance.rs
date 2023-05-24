@@ -4,7 +4,7 @@
 // See LICENSE or <https://www.gnu.org/licenses/>.
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use crate::helpers::{mean, MeanType};
+use crate::utilities::{mean, MeanType};
 
 /// Variance type (population or sample).
 pub enum VarianceType {

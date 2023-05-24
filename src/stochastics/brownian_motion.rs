@@ -48,7 +48,7 @@ mod sde_tests {
     // use std::time::Instant;
 
     use super::*;
-    use crate::{assert_approx_equal, helpers::*};
+    use crate::{assert_approx_equal, utilities::*};
 
     #[test]
     fn test_brownian_motion() -> Result<(), Box<dyn std::error::Error>> {

@@ -6,7 +6,7 @@
 
 #![deny(missing_docs)]
 
-use crate::helpers::linspace;
+use crate::utilities::linspace;
 
 /// Composite Simpson's 3/8 rule for numerical integration.
 pub fn simpsons<F>(f: F, a: f64, b: f64, n: usize) -> f64

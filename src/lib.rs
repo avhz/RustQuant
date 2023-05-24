@@ -69,24 +69,24 @@ pub mod data {
 
 /// Parent module containing: helper functions used throughout the library.
 #[macro_use]
-pub mod helpers {
-    pub use crate::helpers::{
+pub mod utilities {
+    pub use crate::utilities::{
         cumsum::*, linspace::*, macros::*, mean::*, minmax::*, plot::*, variance::*,
     };
 
-    /// Submodule of `helpers`: implements the cumulative sum of a vector.
+    /// Submodule of `utilities`: implements the cumulative sum of a vector.
     pub mod cumsum;
-    /// Submodule of `helpers`: implements generating a linearly spaced sequence.
+    /// Submodule of `utilities`: implements generating a linearly spaced sequence.
     pub mod linspace;
-    /// Submodule of `helpers`: implements useful macros, such as `assert_approx_equal`.
+    /// Submodule of `utilities`: implements useful macros, such as `assert_approx_equal`.
     pub mod macros;
-    /// Submodule of `helpers`: mean of a vector.
+    /// Submodule of `utilities`: mean of a vector.
     pub mod mean;
-    /// Submodule of `helpers`: min and max of a vector.
+    /// Submodule of `utilities`: min and max of a vector.
     pub mod minmax;
-    /// Submodule of `helpers`: implements plotting/writing vectors to files.
+    /// Submodule of `utilities`: implements plotting/writing vectors to files.
     pub mod plot;
-    /// Submodule of `helpers`: variance of a vector.
+    /// Submodule of `utilities`: variance of a vector.
     pub mod variance;
 }
 

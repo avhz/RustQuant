@@ -32,5 +32,6 @@ polars = { version = "0.29.0", features = [
     "parquet",
     "ndarray",
     "dtype-struct",
+    "lazy",
 ] }
 serde = "1.0.163"
