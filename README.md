@@ -27,7 +27,7 @@ Contact: rustquantcontact@gmail.com
 
 ## :newspaper: Latest features
 
-+ Read (write) from (to) `.csv`, `.json`, and `.parquet` files.
++ Read (write) from (to) `.csv`, `.json`, and `.parquet` files, using [Polars `DataFrames`](https://pola-rs.github.io/polars-book/).
 + Arithmetic Brownian Motion generator. 
 + Gamma, exponential, and chi-squared distributions.
 + Forward start option pricer (Rubinstein 1990 formula).
