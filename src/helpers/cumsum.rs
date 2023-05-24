@@ -25,7 +25,7 @@ mod tests_cumsum {
     fn test_cumsum_empty() {
         let v: Vec<f64> = Vec::new();
         let result = cumsum(&v);
-        assert_eq!(result, Vec::new());
+        assert_eq!(result, Vec::<f64>::new());
     }
 
     #[test]

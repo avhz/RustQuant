@@ -25,3 +25,12 @@ rayon = "1.6.0"
 num-complex = "0.4.2"
 time = "0.3.20"
 tempfile = "3.5.0"
+csv = "1.2.1"
+polars = { version = "0.29.0", features = [
+    "serde",
+    "json",
+    "parquet",
+    "ndarray",
+    "dtype-struct",
+] }
+serde = "1.0.163"
