@@ -177,17 +177,16 @@ use RustQuant::data::*;
 
 fn main() {
     // New `Data` instance.
-    let mut data = Data {
-        format: DataFormat::CSV, // Can also be JSON or PARQUET
-        path: String::from("./file/path/here.csv"),
-        data: DataFrame::default(),
-    };
+    let mut data = Data::new(
+        format: DataFormat::CSV, // Can also be JSON or PARQUET.
+        path: String::from("./file/path/read.csv")
+    )
 
     // Read from the given file. 
     data.read().unwrap();
 
     // New path to write the data to. 
-    data.path = String::from("./src/data/examples/write.csv");
+    data.path = String::fromString::from("./file/path/write.csv")
     data.write().unwrap();
 
     println!("{:?}", data.data)
