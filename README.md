@@ -170,6 +170,30 @@ I would not recommend using RustQuant within any other libraries for some time, 
 
 :pray: I would greatly appreciate contributions so it can get to the `v1.0.0` mark ASAP.
 
+### Read/write data:
+
+```rust
+use RustQuant::data::*;
+
+fn main() {
+    // New `Data` instance.
+    let mut data = Data {
+        format: DataFormat::CSV, // Can also be JSON or PARQUET
+        path: String::from("./file/path/here.csv"),
+        data: DataFrame::default(),
+    };
+
+    // Read from the given file. 
+    data.read().unwrap();
+
+    // New path to write the data to. 
+    data.path = String::from("./src/data/examples/write.csv");
+    data.write().unwrap();
+
+    println!("{:?}", data.data)
+}
+```
+
 ### Compute gradients:
 
 ```rust
