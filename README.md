@@ -19,7 +19,7 @@
 
 Rust library for quantitative finance tools. 
 
-:dart: I want to hit `v1.0.0` by the end of 2023, so any and all feedback, suggestions, or contributions are strongly welcomed! 
+:dart: I want to hit a stable and legitimate `v1.0.0` by the end of 2023, so any and all feedback, suggestions, or contributions are strongly welcomed! 
 
 Contact: rustquantcontact@gmail.com 
 
@@ -27,6 +27,7 @@ Contact: rustquantcontact@gmail.com
 
 ## :newspaper: Latest features
 
++ Read (write) from (to) `.csv`, `.json`, and `.parquet` files.
 + Arithmetic Brownian Motion generator. 
 + Gamma, exponential, and chi-squared distributions.
 + Forward start option pricer (Rubinstein 1990 formula).
