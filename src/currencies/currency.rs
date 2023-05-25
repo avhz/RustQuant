@@ -4,6 +4,8 @@
 // See LICENSE or <https://www.gnu.org/licenses/>.
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+use std::fmt::{self, Formatter};
+
 /// Currency data struct.
 pub struct Currency {
     /// Currency name. e.g. United States Dollar
@@ -16,6 +18,8 @@ pub struct Currency {
     pub minor: u8,
     /// Fractions per unit. e.g. 100 cents = 1 dollar.
     pub fractions: u8,
+    /// Amount of currency.
+    pub amount: f64,
 }
 
 /// ISO 4217 codes enum.
@@ -136,4 +140,37 @@ pub enum ISO_4217 {
     ZAR = 710,
     /// Zambian kwacha
     ZMW = 967,
+}
+
+impl fmt::Display for Currency {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        write!(
+            f,
+            "Quantity:\t{}\nCurrency:\t{}\nISO Code:\t{}",
+            self.amount, self.name, self.code as u16
+        )
+    }
+}
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// UNIT TESTS
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+#[cfg(test)]
+mod test_currencies {
+    use super::*;
+
+    #[test]
+    fn test_fmt() {
+        let usd = Currency {
+            name: "United States Dollar".to_string(),
+            symbol: "$".to_string(),
+            code: ISO_4217::USD,
+            minor: 2,
+            fractions: 100,
+            amount: 0.0,
+        };
+        println!("{}", usd);
+        // assert_eq!(format!("{}", usd), "Amount: \t {} \n Name: \t {} \n ISO: \t {}".to_string());
+    }
 }
