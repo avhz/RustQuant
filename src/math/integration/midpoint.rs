@@ -4,8 +4,6 @@
 // See LICENSE or <https://www.gnu.org/licenses/>.
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-#![deny(missing_docs)]
-
 use crate::utilities::linspace;
 
 /// Midpoint rule for numerical integration.

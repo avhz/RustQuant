@@ -4,8 +4,6 @@
 // See LICENSE or <https://www.gnu.org/licenses/>.
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-#![deny(missing_docs)]
-
 use crate::stochastics::*;
 
 /// Struct containin the Arithmetic Brownian Motion parameters.

@@ -6,8 +6,6 @@
 
 //! This module contains various 'binary', or 'digital', option types.
 
-#![deny(missing_docs)]
-
 use crate::distributions::{gaussian::*, Distribution};
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

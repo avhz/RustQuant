@@ -4,8 +4,6 @@
 // See LICENSE or <https://www.gnu.org/licenses/>.
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-#![deny(missing_docs)]
-
 //! `Trajectories` is the return type of all the stochastic processes.
 //! `StochasticProcess` is the base trait for all the stochastic processes.
 //!

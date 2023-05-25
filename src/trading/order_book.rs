@@ -4,7 +4,6 @@
 // See LICENSE or <https://www.gnu.org/licenses/>.
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-// #[allow(missing_docs)]
 // use time::{self, OffsetDateTime};
 
 // /// Order struct containing parameters for a given order in the LOB.

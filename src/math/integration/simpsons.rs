@@ -4,8 +4,6 @@
 // See LICENSE or <https://www.gnu.org/licenses/>.
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-#![deny(missing_docs)]
-
 use crate::utilities::linspace;
 
 /// Composite Simpson's 3/8 rule for numerical integration.
