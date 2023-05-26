@@ -10,6 +10,8 @@
 // use std::io::Cursor;
 // use time::{macros::datetime, Date};
 
+use std::io::Cursor;
+
 use polars::prelude::*;
 use time::OffsetDateTime;
 use yahoo_finance_api as yahoo;
@@ -122,7 +124,30 @@ impl YahooFinanceReader for YahooFinanceData {
     }
 
     fn get_options_chain(&mut self) {
-        todo!()
+        let provider = yahoo::YahooConnector::new();
+        let response =
+            tokio_test::block_on(provider.search_options(self.ticker.as_ref().unwrap())).unwrap();
+
+        let options = response.options;
+
+        // YOptionResult { name: "AAPL230526C00250000", strike: 250.0, last_trade_date: "2023-05-25 3:12PM EDT",
+        //                 last_price: 250.0, bid: 250.0, ask: 250.0, change: 250.0, change_pct: 250.0,
+        //                 volume: 0, open_interest: 0, impl_volatility: 250.0 }
+
+        // CANNOT IMPLEMENT THIS YET, BECAUSE THE YAHOO FINANCE API
+        // DOES NOT RETURN THE CORRECT OPTIONS CHAIN.
+        // Issue opened: https://github.com/xemwebe/yahoo_finance_api/issues/28
+        // Pull request opened: https://github.com/xemwebe/yahoo_finance_api/pull/29
+
+        // let name = options.iter().map(|o| o.name.clone()).collect::<Vec<_>>();
+        // let strike = options.iter().map(|o| o.strike).collect::<Vec<_>>();
+        // let last_trade_date = options
+        //     .iter()
+        //     .map(|o| o.last_trade_date.clone())
+        //     .collect::<Vec<_>>();
+        // let last_price = options.iter().map(|o| o.last_price).collect::<Vec<_>>();
+
+        // println!("{:?}", response);
     }
 
     fn get_latest_quote(&mut self) {
@@ -150,4 +175,13 @@ mod test_yahoo {
 
         println!("Apple's quotes: {:?}", yfd.price_history)
     }
+
+    // #[test]
+    // fn test_get_options_chain() {
+    //     let mut yfd = YahooFinanceData::new("AAPL".to_string());
+
+    //     yfd.get_options_chain();
+
+    //     // println!("Apple's options chain: {:?}", yfd.options_chain)
+    // }
 }
