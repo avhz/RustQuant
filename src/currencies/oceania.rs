@@ -30,7 +30,7 @@ impl AUDCurrency {
                 code: ISO_4217::AUD,
                 minor: 2,
                 fractions: 100,
-                amount: amount,
+                amount,
             },
         }
     }
@@ -46,7 +46,7 @@ impl NZDCurrency {
                 code: ISO_4217::NZD,
                 minor: 2,
                 fractions: 100,
-                amount: amount,
+                amount,
             },
         }
     }

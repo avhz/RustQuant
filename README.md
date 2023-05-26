@@ -170,6 +170,49 @@ I would not recommend using RustQuant within any other libraries for some time, 
 
 :pray: I would greatly appreciate contributions so it can get to the `v1.0.0` mark ASAP.
 
+### Download data from Yahoo! Finance:
+
+You can download data from Yahoo! Finance into a Polars `DataFrame`.
+
+```rust
+use RustQuant::data::*;
+use time::macros::date;
+
+fn main() {
+    // New YahooFinanceData instance. 
+    // By default, date range is: 1970-01-01 to present. 
+    let mut yfd = YahooFinanceData::new("AAPL".to_string());
+
+    // Can specify custom dates (optional). 
+    yfd.set_start_date(time::macros::datetime!(2019 - 01 - 01 0:00 UTC));
+    yfd.set_end_date(time::macros::datetime!(2020 - 01 - 01 0:00 UTC));
+
+    // Download the historical data. 
+    yfd.get_price_history();
+
+    println!("Apple's quotes: {:?}", yfd.price_history)
+}
+```
+
+```bash
+Apple's quotes: Some(shape: (252, 7)
+┌────────────┬───────────┬───────────┬───────────┬───────────┬────────────┬───────────┐
+│ date       ┆ open      ┆ high      ┆ low       ┆ close     ┆ volume     ┆ adjusted  │
+│ ---        ┆ ---       ┆ ---       ┆ ---       ┆ ---       ┆ ---        ┆ ---       │
+│ date       ┆ f64       ┆ f64       ┆ f64       ┆ f64       ┆ f64        ┆ f64       │
+╞════════════╪═══════════╪═══════════╪═══════════╪═══════════╪════════════╪═══════════╡
+│ 2019-01-02 ┆ 38.7225   ┆ 39.712502 ┆ 38.557499 ┆ 39.48     ┆ 1.481588e8 ┆ 37.994499 │
+│ 2019-01-03 ┆ 35.994999 ┆ 36.43     ┆ 35.5      ┆ 35.547501 ┆ 3.652488e8 ┆ 34.209969 │
+│ 2019-01-04 ┆ 36.1325   ┆ 37.137501 ┆ 35.950001 ┆ 37.064999 ┆ 2.344284e8 ┆ 35.670372 │
+│ 2019-01-07 ┆ 37.174999 ┆ 37.2075   ┆ 36.474998 ┆ 36.982498 ┆ 2.191112e8 ┆ 35.590965 │
+│ …          ┆ …         ┆ …         ┆ …         ┆ …         ┆ …          ┆ …         │
+│ 2019-12-26 ┆ 71.205002 ┆ 72.495003 ┆ 71.175003 ┆ 72.477501 ┆ 9.31212e7  ┆ 70.798401 │
+│ 2019-12-27 ┆ 72.779999 ┆ 73.4925   ┆ 72.029999 ┆ 72.449997 ┆ 1.46266e8  ┆ 70.771545 │
+│ 2019-12-30 ┆ 72.364998 ┆ 73.172501 ┆ 71.305    ┆ 72.879997 ┆ 1.441144e8 ┆ 71.191582 │
+│ 2019-12-31 ┆ 72.482498 ┆ 73.419998 ┆ 72.379997 ┆ 73.412498 ┆ 1.008056e8 ┆ 71.711739 │
+└────────────┴───────────┴───────────┴───────────┴───────────┴────────────┴───────────┘)
+```
+
 ### Read/write data:
 
 ```rust

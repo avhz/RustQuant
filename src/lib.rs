@@ -49,12 +49,16 @@ pub mod currencies {
     pub mod africa;
     /// Submodule of `currencies`: American currencies.
     pub mod america;
+    /// Submodule of `currencies`: Antarctic currency.
+    pub mod antarctica;
     /// Submodule of `currencies`: Asian currencies.
     pub mod asia;
     /// Submodule of `currencies`: currency data struct.
     pub mod currency;
     /// Submodule of `currencies`: European currencies.
     pub mod europe;
+    /// Submodule of `currencies`: currency exchange rates.
+    pub mod exchange;
     /// Submodule of `currencies`: Oceanian currencies.
     pub mod oceania;
 }
@@ -65,10 +69,12 @@ pub mod currencies {
 
 /// Parent module containing: data reading and writing utilities.
 pub mod data {
-    pub use crate::data::io::*;
+    pub use crate::data::{io::*, yahoo::*};
 
     /// Submodule of `data`: file reading and writing.
     pub mod io;
+    /// Submodule of `data`: Yahoo! Finance data reader.
+    pub mod yahoo;
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -10,12 +10,13 @@ use crate::currencies::currency::*;
 /// The ISO three-letter code is AAD.
 /// It is divided into 100 cents.
 /// It is pegged to the USD.
-struct AADCurrency {
+pub struct AADCurrency {
     data: Currency,
 }
 
 impl AADCurrency {
-    pub fn new() -> Self {
+    /// Create a new instance of `AADCurrency`.
+    pub fn new(amount: f64) -> Self {
         Self {
             data: Currency {
                 name: "Antarctic Dollar".to_string(),
@@ -23,6 +24,7 @@ impl AADCurrency {
                 code: ISO_4217::AAD,
                 minor: 2,
                 fractions: 100,
+                amount,
             },
         }
     }
