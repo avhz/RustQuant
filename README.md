@@ -27,6 +27,7 @@ Contact: rustquantcontact@gmail.com
 
 ## :newspaper: Latest features
 
++ Download time series data from [Yahoo! Finance](https://finance.yahoo.com/).
 + Read (write) from (to) `.csv`, `.json`, and `.parquet` files, using [Polars `DataFrames`](https://pola-rs.github.io/polars-book/).
 + Arithmetic Brownian Motion generator. 
 + Gamma, exponential, and chi-squared distributions.
