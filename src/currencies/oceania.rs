@@ -10,14 +10,16 @@ use crate::currencies::currency::*;
 /// The ISO three-letter code is AUD; the numeric code is 36.
 /// It is divided into 100 cents.
 pub struct AUDCurrency {
-    data: Currency,
+    /// The currency data.
+    pub data: Currency,
 }
 
 /// New Zealand dollar
 /// The ISO three-letter code is NZD; the numeric code is 554.
 /// It is divided into 100 cents.
 pub struct NZDCurrency {
-    data: Currency,
+    /// The currency data.
+    pub data: Currency,
 }
 
 impl AUDCurrency {

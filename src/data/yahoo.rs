@@ -9,9 +9,6 @@
 
 // use std::io::Cursor;
 // use time::{macros::datetime, Date};
-
-use std::io::Cursor;
-
 use polars::prelude::*;
 use time::OffsetDateTime;
 use yahoo_finance_api as yahoo;
@@ -124,11 +121,11 @@ impl YahooFinanceReader for YahooFinanceData {
     }
 
     fn get_options_chain(&mut self) {
-        let provider = yahoo::YahooConnector::new();
-        let response =
-            tokio_test::block_on(provider.search_options(self.ticker.as_ref().unwrap())).unwrap();
+        // let provider = yahoo::YahooConnector::new();
+        // let response =
+        //     tokio_test::block_on(provider.search_options(self.ticker.as_ref().unwrap())).unwrap();
 
-        let options = response.options;
+        // let options = response.options;
 
         // YOptionResult { name: "AAPL230526C00250000", strike: 250.0, last_trade_date: "2023-05-25 3:12PM EDT",
         //                 last_price: 250.0, bid: 250.0, ask: 250.0, change: 250.0, change_pct: 250.0,

@@ -11,7 +11,8 @@ use crate::currencies::currency::*;
 /// It is divided into 100 cents.
 /// It is pegged to the USD.
 pub struct AADCurrency {
-    data: Currency,
+    /// The currency data.
+    pub data: Currency,
 }
 
 impl AADCurrency {

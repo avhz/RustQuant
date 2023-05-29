@@ -10,33 +10,38 @@ use super::Currency;
 /// The ISO three-letter code is ARS; the numeric code is 32.
 /// It is divided into 100 centavos.
 pub struct ARSCurrency {
-    data: Currency,
+    /// The currency data.
+    pub data: Currency,
 }
 
 /// Brazilian real (BRL)
 /// The ISO three-letter code is BRL; the numeric code is 986.
 /// It is divided into 100 centavos.
 pub struct BRLCurrency {
-    data: Currency,
+    /// The currency data.
+    pub data: Currency,
 }
 
 /// Canadian dollar (CAD)
 /// The ISO three-letter code is CAD; the numeric code is 124.
 /// It is divided into 100 cents.
 pub struct CADCurrency {
-    data: Currency,
+    /// The currency data.
+    pub data: Currency,
 }
 
 /// Chilean peso (CLP)
 /// The ISO three-letter code is CLP; the numeric code is 152.
 /// It is divided into 100 centavos.
 pub struct CLPCurrency {
-    data: Currency,
+    /// The currency data.
+    pub data: Currency,
 }
 
 /// Colombian peso (COP)
 /// The ISO three-letter code is COP; the numeric code is 170.
 /// It is divided into 100 centavos.
 pub struct COPCurrency {
-    data: Currency,
+    /// The currency data.
+    pub data: Currency,
 }
