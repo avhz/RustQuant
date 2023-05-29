@@ -6,13 +6,6 @@
 
 use super::Currency;
 
-/// Australian dollar
-/// The ISO three-letter code is AUD; the numeric code is 36.
-/// It is divided into 100 cents.
-pub struct AUDCurrency {
-    data: Currency,
-}
-
 /// Argentina Peso (ARS)
 /// The ISO three-letter code is ARS; the numeric code is 32.
 /// It is divided into 100 centavos.
