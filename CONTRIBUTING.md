@@ -31,11 +31,18 @@ license header in any files you create:
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ```
 
-Additionally, all code should be formatted with `rustfmt`, and all documentation 
-should be formatted with `rustdoc`, and all code should be tested 
-as thoroughly as possible (hopefully keeping coverage >80%).
+The following tools are good to use before pushing, `cargo build` at a minimum:
 
-I like to separate my code as below, as I think it improves the readability
+```bash
+cargo doc
+cargo fmt
+cargo clippy
+cargo check
+cargo test
+cargo build
+```
+
+I also like to separate the code as below, as I think it improves the readability
 a lot, and I would encourage any PRs to do the same (or similar). Of course, 
 any suggestions or opinions on different styles are welcome!
 
