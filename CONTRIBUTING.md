@@ -23,11 +23,13 @@ Additionally, feel free to contact me directly at: rustquantcontact@gmail.com
 If you decide to contribute, please include the following 
 license header in any files you create:
 
+```rust
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // RustQuant: A Rust library for quantitative finance tools.
 // Copyright (C) 2023 https://github.com/avhz
 // See LICENSE or <https://www.gnu.org/licenses/>.
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+```
 
 Additionally, all code should be formatted with `rustfmt`, and all documentation 
 should be formatted with `rustdoc`, and all code should be tested 
@@ -37,22 +39,32 @@ Separating sections in the code with comments is encouraged, but not required.
 I would prefer the following (rough) format, 
 including the line comments to separate sections:
 
+```rust
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Structs, enums, and traits
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-...
+struct Struct {}
+
+trait Trait {}
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Implementations, functions, and macros
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-...
+impl Trait for Struct {}
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Unit tests
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-...
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn very_thorough_test() {}
+}
+```
 
 Thank you for your interest in contributing to RustQuant!
