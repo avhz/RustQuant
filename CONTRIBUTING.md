@@ -1,3 +1,5 @@
+# Contributing to RustQuant
+
 If you're reading this, I assume you're interested in contributing to this project. 
 If so, thank you very much! I would love to grow the project and have a solid, 
 stable library by the end of 2023.
@@ -27,9 +29,9 @@ license header in any files you create:
 // See LICENSE or <https://www.gnu.org/licenses/>.
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Additionally, all code should be formatted with rustfmt, and all documentation 
-should be formatted with rustdoc, and all code should be tested 
-as thoroughly as possible.
+Additionally, all code should be formatted with `rustfmt`, and all documentation 
+should be formatted with `rustdoc`, and all code should be tested 
+as thoroughly as possible (hopefully keeping coverage >80%).
 
 Separating sections in the code with comments is encouraged, but not required. 
 I would prefer the following (rough) format, 
