@@ -6,14 +6,14 @@ stable library by the end of 2023.
 
 Firstly, this contribution guide is a work in progress, so bare with me. 
 
-I welcome contributions of all kinds, including but not limited to:
+I welcome contributions of all kinds, including:
 
-* Bug reports
-* Bug fixes
-* Feature requests
-* Feature implementations
-* Documentation improvements
-* Test cases
+* Bug reports.
+* Bug fixes.
+* Feature requests.
+* Feature implementations.
+* Documentation improvements.
+* Unit tests.
 
 If you have any ideas, feel free to make an issue to discuss it, 
 or just make a pull request.
@@ -27,7 +27,7 @@ license header in any files you create:
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // RustQuant: A Rust library for quantitative finance tools.
 // Copyright (C) 2023 https://github.com/avhz
-// See LICENSE or <https://www.gnu.org/licenses/>.
+// See LICENSE.md or <https://www.gnu.org/licenses/>.
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ```
 
@@ -35,14 +35,16 @@ Additionally, all code should be formatted with `rustfmt`, and all documentation
 should be formatted with `rustdoc`, and all code should be tested 
 as thoroughly as possible (hopefully keeping coverage >80%).
 
-Separating sections in the code with comments is encouraged, but not required. 
-I would prefer the following (rough) format, 
-including the line comments to separate sections:
+I like to separate my code as below, as I think it improves the readability
+a lot, and I would encourage any PRs to do the same (or similar). Of course, 
+any suggestions or opinions on different styles are welcome!
 
 ```rust
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Structs, enums, and traits
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+enum Enum {}
 
 struct Struct {}
 
@@ -51,6 +53,8 @@ trait Trait {}
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Implementations, functions, and macros
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+impl Struct {}
 
 impl Trait for Struct {}
 

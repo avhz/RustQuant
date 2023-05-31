@@ -15,5 +15,5 @@ If you require a specific version, add the following to your Cargo.toml file:
 RustQuant = "*"
 ```
 
-replacing "*" with the version number you require, such as "0.0.17".
+replacing `"*"` with the version number you require, such as `"0.0.17"`.
 
