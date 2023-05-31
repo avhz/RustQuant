@@ -1,5 +1,14 @@
 # Installation of RustQuant
 
+If you haven't already, you obviously need to install Rust.
+See here: https://www.rust-lang.org/tools/install
+
+Create a new Rust project:
+
+```bash
+cargo new my_project && cd my_project
+```
+
 In your Rust project's root directory, simply run: 
 
 ```bash
