@@ -31,7 +31,7 @@ pub enum PricingEngine {
     Numerical,
 }
 
-/// Instrument type enum.
+/// Base instrument type enum.
 pub enum InstrumentType {
     /// A stock instrument.
     Stock,
@@ -43,6 +43,8 @@ pub enum InstrumentType {
     Future,
     /// A swap contract.
     Swap,
+    /// Commodities.
+    Commodity,
     /// A hybrid instrument (e.g. callable bond).
     Hybrid,
 }

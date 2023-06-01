@@ -5,6 +5,7 @@
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 pub struct CommonStock {
+    pub instrument_type: InstrumentType::Stock,
     pub ticker: String,
     pub name: String,
     pub currency: Currency,
