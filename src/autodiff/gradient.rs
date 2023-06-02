@@ -114,14 +114,14 @@ mod test_gradient {
     fn x_times_y_plus_sin_x() {
         let t = Tape::new();
 
-        let x = t.var(0.5);
-        let y = t.var(4.2);
+        let x = t.var(69.0);
+        let y = t.var(420.0);
 
         let z = x * y + x.sin();
 
         let grad = z.accumulate();
 
-        assert_approx_equal!(z.value, 2.579425538604203, 1e-14);
+        assert_approx_equal!(z.value, 28979.885215, 1e-6);
         assert_approx_equal!(grad.wrt(&x), y.value + x.value.cos(), 1e-15);
         assert_approx_equal!(grad.wrt(&y), x.value, 1e-15);
     }

@@ -70,8 +70,11 @@ impl RQ_Distribution for Gaussian {
         (-0.5 * ((x - self.mean) / self.variance).powi(2)).exp() / (2.0 * PI * self.variance).sqrt()
     }
 
-    fn pmf(&self, _x: f64) -> f64 {
-        panic!("Gaussian distribution is continuous. Use pdf() instead.");
+    /// Gaussian distribution is continuous, thus it has no
+    /// probability mass function.
+    /// Using this method will call `pdf()` instead.
+    fn pmf(&self, x: f64) -> f64 {
+        self.pdf(x)
     }
 
     /// Distribution function of the Gaussian distribution.

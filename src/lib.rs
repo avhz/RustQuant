@@ -10,14 +10,31 @@
 //! RustQuant: A Rust library for quantitative finance.
 //!
 //! Contact: rustquantcontact@gmail.com
+//!
+//! This library is a work in progress.
+//! Any contributions are greatly appreciated.
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// RUSTQUANT ERROR HANDLING MODULE
+// Need to finish this.
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+/// Module containing the RustQuant `Error` type.
+pub mod error;
+pub use error::*;
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // INSTRUMENTS MODULE
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-/// Module defining base traits for financial instruments.
-pub mod instrument;
-pub use crate::instrument::*;
+/// Parent module defining base traits for financial instruments.
+/// Also contains all instrument modules.
+pub mod instruments {
+    pub use crate::instruments::instrument::*;
+
+    /// Submodule of `instruments`: base trait for all instruments.
+    pub mod instrument;
+}
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // BONDS
