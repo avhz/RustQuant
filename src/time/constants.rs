@@ -4,6 +4,19 @@
 // See LICENSE or <https://www.gnu.org/licenses/>.
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+pub(crate) const DAYS_IN_YEAR: usize = 365; // Or should it be 365.25?
+pub(crate) const DAYS_IN_WEEK: usize = 7;
+pub(crate) const HOURS_IN_DAY: usize = 24;
+pub(crate) const MINS_IN_HOUR: usize = 60;
+pub(crate) const SECS_IN_MIN: usize = 60;
+pub(crate) const SECS_IN_HOUR: usize = SECS_IN_MIN * MINS_IN_HOUR;
+pub(crate) const MINS_IN_DAY: usize = MINS_IN_HOUR * HOURS_IN_DAY;
+pub(crate) const SECS_IN_DAY: usize = SECS_IN_MIN * MINS_IN_DAY;
+pub(crate) const HOURS_IN_WEEK: usize = HOURS_IN_DAY * DAYS_IN_WEEK;
+pub(crate) const MINS_IN_WEEK: usize = HOURS_IN_WEEK * MINS_IN_HOUR;
+pub(crate) const SECS_IN_WEEK: usize = MINS_IN_WEEK * SECS_IN_HOUR;
+pub(crate) const SECS_IN_YEAR: usize = SECS_IN_MIN * MINS_IN_HOUR * HOURS_IN_DAY * DAYS_IN_YEAR;
+
 /// Day enumeration.
 pub enum Day {
     /// Monday.
@@ -77,8 +90,8 @@ pub enum Frequency {
 // /// Weekend mask enumeration.
 // /// This indicates which days of the week are considered weekends.
 // pub enum WeekendMask {
-//     Saturday_Sunday = (0, 0, 0, 0, 0, 1, 1),
-//     Friday_Saturday = (0, 0, 0, 0, 1, 1, 0),
-//     Sunday_Only = (0, 0, 0, 0, 0, 0, 1),
-//     None = (0, 0, 0, 0, 0, 0, 0),
+//     Saturday_Sunday,
+//     Friday_Saturday,
+//     Sunday_Only,
+//     None,
 // }
