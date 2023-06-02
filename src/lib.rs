@@ -283,3 +283,30 @@ pub mod trading {
     /// Submodule of `trading`: order types definitions.
     pub mod order_types;
 }
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// TIME
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+/// Parent module containing: time and date functionality.
+pub mod time {
+    // pub use crate::trading::order_book::*;
+    pub use crate::time::{
+        calendar::*, constants::*, conventions::*, date::*, daycount::*, schedule::*, time::*,
+    };
+
+    /// Submodule of `time`: calendar definitions.
+    pub mod calendar;
+    /// Submodule of `time`: date/time constants
+    pub mod constants;
+    /// Submodule of `time`: day count and business day conventions.
+    pub mod conventions;
+    /// Submodule of `time`: date definitions.
+    pub mod date;
+    /// Submodule of `time`: daycount definitions.
+    pub mod daycount;
+    /// Submodule of `time`: scheduling definitions.
+    pub mod schedule;
+    /// Submodule of `time`: time definitions.  
+    pub mod time;
+}
