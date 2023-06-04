@@ -53,7 +53,7 @@ impl Schedule {
 
         for _ in 0..=num_periods {
             payments.push(current_time);
-            current_time = current_time + period;
+            current_time += period;
         }
 
         Schedule {
@@ -75,7 +75,7 @@ impl Schedule {
 
         for _ in 0..=num_periods {
             payments.push(current_time);
-            current_time = current_time - period;
+            current_time -= period;
         }
 
         payments.reverse();
