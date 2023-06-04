@@ -20,7 +20,7 @@ license = "GPL-3.0-or-later"
 # nalgebra = "0.32.2"
 num-complex = "0.4.2"
 plotters = "0.3.4"
-polars = { version = "0.29.0", features = [
+polars = { version = "0.30.0", features = [
     "serde",
     "json",
     "parquet",
@@ -39,4 +39,4 @@ tempfile = "3.5.0"
 time = "0.3.20"
 tokio = "1.28.1"
 tokio-test = "0.4.2"
-yahoo_finance_api = "1.6.1"
+yahoo_finance_api = "2.0.0"
