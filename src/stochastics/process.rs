@@ -26,13 +26,13 @@ pub struct Trajectories {
 /// Trait to implement stochastic processes.
 pub trait StochasticProcess: Sync {
     /// Base method for the process' drift.
-    fn drift(&self, x: f64) -> f64;
+    fn drift(&self, x: f64, t: f64) -> f64;
 
     /// Base method for the process' diffusion.
-    fn diffusion(&self, x: f64) -> f64;
+    fn diffusion(&self, x: f64, t: f64) -> f64;
 
     /// Base method for the process' jump term (if applicable).
-    fn jump(&self, x: f64) -> f64;
+    fn jump(&self, x: f64, t: f64) -> f64;
 
     /// Euler-Maruyama discretisation scheme.
     ///
@@ -71,7 +71,9 @@ pub trait StochasticProcess: Sync {
                 .collect();
 
             for t in 0..n_steps {
-                path[t + 1] = path[t] + self.drift(path[t]) * dt + self.diffusion(path[t]) * dW[t];
+                path[t + 1] = path[t]
+                    + self.drift(path[t], times[t]) * dt
+                    + self.diffusion(path[t], times[t]) * dW[t];
             }
         };
 
