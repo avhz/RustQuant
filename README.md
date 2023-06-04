@@ -18,10 +18,6 @@
         <img alt="Dependencies" src="https://deps.rs/repo/github/avhz/RustQuant/status.svg">
 </p>
 
-
-[![dependency status](https://deps.rs/repo/github/avhz/RustQuant/status.svg)](https://deps.rs/repo/github/avhz/RustQuant)
-
-
 Rust library for quantitative finance tools. 
 
 :dart: I want to hit a stable and legitimate `v1.0.0` by the end of 2023, so any and all feedback, suggestions, or contributions are strongly welcomed! 
