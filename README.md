@@ -14,7 +14,12 @@
         <img alt="Crates.io" src="https://img.shields.io/crates/v/RustQuant">
     <a href="#codecov" alt="codecov">
         <img alt="Codecov" src="https://img.shields.io/codecov/c/gh/avhz/RustQuant">
+    <a href="#deps" alt="deps">
+        <img alt="Dependencies" src="https://deps.rs/repo/github/avhz/RustQuant/status.svg">
 </p>
+
+
+[![dependency status](https://deps.rs/repo/github/avhz/RustQuant/status.svg)](https://deps.rs/repo/github/avhz/RustQuant)
 
 
 Rust library for quantitative finance tools. 
