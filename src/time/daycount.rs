@@ -6,7 +6,7 @@
 
 //! Module for computing day counts.
 
-use super::{constants::Frequency, conventions::DayCountConvention};
+use super::conventions::DayCountConvention;
 use time::OffsetDateTime;
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -45,7 +45,7 @@ pub fn day_count_factor(
     start: OffsetDateTime,
     end: OffsetDateTime,
     convention: DayCountConvention,
-    frequency: Option<Frequency>,
+    // frequency: Option<PaymentFrequency>,
 ) -> f64 {
     // THIS FUNCTION NEEDS WORK.
 
@@ -94,22 +94,22 @@ mod test_daycount {
         let end = datetime!(2023-06-02 0:00 UTC);
 
         assert_approx_equal!(
-            day_count_factor(start, end, DayCountConvention::Actual365, None),
+            day_count_factor(start, end, DayCountConvention::Actual365),
             1.416438,
             1e-6
         );
         assert_approx_equal!(
-            day_count_factor(start, end, DayCountConvention::Actual360, None),
+            day_count_factor(start, end, DayCountConvention::Actual360),
             1.436111,
             1e-6
         );
         assert_approx_equal!(
-            day_count_factor(start, end, DayCountConvention::Actual364, None),
+            day_count_factor(start, end, DayCountConvention::Actual364),
             1.420329,
             1e-6
         );
         assert_approx_equal!(
-            day_count_factor(start, end, DayCountConvention::Thirty360, None),
+            day_count_factor(start, end, DayCountConvention::Thirty360),
             1.419444,
             1e-6
         );
