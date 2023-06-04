@@ -29,15 +29,15 @@ impl CoxIngersollRoss {
 }
 
 impl StochasticProcess for CoxIngersollRoss {
-    fn drift(&self, x: f64) -> f64 {
+    fn drift(&self, x: f64, _t: f64) -> f64 {
         self.theta * (self.mu - x)
     }
 
-    fn diffusion(&self, x: f64) -> f64 {
+    fn diffusion(&self, x: f64, _t: f64) -> f64 {
         self.sigma * x.sqrt()
     }
 
-    fn jump(&self, _x: f64) -> f64 {
+    fn jump(&self, _x: f64, _t: f64) -> f64 {
         0.0
     }
 }

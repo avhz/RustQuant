@@ -24,17 +24,17 @@ impl GeometricBrownianMotion {
 }
 
 impl StochasticProcess for GeometricBrownianMotion {
-    fn drift(&self, x: f64) -> f64 {
+    fn drift(&self, x: f64, _t: f64) -> f64 {
         // mu X_t dt
         self.mu * x
     }
 
-    fn diffusion(&self, x: f64) -> f64 {
+    fn diffusion(&self, x: f64, _t: f64) -> f64 {
         // sigma X_t dW_t
         self.sigma * x
     }
 
-    fn jump(&self, _x: f64) -> f64 {
+    fn jump(&self, _x: f64, _t: f64) -> f64 {
         0.0
     }
 }
