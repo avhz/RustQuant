@@ -22,3 +22,9 @@ Cargo.lock
 **/.DS_Store
 **/._.DS_Store
 .vscode/*
+
+## PYTHON 
+.venv/
+venv/
+env/
+./Bindings/.venv
