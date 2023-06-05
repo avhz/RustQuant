@@ -1,0 +1,27 @@
+name: RustQuant Code Coverage Report
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  code_coverage_report:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      # INSTALL TARPALUIN FOR CODE COVERAGE
+      - name: Install Tarpaulin. 
+        run: cargo install cargo-tarpaulin
+      # GENERATE CODE COVERAGE REPORT
+      - name: Generate code coverage report.
+        run: cargo tarpaulin --verbose --all-features --workspace --timeout 120 --out Xml --exclude-files src/lib.rs src/trading/* Bindings/*
+      # UPLOAD CODE COVERAGE REPORT TO CODECOV.IO
+      - name: Upload coverage reports to Codecov.io
+        uses: codecov/codecov-action@v3
+        with:
+          fail_ci_if_error: true
