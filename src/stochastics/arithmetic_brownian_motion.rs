@@ -24,17 +24,17 @@ impl ArithmeticBrownianMotion {
 }
 
 impl StochasticProcess for ArithmeticBrownianMotion {
-    fn drift(&self, _x: f64) -> f64 {
+    fn drift(&self, _x: f64, _t: f64) -> f64 {
         // mu dt
         self.mu
     }
 
-    fn diffusion(&self, _x: f64) -> f64 {
+    fn diffusion(&self, _x: f64, _t: f64) -> f64 {
         // sigma dW_t
         self.sigma
     }
 
-    fn jump(&self, _x: f64) -> f64 {
+    fn jump(&self, _x: f64, _t: f64) -> f64 {
         0.0
     }
 }

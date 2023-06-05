@@ -28,15 +28,15 @@ impl OrnsteinUhlenbeck {
 }
 
 impl StochasticProcess for OrnsteinUhlenbeck {
-    fn drift(&self, x: f64) -> f64 {
+    fn drift(&self, x: f64, _t: f64) -> f64 {
         self.theta * (self.mu - x)
     }
 
-    fn diffusion(&self, _x: f64) -> f64 {
+    fn diffusion(&self, _x: f64, _t: f64) -> f64 {
         self.sigma
     }
 
-    fn jump(&self, _x: f64) -> f64 {
+    fn jump(&self, _x: f64, _t: f64) -> f64 {
         0.0
     }
 }

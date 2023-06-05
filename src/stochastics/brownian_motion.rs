@@ -24,15 +24,15 @@ impl BrownianMotion {
 }
 
 impl StochasticProcess for BrownianMotion {
-    fn drift(&self, _x: f64) -> f64 {
+    fn drift(&self, _x: f64, _t: f64) -> f64 {
         0.0
     }
 
-    fn diffusion(&self, _x: f64) -> f64 {
+    fn diffusion(&self, _x: f64, _t: f64) -> f64 {
         1.0
     }
 
-    fn jump(&self, _x: f64) -> f64 {
+    fn jump(&self, _x: f64, _t: f64) -> f64 {
         0.0
     }
 }
