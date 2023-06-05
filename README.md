@@ -106,7 +106,7 @@ The following is a list of stochastic processes that can be generated.
 + [x] Ornstein-Uhlenbeck process
     + $dX_t = \theta(\mu - X_t)dt + \sigma dW_t$
     + Models: Vasicek (1977)
-+ [ ] Ho-Lee (1986)
++ [x] Ho-Lee (1986)
     + $dX_t = \theta_t dt + \sigma dW_t$
 + [ ] Hull-White (1990)
     + $dX_t = (\theta - \alpha X_t)dt + \sigma_t dW_t$
