@@ -1,0 +1,10 @@
+Wheel-Version: 1.0
+Generator: bdist_wheel (0.38.4)
+Root-Is-Purelib: false
+Tag: py2-none-manylinux_2_5_x86_64
+Tag: py2-none-manylinux1_x86_64
+Tag: py2-none-musllinux_1_1_x86_64
+Tag: py3-none-manylinux_2_5_x86_64
+Tag: py3-none-manylinux1_x86_64
+Tag: py3-none-musllinux_1_1_x86_64
+
