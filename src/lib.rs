@@ -194,7 +194,8 @@ pub mod distributions {
 pub mod stochastics {
     pub use crate::stochastics::{
         arithmetic_brownian_motion::*, brownian_motion::*, cox_ingersoll_ross::*,
-        geometric_brownian_motion::*, ornstein_uhlenbeck::*, process::*,
+        extended_vasicek::*, geometric_brownian_motion::*, ho_lee::*, hull_white::*,
+        ornstein_uhlenbeck::*, process::*,
     };
 
     /// Submodule of `stochastics`: implements Arithmetic Brownian Motion.
@@ -203,10 +204,14 @@ pub mod stochastics {
     pub mod brownian_motion;
     /// Submodule of `stochastics`: implements the Cox-Ingersoll-Ross process.
     pub mod cox_ingersoll_ross;
+    /// Submodule of `stochastics`: implements the extended Vasicek process.
+    pub mod extended_vasicek;
     /// Submodule of `stochastics`: implements Geometric Brownian Motion.
     pub mod geometric_brownian_motion;
     /// Submodule of `stochastics`: implements Ho-Lee process.
     pub mod ho_lee;
+    /// Submodule of `stochastics`: implements the Hull-White model process.
+    pub mod hull_white;
     /// Submodule of `stochastics`: implements the Ornstein-Uhlenbeck process.
     pub mod ornstein_uhlenbeck;
     /// Submodule of `stochastics`: defines `Trajectories` and `StochasticProcess`.
