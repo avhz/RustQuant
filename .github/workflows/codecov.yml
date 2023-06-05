@@ -1,4 +1,4 @@
-name: Build and Test.
+name: Code Coverage Report.
 
 on:
   push:
@@ -27,12 +27,19 @@ jobs:
             target/
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
       # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      # BUILD THE LIBRARY
+      # INSTALL TARPALUIN FOR CODE COVERAGE
       # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      - name: Build RustQuant.
-        run: cargo build --release --verbose
+      - name: Install Tarpaulin. 
+        run: cargo install cargo-tarpaulin
       # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      # TEST THE LIBRARY
+      # GENERATE CODE COVERAGE REPORT
       # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      - name: Run unit tests.
-        run: cargo test --release --verbose
+      - name: Generate code coverage report.
+        run: cargo tarpaulin --verbose --all-features --workspace --timeout 120 --out Xml --exclude-files src/lib.rs src/trading/* ./Bindings/*
+      # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        # UPLOAD CODE COVERAGE REPORT TO CODECOV.IO
+      # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      - name: Upload coverage reports to Codecov.io
+        uses: codecov/codecov-action@v3
+        with:
+          fail_ci_if_error: true
