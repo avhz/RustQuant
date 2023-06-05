@@ -205,7 +205,7 @@ pub mod stochastics {
     pub mod cox_ingersoll_ross;
     /// Submodule of `stochastics`: implements Geometric Brownian Motion.
     pub mod geometric_brownian_motion;
-    /// Submodule of `stochastics`: implements Geometric Brownian Motion.
+    /// Submodule of `stochastics`: implements Ho-Lee process.
     pub mod ho_lee;
     /// Submodule of `stochastics`: implements the Ornstein-Uhlenbeck process.
     pub mod ornstein_uhlenbeck;
