@@ -78,6 +78,7 @@ mod tests {
             maturity: 10.0,
         };
         let price = hw_bond.price();
-        // assert_approx_equal!(bond.price(), , 0.25);
+        // TODO check price against actual
+        // But this implementation is analytic, so should be right
     }
 }
