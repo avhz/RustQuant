@@ -14,8 +14,10 @@
 //!
 //! - `theta(t)`: is the rate at which it gets pulled.
 //! - `a`: is the level to which it gets pulled.
+//! - `r_t`: short rate at time t
 //! - `sigma`: is the diffusion coefficient.
-//!
+//! - `t`: time to check price at
+//! - `maturity`: time at bond maturity
 
 use super::super::math::integrate;
 use crate::bonds::*;
@@ -25,7 +27,7 @@ pub struct HullWhite {
     a: f64,
     theta_t: fn(f64) -> f64,
     sigma: f64,
-    r: f64,
+    r_t: f64,
     t: f64,
     maturity: f64,
 }
@@ -54,7 +56,7 @@ impl ZeroCouponBond for HullWhite {
         assert!(self.a > 0.0);
         assert!(self.maturity >= self.t);
 
-        self.A() * (-1.0 * self.B() * self.r).exp()
+        self.A() * (-1.0 * self.B() * self.r_t).exp()
     }
 
     // fn duration(&self) -> f64 {}
@@ -71,7 +73,7 @@ mod tests {
             a: 2.0,
             theta_t: |x| 0.5,
             sigma: 0.3,
-            r: 0.05,
+            r_t: 0.05,
             t: 0.0,
             maturity: 10.0,
         };
