@@ -21,7 +21,6 @@ use super::super::math::integrate;
 use crate::bonds::*;
 
 /// Struct containing the Hull-White model parameters.
-
 pub struct HullWhite {
     a: f64,
     theta_t: fn(f64) -> f64,
@@ -65,7 +64,6 @@ impl ZeroCouponBond for HullWhite {
 #[cfg(test)]
 mod tests {
     use super::*;
-    // use crate::assert_approx_equal;
 
     #[test]
     fn test_hw_zero_coupon_bond() {
