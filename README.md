@@ -109,8 +109,10 @@ The following is a list of stochastic processes that can be generated.
     + Models: Vasicek (1977)
 + [x] Ho-Lee (1986)
     + $dX_t = \theta_t dt + \sigma dW_t$
-+ [ ] Hull-White (1990)
-    + $dX_t = (\theta - \alpha X_t)dt + \sigma_t dW_t$
++ [x] Hull-White (1990)
+    + $dX_t = (\theta(t) - \alpha X(t))dt + \sigma dW_t$+ 
++ [x] Extended Vasicek (1990)
+    + $dX_t = (\theta(t) - \alpha(t) X(t))dt + \sigma dW_t$
 + [ ] Black-Derman-Toy (1990)
     + $d\ln(X) = \left[ \theta_t + \frac{\sigma_t'}{\sigma_t}\ln(X) \right]dt + \sigma_t dW_t$
     + $d\ln(X) = \theta_t dt + \sigma dW_t$
