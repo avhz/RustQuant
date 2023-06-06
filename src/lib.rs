@@ -48,6 +48,8 @@ pub mod bonds {
     pub mod bond;
     /// Submodule of `bonds`: implements Cox-Ingersoll-Ross bond pricing model.
     pub mod cox_ingersoll_ross;
+    /// Submodule of `bonds`: implements one-factor Hull-White bond pricing model.
+    pub mod hull_white;
     /// Submodule of `bonds`: implements Vasicek bond pricing model.
     pub mod vasicek;
 }
