@@ -5,10 +5,14 @@ on:
     branches: [ "main" ]
     paths:
       - "RustQuant-rs/**"
+    paths-ignore:
+      - "RustQuant-py/**"
   pull_request:
     branches: [ "main" ]
     paths:
       - "RustQuant-rs/**"
+    paths-ignore:
+      - "RustQuant-py/**"
 
 env:
   CARGO_TERM_COLOR: always
@@ -42,7 +46,7 @@ jobs:
       # GENERATE CODE COVERAGE REPORT
       # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       - name: Generate code coverage report.
-        run: cargo tarpaulin --verbose --all-features --workspace --timeout 120 --out Xml --exclude-files src/lib.rs src/trading/* Bindings/**
+        run: cargo tarpaulin --verbose --all-features --workspace --timeout 120 --out Xml --exclude-files RustQuant-rs/src/lib.rs RustQuant-rs/src/trading/* RustQuant-py/**
       # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       # UPLOAD CODE COVERAGE REPORT TO CODECOV.IO
       # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
