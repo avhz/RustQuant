@@ -5,14 +5,14 @@ on:
     branches: [ "main" ]
     paths:
       - "RustQuant-rs/**"
-    paths-ignore:
-      - "RustQuant-py/**"
+    # paths-ignore:
+    #   - "RustQuant-py/**"
   pull_request:
     branches: [ "main" ]
     paths:
       - "RustQuant-rs/**"
-    paths-ignore:
-      - "RustQuant-py/**"
+    # paths-ignore:
+    #   - "RustQuant-py/**"
 
 env:
   CARGO_TERM_COLOR: always
