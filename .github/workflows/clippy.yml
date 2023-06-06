@@ -12,9 +12,12 @@ name: Cargo Clippy
 on:
   push:
     branches: [ "main" ]
+    paths:
+      - "RustQuant-rs/**"
   pull_request:
-    # The branches below must be a subset of the branches above
     branches: [ "main" ]
+    paths:
+      - "RustQuant-rs/**"
   schedule:
     - cron: '30 8 * * 5'
 

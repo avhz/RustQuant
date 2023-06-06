@@ -3,8 +3,12 @@ name: Code Coverage Report.
 on:
   push:
     branches: [ "main" ]
+    paths:
+      - "RustQuant-rs/**"
   pull_request:
     branches: [ "main" ]
+    paths:
+      - "RustQuant-rs/**"
 
 env:
   CARGO_TERM_COLOR: always
