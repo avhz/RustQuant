@@ -4,6 +4,8 @@
 // See LICENSE or <https://www.gnu.org/licenses/>.
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+// THIS FILE IS NOT IN USE CURRENTLY.
+
 /// Struct to contain the nodes.
 ///
 /// Operations are assumed to be binary (e.g. x + y),

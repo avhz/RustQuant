@@ -14,11 +14,25 @@
 // IMPORTS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use {super::node::*, super::variable::Variable, std::cell::RefCell};
+use {super::variable::Variable, std::cell::RefCell};
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // NODE AND TAPE STRUCTS AND IMPLEMENTATIONS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+/// Struct to contain the nodes.
+///
+/// Operations are assumed to be binary (e.g. x + y),
+/// thus the arrays have two elements.
+/// To deal with unary or nullary operations, we just adjust the weights
+/// (partials) and the dependencies (parents).
+#[derive(Clone, Copy, Debug)]
+pub struct Node {
+    /// Array that contains the partial derivatives wrt to x and y.
+    pub partials: [f64; 2],
+    /// Array that contains the indices of the parent nodes.
+    pub parents: [usize; 2],
+}
 
 /// Struct to contain the tape (Wengert list), as a vector of `Node`s.
 #[derive(Debug)]
@@ -75,20 +89,6 @@ impl Tape {
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // Functions to push values to the tape (Wengert List):
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    // /// Method to push a new node to the tape.
-    // pub fn push_node(&self, op: Operation) -> usize {
-    //     let nodes = self.nodes.borrow_mut();
-    //     let len = nodes.len();
-
-    //     match op {
-    //         Operation::Nullary => {}
-    //         Operation::Unary => {}
-    //         Operation::Binary => {}
-    //     };
-
-    //     len
-    // }
 
     /// Nullary operator pushback.
     ///
