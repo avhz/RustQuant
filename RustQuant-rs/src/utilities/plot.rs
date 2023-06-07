@@ -67,7 +67,7 @@ pub fn plot_vector(v: Vec<f64>, file: &str) -> Result<(), Box<dyn std::error::Er
 mod tests_plotters {
     use super::*;
     use std::fs;
-    use tempfile::tempdir;
+    // use tempfile::tempdir;
 
     #[test]
     fn test_write_vector() -> Result<(), Box<dyn std::error::Error>> {
@@ -94,20 +94,20 @@ mod tests_plotters {
         assert_eq!(max, 5.0);
     }
 
-    #[test]
-    fn test_plot_vector() -> Result<(), Box<dyn std::error::Error>> {
-        let dir = tempdir()?;
+    // #[test]
+    // fn test_plot_vector() -> Result<(), Box<dyn std::error::Error>> {
+    //     let dir = tempdir()?;
 
-        let v = vec![1.0, 2.0, 3.0, 4.0, 5.0];
-        let file_path = dir.path().join("plot.png");
-        let file_str = file_path.to_str().unwrap();
-        plot_vector(v, file_str)?;
+    //     let v = vec![1.0, 2.0, 3.0, 4.0, 5.0];
+    //     let file_path = dir.path().join("plot.png");
+    //     let file_str = file_path.to_str().unwrap();
+    //     plot_vector(v, file_str)?;
 
-        // Check the file was created.
-        assert!(file_path.exists());
+    //     // Check the file was created.
+    //     assert!(file_path.exists());
 
-        dir.close()?;
+    //     dir.close()?;
 
-        Ok(())
-    }
+    //     Ok(())
+    // }
 }

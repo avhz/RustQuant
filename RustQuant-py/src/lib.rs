@@ -19,7 +19,7 @@
 use pyo3::prelude::*;
 
 #[pymodule]
-fn RustQuant(_py: Python<'_>, m: &PyModule) -> PyResult<()> {
+fn RustQuant(_py: Python<'_>, _m: &PyModule) -> PyResult<()> {
     // m.add_class::<>()?;
     // m.add_wrapped(wrap_pyfunction!( ).unwrap();
 

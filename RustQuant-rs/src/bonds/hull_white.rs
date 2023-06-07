@@ -71,13 +71,13 @@ mod tests {
     fn test_hw_zero_coupon_bond() {
         let hw_bond = HullWhite {
             a: 2.0,
-            theta_t: |x| 0.5,
+            theta_t: |_x| 0.5,
             sigma: 0.3,
             r_t: 0.05,
             t: 0.0,
             maturity: 10.0,
         };
-        let price = hw_bond.price();
+        let _price = hw_bond.price();
         // TODO check price against actual
         // But this implementation is analytic, so should be right
     }
