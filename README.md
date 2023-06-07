@@ -5,7 +5,7 @@
     <a href="#license" alt="license">
         <img alt="License" src="https://img.shields.io/github/license/avhz/RustQuant">
     <a href="#build" alt="build">
-        <img alt="GitHub Workflow Status" src="https://img.shields.io/github/actions/workflow/status/avhz/RustQuant/actions.yml">
+        <img alt="GitHub Workflow Status" src="https://img.shields.io/github/actions/workflow/status/avhz/RustQuant/build.yml">
     <a href="#downloads" alt="downloads">
         <img alt="Crates.io" src="https://img.shields.io/crates/d/RustQuant">
     <a href="#stars" alt="stars">

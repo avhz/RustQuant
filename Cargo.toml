@@ -15,10 +15,6 @@ keywords = [
 categories = ["finance", "mathematics", "science", "algorithms", "simulation"]
 license = "GPL-3.0-or-later"
 
-[lib]
-name = "RustQuant"
-crate-type = ["cdylib"]
-
 [dependencies]
 # csv = "1.2.1"
 # nalgebra = "0.32.2"
@@ -40,7 +36,14 @@ yahoo_finance_api = "2.0.0"
 version = "0.30.0"
 features = ["serde", "json", "parquet", "dtype-struct", "dtype-date", "lazy"]
 
-## THIS IS FOR THE PYTHON BINDINGS
+## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+## THE FOLLOWING ARE FOR THE PYTHON BINDINGS
+## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+[lib]
+name = "RustQuant"
+crate-type = ["cdylib"]
+
 [dependencies.pyo3]
 version = "0.19.0"
 features = ["abi3-py37", "extension-module"]
