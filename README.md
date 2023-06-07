@@ -98,27 +98,26 @@ The following is a list of stochastic processes that can be generated.
 
 + [x] Brownian Motion
 + [x] Arithmetic Brownian Motion
-    + $dX_t = \mu dt + \sigma dW_t$
+    + $dX(t) = \mu dt + \sigma dW(t)$
 + [x] Geometric Brownian Motion
-    + $dX_t = \mu X_t dt + \sigma X_t dW_t$
+    + $dX(t) = \mu X(t) dt + \sigma X(t) dW(t)$
     + Models: Black-Scholes (1973), Rendleman-Bartter (1980)
 + [x] Cox-Ingersoll-Ross (1985)
-    + $dX_t = (\theta - \alpha X_t)dt + \sqrt{r_t} \sigma dW_t$
+    + $dX_t = \left[ \theta - \alpha X(t) \right] dt + \sigma \sqrt{r_t} dW(t)$
 + [x] Ornstein-Uhlenbeck process
-    + $dX_t = \theta(\mu - X_t)dt + \sigma dW_t$
+    + $dX_t = \theta \left[ \mu - X(t) \right] dt + \sigma dW(t)$
     + Models: Vasicek (1977)
 + [x] Ho-Lee (1986)
-    + $dX_t = \theta_t dt + \sigma dW_t$
+    + $dX_t = \theta(t) dt + \sigma dW(t)$
 + [x] Hull-White (1990)
-    + $dX_t = (\theta(t) - \alpha X(t))dt + \sigma dW_t$+ 
+    + $dX_t = \left[ \theta(t) - \alpha X(t) \right]dt + \sigma dW(t)$
 + [x] Extended Vasicek (1990)
-    + $dX_t = (\theta(t) - \alpha(t) X(t))dt + \sigma dW_t$
+    + $dX_t = \left[ \theta(t) - \alpha(t) X(t) \right] dt + \sigma dW(t)$
 + [ ] Black-Derman-Toy (1990)
-    + $d\ln(X) = \left[ \theta_t + \frac{\sigma_t'}{\sigma_t}\ln(X) \right]dt + \sigma_t dW_t$
-    + $d\ln(X) = \theta_t dt + \sigma dW_t$
+    + $d\ln[X(t)] = \left[ \theta(t) + \frac{\sigma'(t)}{\sigma(t)}\ln[X(t)] \right]dt + \sigma_t dW(t)$
+    + $d\ln[X(t)] = \theta(t) dt + \sigma dW(t)$
 + [ ] Merton's model (1973)
-    + $X_t = X_0 + at + \sigma W_t^*$
-    + $dX_t = adt + \sigma dW_t^*$
+    + $dX(t) = adt + \sigma dW^*(t)$
 
 ## :chart_with_downwards_trend: Bonds <a name="bonds"></a>
 
