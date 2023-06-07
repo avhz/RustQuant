@@ -202,6 +202,8 @@ pub mod stochastics {
 
     /// Submodule of `stochastics`: implements Arithmetic Brownian Motion.
     pub mod arithmetic_brownian_motion;
+    /// Submodule of `stochastics`: implements Black-Derman-Toy short rate model.
+    pub mod black_derman_toy;
     /// Submodule of `stochastics`: implements Standard Brownian Motion.
     pub mod brownian_motion;
     /// Submodule of `stochastics`: implements the Cox-Ingersoll-Ross process.
