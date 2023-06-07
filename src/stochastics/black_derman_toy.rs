@@ -9,7 +9,7 @@ use crate::stochastics::*;
 /// Sigma can either be varying or constant in the BDT model
 /// The explicit distinction between the two is provided
 /// to save on floating point computations, since the model
-/// requires to differentiate a time-variant $\sigma(t)$.
+/// requires one to differentiate time-variant $\sigma(t)$.
 ///
 /// Using a constant function in place of the Const variant
 /// is not recommended for performance reasons.
@@ -32,7 +32,20 @@ pub struct BlackDermanToy {
 impl BlackDermanToy {
     /// Create a new Black-Derman-Toy process.
     pub fn new(sigma: Sigma, theta_t: fn(f64) -> f64) -> Self {
-        Self { sigma, theta_t }
+        match sigma {
+            Sigma::Const(sigma) => {
+                assert!(sigma >= 0.0);
+                Self {
+                    sigma: Sigma::Const(sigma),
+                    theta_t,
+                }
+            }
+            Sigma::Varying(sigma) => Self {
+                // TODO add check for positivity of the function here...
+                sigma: Sigma::Varying(sigma),
+                theta_t,
+            },
+        }
     }
 }
 
@@ -46,10 +59,7 @@ impl StochasticProcess for BlackDermanToy {
 
     fn diffusion(&self, _x: f64, t: f64) -> f64 {
         match self.sigma {
-            Sigma::Const(sig) => {
-                assert!(sig >= 0.0);
-                sig
-            }
+            Sigma::Const(sig) => sig,
             Sigma::Varying(sig) => sig(t),
         }
     }
