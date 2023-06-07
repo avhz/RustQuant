@@ -17,7 +17,7 @@ use crate::{
 
 /// Lookback option strike type enum.
 /// The strike can be either fixed or floating.
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy)]
 pub enum LookbackStrike {
     /// Floating strike lookback option.
     /// Payoffs:
@@ -32,7 +32,7 @@ pub enum LookbackStrike {
 }
 
 /// Struct containing Lookback Option parameters.
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy)]
 pub struct LookbackOption {
     /// `S` - Initial price of the underlying.
     pub initial_price: f64,

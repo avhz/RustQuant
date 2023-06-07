@@ -36,6 +36,7 @@ pub trait OptionContract {
 }
 
 /// Option type enum.
+#[derive(Debug, Clone, Copy)]
 pub enum TypeFlag {
     /// Call option (right to BUY the underlying asset).
     CALL,
@@ -44,6 +45,7 @@ pub enum TypeFlag {
 }
 
 /// American/European option type enum.
+#[derive(Debug, Clone, Copy)]
 pub enum AmericanEuropeanFlag {
     /// American option (can be exercised at any time before expiry).
     AMERICAN,
@@ -55,6 +57,7 @@ pub enum AmericanEuropeanFlag {
 /// Contains the common parameters (as in Black-Scholes).
 /// Other option types may have additional parameters,
 /// such as lookback options (S_min, S_max).
+#[derive(Debug, Clone)]
 pub struct OptionParameters {
     /// `S` - Initial price of the underlying.
     pub S: Vec<f64>,

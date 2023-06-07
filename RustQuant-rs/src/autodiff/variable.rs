@@ -34,8 +34,15 @@ pub struct Variable<'v> {
 
 impl<'v> Variable<'v> {
     /// Function to return the value contained in a node.
+    #[inline]
     pub fn value(&self) -> f64 {
         self.value
+    }
+
+    /// Function to return the index of a node.
+    #[inline]
+    pub fn index(&self) -> usize {
+        self.index
     }
 
     /// Function to reverse accumulate the gradient.

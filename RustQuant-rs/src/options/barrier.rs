@@ -11,7 +11,7 @@ use crate::distributions::{gaussian::*, Distribution};
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 /// Barrier Option struct for parameters and pricing methods.
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy)]
 pub struct BarrierOption {
     /// * `S` - Initial underlying price.
     pub initial_price: f64,
@@ -32,6 +32,7 @@ pub struct BarrierOption {
 }
 
 /// Barrier option type enum.
+#[derive(Debug, Clone, Copy)]
 pub enum BarrierType {
     /// Call (up-and-in)
     /// Payoff: `max(S_T - X, 0) * I(max(S_t) > H)`

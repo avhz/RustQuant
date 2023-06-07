@@ -13,8 +13,7 @@ use crate::options::european::*;
 
 /// Struct to contain common Black-Scholes Greeks/sensitivities.
 /// Implemented using the closed-form derivatives from the Black-Scholes model.
-#[derive(Debug)]
-
+#[derive(Debug, Clone, Copy)]
 pub struct Greeks {
     /// Price sensitivity.
     pub Delta: (f64, f64),

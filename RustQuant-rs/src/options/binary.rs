@@ -13,7 +13,7 @@ use crate::distributions::{gaussian::*, Distribution};
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 /// Gap option parameters.
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy)]
 pub struct GapOption {
     /// `S` - Initial price of the underlying.
     pub initial_price: f64,
@@ -32,6 +32,7 @@ pub struct GapOption {
 }
 
 /// Cash-or-Nothing option parameters.
+#[derive(Debug, Clone, Copy)]
 pub struct CashOrNothingOption {
     /// `S` - Initial price of the underlying.
     pub initial_price: f64,

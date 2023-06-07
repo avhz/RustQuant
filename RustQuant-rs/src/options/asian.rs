@@ -11,6 +11,7 @@ use crate::distributions::{gaussian::*, Distribution};
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 /// Type of Asian option (fixed or floating strike).
+#[derive(Debug, Clone, Copy)]
 pub enum AsianStrike {
     /// Floating strike Asian option.
     /// Payoffs:
@@ -25,6 +26,7 @@ pub enum AsianStrike {
 }
 
 /// Method of averaging (arithmetic or geometric, and continuous or discrete).
+#[derive(Debug, Clone, Copy)]
 pub enum AveragingMethod {
     /// Arithmetic Asian option with discrete averaging.
     ArithmeticDiscrete,
@@ -37,7 +39,7 @@ pub enum AveragingMethod {
 }
 
 /// Asian Option struct.
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy)]
 pub struct AsianOption {
     /// `S` - Initial price of the underlying.
     pub initial_price: f64,

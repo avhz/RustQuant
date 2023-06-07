@@ -11,6 +11,7 @@
 use super::{AmericanEuropeanFlag, TypeFlag};
 
 /// Struct containing the parameters to price an option via binomial tree method.
+#[derive(Debug, Clone, Copy)]
 pub struct BinomialOption {
     initial_price: f64,
     strike_price: f64,

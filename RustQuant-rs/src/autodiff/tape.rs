@@ -35,13 +35,14 @@ pub struct Node {
 }
 
 /// Struct to contain the tape (Wengert list), as a vector of `Node`s.
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Tape {
     /// Vector containing the nodes in the Wengert List.
     pub nodes: RefCell<Vec<Node>>,
 }
 
 impl Default for Tape {
+    #[inline]
     fn default() -> Self {
         Tape {
             nodes: RefCell::new(Vec::new()),
@@ -52,6 +53,7 @@ impl Default for Tape {
 /// Implementation for the `Tape` struct.
 impl Tape {
     /// Instantiate a new tape.
+    #[inline]
     pub fn new() -> Self {
         Tape {
             nodes: RefCell::new(Vec::new()),
@@ -77,11 +79,13 @@ impl Tape {
     }
 
     /// Returns the length of the tape so new nodes can index to the correct position.
+    #[inline]
     pub fn len(&self) -> usize {
         self.nodes.borrow().len()
     }
 
     /// Returns true/false depending on whether the tape is empty or not.
+    #[inline]
     pub fn is_empty(&self) -> bool {
         self.len() == 0
     }

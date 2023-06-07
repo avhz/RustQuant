@@ -104,11 +104,7 @@ impl<'v, const N: usize> Gradient<&[Variable<'v>; N], Vec<f64>> for Vec<f64> {
 
 #[cfg(test)]
 mod test_gradient {
-    use crate::{
-        assert_approx_equal,
-        autodiff::*,
-        // distributions::{Distribution, Gaussian},
-    };
+    use crate::{assert_approx_equal, autodiff::*};
 
     #[test]
     fn x_times_y_plus_sin_x() {

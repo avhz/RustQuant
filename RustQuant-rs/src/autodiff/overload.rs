@@ -29,6 +29,7 @@ use {
 
 impl<'v> Neg for Variable<'v> {
     type Output = Self;
+    #[inline]
     fn neg(self) -> Self::Output {
         self * -1.0
     }
@@ -527,7 +528,7 @@ impl<'v> Variable<'v> {
     /// assert!((z2.value - 1.0).abs() <= 1e-15);
     /// assert!((grad2.wrt(&x2) - (-1.0)).abs() <= 1e-15);
     /// ```
-    ///
+    #[inline]
     pub fn abs(self) -> Self {
         Variable {
             tape: self.tape,
@@ -550,7 +551,7 @@ impl<'v> Variable<'v> {
     /// assert!((z1.value - 1.5707963267948966).abs() <= 1e-15);
     /// assert!((grad1.wrt(&x1) - (-1.0)).abs() <= 1e-15);
     /// ```
-    ///
+    #[inline]
     pub fn acos(self) -> Self {
         Variable {
             tape: self.tape,
@@ -576,7 +577,7 @@ impl<'v> Variable<'v> {
     /// assert!((z.value - 2.2924316695611777).abs() <= 1e-15);
     /// assert!((grad.wrt(&x) - 0.20412414523193150818).abs() <= 1e-15);
     /// ```
-    ///
+    #[inline]
     pub fn acosh(self) -> Self {
         Variable {
             tape: self.tape,
@@ -604,7 +605,7 @@ impl<'v> Variable<'v> {
     /// assert_eq!(z.value, 0.0);
     /// assert_eq!(grad.wrt(&x), 1.0);
     /// ```
-    ///
+    #[inline]
     pub fn asin(self) -> Self {
         Variable {
             tape: self.tape,
@@ -635,7 +636,7 @@ impl<'v> Variable<'v> {
     /// assert_eq!(z.value, 0.0);
     /// assert_eq!(grad.wrt(&x), 1.0);
     /// ```
-    ///
+    #[inline]
     pub fn asinh(self) -> Self {
         Variable {
             tape: self.tape,
@@ -661,7 +662,7 @@ impl<'v> Variable<'v> {
     /// assert_eq!(z.value, 0.0);
     /// assert_eq!(grad.wrt(&x), 1.0);
     /// ```
-    ///
+    #[inline]
     pub fn atan(self) -> Self {
         Variable {
             tape: self.tape,
@@ -674,6 +675,7 @@ impl<'v> Variable<'v> {
 
     /// Inverse hyperbolic tangent function.
     /// d/dx tanh^-1(x) = 1 / (1 + x^2)
+    #[inline]
     pub fn atanh(self) -> Self {
         Variable {
             tape: self.tape,
@@ -686,6 +688,7 @@ impl<'v> Variable<'v> {
 
     /// Cuberoot function.
     /// d/dx cuberoot(x) = 1 / ( 3 * x^(2/3) )
+    #[inline]
     pub fn cbrt(self) -> Self {
         Variable {
             tape: self.tape,
@@ -698,6 +701,7 @@ impl<'v> Variable<'v> {
 
     /// Cosine function.
     /// d/dx cos(x) = -sin(x)
+    #[inline]
     pub fn cos(self) -> Self {
         Variable {
             tape: self.tape,
@@ -708,6 +712,7 @@ impl<'v> Variable<'v> {
 
     /// Inverse hyperbolic cosine function.
     /// d/dx cosh(x) = sinh(x)
+    #[inline]
     pub fn cosh(self) -> Self {
         Variable {
             tape: self.tape,
@@ -718,6 +723,7 @@ impl<'v> Variable<'v> {
 
     /// Error function (complementary).
     /// d/dx erfc(x) = -2e^(-x^2) / sqrt(PI)
+    #[inline]
     pub fn erfc(self) -> Self {
         use statrs::function::erf::erfc;
         Variable {
@@ -745,7 +751,7 @@ impl<'v> Variable<'v> {
     /// assert_eq!(z.value, std::f64::consts::E);
     /// assert_eq!(grad.wrt(&x), std::f64::consts::E);
     /// ```
-    ///
+    #[inline]
     pub fn exp(self) -> Self {
         Variable {
             tape: self.tape,
@@ -756,6 +762,7 @@ impl<'v> Variable<'v> {
 
     /// Exponential function (base 2)
     /// d/dx 2^x = 2^x * ln(2)
+    #[inline]
     pub fn exp2(self) -> Self {
         Variable {
             tape: self.tape,
@@ -768,6 +775,7 @@ impl<'v> Variable<'v> {
 
     /// Exponential function minus 1 function.
     /// d/dx exp(x) - 1 = exp(x)
+    #[inline]
     pub fn exp_m1(self) -> Self {
         Variable {
             tape: self.tape,
@@ -791,7 +799,7 @@ impl<'v> Variable<'v> {
     /// assert_eq!(z.value, 1.0);
     /// assert_eq!(grad.wrt(&x), 0.36787944117144233);
     /// ```
-    ///
+    #[inline]
     pub fn ln(self) -> Self {
         Variable {
             tape: self.tape,
@@ -802,6 +810,7 @@ impl<'v> Variable<'v> {
 
     /// Logarithm (natural) of `1 + x`.
     /// d/dx ln(1+x) = 1 / (1+x)
+    #[inline]
     pub fn ln_1p(self) -> Self {
         Variable {
             tape: self.tape,
@@ -812,6 +821,7 @@ impl<'v> Variable<'v> {
 
     /// Logarithm (base 10).
     /// d/dx log_10(x) = 1 / x
+    #[inline]
     pub fn log10(self) -> Self {
         Variable {
             tape: self.tape,
@@ -822,6 +832,7 @@ impl<'v> Variable<'v> {
 
     /// Logarithm (base 2).
     /// d/dx log_2(x) = 1 / x
+    #[inline]
     pub fn log2(self) -> Self {
         Variable {
             tape: self.tape,
@@ -845,7 +856,7 @@ impl<'v> Variable<'v> {
     /// assert_eq!(z.value, 1.0);
     /// assert_eq!(grad.wrt(&x), -1.0);
     /// ```
-    ///
+    #[inline]
     pub fn recip(self) -> Self {
         Variable {
             tape: self.tape,
@@ -858,6 +869,7 @@ impl<'v> Variable<'v> {
 
     /// Sine function.
     /// d/dx sin(x) = cos(x)
+    #[inline]
     pub fn sin(self) -> Self {
         Variable {
             tape: self.tape,
@@ -868,6 +880,7 @@ impl<'v> Variable<'v> {
 
     /// Hyperbolic sine function.
     /// d/dx sinh(x) =  cosh(x)
+    #[inline]
     pub fn sinh(self) -> Self {
         Variable {
             tape: self.tape,
@@ -891,7 +904,7 @@ impl<'v> Variable<'v> {
     /// assert_eq!(z.value, std::f64::consts::SQRT_2);
     /// assert_eq!(grad.wrt(&x), 1.0 / (2.0 * std::f64::consts::SQRT_2));
     /// ```
-    ///
+    #[inline]
     pub fn sqrt(self) -> Self {
         Variable {
             tape: self.tape,
@@ -904,6 +917,7 @@ impl<'v> Variable<'v> {
 
     /// Tangent function.
     /// d/dx tan(x) = 1 / cos^2(x) = sec^2(x)
+    #[inline]
     pub fn tan(self) -> Self {
         Variable {
             tape: self.tape,
@@ -916,6 +930,7 @@ impl<'v> Variable<'v> {
 
     /// Hyperbolic tangent function.
     /// d/dx tanh(x) = sech^2(x) = 1 / cosh^2(x)
+    #[inline]
     pub fn tanh(self) -> Self {
         Variable {
             tape: self.tape,

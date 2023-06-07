@@ -11,7 +11,7 @@
 use crate::distributions::{Distribution, Gaussian};
 
 /// Black-Scholes Vanilla European Option
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy)]
 pub struct EuropeanOption {
     /// `S` - Initial price of the underlying.
     pub initial_price: f64,
