@@ -1,20 +1,16 @@
-name: Build and Test.
+name: Test the library.
 
 on:
   push:
     branches: [ "main" ]
-    paths:
-      - "RustQuant-rs/**"
   pull_request:
     branches: [ "main" ]
-    paths:
-      - "RustQuant-rs/**"
 
 env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  build_and_test:
+  test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -30,11 +26,6 @@ jobs:
             ~/.cargo/git/db/
             target/
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
-      # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      # BUILD THE LIBRARY
-      # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      - name: Build RustQuant.
-        run: cargo build --release --verbose
       # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       # TEST THE LIBRARY
       # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

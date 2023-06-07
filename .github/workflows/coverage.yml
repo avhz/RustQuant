@@ -3,16 +3,8 @@ name: Code Coverage Report.
 on:
   push:
     branches: [ "main" ]
-    # paths:
-    #   - "RustQuant-rs/**"
-    paths-ignore:
-      - "RustQuant-py/**"
   pull_request:
     branches: [ "main" ]
-    # paths:
-    #   - "RustQuant-rs/**"
-    paths-ignore:
-      - "RustQuant-py/**"
 
 env:
   CARGO_TERM_COLOR: always
@@ -26,18 +18,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      # CACHE CARGO DEPENDENCIES
-      # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      # - uses: actions/cache@v3
-      #   with:
-      #     path: |
-      #       ~/.cargo/bin/
-      #       ~/.cargo/registry/index/
-      #       ~/.cargo/registry/cache/
-      #       ~/.cargo/git/db/
-      #       target/
-      #     key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
-      # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       # INSTALL TARPALUIN FOR CODE COVERAGE
       # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       - name: Install Tarpaulin. 
@@ -46,7 +26,7 @@ jobs:
       # GENERATE CODE COVERAGE REPORT
       # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       - name: Generate code coverage report.
-        run: cargo tarpaulin --verbose --all-features --workspace --timeout 120 --out Xml --exclude-files RustQuant-rs/src/lib.rs RustQuant-rs/src/trading/* RustQuant-py/**
+        run: cargo tarpaulin --verbose --all-features --workspace --timeout 120 --out Xml --exclude-files src/lib.rs src/trading/*
       # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       # UPLOAD CODE COVERAGE REPORT TO CODECOV.IO
       # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

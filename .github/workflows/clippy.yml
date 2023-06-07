@@ -12,12 +12,8 @@ name: Cargo Clippy
 on:
   push:
     branches: [ "main" ]
-    paths:
-      - "RustQuant-rs/**"
   pull_request:
     branches: [ "main" ]
-    paths:
-      - "RustQuant-rs/**"
   schedule:
     - cron: '30 8 * * 5'
 
