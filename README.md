@@ -317,7 +317,7 @@ fn main() {
     // Parameters: x_0, t_0, t_n, n, sims, parallel.
     let output = (&gbm).euler_maruyama(10.0, 0.0, 0.5, 10, 1, false);
 
-    println!("GBM = {:?}", output.trajectories);
+    println!("GBM = {:?}", output.paths);
 }
 ```
 
