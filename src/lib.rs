@@ -147,12 +147,21 @@ pub mod math {
         /// Composite Trapezoidal rule.
         pub mod trapezoid;
     }
+    /// Submodule of `math`: implements numerical optimization procedures.
+    pub mod optimization {
+        /// Gradient descent optimization.
+        pub mod gradient_descent;
+        // pub mod bisection;
+        // pub mod brent;
+        // pub mod golden_section;
+        // pub mod newton;
+        // pub mod newton_raphson;
+        // pub mod secant;
+    }
     /// Submodule of `math`: implements interpolation solvers.
     pub mod interpolation;
     /// Submodule of `math`: implements Newton-Raphson method.
     pub mod newton_raphson;
-    /// Submodule of `math`: implements normal distribution functions.
-    // pub mod normal_distribution;
     /// Submodule of `math`: implements simple risk/reward functions.
     pub mod risk_reward;
 }

@@ -28,6 +28,7 @@ Contact: rustquantcontact@gmail.com
 
 ## :newspaper: Latest features
 
++ Gradient descent optimizer for functions $f: mathbb{R}^n \rightarrow \mathbb{R}$.
 + Download time series data from [Yahoo! Finance](https://finance.yahoo.com/).
 + Read (write) from (to) `.csv`, `.json`, and `.parquet` files, using [Polars `DataFrames`](https://pola-rs.github.io/polars-book/).
 + Arithmetic Brownian Motion generator. 
@@ -113,7 +114,7 @@ The following is a list of stochastic processes that can be generated.
     + $dX(t) = \left[ \theta(t) - \alpha X(t) \right]dt + \sigma dW(t)$
 + [x] Extended Vasicek (1990)
     + $dX(t) = \left[ \theta(t) - \alpha(t) X(t) \right] dt + \sigma dW(t)$
-+ [ ] Black-Derman-Toy (1990)
++ [x] Black-Derman-Toy (1990)
     + $d\ln[X(t)] = \left[ \theta(t) + \frac{\sigma'(t)}{\sigma(t)}\ln[X(t)] \right]dt + \sigma_t dW(t)$
     + $d\ln[X(t)] = \theta(t) dt + \sigma dW(t)$
 + [ ] Merton's model (1973)
@@ -122,11 +123,11 @@ The following is a list of stochastic processes that can be generated.
 ## :chart_with_downwards_trend: Bonds <a name="bonds"></a>
 
 + Prices:
-    + [X] The Vasicek Model
+    + [x] The Vasicek Model
     + [x] The Cox, Ingersoll, and Ross Model
+    + [x] The Hull–White (One-Factor) Model
     + [ ] The Rendleman and Bartter Model
     + [ ] The Ho–Lee Model
-    + [ ] The Hull–White (One-Factor) Model
     + [ ] The Black–Derman–Toy Model
     + [ ] The Black–Karasinski Model
 + [ ] Duration
@@ -147,6 +148,11 @@ Probability density/mass functions, distribution functions, characteristic funct
 
 ## :triangular_ruler: Mathematics <a name="maths"></a>
 
++ Optimisation:
+    + [x] Gradient Descent
+    + [ ] Bisection
+    + [ ] Newton
+    + [ ] Secant
 + Numerical Integration (needed for Heston model, for example):
     + [x] Tanh-Sinh (double exponential) quadrature 
     + [x] Composite Midpoint Rule
