@@ -28,7 +28,7 @@ Contact: rustquantcontact@gmail.com
 
 ## :newspaper: Latest features
 
-+ Gradient descent optimizer for functions $f: mathbb{R}^n \rightarrow \mathbb{R}$.
++ Gradient descent optimizer for functions $f: \mathbb{R}^n \rightarrow \mathbb{R}$.
 + Download time series data from [Yahoo! Finance](https://finance.yahoo.com/).
 + Read (write) from (to) `.csv`, `.json`, and `.parquet` files, using [Polars `DataFrames`](https://pola-rs.github.io/polars-book/).
 + Arithmetic Brownian Motion generator. 
