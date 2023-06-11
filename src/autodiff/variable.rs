@@ -88,7 +88,7 @@ impl<'v> Variable<'v> {
 
 impl<'v> PartialEq for Variable<'v> {
     fn eq(&self, other: &Self) -> bool {
-        (self.tape as *const Tape) == (other.tape as *const Tape)
+        std::ptr::eq(self.tape, other.tape)
             && self.index == other.index
             && self.value == other.value
     }

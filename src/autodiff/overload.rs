@@ -937,3 +937,235 @@ impl<'v> Variable<'v> {
         }
     }
 }
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// UNIT TESTS
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+#[cfg(test)]
+mod test_overload {
+    // use std::f64::EPSILON;
+    // use crate::utils::assert_approx_eq;
+    use crate::autodiff::Gradient;
+
+    use super::*;
+
+    #[test]
+    fn test_add() {
+        // Variable + Variable
+        let t = Tape::new();
+
+        let x = t.var(1.0);
+        let y = t.var(2.0);
+        let z = x + y;
+        let grad = z.accumulate();
+
+        assert_eq!(z.value, 3.0);
+        assert_eq!(grad.wrt(&x), 1.0);
+        assert_eq!(grad.wrt(&y), 1.0);
+
+        // Variable + f64
+        let t = Tape::new();
+
+        let x = t.var(1.0);
+        let y = 2.0;
+        let z = x + y;
+        let grad = z.accumulate();
+
+        assert_eq!(z.value, 3.0);
+        assert_eq!(grad.wrt(&x), 1.0);
+
+        // f64 + Variable
+        let t = Tape::new();
+
+        let x = 1.0;
+        let y = t.var(2.0);
+        let z = x + y;
+        let grad = z.accumulate();
+
+        assert_eq!(z.value, 3.0);
+        assert_eq!(grad.wrt(&y), 1.0);
+    }
+
+    #[test]
+    fn test_sub() {
+        // Variable - Variable
+        let t = Tape::new();
+
+        let x = t.var(1.0);
+        let y = t.var(2.0);
+        let z = x - y;
+        let grad = z.accumulate();
+
+        assert_eq!(z.value, -1.0);
+        assert_eq!(grad.wrt(&x), 1.0);
+        assert_eq!(grad.wrt(&y), -1.0);
+
+        // Variable - f64
+        let t = Tape::new();
+
+        let x = t.var(1.0);
+        let y = 2.0;
+        let z = x - y;
+        let grad = z.accumulate();
+
+        assert_eq!(z.value, -1.0);
+        assert_eq!(grad.wrt(&x), 1.0);
+
+        // f64 - Variable
+        let t = Tape::new();
+
+        let x = 1.0;
+        let y = t.var(2.0);
+        let z = x - y;
+        let grad = z.accumulate();
+
+        assert_eq!(z.value, -1.0);
+        assert_eq!(grad.wrt(&y), -1.0);
+    }
+
+    #[test]
+    fn test_mul() {
+        // Variable * Variable
+        let t = Tape::new();
+
+        let x = t.var(1.0);
+        let y = t.var(2.0);
+        let z = x * y;
+        let grad = z.accumulate();
+
+        assert_eq!(z.value, 2.0);
+        assert_eq!(grad.wrt(&x), 2.0);
+        assert_eq!(grad.wrt(&y), 1.0);
+
+        // Variable * f64
+        let t = Tape::new();
+
+        let x = t.var(1.0);
+        let y = 2.0;
+        let z = x * y;
+        let grad = z.accumulate();
+
+        assert_eq!(z.value, 2.0);
+        assert_eq!(grad.wrt(&x), 2.0);
+
+        // f64 * Variable
+        let t = Tape::new();
+
+        let x = 1.0;
+        let y = t.var(2.0);
+        let z = x * y;
+        let grad = z.accumulate();
+
+        assert_eq!(z.value, 2.0);
+        assert_eq!(grad.wrt(&y), 1.0);
+    }
+
+    #[test]
+    fn test_div() {
+        // Variable / Variable
+        let t = Tape::new();
+
+        let x = t.var(1.0);
+        let y = t.var(2.0);
+        let z = x / y;
+        let grad = z.accumulate();
+
+        assert_eq!(z.value, 0.5);
+        assert_eq!(grad.wrt(&x), 0.5);
+        assert_eq!(grad.wrt(&y), -0.25);
+
+        // Variable / f64
+        let t = Tape::new();
+
+        let x = t.var(1.0);
+        let y = 2.0;
+        let z = x / y;
+        let grad = z.accumulate();
+
+        assert_eq!(z.value, 0.5);
+        assert_eq!(grad.wrt(&x), 0.5);
+
+        // f64 / Variable
+        let t = Tape::new();
+
+        let x = 1.0;
+        let y = t.var(2.0);
+        let z = x / y;
+        let grad = z.accumulate();
+
+        assert_eq!(z.value, 0.5);
+        assert_eq!(grad.wrt(&y), -0.25);
+    }
+
+    #[test]
+    fn test_sum() {
+        let t = Tape::new();
+
+        let params = (0..100).map(|x| t.var(x as f64)).collect::<Vec<_>>();
+        let sum = params.iter().copied().sum::<Variable>();
+        let derivs = sum.accumulate();
+
+        for i in derivs.wrt(&params) {
+            assert_eq!(i, 1.0);
+        }
+    }
+
+    #[test]
+    fn test_product() {
+        let t = Tape::new();
+
+        let params = (1..=5).map(|x| t.var(x as f64)).collect::<Vec<_>>();
+        let prod = params.iter().copied().product::<Variable>();
+
+        let derivs = prod.accumulate();
+        let true_gradient = vec![120.0, 60.0, 40.0, 30.0, 24.0];
+
+        let n = derivs.wrt(&params).len();
+        let m = true_gradient.len();
+        assert_eq!(n, m);
+
+        for i in 0..n {
+            assert_eq!(derivs.wrt(&params)[i], true_gradient[i]);
+        }
+    }
+
+    // #[test]
+    // fn test_powf() {
+    //     let t = Tape::new();
+
+    //     let x = t.var(2.0);
+    //     let y = 3.0.powf(x);
+
+    //     assert!((y.value() - 9.0).abs() < EPSILON);
+
+    //     let derivs = y.accumulate();
+    //     assert_approx_equal!(derivs.wrt(&x), (9.0 * (3.0f64).ln()), 1e-8);
+    // }
+
+    // #[test]
+    // fn test_powf_zero() {
+    //     let t = Tape::new();
+
+    //     let x = t.var(0.0);
+    //     let y = 3.0.powf(x);
+
+    //     assert_approx_equal!(y.value(), 1.0, 1e-8); // 3^1 = 3.0
+
+    //     let derivs = y.accumulate();
+    //     assert!((derivs.wrt(&x) - 0.0).abs() < EPSILON);
+    // }
+
+    // #[test]
+    // fn test_powf_one() {
+    //     let t = Tape::new();
+
+    //     let x = t.var(1.0); // create a variable
+    //     let y = 3.0.powf(x); // powf operation
+
+    //     assert_approx_equal!(y.value(), 3.0, 1e-8); // 3^1 = 3.0
+
+    //     let derivs = y.accumulate(); // d/dx 3^x = 3^x * ln(3)
+    //     assert_approx_equal!(derivs.wrt(&x), (27.0f64).ln(), 1e-8);
+    // }
+}

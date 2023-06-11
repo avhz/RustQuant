@@ -52,7 +52,7 @@ impl GradientDescent {
     }
 
     /// Compute Euclidean norm of a vector.
-    fn norm(x: &Vec<Variable>) -> f64 {
+    fn norm(x: &[Variable]) -> f64 {
         x.iter().map(|&x| x.value * x.value).sum::<f64>().sqrt()
     }
 
