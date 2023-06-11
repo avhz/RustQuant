@@ -111,6 +111,32 @@ impl Tape {
     // Functions to push values to the tape (Wengert List):
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+    /// Pushes a node to the tape.
+    #[inline]
+    pub fn push(&self, operation: Operation, parents: &[usize; 2], partials: &[f64; 2]) -> usize {
+        let mut nodes = self.nodes.borrow_mut();
+        let len = nodes.len();
+
+        let node = match operation {
+            Operation::Nullary => Node {
+                partials: [0.0, 0.0],
+                parents: [len, len],
+            },
+            Operation::Unary => Node {
+                partials: [partials[0], 0.0],
+                parents: [parents[0], len],
+            },
+            Operation::Binary => Node {
+                partials: [partials[0], partials[1]],
+                parents: [parents[0], parents[1]],
+            },
+        };
+
+        nodes.push(node);
+
+        len
+    }
+
     /// Nullary operator pushback.
     ///
     /// The node pushed to the tape is the result of a **nullary** operation.
@@ -174,32 +200,6 @@ impl Tape {
             partials: [partial0, partial1],
             parents: [parent0, parent1],
         });
-        len
-    }
-
-    /// Pushes a node to the tape.
-    #[inline]
-    pub fn push(&self, operation: Operation, parents: &[usize; 2], partials: &[f64; 2]) -> usize {
-        let mut nodes = self.nodes.borrow_mut();
-        let len = nodes.len();
-
-        let node = match operation {
-            Operation::Nullary => Node {
-                partials: [0.0, 0.0],
-                parents: [len, len],
-            },
-            Operation::Unary => Node {
-                partials: [partials[0], 0.0],
-                parents: [parents[0], len],
-            },
-            Operation::Binary => Node {
-                partials: [partials[0], partials[1]],
-                parents: [parents[0], parents[1]],
-            },
-        };
-
-        nodes.push(node);
-
         len
     }
 }

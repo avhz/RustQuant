@@ -20,7 +20,6 @@ use {
     super::tape::Tape,
     super::variable::Variable,
     std::f64::consts::PI,
-    std::fmt::Display,
     std::iter::{Product, Sum},
     std::ops::{Add, Div, Mul, Neg, Sub},
 };
@@ -433,17 +432,6 @@ impl<'v> Product<Variable<'v>> for Variable<'v> {
     fn product<I: Iterator<Item = Variable<'v>>>(iter: I) -> Self {
         iter.reduce(|x, y| x * y)
             .expect("Cannot call product() since vector is empty. Exiting ...")
-    }
-}
-
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// OVERLOADING: MISCELLANEOUS
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-impl<'v> Display for Variable<'v> {
-    #[inline]
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{}", self.value)
     }
 }
 
