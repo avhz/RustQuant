@@ -14,6 +14,8 @@
 // IMPORTS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+use crate::autodiff::Operation;
+
 use {
     super::tape::Tape,
     super::variable::Variable,
@@ -64,7 +66,9 @@ impl<'v> Add<Variable<'v>> for Variable<'v> {
         Variable {
             tape: self.tape,
             value: self.value + other.value,
-            index: self.tape.push2(self.index, 1.0, other.index, 1.0),
+            index: self
+                .tape
+                .push(Operation::Binary, &[self.index, other.index], &[1.0, 1.0]),
         }
     }
 }
@@ -91,7 +95,9 @@ impl<'v> Add<f64> for Variable<'v> {
         Variable {
             tape: self.tape,
             value: self.value + other,
-            index: self.tape.push2(self.index, 1.0, self.index, 0.0),
+            index: self
+                .tape
+                .push(Operation::Binary, &[self.index, self.index], &[1.0, 0.0]),
         }
     }
 }
@@ -194,7 +200,9 @@ impl<'v> Sub<Variable<'v>> for f64 {
         Variable {
             tape: other.tape,
             value: self - other.value,
-            index: other.tape.push2(other.index, 0.0, other.index, -1.0),
+            index: other
+                .tape
+                .push(Operation::Binary, &[other.index, other.index], &[0.0, -1.0]),
         }
     }
 }
@@ -230,7 +238,7 @@ impl<'v> Mul<Variable<'v>> for Variable<'v> {
             value: self.value * other.value,
             index: self
                 .tape
-                .push2(self.index, other.value, other.index, self.value),
+                .push_binary(self.index, other.value, other.index, self.value),
         }
     }
 }
@@ -257,7 +265,7 @@ impl<'v> Mul<f64> for Variable<'v> {
         Variable {
             tape: self.tape,
             value: self.value * other,
-            index: self.tape.push2(self.index, other, self.index, 0.0),
+            index: self.tape.push_binary(self.index, other, self.index, 0.0),
         }
     }
 }
@@ -361,7 +369,7 @@ impl<'v> Div<Variable<'v>> for f64 {
         Variable {
             tape: other.tape,
             value: self / other.value,
-            index: other.tape.push2(
+            index: other.tape.push_binary(
                 other.index,
                 0.0,
                 other.index,
@@ -459,7 +467,7 @@ impl<'v> Powf<Variable<'v>> for Variable<'v> {
         Self::Output {
             tape: self.tape,
             value: self.value.powf(other.value),
-            index: self.tape.push2(
+            index: self.tape.push_binary(
                 self.index,
                 other.value * f64::powf(self.value, other.value - 1.),
                 other.index,
@@ -476,7 +484,7 @@ impl<'v> Powf<f64> for Variable<'v> {
         Self::Output {
             tape: self.tape,
             value: f64::powf(self.value, n),
-            index: self.tape.push2(
+            index: self.tape.push_binary(
                 self.index,
                 n * f64::powf(self.value, n - 1.0),
                 self.index,
@@ -493,7 +501,7 @@ impl<'v> Powf<Variable<'v>> for f64 {
         Self::Output {
             tape: other.tape,
             value: f64::powf(*self, other.value),
-            index: other.tape.push2(
+            index: other.tape.push_binary(
                 other.index,
                 0.,
                 other.index,
@@ -533,7 +541,7 @@ impl<'v> Variable<'v> {
         Variable {
             tape: self.tape,
             value: self.value.abs(),
-            index: self.tape.push1(self.index, self.value.signum()),
+            index: self.tape.push_unary(self.index, self.value.signum()),
         }
     }
 
@@ -556,7 +564,7 @@ impl<'v> Variable<'v> {
         Variable {
             tape: self.tape,
             value: self.value.acos(),
-            index: self.tape.push1(
+            index: self.tape.push_unary(
                 self.index,
                 ((1.0 - self.value.powi(2)).sqrt()).recip().neg(),
             ),
@@ -582,7 +590,7 @@ impl<'v> Variable<'v> {
         Variable {
             tape: self.tape,
             value: self.value.acosh(),
-            index: self.tape.push1(
+            index: self.tape.push_unary(
                 self.index,
                 ((self.value - 1.0).sqrt() * (self.value + 1.0).sqrt()).recip(),
             ),
@@ -610,7 +618,7 @@ impl<'v> Variable<'v> {
         Variable {
             tape: self.tape,
             value: self.value.asin(),
-            index: self.tape.push1(
+            index: self.tape.push_unary(
                 self.index,
                 if (self.value > -1.0) && (self.value < 1.0) {
                     ((1.0 - self.value.powi(2)).sqrt()).recip()
@@ -643,7 +651,7 @@ impl<'v> Variable<'v> {
             value: self.value.asinh(),
             index: self
                 .tape
-                .push1(self.index, ((1.0 + self.value.powi(2)).sqrt()).recip()),
+                .push_unary(self.index, ((1.0 + self.value.powi(2)).sqrt()).recip()),
         }
     }
 
@@ -669,7 +677,7 @@ impl<'v> Variable<'v> {
             value: self.value.atan(),
             index: self
                 .tape
-                .push1(self.index, (1.0 + self.value.powi(2)).recip()),
+                .push_unary(self.index, (1.0 + self.value.powi(2)).recip()),
         }
     }
 
@@ -682,7 +690,7 @@ impl<'v> Variable<'v> {
             value: self.value.atanh(),
             index: self
                 .tape
-                .push1(self.index, (1.0 - self.value.powi(2)).recip()),
+                .push_unary(self.index, (1.0 - self.value.powi(2)).recip()),
         }
     }
 
@@ -695,7 +703,7 @@ impl<'v> Variable<'v> {
             value: self.value.cbrt(),
             index: self
                 .tape
-                .push1(self.index, (3.0 * self.value.powf(2.0 / 3.0)).recip()),
+                .push_unary(self.index, (3.0 * self.value.powf(2.0 / 3.0)).recip()),
         }
     }
 
@@ -706,7 +714,7 @@ impl<'v> Variable<'v> {
         Variable {
             tape: self.tape,
             value: self.value.cos(),
-            index: self.tape.push1(self.index, self.value.sin().neg()),
+            index: self.tape.push_unary(self.index, self.value.sin().neg()),
         }
     }
 
@@ -717,7 +725,7 @@ impl<'v> Variable<'v> {
         Variable {
             tape: self.tape,
             value: self.value.cosh(),
-            index: self.tape.push1(self.index, self.value.sinh()),
+            index: self.tape.push_unary(self.index, self.value.sinh()),
         }
     }
 
@@ -729,7 +737,7 @@ impl<'v> Variable<'v> {
         Variable {
             tape: self.tape,
             value: erfc(self.value),
-            index: self.tape.push1(
+            index: self.tape.push_unary(
                 self.index,
                 (2.0 * self.value.powi(2).neg().exp()).neg() / PI.sqrt(),
             ),
@@ -756,7 +764,7 @@ impl<'v> Variable<'v> {
         Variable {
             tape: self.tape,
             value: self.value.exp(),
-            index: self.tape.push1(self.index, self.value.exp()),
+            index: self.tape.push_unary(self.index, self.value.exp()),
         }
     }
 
@@ -769,7 +777,7 @@ impl<'v> Variable<'v> {
             value: self.value.exp2(),
             index: self
                 .tape
-                .push1(self.index, 2_f64.powf(self.value) * 2_f64.ln()),
+                .push_unary(self.index, 2_f64.powf(self.value) * 2_f64.ln()),
         }
     }
 
@@ -780,7 +788,7 @@ impl<'v> Variable<'v> {
         Variable {
             tape: self.tape,
             value: self.value.exp_m1(),
-            index: self.tape.push1(self.index, self.value.exp()),
+            index: self.tape.push_unary(self.index, self.value.exp()),
         }
     }
 
@@ -804,7 +812,7 @@ impl<'v> Variable<'v> {
         Variable {
             tape: self.tape,
             value: self.value.ln(),
-            index: self.tape.push1(self.index, self.value.recip()),
+            index: self.tape.push_unary(self.index, self.value.recip()),
         }
     }
 
@@ -815,7 +823,7 @@ impl<'v> Variable<'v> {
         Variable {
             tape: self.tape,
             value: self.value.ln_1p(),
-            index: self.tape.push1(self.index, (1.0 + self.value).recip()),
+            index: self.tape.push_unary(self.index, (1.0 + self.value).recip()),
         }
     }
 
@@ -826,7 +834,7 @@ impl<'v> Variable<'v> {
         Variable {
             tape: self.tape,
             value: self.value.log10(),
-            index: self.tape.push1(self.index, self.value.recip()),
+            index: self.tape.push_unary(self.index, self.value.recip()),
         }
     }
 
@@ -837,7 +845,7 @@ impl<'v> Variable<'v> {
         Variable {
             tape: self.tape,
             value: self.value.log2(),
-            index: self.tape.push1(self.index, self.value.recip()),
+            index: self.tape.push_unary(self.index, self.value.recip()),
         }
     }
 
@@ -863,7 +871,7 @@ impl<'v> Variable<'v> {
             value: self.value.recip(),
             index: self
                 .tape
-                .push1(self.index, self.value.powi(2).recip().neg()),
+                .push_unary(self.index, self.value.powi(2).recip().neg()),
         }
     }
 
@@ -874,7 +882,7 @@ impl<'v> Variable<'v> {
         Variable {
             tape: self.tape,
             value: self.value.sin(),
-            index: self.tape.push1(self.index, self.value.cos()),
+            index: self.tape.push_unary(self.index, self.value.cos()),
         }
     }
 
@@ -885,7 +893,7 @@ impl<'v> Variable<'v> {
         Variable {
             tape: self.tape,
             value: self.value.sinh(),
-            index: self.tape.push1(self.index, self.value.cosh()),
+            index: self.tape.push_unary(self.index, self.value.cosh()),
         }
     }
 
@@ -911,7 +919,7 @@ impl<'v> Variable<'v> {
             value: self.value.sqrt(),
             index: self
                 .tape
-                .push1(self.index, (2.0 * self.value.sqrt()).recip()),
+                .push_unary(self.index, (2.0 * self.value.sqrt()).recip()),
         }
     }
 
@@ -924,7 +932,7 @@ impl<'v> Variable<'v> {
             value: self.value.tan(),
             index: self
                 .tape
-                .push1(self.index, (self.value.cos().powi(2)).recip()),
+                .push_unary(self.index, (self.value.cos().powi(2)).recip()),
         }
     }
 
@@ -937,7 +945,7 @@ impl<'v> Variable<'v> {
             value: self.value.tanh(),
             index: self
                 .tape
-                .push1(self.index, (self.value.cosh().powi(2)).recip()),
+                .push_unary(self.index, (self.value.cosh().powi(2)).recip()),
         }
     }
 }

@@ -14,25 +14,27 @@
 // IMPORTS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use {super::variable::Variable, std::cell::RefCell};
+use super::Operation;
+
+use {super::node::Node, super::variable::Variable, std::cell::RefCell};
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // NODE AND TAPE STRUCTS AND IMPLEMENTATIONS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-/// Struct to contain the nodes.
-///
-/// Operations are assumed to be binary (e.g. x + y),
-/// thus the arrays have two elements.
-/// To deal with unary or nullary operations, we just adjust the weights
-/// (partials) and the dependencies (parents).
-#[derive(Clone, Copy, Debug)]
-pub struct Node {
-    /// Array that contains the partial derivatives wrt to x and y.
-    pub partials: [f64; 2],
-    /// Array that contains the indices of the parent nodes.
-    pub parents: [usize; 2],
-}
+// /// Struct to contain the nodes.
+// ///
+// /// Operations are assumed to be binary (e.g. x + y),
+// /// thus the arrays have two elements.
+// /// To deal with unary or nullary operations, we just adjust the weights
+// /// (partials) and the dependencies (parents).
+// #[derive(Clone, Copy, Debug)]
+// pub struct Node {
+//     /// Array that contains the partial derivatives wrt to x and y.
+//     pub partials: [f64; 2],
+//     /// Array that contains the indices of the parent nodes.
+//     pub parents: [usize; 2],
+// }
 
 /// Struct to contain the tape (Wengert list), as a vector of `Node`s.
 #[derive(Debug, Clone)]
@@ -67,7 +69,7 @@ impl Tape {
         Variable {
             tape: self,
             value,
-            index: self.push0(),
+            index: self.push_nullary(),
         }
     }
 
@@ -87,7 +89,22 @@ impl Tape {
     /// Returns true/false depending on whether the tape is empty or not.
     #[inline]
     pub fn is_empty(&self) -> bool {
-        self.len() == 0
+        self.nodes.borrow().len() == 0
+    }
+
+    /// Clears the entire tape.
+    #[inline]
+    pub fn clear(&self) {
+        self.nodes.borrow_mut().clear();
+    }
+
+    /// Zeroes the adjoints in the tape.
+    #[inline]
+    pub fn zero(&self) {
+        self.nodes
+            .borrow_mut()
+            .iter_mut()
+            .for_each(|node| node.partials = [0.0; 2]);
     }
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -104,7 +121,7 @@ impl Tape {
     /// 2. Pushes the new node onto the tape,
     /// 3. Returns the index of the new node.
     #[inline]
-    pub fn push0(&self) -> usize {
+    pub fn push_nullary(&self) -> usize {
         let mut nodes = self.nodes.borrow_mut();
         let len = nodes.len();
         nodes.push(Node {
@@ -124,7 +141,7 @@ impl Tape {
     /// 2. Pushes the new node onto the tape,
     /// 3. Returns the index of the new node.
     #[inline]
-    pub fn push1(&self, parent0: usize, partial0: f64) -> usize {
+    pub fn push_unary(&self, parent0: usize, partial0: f64) -> usize {
         let mut nodes = self.nodes.borrow_mut();
         let len = nodes.len();
         nodes.push(Node {
@@ -144,13 +161,45 @@ impl Tape {
     /// 2. Pushes the new node onto the tape,
     /// 3. Returns the index of the new node.
     #[inline]
-    pub fn push2(&self, parent0: usize, partial0: f64, parent1: usize, partial1: f64) -> usize {
+    pub fn push_binary(
+        &self,
+        parent0: usize,
+        partial0: f64,
+        parent1: usize,
+        partial1: f64,
+    ) -> usize {
         let mut nodes = self.nodes.borrow_mut();
         let len = nodes.len();
         nodes.push(Node {
             partials: [partial0, partial1],
             parents: [parent0, parent1],
         });
+        len
+    }
+
+    /// Pushes a node to the tape.
+    #[inline]
+    pub fn push(&self, operation: Operation, parents: &[usize; 2], partials: &[f64; 2]) -> usize {
+        let mut nodes = self.nodes.borrow_mut();
+        let len = nodes.len();
+
+        let node = match operation {
+            Operation::Nullary => Node {
+                partials: [0.0, 0.0],
+                parents: [len, len],
+            },
+            Operation::Unary => Node {
+                partials: [partials[0], 0.0],
+                parents: [parents[0], len],
+            },
+            Operation::Binary => Node {
+                partials: [partials[0], partials[1]],
+                parents: [parents[0], parents[1]],
+            },
+        };
+
+        nodes.push(node);
+
         len
     }
 }
