@@ -47,13 +47,15 @@ impl GradientDescent {
 
     /// Checks if the gradient is equal to zero.
     /// This is a necessary condition for a local minimum.
+    #[inline]
     fn is_stationary(gradient: &[f64], tol: f64) -> bool {
         gradient.iter().map(|&x| x * x).sum::<f64>().sqrt() < tol
     }
 
     /// Compute Euclidean norm of a vector.
-    fn norm(x: &Vec<Variable>) -> f64 {
-        x.iter().map(|&x| x.value * x.value).sum::<f64>().sqrt()
+    #[inline]
+    fn norm(x: &[f64]) -> f64 {
+        x.iter().map(|&x| x * x).sum::<f64>().sqrt()
     }
 
     // /// Compute the dot product of two vectors.
@@ -62,55 +64,47 @@ impl GradientDescent {
     // }
 
     /// Performs gradient descent optimization.
-    pub fn optimize<F>(&self, f: F, x0: Vec<f64>, verbose: bool) -> GradientDescentResult
+    pub fn optimize<F>(&self, f: F, x0: &[f64], verbose: bool) -> GradientDescentResult
     where
         F: for<'v> Fn(&[Variable<'v>]) -> Variable<'v>,
     {
         let mut result = GradientDescentResult {
             minimum: 0.0,
-            minimizer: x0.clone(),
+            minimizer: x0.to_vec(),
             iterations: 0,
         };
 
-        let tape = Tape::new();
-        let mut x = tape.vars(&x0);
-
         for k in 0..self.max_iterations {
+            let tape = Tape::new();
+
             result.iterations = k + 1;
 
-            let func = f(&x);
-            let grad = func.accumulate().wrt(&x);
-            let norm = Self::norm(&x);
+            let location = tape.vars(&result.minimizer);
+            let function = f(&location);
+            let gradient = function.accumulate().wrt(&location);
 
-            if (norm < self.tolerance) || (Self::is_stationary(&grad, self.tolerance)) {
+            if Self::is_stationary(&gradient, self.tolerance) {
                 break;
             }
 
-            let direction = grad
-                .iter()
-                .map(|&x| self.learning_rate * x)
-                .collect::<Vec<_>>();
+            for (xi, gi) in result.minimizer.iter_mut().zip(&gradient) {
+                // Cannot use -= since it is not implemented for `Variable`.
+                *xi = (*xi) - self.learning_rate * (*gi);
+            }
 
-            x = x
-                .into_iter()
-                .zip(direction)
-                .map(|(a, b)| a - b)
-                .collect::<Vec<Variable>>();
+            result.minimum = f(&location).value;
 
             if verbose {
                 println!(
-                    "Iter: {:?}, Norm: {:.4?}, Func: {:.4?}, X: {:.4?}",
+                    "Iter: {:?}, Norm: {}, Func: {:.4?}, X: {:.4?}",
                     k + 1,
-                    norm,
-                    func.value,
-                    x.iter().map(|x| x.value).collect::<Vec<f64>>()
+                    Self::norm(&gradient),
+                    function.value,
+                    location.iter().map(|x| x.value).collect::<Vec<f64>>()
                 );
             }
         }
 
-        // Collect as a vector of f64.
-        result.minimum = f(&x).value;
-        result.minimizer = x.into_iter().map(|x| x.value).collect::<Vec<f64>>();
         result
     }
 }
@@ -118,7 +112,7 @@ impl GradientDescent {
 #[cfg(test)]
 mod test_gradient_descent {
     use super::*;
-    use crate::autodiff::{Tape, Variable};
+    use crate::autodiff::Variable;
 
     // Test the creation of a new GradientDescent optimizer.
     #[test]
@@ -142,9 +136,9 @@ mod test_gradient_descent {
     // Test the norm function.
     #[test]
     fn test_norm() {
-        let tape = Tape::new();
-        let vars = tape.vars(&vec![3.0, 4.0]);
-        assert_eq!(GradientDescent::norm(&vars), 5.0);
+        // let tape = Tape::new();
+        // let vars = tape.vars(&vec![3.0, 4.0]);
+        assert_eq!(GradientDescent::norm(&vec![3.0, 4.0]), 5.0);
     }
 
     // Test the optimize function on x^2.
@@ -159,7 +153,7 @@ mod test_gradient_descent {
 
         // GradientDescent::new(learning_rate, max_iterations, tolerance)
         let gd = GradientDescent::new(0.1, 1000, 0.000001);
-        let result = gd.optimize(f, vec![10.0], false);
+        let result = gd.optimize(f, &vec![10.0], false);
 
         println!("Minimum: {:?}", result.minimum);
         println!("Minimizer: {:?}", result.minimizer);
@@ -182,7 +176,7 @@ mod test_gradient_descent {
 
         // GradientDescent::new(learning_rate, max_iterations, tolerance)
         let gd = GradientDescent::new(0.1, 1000, 0.000001);
-        let result = gd.optimize(f, vec![5.0, 5.0], false);
+        let result = gd.optimize(f, &vec![5.0, 5.0], false);
 
         println!("Minimum: {:?}", result.minimum);
         println!("Minimizer: {:?}", result.minimizer);
@@ -205,7 +199,7 @@ mod test_gradient_descent {
 
         // GradientDescent::new(learning_rate, max_iterations, tolerance)
         let gd = GradientDescent::new(0.001, 10000, 0.000001);
-        let result = gd.optimize(f, vec![0.0, 5.0], false);
+        let result = gd.optimize(f, &vec![0.0, 5.0], false);
 
         println!("Minimum: {:?}", result.minimum);
         println!("Minimizer: {:?}", result.minimizer);

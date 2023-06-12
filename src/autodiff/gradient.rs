@@ -35,66 +35,73 @@ use super::variable::Variable;
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 /// Return the derivative/s *with-respect-to* the chosen variables.
-pub trait Gradient<T, S> {
+/// This allows you to get the gradient of a function with respect to
+/// any selection of variables, i.e.
+///     - a single variable,
+///     - a subset of the variables,
+///     - or all of the variables.
+pub trait Gradient<IN, OUT> {
     /// Returns the derivative/s *with-respect-to* the chosen variables.
-    fn wrt(&self, v: T) -> S;
+    fn wrt(&self, variables: IN) -> OUT;
 }
 
 /// `wrt` a single variable.
 impl<'v> Gradient<&Variable<'v>, f64> for Vec<f64> {
     #[inline]
-    fn wrt(&self, v: &Variable) -> f64 {
-        self[v.index]
+    fn wrt(&self, variable: &Variable) -> f64 {
+        self[variable.index]
     }
 }
 
 /// `wrt` a borrowed vector of variables.
 impl<'v> Gradient<&Vec<Variable<'v>>, Vec<f64>> for Vec<f64> {
     #[inline]
-    fn wrt(&self, v: &Vec<Variable<'v>>) -> Vec<f64> {
-        let mut gradient = Vec::with_capacity(v.len());
-        for i in v {
-            gradient.push(self.wrt(i));
-        }
-        gradient
+    fn wrt(&self, variables: &Vec<Variable<'v>>) -> Vec<f64> {
+        variables.iter().map(|&var| self[var.index]).collect()
+        // let mut gradient = Vec::with_capacity(variables.len());
+        // for i in variables {
+        //     gradient.push(self.wrt(i));
+        // }
+        // gradient
     }
 }
 
 /// `wrt` a borrowed slice of variables.
 impl<'v> Gradient<&[Variable<'v>], Vec<f64>> for Vec<f64> {
     #[inline]
-    fn wrt(&self, v: &[Variable<'v>]) -> Vec<f64> {
-        let mut gradient = Vec::with_capacity(v.len());
-
-        for i in v {
-            gradient.push(self.wrt(i));
-        }
-        gradient
+    fn wrt(&self, variables: &[Variable<'v>]) -> Vec<f64> {
+        variables.iter().map(|&var| self[var.index]).collect()
+        // let mut gradient = Vec::with_capacity(variables.len());
+        // for i in variables {
+        //     gradient.push(self.wrt(i));
+        // }
+        // gradient
     }
 }
 
 /// `wrt` an array of variables.
 impl<'v, const N: usize> Gradient<[Variable<'v>; N], Vec<f64>> for Vec<f64> {
     #[inline]
-    fn wrt(&self, v: [Variable<'v>; N]) -> Vec<f64> {
-        let mut gradient = Vec::with_capacity(N);
-        for i in v {
-            gradient.push(self.wrt(&i));
-        }
-        gradient
+    fn wrt(&self, variables: [Variable<'v>; N]) -> Vec<f64> {
+        variables.iter().map(|&var| self[var.index]).collect()
+        // let mut gradient = Vec::with_capacity(N);
+        // for i in variables {
+        //     gradient.push(self.wrt(&i));
+        // }
+        // gradient
     }
 }
 
 /// `wrt` a borrowed array of variables.
 impl<'v, const N: usize> Gradient<&[Variable<'v>; N], Vec<f64>> for Vec<f64> {
     #[inline]
-    fn wrt(&self, v: &[Variable<'v>; N]) -> Vec<f64> {
-        let mut gradient = Vec::with_capacity(N);
-
-        for i in v {
-            gradient.push(self.wrt(i));
-        }
-        gradient
+    fn wrt(&self, variables: &[Variable<'v>; N]) -> Vec<f64> {
+        variables.iter().map(|&var| self[var.index]).collect()
+        // let mut gradient = Vec::with_capacity(N);
+        // for i in variables {
+        //     gradient.push(self.wrt(i));
+        // }
+        // gradient
     }
 }
 
