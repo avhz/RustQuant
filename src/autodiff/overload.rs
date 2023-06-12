@@ -14,11 +14,12 @@
 // IMPORTS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+use crate::autodiff::OperationArity;
+
 use {
     super::tape::Tape,
     super::variable::Variable,
     std::f64::consts::PI,
-    std::fmt::Display,
     std::iter::{Product, Sum},
     std::ops::{Add, Div, Mul, Neg, Sub},
 };
@@ -44,8 +45,8 @@ impl<'v> Neg for Variable<'v> {
 impl<'v> Add<Variable<'v>> for Variable<'v> {
     type Output = Variable<'v>;
     /// ```
-    /// # use RustQuant::autodiff::gradient::*;
-    /// # use RustQuant::autodiff::tape::*;    
+    /// use RustQuant::autodiff::*;
+    ///
     /// let t = Tape::new();
     ///
     /// let x = t.var(5.0);
@@ -64,7 +65,11 @@ impl<'v> Add<Variable<'v>> for Variable<'v> {
         Variable {
             tape: self.tape,
             value: self.value + other.value,
-            index: self.tape.push2(self.index, 1.0, other.index, 1.0),
+            index: self.tape.push(
+                OperationArity::Binary,
+                &[self.index, other.index],
+                &[1.0, 1.0],
+            ),
         }
     }
 }
@@ -73,8 +78,8 @@ impl<'v> Add<Variable<'v>> for Variable<'v> {
 impl<'v> Add<f64> for Variable<'v> {
     type Output = Variable<'v>;
     /// ```
-    /// # use RustQuant::autodiff::gradient::*;
-    /// # use RustQuant::autodiff::tape::*;    
+    /// use RustQuant::autodiff::*;
+    ///
     /// let t = Tape::new();
     ///
     /// let x = t.var(2.0);
@@ -91,7 +96,11 @@ impl<'v> Add<f64> for Variable<'v> {
         Variable {
             tape: self.tape,
             value: self.value + other,
-            index: self.tape.push2(self.index, 1.0, self.index, 0.0),
+            index: self.tape.push(
+                OperationArity::Binary,
+                &[self.index, self.index],
+                &[1.0, 0.0],
+            ),
         }
     }
 }
@@ -100,8 +109,8 @@ impl<'v> Add<f64> for Variable<'v> {
 impl<'v> Add<Variable<'v>> for f64 {
     type Output = Variable<'v>;
     /// ```
-    /// # use RustQuant::autodiff::gradient::*;
-    /// # use RustQuant::autodiff::tape::*;    
+    /// use RustQuant::autodiff::*;    
+    ///
     /// let t = Tape::new();
     ///
     /// let a = 5.0;
@@ -128,8 +137,8 @@ impl<'v> Add<Variable<'v>> for f64 {
 impl<'v> Sub<Variable<'v>> for Variable<'v> {
     type Output = Variable<'v>;
     /// ```
-    /// # use RustQuant::autodiff::gradient::*;
-    /// # use RustQuant::autodiff::tape::*;    
+    /// use RustQuant::autodiff::*;    
+    ///
     /// let t = Tape::new();
     ///
     /// let x = t.var(5.0);
@@ -153,8 +162,8 @@ impl<'v> Sub<Variable<'v>> for Variable<'v> {
 impl<'v> Sub<f64> for Variable<'v> {
     type Output = Variable<'v>;
     /// ```
-    /// # use RustQuant::autodiff::gradient::*;
-    /// # use RustQuant::autodiff::tape::*;    
+    /// use RustQuant::autodiff::*;
+    ///
     /// let t = Tape::new();
     ///
     /// let x = t.var(5.0);
@@ -176,8 +185,8 @@ impl<'v> Sub<f64> for Variable<'v> {
 impl<'v> Sub<Variable<'v>> for f64 {
     type Output = Variable<'v>;
     /// ```
-    /// # use RustQuant::autodiff::gradient::*;
-    /// # use RustQuant::autodiff::tape::*;    
+    /// use RustQuant::autodiff::*;   
+    ///  
     /// let t = Tape::new();
     ///
     /// let a = 5.0;
@@ -194,7 +203,11 @@ impl<'v> Sub<Variable<'v>> for f64 {
         Variable {
             tape: other.tape,
             value: self - other.value,
-            index: other.tape.push2(other.index, 0.0, other.index, -1.0),
+            index: other.tape.push(
+                OperationArity::Binary,
+                &[other.index, other.index],
+                &[0.0, -1.0],
+            ),
         }
     }
 }
@@ -208,8 +221,8 @@ impl<'v> Sub<Variable<'v>> for f64 {
 impl<'v> Mul<Variable<'v>> for Variable<'v> {
     type Output = Variable<'v>;
     /// ```
-    /// # use RustQuant::autodiff::gradient::*;
-    /// # use RustQuant::autodiff::tape::*;    
+    /// use RustQuant::autodiff::*;
+    ///
     /// let t = Tape::new();
     ///
     /// let x = t.var(5.0);
@@ -230,7 +243,7 @@ impl<'v> Mul<Variable<'v>> for Variable<'v> {
             value: self.value * other.value,
             index: self
                 .tape
-                .push2(self.index, other.value, other.index, self.value),
+                .push_binary(self.index, other.value, other.index, self.value),
         }
     }
 }
@@ -239,8 +252,8 @@ impl<'v> Mul<Variable<'v>> for Variable<'v> {
 impl<'v> Mul<f64> for Variable<'v> {
     type Output = Variable<'v>;
     /// ```
-    /// # use RustQuant::autodiff::gradient::*;
-    /// # use RustQuant::autodiff::tape::*;    
+    /// use RustQuant::autodiff::*;
+    ///
     /// let t = Tape::new();
     ///
     /// let x = t.var(5.0);
@@ -257,7 +270,7 @@ impl<'v> Mul<f64> for Variable<'v> {
         Variable {
             tape: self.tape,
             value: self.value * other,
-            index: self.tape.push2(self.index, other, self.index, 0.0),
+            index: self.tape.push_binary(self.index, other, self.index, 0.0),
         }
     }
 }
@@ -266,8 +279,8 @@ impl<'v> Mul<f64> for Variable<'v> {
 impl<'v> Mul<Variable<'v>> for f64 {
     type Output = Variable<'v>;
     /// ```
-    /// # use RustQuant::autodiff::gradient::*;
-    /// # use RustQuant::autodiff::tape::*;    
+    /// use RustQuant::autodiff::*;
+    ///
     /// let t = Tape::new();
     ///
     /// let a = 5.0;
@@ -294,8 +307,8 @@ impl<'v> Mul<Variable<'v>> for f64 {
 impl<'v> Div<Variable<'v>> for Variable<'v> {
     type Output = Variable<'v>;
     /// ```
-    /// # use RustQuant::autodiff::gradient::*;
-    /// # use RustQuant::autodiff::tape::*;    
+    /// use RustQuant::autodiff::*;
+    ///  
     /// let t = Tape::new();
     ///
     /// let x = t.var(5.0);
@@ -319,8 +332,8 @@ impl<'v> Div<Variable<'v>> for Variable<'v> {
 impl<'v> Div<f64> for Variable<'v> {
     type Output = Variable<'v>;
     /// ```
-    /// # use RustQuant::autodiff::gradient::*;
-    /// # use RustQuant::autodiff::tape::*;    
+    /// use RustQuant::autodiff::*;
+    ///
     /// let t = Tape::new();
     ///
     /// let x = t.var(5.0);
@@ -343,8 +356,8 @@ impl<'v> Div<f64> for Variable<'v> {
 impl<'v> Div<Variable<'v>> for f64 {
     type Output = Variable<'v>;
     /// ```
-    /// # use RustQuant::autodiff::gradient::*;
-    /// # use RustQuant::autodiff::tape::*;    
+    /// use RustQuant::autodiff::*;
+    ///   
     /// let t = Tape::new();
     ///
     /// let a = 5.0;
@@ -361,7 +374,7 @@ impl<'v> Div<Variable<'v>> for f64 {
         Variable {
             tape: other.tape,
             value: self / other.value,
-            index: other.tape.push2(
+            index: other.tape.push_binary(
                 other.index,
                 0.0,
                 other.index,
@@ -377,9 +390,8 @@ impl<'v> Div<Variable<'v>> for f64 {
 
 impl<'v> Sum<Variable<'v>> for Variable<'v> {
     /// ```
-    /// # use RustQuant::autodiff::gradient::*;
-    /// # use RustQuant::autodiff::tape::*;    
-    /// # use RustQuant::autodiff::variable::*;
+    /// use RustQuant::autodiff::*;
+    ///
     /// let t = Tape::new();
     ///
     /// let params = (0..100).map(|x| t.var(x as f64)).collect::<Vec<_>>();
@@ -401,9 +413,8 @@ impl<'v> Sum<Variable<'v>> for Variable<'v> {
 
 impl<'v> Product<Variable<'v>> for Variable<'v> {
     /// ```
-    /// # use RustQuant::autodiff::gradient::*;
-    /// # use RustQuant::autodiff::tape::*;    
-    /// # use RustQuant::autodiff::variable::*;
+    /// use RustQuant::autodiff::*;
+    ///
     /// let t = Tape::new();
     ///
     /// let params = (1..=5).map(|x| t.var(x as f64)).collect::<Vec<_>>();
@@ -429,17 +440,6 @@ impl<'v> Product<Variable<'v>> for Variable<'v> {
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// OVERLOADING: MISCELLANEOUS
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-impl<'v> Display for Variable<'v> {
-    #[inline]
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{}", self.value)
-    }
-}
-
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // OVERLOADING: POWER FUNCTION
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -459,7 +459,7 @@ impl<'v> Powf<Variable<'v>> for Variable<'v> {
         Self::Output {
             tape: self.tape,
             value: self.value.powf(other.value),
-            index: self.tape.push2(
+            index: self.tape.push_binary(
                 self.index,
                 other.value * f64::powf(self.value, other.value - 1.),
                 other.index,
@@ -476,7 +476,7 @@ impl<'v> Powf<f64> for Variable<'v> {
         Self::Output {
             tape: self.tape,
             value: f64::powf(self.value, n),
-            index: self.tape.push2(
+            index: self.tape.push_binary(
                 self.index,
                 n * f64::powf(self.value, n - 1.0),
                 self.index,
@@ -493,7 +493,7 @@ impl<'v> Powf<Variable<'v>> for f64 {
         Self::Output {
             tape: other.tape,
             value: f64::powf(*self, other.value),
-            index: other.tape.push2(
+            index: other.tape.push_binary(
                 other.index,
                 0.,
                 other.index,
@@ -512,8 +512,8 @@ impl<'v> Variable<'v> {
     /// d/dx abs(x) = sign(x)
     ///
     /// ```
-    /// # use RustQuant::autodiff::gradient::*;
-    /// # use RustQuant::autodiff::tape::*;    
+    /// use RustQuant::autodiff::*;
+    ///
     /// let t = Tape::new();
     ///
     /// let x1 = t.var(1.0);
@@ -533,7 +533,7 @@ impl<'v> Variable<'v> {
         Variable {
             tape: self.tape,
             value: self.value.abs(),
-            index: self.tape.push1(self.index, self.value.signum()),
+            index: self.tape.push_unary(self.index, self.value.signum()),
         }
     }
 
@@ -541,8 +541,8 @@ impl<'v> Variable<'v> {
     /// d/dx cos^-1(x) = - 1 / sqrt(1 - x^2)
     ///
     /// ```
-    /// # use RustQuant::autodiff::gradient::*;
-    /// # use RustQuant::autodiff::tape::*;    
+    /// use RustQuant::autodiff::*;
+    ///
     /// let t = Tape::new();
     ///
     /// let x1 = t.var(0.0);
@@ -556,7 +556,7 @@ impl<'v> Variable<'v> {
         Variable {
             tape: self.tape,
             value: self.value.acos(),
-            index: self.tape.push1(
+            index: self.tape.push_unary(
                 self.index,
                 ((1.0 - self.value.powi(2)).sqrt()).recip().neg(),
             ),
@@ -567,8 +567,8 @@ impl<'v> Variable<'v> {
     /// d/dx cosh^-1(x) = 1 / ( sqrt(x-1) * sqrt(x+1) )
     ///
     /// ```
-    /// # use RustQuant::autodiff::gradient::*;
-    /// # use RustQuant::autodiff::tape::*;    
+    /// use RustQuant::autodiff::*;
+    ///
     /// let t = Tape::new();
     ///
     /// let x = t.var(5.0);
@@ -582,7 +582,7 @@ impl<'v> Variable<'v> {
         Variable {
             tape: self.tape,
             value: self.value.acosh(),
-            index: self.tape.push1(
+            index: self.tape.push_unary(
                 self.index,
                 ((self.value - 1.0).sqrt() * (self.value + 1.0).sqrt()).recip(),
             ),
@@ -593,8 +593,8 @@ impl<'v> Variable<'v> {
     /// d/dx sin^-1(x) = 1 / sqrt(1 - x^2)
     ///
     /// ```
-    /// # use RustQuant::autodiff::gradient::*;
-    /// # use RustQuant::autodiff::tape::*;    
+    /// use RustQuant::autodiff::*;
+    ///
     /// let t = Tape::new();
     ///
     /// let x = t.var(0.0);
@@ -610,7 +610,7 @@ impl<'v> Variable<'v> {
         Variable {
             tape: self.tape,
             value: self.value.asin(),
-            index: self.tape.push1(
+            index: self.tape.push_unary(
                 self.index,
                 if (self.value > -1.0) && (self.value < 1.0) {
                     ((1.0 - self.value.powi(2)).sqrt()).recip()
@@ -625,8 +625,8 @@ impl<'v> Variable<'v> {
     /// d/dx sinh^-1(x) = 1 / sqrt(1 + x^2)
     ///
     /// ```
-    /// # use RustQuant::autodiff::gradient::*;
-    /// # use RustQuant::autodiff::tape::*;    
+    /// use RustQuant::autodiff::*;
+    ///
     /// let t = Tape::new();
     ///
     /// let x = t.var(0.0);
@@ -643,7 +643,7 @@ impl<'v> Variable<'v> {
             value: self.value.asinh(),
             index: self
                 .tape
-                .push1(self.index, ((1.0 + self.value.powi(2)).sqrt()).recip()),
+                .push_unary(self.index, ((1.0 + self.value.powi(2)).sqrt()).recip()),
         }
     }
 
@@ -651,8 +651,8 @@ impl<'v> Variable<'v> {
     /// d/dx tan^-1(x) = 1 / (1 + x^2)
     ///
     /// ```
-    /// # use RustQuant::autodiff::gradient::*;
-    /// # use RustQuant::autodiff::tape::*;    
+    /// use RustQuant::autodiff::*;
+    ///
     /// let t = Tape::new();
     ///
     /// let x = t.var(0.0);
@@ -669,7 +669,7 @@ impl<'v> Variable<'v> {
             value: self.value.atan(),
             index: self
                 .tape
-                .push1(self.index, (1.0 + self.value.powi(2)).recip()),
+                .push_unary(self.index, (1.0 + self.value.powi(2)).recip()),
         }
     }
 
@@ -682,7 +682,7 @@ impl<'v> Variable<'v> {
             value: self.value.atanh(),
             index: self
                 .tape
-                .push1(self.index, (1.0 - self.value.powi(2)).recip()),
+                .push_unary(self.index, (1.0 - self.value.powi(2)).recip()),
         }
     }
 
@@ -695,7 +695,7 @@ impl<'v> Variable<'v> {
             value: self.value.cbrt(),
             index: self
                 .tape
-                .push1(self.index, (3.0 * self.value.powf(2.0 / 3.0)).recip()),
+                .push_unary(self.index, (3.0 * self.value.powf(2.0 / 3.0)).recip()),
         }
     }
 
@@ -706,7 +706,7 @@ impl<'v> Variable<'v> {
         Variable {
             tape: self.tape,
             value: self.value.cos(),
-            index: self.tape.push1(self.index, self.value.sin().neg()),
+            index: self.tape.push_unary(self.index, self.value.sin().neg()),
         }
     }
 
@@ -717,7 +717,7 @@ impl<'v> Variable<'v> {
         Variable {
             tape: self.tape,
             value: self.value.cosh(),
-            index: self.tape.push1(self.index, self.value.sinh()),
+            index: self.tape.push_unary(self.index, self.value.sinh()),
         }
     }
 
@@ -729,7 +729,7 @@ impl<'v> Variable<'v> {
         Variable {
             tape: self.tape,
             value: erfc(self.value),
-            index: self.tape.push1(
+            index: self.tape.push_unary(
                 self.index,
                 (2.0 * self.value.powi(2).neg().exp()).neg() / PI.sqrt(),
             ),
@@ -740,8 +740,8 @@ impl<'v> Variable<'v> {
     /// d/dx exp(x) = exp(x) = y
     ///
     /// ```
-    /// # use RustQuant::autodiff::gradient::*;
-    /// # use RustQuant::autodiff::tape::*;    
+    /// use RustQuant::autodiff::*;
+    ///  
     /// let t = Tape::new();
     ///
     /// let x = t.var(1.0);
@@ -756,7 +756,7 @@ impl<'v> Variable<'v> {
         Variable {
             tape: self.tape,
             value: self.value.exp(),
-            index: self.tape.push1(self.index, self.value.exp()),
+            index: self.tape.push_unary(self.index, self.value.exp()),
         }
     }
 
@@ -769,7 +769,7 @@ impl<'v> Variable<'v> {
             value: self.value.exp2(),
             index: self
                 .tape
-                .push1(self.index, 2_f64.powf(self.value) * 2_f64.ln()),
+                .push_unary(self.index, 2_f64.powf(self.value) * 2_f64.ln()),
         }
     }
 
@@ -780,7 +780,7 @@ impl<'v> Variable<'v> {
         Variable {
             tape: self.tape,
             value: self.value.exp_m1(),
-            index: self.tape.push1(self.index, self.value.exp()),
+            index: self.tape.push_unary(self.index, self.value.exp()),
         }
     }
 
@@ -788,8 +788,8 @@ impl<'v> Variable<'v> {
     /// d/dx ln(x) = 1 / x
     ///
     /// ```
-    /// # use RustQuant::autodiff::gradient::*;
-    /// # use RustQuant::autodiff::tape::*;    
+    /// use RustQuant::autodiff::*;
+    ///   
     /// let t = Tape::new();
     ///
     /// let x = t.var(std::f64::consts::E);
@@ -804,7 +804,7 @@ impl<'v> Variable<'v> {
         Variable {
             tape: self.tape,
             value: self.value.ln(),
-            index: self.tape.push1(self.index, self.value.recip()),
+            index: self.tape.push_unary(self.index, self.value.recip()),
         }
     }
 
@@ -815,7 +815,7 @@ impl<'v> Variable<'v> {
         Variable {
             tape: self.tape,
             value: self.value.ln_1p(),
-            index: self.tape.push1(self.index, (1.0 + self.value).recip()),
+            index: self.tape.push_unary(self.index, (1.0 + self.value).recip()),
         }
     }
 
@@ -826,7 +826,7 @@ impl<'v> Variable<'v> {
         Variable {
             tape: self.tape,
             value: self.value.log10(),
-            index: self.tape.push1(self.index, self.value.recip()),
+            index: self.tape.push_unary(self.index, self.value.recip()),
         }
     }
 
@@ -837,7 +837,7 @@ impl<'v> Variable<'v> {
         Variable {
             tape: self.tape,
             value: self.value.log2(),
-            index: self.tape.push1(self.index, self.value.recip()),
+            index: self.tape.push_unary(self.index, self.value.recip()),
         }
     }
 
@@ -845,8 +845,8 @@ impl<'v> Variable<'v> {
     /// d/dx 1 / x =  - 1 / x^2
     ///
     /// ```
-    /// # use RustQuant::autodiff::gradient::*;
-    /// # use RustQuant::autodiff::tape::*;
+    /// use RustQuant::autodiff::*;
+    ///
     /// let t = Tape::new();
     ///
     /// let x = t.var(1.0);
@@ -863,7 +863,7 @@ impl<'v> Variable<'v> {
             value: self.value.recip(),
             index: self
                 .tape
-                .push1(self.index, self.value.powi(2).recip().neg()),
+                .push_unary(self.index, self.value.powi(2).recip().neg()),
         }
     }
 
@@ -874,7 +874,7 @@ impl<'v> Variable<'v> {
         Variable {
             tape: self.tape,
             value: self.value.sin(),
-            index: self.tape.push1(self.index, self.value.cos()),
+            index: self.tape.push_unary(self.index, self.value.cos()),
         }
     }
 
@@ -885,7 +885,7 @@ impl<'v> Variable<'v> {
         Variable {
             tape: self.tape,
             value: self.value.sinh(),
-            index: self.tape.push1(self.index, self.value.cosh()),
+            index: self.tape.push_unary(self.index, self.value.cosh()),
         }
     }
 
@@ -893,8 +893,8 @@ impl<'v> Variable<'v> {
     /// d/dx sqrt(x) =  1 / 2*sqrt(x)
     ///
     /// ```
-    /// # use RustQuant::autodiff::gradient::*;
-    /// # use RustQuant::autodiff::tape::*;
+    /// use RustQuant::autodiff::*;
+    ///
     /// let t = Tape::new();
     ///
     /// let x = t.var(2.0);
@@ -911,7 +911,7 @@ impl<'v> Variable<'v> {
             value: self.value.sqrt(),
             index: self
                 .tape
-                .push1(self.index, (2.0 * self.value.sqrt()).recip()),
+                .push_unary(self.index, (2.0 * self.value.sqrt()).recip()),
         }
     }
 
@@ -924,7 +924,7 @@ impl<'v> Variable<'v> {
             value: self.value.tan(),
             index: self
                 .tape
-                .push1(self.index, (self.value.cos().powi(2)).recip()),
+                .push_unary(self.index, (self.value.cos().powi(2)).recip()),
         }
     }
 
@@ -937,7 +937,239 @@ impl<'v> Variable<'v> {
             value: self.value.tanh(),
             index: self
                 .tape
-                .push1(self.index, (self.value.cosh().powi(2)).recip()),
+                .push_unary(self.index, (self.value.cosh().powi(2)).recip()),
         }
     }
+}
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// UNIT TESTS
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+#[cfg(test)]
+mod test_overload {
+    // use std::f64::EPSILON;
+    // use crate::utils::assert_approx_eq;
+    use crate::autodiff::Gradient;
+
+    use super::*;
+
+    #[test]
+    fn test_add() {
+        // Variable + Variable
+        let t = Tape::new();
+
+        let x = t.var(1.0);
+        let y = t.var(2.0);
+        let z = x + y;
+        let grad = z.accumulate();
+
+        assert_eq!(z.value, 3.0);
+        assert_eq!(grad.wrt(&x), 1.0);
+        assert_eq!(grad.wrt(&y), 1.0);
+
+        // Variable + f64
+        let t = Tape::new();
+
+        let x = t.var(1.0);
+        let y = 2.0;
+        let z = x + y;
+        let grad = z.accumulate();
+
+        assert_eq!(z.value, 3.0);
+        assert_eq!(grad.wrt(&x), 1.0);
+
+        // f64 + Variable
+        let t = Tape::new();
+
+        let x = 1.0;
+        let y = t.var(2.0);
+        let z = x + y;
+        let grad = z.accumulate();
+
+        assert_eq!(z.value, 3.0);
+        assert_eq!(grad.wrt(&y), 1.0);
+    }
+
+    #[test]
+    fn test_sub() {
+        // Variable - Variable
+        let t = Tape::new();
+
+        let x = t.var(1.0);
+        let y = t.var(2.0);
+        let z = x - y;
+        let grad = z.accumulate();
+
+        assert_eq!(z.value, -1.0);
+        assert_eq!(grad.wrt(&x), 1.0);
+        assert_eq!(grad.wrt(&y), -1.0);
+
+        // Variable - f64
+        let t = Tape::new();
+
+        let x = t.var(1.0);
+        let y = 2.0;
+        let z = x - y;
+        let grad = z.accumulate();
+
+        assert_eq!(z.value, -1.0);
+        assert_eq!(grad.wrt(&x), 1.0);
+
+        // f64 - Variable
+        let t = Tape::new();
+
+        let x = 1.0;
+        let y = t.var(2.0);
+        let z = x - y;
+        let grad = z.accumulate();
+
+        assert_eq!(z.value, -1.0);
+        assert_eq!(grad.wrt(&y), -1.0);
+    }
+
+    #[test]
+    fn test_mul() {
+        // Variable * Variable
+        let t = Tape::new();
+
+        let x = t.var(1.0);
+        let y = t.var(2.0);
+        let z = x * y;
+        let grad = z.accumulate();
+
+        assert_eq!(z.value, 2.0);
+        assert_eq!(grad.wrt(&x), 2.0);
+        assert_eq!(grad.wrt(&y), 1.0);
+
+        // Variable * f64
+        let t = Tape::new();
+
+        let x = t.var(1.0);
+        let y = 2.0;
+        let z = x * y;
+        let grad = z.accumulate();
+
+        assert_eq!(z.value, 2.0);
+        assert_eq!(grad.wrt(&x), 2.0);
+
+        // f64 * Variable
+        let t = Tape::new();
+
+        let x = 1.0;
+        let y = t.var(2.0);
+        let z = x * y;
+        let grad = z.accumulate();
+
+        assert_eq!(z.value, 2.0);
+        assert_eq!(grad.wrt(&y), 1.0);
+    }
+
+    #[test]
+    fn test_div() {
+        // Variable / Variable
+        let t = Tape::new();
+
+        let x = t.var(1.0);
+        let y = t.var(2.0);
+        let z = x / y;
+        let grad = z.accumulate();
+
+        assert_eq!(z.value, 0.5);
+        assert_eq!(grad.wrt(&x), 0.5);
+        assert_eq!(grad.wrt(&y), -0.25);
+
+        // Variable / f64
+        let t = Tape::new();
+
+        let x = t.var(1.0);
+        let y = 2.0;
+        let z = x / y;
+        let grad = z.accumulate();
+
+        assert_eq!(z.value, 0.5);
+        assert_eq!(grad.wrt(&x), 0.5);
+
+        // f64 / Variable
+        let t = Tape::new();
+
+        let x = 1.0;
+        let y = t.var(2.0);
+        let z = x / y;
+        let grad = z.accumulate();
+
+        assert_eq!(z.value, 0.5);
+        assert_eq!(grad.wrt(&y), -0.25);
+    }
+
+    #[test]
+    fn test_sum() {
+        let t = Tape::new();
+
+        let params = (0..100).map(|x| t.var(x as f64)).collect::<Vec<_>>();
+        let sum = params.iter().copied().sum::<Variable>();
+        let derivs = sum.accumulate();
+
+        for i in derivs.wrt(&params) {
+            assert_eq!(i, 1.0);
+        }
+    }
+
+    #[test]
+    fn test_product() {
+        let t = Tape::new();
+
+        let params = (1..=5).map(|x| t.var(x as f64)).collect::<Vec<_>>();
+        let prod = params.iter().copied().product::<Variable>();
+
+        let derivs = prod.accumulate();
+        let true_gradient = vec![120.0, 60.0, 40.0, 30.0, 24.0];
+
+        let n = derivs.wrt(&params).len();
+        let m = true_gradient.len();
+        assert_eq!(n, m);
+
+        for i in 0..n {
+            assert_eq!(derivs.wrt(&params)[i], true_gradient[i]);
+        }
+    }
+
+    // #[test]
+    // fn test_powf() {
+    //     let t = Tape::new();
+
+    //     let x = t.var(2.0);
+    //     let y = 3.0.powf(x);
+
+    //     assert!((y.value() - 9.0).abs() < EPSILON);
+
+    //     let derivs = y.accumulate();
+    //     assert_approx_equal!(derivs.wrt(&x), (9.0 * (3.0f64).ln()), 1e-8);
+    // }
+
+    // #[test]
+    // fn test_powf_zero() {
+    //     let t = Tape::new();
+
+    //     let x = t.var(0.0);
+    //     let y = 3.0.powf(x);
+
+    //     assert_approx_equal!(y.value(), 1.0, 1e-8); // 3^1 = 3.0
+
+    //     let derivs = y.accumulate();
+    //     assert!((derivs.wrt(&x) - 0.0).abs() < EPSILON);
+    // }
+
+    // #[test]
+    // fn test_powf_one() {
+    //     let t = Tape::new();
+
+    //     let x = t.var(1.0); // create a variable
+    //     let y = 3.0.powf(x); // powf operation
+
+    //     assert_approx_equal!(y.value(), 3.0, 1e-8); // 3^1 = 3.0
+
+    //     let derivs = y.accumulate(); // d/dx 3^x = 3^x * ln(3)
+    //     assert_approx_equal!(derivs.wrt(&x), (27.0f64).ln(), 1e-8);
+    // }
 }

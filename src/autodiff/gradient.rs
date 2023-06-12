@@ -58,11 +58,6 @@ impl<'v> Gradient<&Vec<Variable<'v>>, Vec<f64>> for Vec<f64> {
     #[inline]
     fn wrt(&self, variables: &Vec<Variable<'v>>) -> Vec<f64> {
         variables.iter().map(|&var| self[var.index]).collect()
-        // let mut gradient = Vec::with_capacity(variables.len());
-        // for i in variables {
-        //     gradient.push(self.wrt(i));
-        // }
-        // gradient
     }
 }
 
@@ -71,11 +66,6 @@ impl<'v> Gradient<&[Variable<'v>], Vec<f64>> for Vec<f64> {
     #[inline]
     fn wrt(&self, variables: &[Variable<'v>]) -> Vec<f64> {
         variables.iter().map(|&var| self[var.index]).collect()
-        // let mut gradient = Vec::with_capacity(variables.len());
-        // for i in variables {
-        //     gradient.push(self.wrt(i));
-        // }
-        // gradient
     }
 }
 
@@ -84,11 +74,6 @@ impl<'v, const N: usize> Gradient<[Variable<'v>; N], Vec<f64>> for Vec<f64> {
     #[inline]
     fn wrt(&self, variables: [Variable<'v>; N]) -> Vec<f64> {
         variables.iter().map(|&var| self[var.index]).collect()
-        // let mut gradient = Vec::with_capacity(N);
-        // for i in variables {
-        //     gradient.push(self.wrt(&i));
-        // }
-        // gradient
     }
 }
 
@@ -97,11 +82,6 @@ impl<'v, const N: usize> Gradient<&[Variable<'v>; N], Vec<f64>> for Vec<f64> {
     #[inline]
     fn wrt(&self, variables: &[Variable<'v>; N]) -> Vec<f64> {
         variables.iter().map(|&var| self[var.index]).collect()
-        // let mut gradient = Vec::with_capacity(N);
-        // for i in variables {
-        //     gradient.push(self.wrt(i));
-        // }
-        // gradient
     }
 }
 
@@ -112,6 +92,66 @@ impl<'v, const N: usize> Gradient<&[Variable<'v>; N], Vec<f64>> for Vec<f64> {
 #[cfg(test)]
 mod test_gradient {
     use crate::{assert_approx_equal, autodiff::*};
+
+    #[test]
+    fn test_borrowed_vector() {
+        let t = Tape::new();
+
+        let x = t.var(1.0);
+        let y = t.var(2.0);
+
+        let z = x * y;
+
+        let grad = z.accumulate();
+
+        assert_approx_equal!(z.value, 2.0, 1e-15);
+        assert_eq!(grad.wrt(&vec![x, y]), vec![2.0, 1.0]);
+    }
+
+    #[test]
+    fn test_borrowed_slice() {
+        let t = Tape::new();
+
+        let x = t.var(1.0);
+        let y = t.var(2.0);
+
+        let z = x * y;
+
+        let grad = z.accumulate();
+
+        assert_approx_equal!(z.value, 2.0, 1e-15);
+        assert_eq!(grad.wrt(&[x, y]), vec![2.0, 1.0]);
+    }
+
+    #[test]
+    fn test_array() {
+        let t = Tape::new();
+
+        let x = t.var(1.0);
+        let y = t.var(2.0);
+
+        let z = x * y;
+
+        let grad = z.accumulate();
+
+        assert_approx_equal!(z.value, 2.0, 1e-15);
+        assert_eq!(grad.wrt([x, y]), vec![2.0, 1.0]);
+    }
+
+    #[test]
+    fn test_borrowd_array() {
+        let t = Tape::new();
+
+        let x = t.var(1.0);
+        let y = t.var(2.0);
+
+        let z = x * y;
+
+        let grad = z.accumulate();
+
+        assert_approx_equal!(z.value, 2.0, 1e-15);
+        assert_eq!(grad.wrt(&[x, y]), vec![2.0, 1.0]);
+    }
 
     #[test]
     fn x_times_y_plus_sin_x() {

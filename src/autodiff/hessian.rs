@@ -9,6 +9,6 @@
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 /// Return the derivative/s *with-respect-to* the chosen variables.
-pub trait Hessian<T, S> {
+pub trait Hessian<IN, OUT> {
     todo!();
 }

@@ -36,6 +36,12 @@ yahoo_finance_api = "2.0.0"
 version = "0.30.0"
 features = ["serde", "json", "parquet", "dtype-struct", "dtype-date", "lazy"]
 
+[features]
+## This feature is used to enable the use of the `data` module.
+## It is disabled by default, since the addition of Polars
+## increases the compilation time substantially.
+data = []
+
 ## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ## THE FOLLOWING ARE FOR THE PYTHON BINDINGS
 ## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
