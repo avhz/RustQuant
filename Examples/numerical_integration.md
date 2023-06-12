@@ -1,1 +1,1 @@
-# RustQuant: Numerical Integration
+# `RustQuant`: Numerical Integration

@@ -14,23 +14,6 @@
 use super::variable::Variable;
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// GRADIENT STRUCT AND IMPLEMENTATION
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-// /// Struct containing the gradient (vector of partial derivatives).
-// pub struct Gradient {
-//     pub adjoints: Vec<f64>,
-// }
-
-// impl Gradient {
-//     /// Function to retrieve the partial derivative *with-respect-to*
-//     /// the chosen input variable.
-//     pub fn wrt<'v>(&self, var: Variable<'v>) -> f64 {
-//         self.adjoints[var.index]
-//     }
-// }
-
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // GRADIENT TRAIT AND IMPLEMENTATIONS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

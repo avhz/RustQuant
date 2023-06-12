@@ -1,10 +1,10 @@
-# RustQuant: Stochastic Processes
+# `RustQuant`: Stochastic Processes
 
 ## Brownian Motion
 
 ```rust
 
-``` 
+```
 
 ## Geometric Brownian Motion
 
@@ -28,4 +28,4 @@
 
 ```rust
 
-``` 
+```

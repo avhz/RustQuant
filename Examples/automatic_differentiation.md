@@ -1,4 +1,4 @@
-# RustQuant: Automatic Differentiation
+# `RustQuant`: Automatic Differentiation
 
 Automatic differentiation is a technique for evaluating derivatives of functions specified by computer programs. It is accurate to machine precision, as it does not incur truncation or round-off errors.
 

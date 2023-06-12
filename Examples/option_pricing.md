@@ -1,3 +1,1 @@
-# RustQuant: Option Pricing
-
-
+# `RustQuant`: Option Pricing
