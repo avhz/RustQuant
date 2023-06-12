@@ -239,10 +239,14 @@ pub mod stochastics {
 
 /// Parent module containing: automatic differentation modules.
 pub mod autodiff {
-    pub use crate::autodiff::{gradient::*, overload::*, tape::*, variable::*, vertex::*};
+    pub use crate::autodiff::{
+        gradient::*, graphviz::*, overload::*, tape::*, variable::*, vertex::*,
+    };
 
     /// Submodule of `autodiff`: implements the gradient computation.
     pub mod gradient;
+    /// Submodule of `autodiff`: visualisation of `Tape`.
+    pub mod graphviz;
     /// Submodule of `autodiff`: implements operator/function overloading.
     pub mod overload;
     /// Submodule of `autodiff`: implements the Tape (Wengert List).
