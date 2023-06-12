@@ -5,6 +5,8 @@
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 //! This module is for visualising a Tape.
+//!
+//! THIS IS A WORK IN PROGRESS !
 
 use super::Tape;
 use std::fmt;
@@ -59,7 +61,10 @@ pub fn to_dot2(tape: &Tape) -> String {
     // Define the edges
     for (index, vertex) in vertices.iter().enumerate() {
         for parent in &vertex.parents {
-            dot.push_str(&format!("\t{} -> {};\n", parent, index));
+            if parent != &index {
+                dot.push_str(&format!("\t{} -> {};\n", parent, index));
+            }
+            // dot.push_str(&format!("\t{} -> {};\n", parent, index));
         }
     }
 
@@ -100,7 +105,11 @@ mod test_graphviz {
         let c = tape.var(3.0);
         let d = tape.var(4.0);
 
-        let f = (a + b).sin() * (c + d).ln();
+        let f1 = (a + b).sin();
+
+        let e = tape.var(5.0);
+
+        let f2 = e * (c + d).ln();
 
         // let g = z.accumulate();
         // let dot = to_dot(&tape);
