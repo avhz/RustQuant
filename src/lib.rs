@@ -87,6 +87,8 @@ pub mod currencies {
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 /// Parent module containing: data reading and writing utilities.
+/// Disabled by default, due to Polars increasing compile times.
+#[cfg(feature = "data")]
 pub mod data {
     pub use crate::data::{io::*, yahoo::*};
 
