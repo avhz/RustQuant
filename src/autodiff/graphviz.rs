@@ -7,64 +7,62 @@
 //! This module is for visualising a Tape.
 //!
 //! THIS IS A WORK IN PROGRESS !
+//!
+//! Ideally, I want to be able to visualise the tape by using the `dot`
+//! language. At the moment, I'm simply trying to make a function that outputs
+//! `dot` code for a given tape.
 
-use super::Tape;
-use std::fmt;
+use super::*;
 
-/// Convert a tape to a Graphviz dot string.
-pub fn to_dot(tape: &Tape) -> String {
-    let mut dot = String::new();
-    dot.push_str("digraph Tape {\n");
-    for (i, vertex) in tape.vertices.borrow().iter().enumerate() {
-        dot.push_str(&format!("    {} [label=\"{}\"];\n", i, i));
-        for &parent in vertex.parents.iter() {
-            if parent != i {
-                dot.push_str(&format!("    {} -> {};\n", parent, i));
-            }
-        }
-    }
-    dot.push_str("}\n");
-    dot
-}
+// impl std::fmt::Display for Tape {
+//     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+//         let vertices = self.vertices.borrow();
+//         writeln!(f, "digraph Tape {{")?;
+//         for (i, vertex) in vertices.iter().enumerate() {
+//             writeln!(f, "    {} [label=\"{}\"];", i, i)?;
+//             if vertex.parents[0] != i {
+//                 writeln!(f, "    {} -> {};", vertex.parents[0], i)?;
+//             }
+//             if vertex.parents[1] != i {
+//                 writeln!(f, "    {} -> {};", vertex.parents[1], i)?;
+//             }
+//         }
+//         writeln!(f, "}}")
+//     }
+// }
 
-impl fmt::Display for Tape {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        let vertices = self.vertices.borrow();
-        writeln!(f, "digraph Tape {{")?;
-        for (i, vertex) in vertices.iter().enumerate() {
-            writeln!(f, "    {} [label=\"{}\"];", i, i)?;
-            if vertex.parents[0] != i {
-                writeln!(f, "    {} -> {};", vertex.parents[0], i)?;
-            }
-            if vertex.parents[1] != i {
-                writeln!(f, "    {} -> {};", vertex.parents[1], i)?;
-            }
-        }
-        writeln!(f, "}}")
-    }
-}
-
-/// graph
-pub fn to_dot2(tape: &Tape) -> String {
-    let mut dot = String::from("digraph Tape {\n\trankdir=\"LR\";\n\tnode [shape=box];\n");
+/// Graphviz dot string.
+pub fn graphviz(tape: &Tape, vars: &[Variable]) -> String {
+    let mut dot = String::from("digraph Tape {\n\trankdir=\"LR\";\n\tnode [shape=box3d];\n");
 
     let vertices = tape.vertices.borrow();
 
-    // Define the nodes
-    for (index, vertex) in vertices.iter().enumerate() {
-        dot.push_str(&format!(
-            "\t{} [label=\"ID: {}, Adjoints: {:.4?}\"];\n",
-            index, index, vertex.partials
-        ));
+    // Initialize a HashSet with variable indices for quick lookup
+    let var_indices: std::collections::HashSet<_> = vars.iter().map(|var| var.index).collect();
+
+    // Define the nodes.
+    for (index, _vertex) in vertices.iter().enumerate() {
+        if var_indices.contains(&index) {
+            let var_value = vars.iter().find(|var| var.index == index).unwrap().value();
+            dot.push_str(&format!(
+                "\t{} [label=\"Input: x_{}, Value: {:.2}\", color=\"red\"];\n",
+                index, index, var_value
+            ));
+        } else {
+            dot.push_str(&format!("\t{} [label=\"Op: #{}\"];\n", index, index));
+        }
     }
 
-    // Define the edges
+    // Define the edges.
     for (index, vertex) in vertices.iter().enumerate() {
-        for parent in &vertex.parents {
+        for (i, parent) in vertex.parents.iter().enumerate() {
             if parent != &index {
-                dot.push_str(&format!("\t{} -> {};\n", parent, index));
+                let label = vertex.partials[i];
+                dot.push_str(&format!(
+                    "\t{} -> {} [label=\"\u{2202}_{}: {:.2?}\"];\n",
+                    parent, index, i, label
+                ));
             }
-            // dot.push_str(&format!("\t{} -> {};\n", parent, index));
         }
     }
 
@@ -76,7 +74,10 @@ pub fn to_dot2(tape: &Tape) -> String {
 #[cfg(test)]
 mod test_graphviz {
     use super::*;
-    use crate::autodiff::{Gradient, Tape};
+
+    // RUN THESE TESTS VIA: cargo t test_graphviz -- --nocapture
+    // This will print the graphviz output to stdout, 
+    // which you can then copy and paste into your Graphviz viewer of choice.
 
     #[test]
     fn test_graphviz_1() {
@@ -84,17 +85,9 @@ mod test_graphviz {
         let x = tape.var(2.0);
         let y = tape.var(3.0);
         let z = x * y;
-        let u = (z.exp()).sin();
-        // let g = z.accumulate();
-        // let dot = to_dot(&tape);
+        let _u = (z.exp()).sin();
 
-        // print!("{}", dot);
-        print!("{}", to_dot2(&tape));
-        // print!("{}", format!("{}", tape));
-        // assert_eq!(
-        //     dot,
-        //     "digraph Tape {\n    0 [label=\"0\"];\n    1 [label=\"1\"];\n    2 [label=\"2\"];\n    3 [label=\"3\"];\n    4 [label=\"4\"];\n    0 -> 4;\n    1 -> 4;\n    2 -> 4;\n    3 -> 4;\n}\n"
-        // );
+        print!("{}", graphviz(&tape, &[x, y]));
     }
 
     #[test]
@@ -105,21 +98,28 @@ mod test_graphviz {
         let c = tape.var(3.0);
         let d = tape.var(4.0);
 
-        let f1 = (a + b).sin();
+        let f1 = (a.exp() + b.cbrt()).sin();
 
         let e = tape.var(5.0);
 
-        let f2 = e * (c + d).ln();
+        let f2 = e * (c.sqrt() + d.powf(2.0)).ln();
 
-        // let g = z.accumulate();
-        // let dot = to_dot(&tape);
+        let f3 = f1 + f2;
 
-        // print!("{}", dot);
-        print!("{}", to_dot2(&tape));
-        // print!("{}", format!("{}", tape));
-        // assert_eq!(
-        //     dot,
-        //     "digraph Tape {\n    0 [label=\"0\"];\n    1 [label=\"1\"];\n    2 [label=\"2\"];\n    3 [label=\"3\"];\n    4 [label=\"4\"];\n    0 -> 4;\n    1 -> 4;\n    2 -> 4;\n    3 -> 4;\n}\n"
-        // );
+        print!("{}", graphviz(&tape, &[a, b, c, d, e]));
+        println!("Gradient: {:.4?}", f3.accumulate().wrt(&[a, b, c, d, e]));
+    }
+
+    #[test]
+    fn test_graphviz_3() {
+        let tape = Tape::new();
+        let x = tape.var(1.0);
+        let y = tape.var(2.0);
+
+        let z = x * y + y.sin();
+
+        let _g = z.accumulate();
+
+        print!("{}", graphviz(&tape, &[x, y]));
     }
 }
