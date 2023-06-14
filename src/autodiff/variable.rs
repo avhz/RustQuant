@@ -15,9 +15,8 @@
 // IMPORTS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use std::fmt::Display;
-
 use super::tape::Tape;
+use std::fmt::Display;
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // STRUCT AND IMPLEMENTATION
@@ -31,14 +30,25 @@ pub struct Variable<'v> {
     /// Index to the vertex.
     pub index: usize,
     /// Value associated to the vertex.
-    pub value: f64,
+    pub value: f64, // Value,
 }
+
+// /// Value of the Variable.
+// #[derive(Clone, /* Copy */ Debug)]
+// pub enum Value {
+//     /// Scalar valued Variable.
+//     Scalar(f64),
+//     /// Vector valued Variable.
+//     Vector(nalgebra::DVector<f64>),
+//     /// Matrix valued Variable.
+//     Matrix(nalgebra::DMatrix<f64>),
+// }
 
 /// Implement formatting for the `Variable` struct.
 impl<'v> Display for Variable<'v> {
     #[inline]
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{}", self.value)
+        write!(f, "{:?}", self.value)
     }
 }
 
