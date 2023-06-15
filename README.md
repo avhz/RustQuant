@@ -288,7 +288,7 @@ fn main() {
 }
 ```
 
-### Gradient Descent
+### Gradient Descent:
 
 Note: the reason you need to specify the lifetimes and use the type `Variable` is because the gradient descent optimiser uses the `RustQuant::autodiff` module to compute the gradients. This is a slight inconvenience, but the speed-up is enormous when working with functions with many inputs (when compared with using finite-difference quotients).
 
