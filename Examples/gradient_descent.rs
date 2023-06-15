@@ -16,9 +16,12 @@ fn himmelblau<'v>(variables: &[Variable<'v>]) -> Variable<'v> {
 
 fn main() {
     // Create a new GradientDescent object,
-    // with a step size of 0.1, a maximum of 100 iterations,
+    // with a step size of 0.01, a maximum of 100 iterations,
     // and a tolerance of sqrt(machine epsilon).
-    let gd = GradientDescent::new(0.1, 100, std::f64::EPSILON.cbrt());
+    //
+    // You may need to play with the step size a bit to guarantee
+    // convergence. I will add a line search method in the future.
+    let gd = GradientDescent::new(0.01, 100, std::f64::EPSILON.sqrt());
 
     // Perform the optimisation,
     // starting from the initial guess (5.0, 5.0),
@@ -26,5 +29,7 @@ fn main() {
     let result = gd.optimize(&himmelblau, &vec![5.0, 5.0], true);
 
     // Print the result.
+    // The initial guess (5.0, 5.0) should result in
+    // convergence towards the minimum (3.0, 2.0).
     println!("{:?}", result.minimizer);
 }
