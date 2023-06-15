@@ -49,10 +49,10 @@ Contact: rustquantcontact@gmail.com
 3. [Stochastic Processes and Short Rate Models](#stochastics)
 4. [Bonds](#bonds)
 5. [Distributions](#distributions)
-5. [Mathematics](#maths)
-6. [Helper Functions and Macros](#helpers)
-7. [How-tos](#howto)
-8. [References](#references)
+6. [Mathematics](#maths)
+7. [Helper Functions and Macros](#helpers)
+8. [How-tos](#howto)
+9. [References](#references)
 
 
 ## :link: Automatic Differentiation <a name="autodiff"></a>
@@ -287,6 +287,39 @@ fn main() {
     println!("Integral = {}", integral); 
 }
 ```
+
+### Gradient Descent
+
+Note: the reason you need to specify the lifetimes and use the type `Variable` is because the gradient descent optimiser uses the `RustQuant::autodiff` module to compute the gradients. This is a slight inconvenience, but the speed-up is enormous when working with functions with many inputs (when compared with using finite-difference quotients).
+
+```rust
+use RustQuant::optimisation::GradientDescent;
+
+// Define the objective function.
+fn himmelblau<'v>(variables: &[Variable<'v>]) -> Variable<'v> {
+    let x = variables[0];
+    let y = variables[1];
+
+    ((x.powf(2.0) + y - 11.0).powf(2.0) + (x + y.powf(2.0) - 7.0).powf(2.0))
+}
+
+fn main() {
+    // Create a new GradientDescent object with:
+    //      - Step size: 0.005 
+    //      - Iterations: 10000
+    //      - Tolerance: sqrt(machine epsilon)
+    let gd = GradientDescent::new(0.005, 10000, std::f64::EPSILON.sqrt() );
+
+    // Perform the optimisation with:
+    //      - Initial guess (10.0, 10.0),
+    //      - Verbose output.
+    let result = gd.optimize(&himmelblau, &vec![10.0, 10.0], true);
+    
+    // Print the result.
+    println!("{:?}", result.minimizer);
+}
+```
+
 
 ### Price options:
 
