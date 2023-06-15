@@ -96,10 +96,9 @@ fn main() {
     let constants = [1., 2.];
 
     // Evaluate and differentiate the function.
-    let result = diff_fn(&variables, &constants);
+    let result = f(&variables, &constants);
     let gradient = result.accumulate();
 
     println!("{:?}", gradient.wrt(&variables));
-    println!("{:?}", gradient);
 }
 ```
