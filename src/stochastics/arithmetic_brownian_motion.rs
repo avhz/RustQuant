@@ -54,9 +54,9 @@ mod tests_abm {
 
         let output = (&abm).euler_maruyama(10.0, 0.0, 0.5, 125, 1000, false);
 
-        // let file1 = "./Images/ABM1.png";
+        // let file1 = "./images/ABM1.png";
         // plot_vector((&output.trajectories[0]).clone(), file1).unwrap();
-        // let file2 = "./Images/ABM2.png";
+        // let file2 = "./images/ABM2.png";
         // plot_vector((&output.trajectories[1]).clone(), file2)
 
         // Test the distribution of the final values.

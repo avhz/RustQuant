@@ -77,11 +77,11 @@ mod sde_tests {
         let output_serial = (&bm).euler_maruyama(0.0, 0.0, 0.5, 100, 1000, false);
         // let output_parallel = (&bm).euler_maruyama(10.0, 0.0, 0.5, 100, 10, true);
 
-        // let file1 = "./Images/BM1.png";
+        // let file1 = "./images/BM1.png";
         // plot_vector((&output_serial.trajectories[0]).clone(), file1).unwrap();
-        // let file2 = "./Images/BM2.png";
+        // let file2 = "./images/BM2.png";
         // plot_vector((&output_serial.trajectories[1]).clone(), file2).unwrap();
-        // let file2 = "./Images/BM3_parallel.png";
+        // let file2 = "./images/BM3_parallel.png";
         // plot_vector((&output_parallel.trajectories[0]).clone(), file2)
 
         // Test the distribution of the final values.

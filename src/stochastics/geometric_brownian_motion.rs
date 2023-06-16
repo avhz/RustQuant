@@ -72,9 +72,9 @@ mod tests_gbm {
             5.0
         );
 
-        // let file1 = "./Images/GBM1.png";
+        // let file1 = "./images/GBM1.png";
         // plot_vector((&output.trajectories[0]).clone(), file1).unwrap();
-        // let file2 = "./Images/GBM2.png";
+        // let file2 = "./images/GBM2.png";
         // plot_vector((&output.trajectories[1]).clone(), file2)
 
         std::result::Result::Ok(())

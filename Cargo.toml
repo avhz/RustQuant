@@ -1,3 +1,7 @@
+## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+## GENERAL CONFIGURATION
+## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 [package]
 name = "RustQuant"
 description = "A Rust library for quantitative finance tools."
@@ -14,6 +18,10 @@ keywords = [
 ]
 categories = ["finance", "mathematics", "science", "algorithms", "simulation"]
 license = "GPL-3.0-or-later"
+
+## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+## DEPENDENCIES
+## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 [dependencies]
 # csv = "1.2.1"
@@ -37,6 +45,10 @@ optional = true
 version = "0.30.0"
 features = ["serde", "json", "parquet", "dtype-struct", "dtype-date", "lazy"]
 
+## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+## FEATURES
+## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 [features]
 ## This feature is used to enable the use of the `data` module.
 ## It is disabled by default, since the addition of Polars
@@ -44,7 +56,15 @@ features = ["serde", "json", "parquet", "dtype-struct", "dtype-date", "lazy"]
 data = ["dep:polars"]
 
 ## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-## THE FOLLOWING ARE FOR THE PYTHON BINDINGS
+## EXAMPLES
+## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+[[example]]
+name = "yahoo_finance"
+required-features = ["data"]
+
+## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+## PYTHON BINDINGS
 ## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # [lib]

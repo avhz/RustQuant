@@ -78,9 +78,9 @@ mod tests_ornstein_uhlenbeck {
             0.5
         );
 
-        // let file1 = "./Images/OU1.png";
+        // let file1 = "./images/OU1.png";
         // plot_vector((&output.trajectories[0]).clone(), file1).unwrap();
-        // let file2 = "./Images/OU2.png";
+        // let file2 = "./images/OU2.png";
         // plot_vector((&output.trajectories[1]).clone(), file2)
 
         std::result::Result::Ok(())

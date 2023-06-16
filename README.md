@@ -175,6 +175,12 @@ A collection of utility functions and macros.
 
 ## :heavy_check_mark: How-tos <a name="howto"></a>
 
+NOTE: You can run these in `./examples/`:
+
+```bash
+cargo run --example automatic_differentiation
+```
+
 I would not recommend using RustQuant within any other libraries for some time, as it will most likely go through many breaking changes as I learn more Rust and settle on a decent structure for the library. 
 
 :pray: I would greatly appreciate contributions so it can get to the `v1.0.0` mark ASAP.

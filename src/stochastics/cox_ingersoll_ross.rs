@@ -81,9 +81,9 @@ mod tests_cir {
             0.5
         );
 
-        // let file1 = "./Images/CIR1.png";
+        // let file1 = "./images/CIR1.png";
         // plot_vector((&output.trajectories[0]).clone(), file1).unwrap();
-        // let file2 = "./Images/CIR2.png";
+        // let file2 = "./images/CIR2.png";
         // plot_vector((&output.trajectories[1]).clone(), file2)
 
         std::result::Result::Ok(())
