@@ -6,6 +6,7 @@ use RustQuant::{
     utilities::plot_vector,
 };
 
+#[rustfmt::skip]
 fn main() {
     // Create new stochastic processes.
     let abm = ArithmeticBrownianMotion::new(0.05, 0.9);
@@ -35,7 +36,15 @@ fn main() {
     // CURRENTLY PANICS.
     // Waiting on updated plotters crate (v0.0.34 -> v0.0.35).
     // See here: https://github.com/plotters-rs/plotters/issues/453
-    plot_vector((&abm_out.paths[0]).clone(), "./images/abm.png").unwrap();
+    plot_vector((&abm_out.paths[0]).clone(),"./images/arithmetic_brownian_motion.png").unwrap();
+    plot_vector((&bdt_out.paths[0]).clone(), "./images/black_derman_toy.png").unwrap();
+    plot_vector((&bm_out.paths[0]).clone(), "./images/brownian_motion.png").unwrap();
+    plot_vector((&cir_out.paths[0]).clone(),"./images/cox_ingersoll_ross.png").unwrap();
+    plot_vector((&ev_out.paths[0]).clone(), "./images/extended_vasicek.png").unwrap();
+    plot_vector((&gbm_out.paths[0]).clone(),"./images/geometric_brownian_motion.png").unwrap();
+    plot_vector((&hl_out.paths[0]).clone(), "./images/ho_lee.png").unwrap();
+    plot_vector((&hw_out.paths[0]).clone(), "./images/hull_white.png").unwrap();
+    plot_vector((&ou_out.paths[0]).clone(),"./images/ornstein_uhlenbeck.png").unwrap();
 }
 
 fn theta_t(_t: f64) -> f64 {
