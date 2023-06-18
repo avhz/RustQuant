@@ -14,6 +14,8 @@
 // IMPORTS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+use std::{rc::Rc, sync::Arc};
+
 use super::OperationArity;
 
 use {super::variable::Variable, super::vertex::Vertex, std::cell::RefCell};
@@ -27,6 +29,7 @@ use {super::variable::Variable, super::vertex::Vertex, std::cell::RefCell};
 pub struct Tape {
     /// Vector containing the vertices in the Wengert List.
     pub vertices: RefCell<Vec<Vertex>>,
+    // pub vertices: RefCell<Rc<[Vertex]>>,
 }
 
 impl Default for Tape {
@@ -34,6 +37,7 @@ impl Default for Tape {
     fn default() -> Self {
         Tape {
             vertices: RefCell::new(Vec::new()),
+            // vertices: RefCell::new(Rc::new([])),
         }
     }
 }
@@ -45,6 +49,7 @@ impl Tape {
     pub fn new() -> Self {
         Tape {
             vertices: RefCell::new(Vec::new()),
+            // vertices: RefCell::new(Rc::new([])),
         }
     }
 

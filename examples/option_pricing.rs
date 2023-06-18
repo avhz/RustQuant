@@ -1,7 +1,7 @@
 use RustQuant::options::*;
 
 fn main() {
-    let VanillaOption = EuropeanOption {
+    let vanilla_option = EuropeanOption {
         initial_price: 100.0,
         strike_price: 110.0,
         risk_free_rate: 0.05,
@@ -10,7 +10,7 @@ fn main() {
         time_to_maturity: 0.5,
     };
 
-    let prices = VanillaOption.price();
+    let prices = vanilla_option.price();
 
     println!("Call price = \t {}", prices.0);
     println!("Put price = \t {}", prices.1);
