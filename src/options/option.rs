@@ -39,18 +39,18 @@ pub trait OptionContract {
 #[derive(Debug, Clone, Copy)]
 pub enum TypeFlag {
     /// Call option (right to BUY the underlying asset).
-    CALL,
+    Call,
     /// Put option (right to SELL the underlying asset).
-    PUT,
+    Put,
 }
 
 /// American/European option type enum.
 #[derive(Debug, Clone, Copy)]
 pub enum AmericanEuropeanFlag {
     /// American option (can be exercised at any time before expiry).
-    AMERICAN,
+    American,
     /// European option (can only be exercised at expiry).
-    EUROPEAN,
+    European,
 }
 
 /// Generic option parameters struct.

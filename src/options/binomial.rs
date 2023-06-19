@@ -33,8 +33,8 @@ impl BinomialOption {
     /// # Arguments:
     ///
     /// * `OutputFlag` - `&str`: one of `p` (price), `d` (delta), `g` (gamma), or `t` (theta).
-    /// * `AmeEurFlag` - `&str`: either `a` or `e` for American/European price.
-    /// * `CallPutFlag` - `&str`: either `c` (call) or `p` (put).
+    /// * `AmeEurFlag` - `AmericanEuropeanFlag`: either `American` or `European`.
+    /// * `CallPutFlag` - `TypeFlag`: either `Call` or `Put`.
     /// * `n` - Height of the binomial tree.
     ///
     /// # Note:
@@ -62,8 +62,8 @@ impl BinomialOption {
         let (u, d, p, dt, Df): (f64, f64, f64, f64, f64);
 
         let z = match CallPutFlag {
-            TypeFlag::CALL => 1,
-            TypeFlag::PUT => -1,
+            TypeFlag::Call => 1,
+            TypeFlag::Put => -1,
             // _ => panic!("Check call/put flag. Should be either 'c' or 'p'."),
         };
 
@@ -81,12 +81,12 @@ impl BinomialOption {
         for j in (0..n).rev() {
             for i in 0..=j {
                 match AmeEurFlag {
-                    AmericanEuropeanFlag::AMERICAN => {
+                    AmericanEuropeanFlag::American => {
                         OptionValue[i] = (z as f64
                             * (S * u.powi(i as i32) * d.powi(j as i32 - i as i32) - K))
                             .max(Df * (p * (OptionValue[i + 1]) + (1.0 - p) * OptionValue[i]));
                     }
-                    AmericanEuropeanFlag::EUROPEAN => {
+                    AmericanEuropeanFlag::European => {
                         OptionValue[i] =
                             Df * (p * (OptionValue[i + 1]) + (1.0 - p) * OptionValue[i]);
                     }
@@ -144,12 +144,12 @@ mod tests_binomial {
 
         let c = BinOpt.price_CoxRossRubinstein(
             "p",
-            AmericanEuropeanFlag::AMERICAN,
-            TypeFlag::CALL,
+            AmericanEuropeanFlag::American,
+            TypeFlag::Call,
             100,
         );
         let p =
-            BinOpt.price_CoxRossRubinstein("p", AmericanEuropeanFlag::AMERICAN, TypeFlag::PUT, 100);
+            BinOpt.price_CoxRossRubinstein("p", AmericanEuropeanFlag::American, TypeFlag::Put, 100);
 
         let c_intrinsic = (100_f64 - 95_f64).max(0.0);
         let p_intrinsic = (95_f64 - 100_f64).max(0.0);

@@ -178,11 +178,11 @@ impl LookbackOption {
         let S_T = path.last().unwrap();
 
         match option_type {
-            TypeFlag::CALL => match strike_type {
+            TypeFlag::Call => match strike_type {
                 LookbackStrike::Fixed => f64::max(S_max - self.strike_price.unwrap(), 0.0),
                 LookbackStrike::Floating => f64::max(S_T - S_min, 0.0),
             },
-            TypeFlag::PUT => match strike_type {
+            TypeFlag::Put => match strike_type {
                 LookbackStrike::Fixed => f64::max(self.strike_price.unwrap() - S_min, 0.0),
                 LookbackStrike::Floating => f64::max(S_max - S_T, 0.0),
             },
@@ -211,13 +211,13 @@ impl LookbackOption {
                 for path in &paths.paths {
                     call_payoffs.push(Self::payoff(
                         self,
-                        TypeFlag::CALL,
+                        TypeFlag::Call,
                         LookbackStrike::Fixed,
                         path,
                     ));
                     put_payoffs.push(Self::payoff(
                         self,
-                        TypeFlag::PUT,
+                        TypeFlag::Put,
                         LookbackStrike::Fixed,
                         path,
                     ));
@@ -227,13 +227,13 @@ impl LookbackOption {
                 for path in &paths.paths {
                     call_payoffs.push(Self::payoff(
                         self,
-                        TypeFlag::CALL,
+                        TypeFlag::Call,
                         LookbackStrike::Floating,
                         path,
                     ));
                     put_payoffs.push(Self::payoff(
                         self,
-                        TypeFlag::PUT,
+                        TypeFlag::Put,
                         LookbackStrike::Floating,
                         path,
                     ));
@@ -359,8 +359,8 @@ mod tests_lookback {
 
         let path = vec![50.0, 55.0, 52.0, 58.0, 54.0];
 
-        let call_payoff = lbo_fixed.payoff(TypeFlag::CALL, LookbackStrike::Fixed, &path);
-        let put_payoff = lbo_fixed.payoff(TypeFlag::PUT, LookbackStrike::Fixed, &path);
+        let call_payoff = lbo_fixed.payoff(TypeFlag::Call, LookbackStrike::Fixed, &path);
+        let put_payoff = lbo_fixed.payoff(TypeFlag::Put, LookbackStrike::Fixed, &path);
 
         // Payoff values
         assert_approx_equal!(call_payoff, 0.0, 0.1); // call payoff = max(S_max - K, 0) = max(58 - 60, 0) = 0
@@ -383,8 +383,8 @@ mod tests_lookback {
 
         let path = vec![50.0, 55.0, 52.0, 58.0, 54.0];
 
-        let call_payoff = lbo_floating.payoff(TypeFlag::CALL, LookbackStrike::Floating, &path);
-        let put_payoff = lbo_floating.payoff(TypeFlag::PUT, LookbackStrike::Floating, &path);
+        let call_payoff = lbo_floating.payoff(TypeFlag::Call, LookbackStrike::Floating, &path);
+        let put_payoff = lbo_floating.payoff(TypeFlag::Put, LookbackStrike::Floating, &path);
 
         // Payoff values
         assert_approx_equal!(call_payoff, 4.0, 0.1); // call payoff = max(S_T - S_min, 0) = max(54 - 50, 0) = 4
