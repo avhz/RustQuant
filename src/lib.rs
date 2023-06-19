@@ -318,9 +318,8 @@ pub mod trading {
 
 /// Parent module containing: time and date functionality.
 pub mod time {
-    // pub use crate::trading::order_book::*;
     pub use crate::time::{
-        calendar::*, constants::*, conventions::*, date::*, daycount::*, schedule::*, time::*,
+        calendar::*, constants::*, conventions::*, datetime::*, daycount::*, schedule::*,
     };
 
     /// Submodule of `time`: calendar definitions.
@@ -329,12 +328,10 @@ pub mod time {
     pub mod constants;
     /// Submodule of `time`: day count and business day conventions.
     pub mod conventions;
-    /// Submodule of `time`: date definitions.
-    pub mod date;
+    /// Submodule of `time`: date and time definitions.
+    pub mod datetime;
     /// Submodule of `time`: daycount definitions.
     pub mod daycount;
     /// Submodule of `time`: scheduling definitions.
     pub mod schedule;
-    /// Submodule of `time`: time definitions.  
-    pub mod time;
 }

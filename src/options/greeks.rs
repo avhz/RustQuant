@@ -4,8 +4,11 @@
 // See LICENSE or <https://www.gnu.org/licenses/>.
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+use time::OffsetDateTime;
+
 use crate::distributions::{Distribution, Gaussian};
 use crate::options::european::*;
+use crate::time::{DayCountConvention, DayCounter};
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // GREEKS STRUCT
@@ -47,10 +50,24 @@ impl Greeks {
     pub fn compute(option: EuropeanOption) -> Self {
         let S = option.initial_price;
         let K = option.strike_price;
-        let T = option.time_to_maturity;
+        // let T = option.time_to_maturity;
         let r = option.risk_free_rate;
         let v = option.volatility;
         let q = option.dividend_rate;
+
+        // Compute time to maturity.
+        let T = match option.valuation_date {
+            Some(valuation_date) => DayCounter::day_count_factor(
+                valuation_date,
+                option.expiry_date,
+                &DayCountConvention::Actual365,
+            ),
+            None => DayCounter::day_count_factor(
+                OffsetDateTime::now_utc(),
+                option.expiry_date,
+                &DayCountConvention::Actual365,
+            ),
+        };
 
         let sqrtT: f64 = T.sqrt();
         let df: f64 = (-r * T).exp();
@@ -80,7 +97,9 @@ impl Greeks {
             risk_free_rate: r,
             volatility: v,
             dividend_rate: q,
-            time_to_maturity: T,
+            // time_to_maturity: T,
+            valuation_date: option.valuation_date,
+            expiry_date: option.expiry_date,
         };
         let BS = VanillaOption.price();
 
@@ -116,7 +135,9 @@ impl Greeks {
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 #[cfg(test)]
-mod tests {
+mod tests_greeks {
+    use time::Duration;
+
     use crate::assert_approx_equal;
 
     use super::*;
@@ -130,7 +151,9 @@ mod tests {
                 risk_free_rate: 0.05,
                 volatility: 0.2,
                 dividend_rate: 0.03,
-                time_to_maturity: 1.0,
+                // time_to_maturity: 1.0,
+                valuation_date: None,
+                expiry_date: OffsetDateTime::now_utc() + Duration::days(365),
             };
 
             let g = Greeks::compute(option);

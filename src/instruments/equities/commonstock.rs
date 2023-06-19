@@ -4,6 +4,8 @@
 // See LICENSE or <https://www.gnu.org/licenses/>.
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+use crate::currencies::Currency;
+
 pub struct CommonStock {
     pub instrument_type: InstrumentType::Stock,
     pub ticker: String,

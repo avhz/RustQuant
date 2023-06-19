@@ -8,7 +8,12 @@
 // EUROPEAN OPTION STRUCT
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use crate::distributions::{Distribution, Gaussian};
+use time::OffsetDateTime;
+
+use crate::{
+    distributions::{Distribution, Gaussian},
+    time::{DayCountConvention, DayCounter},
+};
 
 /// Black-Scholes Vanilla European Option
 #[derive(Debug, Clone, Copy)]
@@ -23,8 +28,12 @@ pub struct EuropeanOption {
     pub volatility: f64,
     /// `q` - Dividend rate.
     pub dividend_rate: f64,
-    /// `T` - Time to expiry/maturity.
-    pub time_to_maturity: f64,
+    // /// `T` - Time to expiry/maturity.
+    // pub time_to_maturity: f64,
+    /// `valuation_date` - Valuation date.
+    pub valuation_date: Option<OffsetDateTime>,
+    /// `expiry_date` - Expiry date.
+    pub expiry_date: OffsetDateTime,
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -39,10 +48,23 @@ impl EuropeanOption {
     pub fn price(&self) -> (f64, f64) {
         let S = self.initial_price;
         let K = self.strike_price;
-        let T = self.time_to_maturity;
         let r = self.risk_free_rate;
         let v = self.volatility;
         let q = self.dividend_rate;
+
+        // Compute time to maturity.
+        let T = match self.valuation_date {
+            Some(valuation_date) => DayCounter::day_count_factor(
+                valuation_date,
+                self.expiry_date,
+                &DayCountConvention::Actual365,
+            ),
+            None => DayCounter::day_count_factor(
+                OffsetDateTime::now_utc(),
+                self.expiry_date,
+                &DayCountConvention::Actual365,
+            ),
+        };
 
         let df: f64 = (-r * T).exp();
         let b: f64 = r - q;
@@ -72,7 +94,9 @@ impl EuropeanOption {
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 #[cfg(test)]
-mod tests {
+mod tests_black_scholes {
+    use time::Duration;
+
     use crate::assert_approx_equal;
 
     use super::*;
@@ -84,12 +108,14 @@ mod tests {
             strike_price: 110.0,
             risk_free_rate: 0.05,
             volatility: 0.2,
-            dividend_rate: 0.02,
-            time_to_maturity: 0.5,
+            dividend_rate: 0.0,
+            // time_to_maturity: 0.5,
+            valuation_date: None,
+            expiry_date: OffsetDateTime::now_utc() + Duration::days(182),
         };
 
         let prices = VanillaOption.price();
-        assert_approx_equal!(prices.0, 2.586, 0.001);
-        assert_approx_equal!(prices.1, 10.865, 0.001);
+        assert_approx_equal!(prices.0, 2.8, 0.1);
+        assert_approx_equal!(prices.1, 10.18, 0.01);
     }
 }

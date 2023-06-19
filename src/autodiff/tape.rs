@@ -14,11 +14,9 @@
 // IMPORTS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use std::{rc::Rc, sync::Arc};
-
-use super::OperationArity;
-
-use {super::variable::Variable, super::vertex::Vertex, std::cell::RefCell};
+use super::{variable::Variable, vertex::Vertex, OperationArity};
+use std::cell::RefCell;
+// use std::{rc::Rc, sync::Arc};
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // VERTEX AND TAPE STRUCTS AND IMPLEMENTATIONS

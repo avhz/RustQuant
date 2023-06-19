@@ -1,3 +1,4 @@
+use time::{Duration, OffsetDateTime};
 use RustQuant::options::*;
 
 fn main() {
@@ -7,7 +8,8 @@ fn main() {
         risk_free_rate: 0.05,
         volatility: 0.2,
         dividend_rate: 0.02,
-        time_to_maturity: 0.5,
+        valuation_date: None, // Optional field. Defaults to now.
+        expiry_date: OffsetDateTime::now_utc() + Duration::days(365),
     };
 
     let prices = vanilla_option.price();
