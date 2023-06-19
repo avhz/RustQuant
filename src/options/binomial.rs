@@ -32,9 +32,9 @@ impl BinomialOption {
     ///
     /// # Arguments:
     ///
-    /// * `OutputFlag` - `&str`: one of `p` (price), `d` (delta), `g` (gamma), or `t` (theta).
-    /// * `AmeEurFlag` - `AmericanEuropeanFlag`: either `American` or `European`.
-    /// * `CallPutFlag` - `TypeFlag`: either `Call` or `Put`.
+    /// * `output_flag` - `&str`: one of `p` (price), `d` (delta), `g` (gamma), or `t` (theta).
+    /// * `ame_eur_flag` - `AmericanEuropeanFlag`: either `American` or `European`.
+    /// * `call_put_flag` - `TypeFlag`: either `Call` or `Put`.
     /// * `n` - Height of the binomial tree.
     ///
     /// # Note:
@@ -42,9 +42,9 @@ impl BinomialOption {
     /// * `b = r - q` - The cost of carry.
     pub fn price_CoxRossRubinstein(
         &self,
-        OutputFlag: &str,
-        AmeEurFlag: AmericanEuropeanFlag,
-        CallPutFlag: TypeFlag,
+        output_flag: &str,
+        ame_eur_flag: AmericanEuropeanFlag,
+        call_put_flag: TypeFlag,
         n: usize,
     ) -> f64 {
         let S = self.initial_price;
@@ -54,17 +54,16 @@ impl BinomialOption {
         let q = self.dividend_yield;
         let v = self.volatility;
 
-        let mut OptionValue: Vec<f64> = Vec::with_capacity(n + 1);
+        let mut option_value: Vec<f64> = Vec::with_capacity(n + 1);
 
-        let mut ReturnValue: Vec<f64> = vec![0.0; 5];
+        let mut return_value: Vec<f64> = vec![0.0; 5];
 
         let b: f64 = r - q;
         let (u, d, p, dt, Df): (f64, f64, f64, f64, f64);
 
-        let z = match CallPutFlag {
+        let z = match call_put_flag {
             TypeFlag::Call => 1,
             TypeFlag::Put => -1,
-            // _ => panic!("Check call/put flag. Should be either 'c' or 'p'."),
         };
 
         dt = T / n as f64;
@@ -73,49 +72,49 @@ impl BinomialOption {
         p = ((b * dt).exp() - d) / (u - d);
         Df = (-r * dt).exp();
 
-        for i in 0..OptionValue.capacity() {
-            OptionValue
+        for i in 0..option_value.capacity() {
+            option_value
                 .push((z as f64 * (S * u.powi(i as i32) * d.powi((n - i) as i32) - K)).max(0.0));
         }
 
         for j in (0..n).rev() {
             for i in 0..=j {
-                match AmeEurFlag {
+                match ame_eur_flag {
                     AmericanEuropeanFlag::American => {
-                        OptionValue[i] = (z as f64
+                        option_value[i] = (z as f64
                             * (S * u.powi(i as i32) * d.powi(j as i32 - i as i32) - K))
-                            .max(Df * (p * (OptionValue[i + 1]) + (1.0 - p) * OptionValue[i]));
+                            .max(Df * (p * (option_value[i + 1]) + (1.0 - p) * option_value[i]));
                     }
                     AmericanEuropeanFlag::European => {
-                        OptionValue[i] =
-                            Df * (p * (OptionValue[i + 1]) + (1.0 - p) * OptionValue[i]);
+                        option_value[i] =
+                            Df * (p * (option_value[i + 1]) + (1.0 - p) * option_value[i]);
                     }
                 }
             }
             if j == 2 {
-                ReturnValue[2] = (OptionValue[2] - OptionValue[1]) / (S * u * u - S)
-                    - (OptionValue[1] - OptionValue[0])
+                return_value[2] = (option_value[2] - option_value[1]) / (S * u * u - S)
+                    - (option_value[1] - option_value[0])
                         / (S - S * d * d)
                         / (0.5 * (S * u * u - S * d * d));
-                ReturnValue[3] = OptionValue[1];
+                return_value[3] = option_value[1];
             }
             if j == 1 {
-                ReturnValue[1] = (OptionValue[1] - OptionValue[0]) / (S * u - S * d);
+                return_value[1] = (option_value[1] - option_value[0]) / (S * u - S * d);
             }
         }
 
-        ReturnValue[3] = (OptionValue[3] - OptionValue[0]) / (2.0 * dt) / 365.0;
-        ReturnValue[0] = OptionValue[0];
+        return_value[3] = (option_value[3] - option_value[0]) / (2.0 * dt) / 365.0;
+        return_value[0] = option_value[0];
 
-        match OutputFlag {
+        match output_flag {
             // Return the option value.
-            "p" => ReturnValue[0],
+            "p" => return_value[0],
             // Return the Delta.
-            "d" => ReturnValue[1],
+            "d" => return_value[1],
             // Return the Gamma.
-            "g" => ReturnValue[2],
+            "g" => return_value[2],
             // Return the Theta.
-            "t" => ReturnValue[3],
+            "t" => return_value[3],
             // Capture edge cases.
             _ => panic!("Check OutputFlag. Should be one of: 'p', 'd', 'g', 't'."),
         }
