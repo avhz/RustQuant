@@ -1,14 +1,18 @@
+use std::f64::consts::PI;
+
 use RustQuant::math::*;
 
 fn main() {
-    // Define a function to integrate: e^(sin(x))
+    // Define a function to integrate:
+    // Standard Normal Distribution PDF
     fn f(x: f64) -> f64 {
-        (x.sin()).exp()
+        (2. * PI).sqrt().recip() * (-0.5 * x.powi(2)).exp()
     }
 
-    // Integrate from 0 to 5.
-    let integral = integrate(f, 0.0, 5.0);
+    // Integrate from -5 to 5.
+    // This is: +/- 5 standard deviations from the mean.
+    let integral = integrate(f, -5., 5.);
 
-    // ~ 7.18911925
-    println!("Integral = {}", integral);
+    // Standard Normal Distribution PDF has integral of 1.
+    println!("Integral = {}", integral); // ~= 1.0
 }
