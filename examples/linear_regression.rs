@@ -3,41 +3,58 @@ use nalgebra::{DMatrix, DVector};
 use RustQuant::ml::*;
 
 fn main() {
-    // Test data generated from the following R code:
+    // TEST DATA GENERATED FROM THE FOLLOWING R CODE:
     //
     // set.seed(2023)
-    // x <- matrix(rnorm(12), 4, 3)
-    // y <- rexp(4)
-    // lm(y ~ x)
+    //
+    // features    <- c("x1", "x2", "x3")
+    //
+    // x_train     <- data.frame(matrix(rnorm(12), 4, 3)); colnames(x_train) <- features
+    // x_test      <- data.frame(matrix(rnorm(12), 4, 3)); colnames(x_test)  <- features
+    //
+    // response    <- rnorm(4)
+    //
+    // (model <- lm(response ~ ., data = x_train))
+    // (preds <- predict(model, newdata = x_test))
 
-    // Create the design matrix.
+    // Create some training and test data (X).
     #[rustfmt::skip]
-    let x = DMatrix::from_row_slice(
+    let x_train = DMatrix::from_row_slice(
         4, // rows
         3, // columns
-        &[-0.08378436, -0.6334857, -0.3992666, 
-          -0.98294375, 1.0907975, -0.4681231,
-          -1.87506732, -0.9137273, 0.3269621, 
-          -0.18614466, 1.0016397, -0.4127469],
+        &[-0.083784355, -0.63348570, -0.39926660, 
+          -0.982943745,  1.09079746, -0.46812305,
+          -1.875067321, -0.91372727,  0.32696208,
+          -0.186144661,  1.00163971, -0.41274690],
     );
 
-    // Create the response vector.
-    let y = DVector::from_row_slice(&[0.4259088, 0.2617037, 0.4928989, 2.1477291]);
+    #[rustfmt::skip]
+    let x_test = DMatrix::from_row_slice(
+        4, // rows
+        3, // columns
+        &[0.56203647, 0.59584645, -0.41165301, 
+          0.66335826, 0.45209183, -0.29432715,
+         -0.60289728, 0.89674396, 1.21857396, 
+          0.69837769, 0.57221651, 0.24411143],
+    );
 
-    // Create the linear regression model.
-    let linear_regression = LinearRegression {};
-    let input = LinearRegressionInput { x, y };
-    let output = linear_regression.fit(input);
+    // Create the response vector (Y).
+    let response = DVector::from_row_slice(&[-0.44515196, -1.84780364, -0.62882531, -0.86108069]);
 
-    // Output from R:
-    //
-    // Call:
-    // lm(formula = y ~ x)
-    //
-    // Coefficients:
-    // (Intercept)           x1           x2           x3
-    //       3.682        2.105        1.232        5.759
+    // Create the input object for the linear regression model.
+    let input = LinearRegressionInput {
+        x: x_train,
+        y: response,
+    };
 
+    // Fit the model to the training data.
+    let output = input.fit();
+
+    // Predict the response for the test data.
+    let preds = output.predict(x_test);
+
+    // Print the results.
     println!("Intercept: {:?}", output.intercept);
     println!("Coefficients: {:?}", output.coefficients);
+    println!("Predictions: {:?}", preds);
 }
