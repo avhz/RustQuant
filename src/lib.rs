@@ -335,3 +335,16 @@ pub mod time {
     /// Submodule of `time`: scheduling definitions.
     pub mod schedule;
 }
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// MACHINE LEARNING
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+/// Parent module containing: machine learning functionality.
+/// This module relies on the `nalgebra` crate.
+pub mod ml {
+    pub use crate::ml::regression::*;
+
+    /// Submodule of `ml`: regression implentations.
+    pub mod regression;
+}

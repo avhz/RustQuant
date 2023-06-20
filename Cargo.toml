@@ -24,25 +24,25 @@ license = "GPL-3.0-or-later"
 ## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 [dependencies]
-# csv = "1.2.1"
-# nalgebra = "0.32.2"
-num-complex = "0.4.2"
-plotters = "0.3.4"
-rand = "0.8.5"
-rand_distr = "0.4.3"
-rayon = "1.6.0"
-serde = "1.0.163"
-serde_json = "1.0.96"
-statrs = "0.16.0"
-tempfile = "3.5.0"
-time = "0.3.20"
-tokio = "1.28.1"
-tokio-test = "0.4.2"
-yahoo_finance_api = "2.0.0"
+# csv = "1.2.1"             # https://docs.rs/csv/latest/csv/
+nalgebra = "0.32.2"         # https://docs.rs/nalgebra/latest/nalgebra/
+num-complex = "0.4.2"       # https://docs.rs/num-complex/latest/num_complex/
+plotters = "0.3.4"          # https://docs.rs/plotters/latest/plotters/
+rand = "0.8.5"              # https://docs.rs/rand/latest/rand/
+rand_distr = "0.4.3"        # https://docs.rs/rand_distr/latest/rand_distr/
+rayon = "1.6.0"             # https://docs.rs/rayon/latest/rayon/
+serde = "1.0.163"           # https://docs.rs/serde/latest/serde/
+serde_json = "1.0.96"       # https://docs.rs/serde_json/latest/serde_json/
+statrs = "0.16.0"           # https://docs.rs/statrs/latest/statrs/
+tempfile = "3.5.0"          # https://docs.rs/tempfile/latest/tempfile/
+time = "0.3.20"             # https://docs.rs/time/latest/time/
+tokio = "1.28.1"            # https://docs.rs/tokio/latest/tokio/
+tokio-test = "0.4.2"        # https://docs.rs/tokio-test/latest/tokio_test/
+yahoo_finance_api = "2.0.0" # https://docs.rs/yahoo-finance-api/latest/yahoo_finance_api/
 
-[dependencies.polars]
-optional = true
+[dependencies.polars] # https://docs.rs/polars/latest/polars/  
 version = "0.30.0"
+optional = true
 features = ["serde", "json", "parquet", "dtype-struct", "dtype-date", "lazy"]
 
 ## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
