@@ -18,29 +18,30 @@
         <img alt="Dependencies" src="https://deps.rs/repo/github/avhz/RustQuant/status.svg">
 </p>
 
-Rust library for quantitative finance tools. 
+Rust library for quantitative finance tools.
 
-:dart: I want to hit a stable and legitimate `v1.0.0` by the end of 2023, so any and all feedback, suggestions, or contributions are strongly welcomed! 
+:dart: I want to hit a stable and legitimate `v1.0.0` by the end of 2023, so any and all feedback, suggestions, or contributions are strongly welcomed!
 
-Contact: rustquantcontact@gmail.com 
+Contact: <rustquantcontact@gmail.com>
 
-**Disclaimer**: This is currently a free-time project and not a professional financial software library. Nothing in this library should be taken as financial advice, and I do not recommend you to use it for trading or making financial decisions. 
+**Disclaimer**: This is currently a free-time project and not a professional financial software library. Nothing in this library should be taken as financial advice, and I do not recommend you to use it for trading or making financial decisions.
 
 ## :newspaper: Latest features
 
++ Simple linear regression using `nalgebra`.
 + Gradient descent optimizer for functions $f: \mathbb{R}^n \rightarrow \mathbb{R}$.
 + Download time series data from [Yahoo! Finance](https://finance.yahoo.com/).
 + Read (write) from (to) `.csv`, `.json`, and `.parquet` files, using [Polars `DataFrames`](https://pola-rs.github.io/polars-book/).
-+ Arithmetic Brownian Motion generator. 
++ Arithmetic Brownian Motion generator.
 + Gamma, exponential, and chi-squared distributions.
 + Forward start option pricer (Rubinstein 1990 formula).
 + Gap option and cash-or-nothing option pricers (currently adding more binary options).
 + Asian option pricer (closed-form solution for continuous geometric average).
 + Heston Model option pricer (uses the tanh-sinh quadrature numerical integrator).
 + Tanh-sinh (double exponential) quadrature for evaluating integrals.
-    + Plus other basic numerical integrators (midpoint, trapezoid, Simpson's 3/8).
+  + Plus other basic numerical integrators (midpoint, trapezoid, Simpson's 3/8).
 + Characteristic functions and density functions for common distributions:
-    + Gaussian, Bernoulli, Binomial, Poisson, Uniform, Chi-Squared, Gamma, and Exponential.
+  + Gaussian, Bernoulli, Binomial, Poisson, Uniform, Chi-Squared, Gamma, and Exponential.
 
 # Table of Contents
 
@@ -54,44 +55,43 @@ Contact: rustquantcontact@gmail.com
 8. [How-tos](#howto)
 9. [References](#references)
 
-
 ## :link: Automatic Differentiation <a name="autodiff"></a>
 
-Currently only gradients can be computed. Suggestions on how to extend the functionality to Hessian matrices are definitely welcome. 
+Currently only gradients can be computed. Suggestions on how to extend the functionality to Hessian matrices are definitely welcome.
 
 + [x] Reverse (Adjoint) Mode
-    + Implementation via Operator and Function Overloading.
-    + Useful when number of outputs is *smaller* than number of inputs. 
-        + i.e for functions $f:\mathbb{R}^n \rightarrow \mathbb{R}^m$, where $m \ll n$
+  + Implementation via Operator and Function Overloading.
+  + Useful when number of outputs is *smaller* than number of inputs.
+    + i.e for functions $f:\mathbb{R}^n \rightarrow \mathbb{R}^m$, where $m \ll n$
 + [ ] Forward (Tangent) Mode
-    + Implementation via Dual Numbers.
-    + Useful when number of outputs is *larger* than number of inputs. 
-        + i.e. for functions $f:\mathbb{R}^n \rightarrow \mathbb{R}^m$, where $m \gg n$
+  + Implementation via Dual Numbers.
+  + Useful when number of outputs is *larger* than number of inputs.
+    + i.e. for functions $f:\mathbb{R}^n \rightarrow \mathbb{R}^m$, where $m \gg n$
 
 ## :money_with_wings: Option Pricers <a name="options"></a>
 
 + Closed-form price solutions:
-    + [x] Heston Model
-    + [x] Barrier
-    + [x] European
-    + [x] Greeks/Sensitivities
-    + [x] Lookback
-    + [x] Asian: Continuous Geometric Average 
-    + [x] Forward Start 
-    + [ ] Basket
-    + [ ] Rainbow
-    + [ ] American
+  + [x] Heston Model
+  + [x] Barrier
+  + [x] European
+  + [x] Greeks/Sensitivities
+  + [x] Lookback
+  + [x] Asian: Continuous Geometric Average
+  + [x] Forward Start
+  + [ ] Basket
+  + [ ] Rainbow
+  + [ ] American
 
 + Lattice models:
-    + [x] Binomial Tree (Cox-Ross-Rubinstein)
+  + [x] Binomial Tree (Cox-Ross-Rubinstein)
 
 The stochastic process generators can be used to price path-dependent options via Monte-Carlo.
 
 + Monte Carlo pricing:
-    + [x] Lookback
-    + [ ] Asian
-    + [ ] Chooser
-    + [ ] Barrier
+  + [x] Lookback
+  + [ ] Asian
+  + [ ] Chooser
+  + [ ] Barrier
 
 ## :chart_with_upwards_trend: Stochastic Processes and Short Rate Models <a name="stochastics"></a>
 
@@ -99,43 +99,43 @@ The following is a list of stochastic processes that can be generated.
 
 + [x] Brownian Motion
 + [x] Arithmetic Brownian Motion
-    + $dX(t) = \mu dt + \sigma dW(t)$
+  + $dX(t) = \mu dt + \sigma dW(t)$
 + [x] Geometric Brownian Motion
-    + $dX(t) = \mu X(t) dt + \sigma X(t) dW(t)$
-    + Models: Black-Scholes (1973), Rendleman-Bartter (1980)
+  + $dX(t) = \mu X(t) dt + \sigma X(t) dW(t)$
+  + Models: Black-Scholes (1973), Rendleman-Bartter (1980)
 + [x] Cox-Ingersoll-Ross (1985)
-    + $dX(t) = \left[ \theta - \alpha X(t) \right] dt + \sigma \sqrt{r_t} dW(t)$
+  + $dX(t) = \left[ \theta - \alpha X(t) \right] dt + \sigma \sqrt{r_t} dW(t)$
 + [x] Ornstein-Uhlenbeck process
-    + $dX(t) = \theta \left[ \mu - X(t) \right] dt + \sigma dW(t)$
-    + Models: Vasicek (1977)
+  + $dX(t) = \theta \left[ \mu - X(t) \right] dt + \sigma dW(t)$
+  + Models: Vasicek (1977)
 + [x] Ho-Lee (1986)
-    + $dX(t) = \theta(t) dt + \sigma dW(t)$
+  + $dX(t) = \theta(t) dt + \sigma dW(t)$
 + [x] Hull-White (1990)
-    + $dX(t) = \left[ \theta(t) - \alpha X(t) \right]dt + \sigma dW(t)$
+  + $dX(t) = \left[ \theta(t) - \alpha X(t) \right]dt + \sigma dW(t)$
 + [x] Extended Vasicek (1990)
-    + $dX(t) = \left[ \theta(t) - \alpha(t) X(t) \right] dt + \sigma dW(t)$
+  + $dX(t) = \left[ \theta(t) - \alpha(t) X(t) \right] dt + \sigma dW(t)$
 + [x] Black-Derman-Toy (1990)
-    + $d\ln[X(t)] = \left[ \theta(t) + \frac{\sigma'(t)}{\sigma(t)}\ln[X(t)] \right]dt + \sigma_t dW(t)$
-    + $d\ln[X(t)] = \theta(t) dt + \sigma dW(t)$
+  + $d\ln[X(t)] = \left[ \theta(t) + \frac{\sigma'(t)}{\sigma(t)}\ln[X(t)] \right]dt + \sigma_t dW(t)$
+  + $d\ln[X(t)] = \theta(t) dt + \sigma dW(t)$
 + [ ] Merton's model (1973)
-    + $dX(t) = adt + \sigma dW^*(t)$
+  + $dX(t) = adt + \sigma dW^*(t)$
 
 ## :chart_with_downwards_trend: Bonds <a name="bonds"></a>
 
 + Prices:
-    + [x] The Vasicek Model
-    + [x] The Cox, Ingersoll, and Ross Model
-    + [x] The Hull–White (One-Factor) Model
-    + [ ] The Rendleman and Bartter Model
-    + [ ] The Ho–Lee Model
-    + [ ] The Black–Derman–Toy Model
-    + [ ] The Black–Karasinski Model
+  + [x] The Vasicek Model
+  + [x] The Cox, Ingersoll, and Ross Model
+  + [x] The Hull–White (One-Factor) Model
+  + [ ] The Rendleman and Bartter Model
+  + [ ] The Ho–Lee Model
+  + [ ] The Black–Derman–Toy Model
+  + [ ] The Black–Karasinski Model
 + [ ] Duration
 + [ ] Convexity
 
 ## :bar_chart: Distributions <a name="distributions"></a>
 
-Probability density/mass functions, distribution functions, characteristic functions, etc. 
+Probability density/mass functions, distribution functions, characteristic functions, etc.
 
 + [x] Gaussian
 + [x] Bernoulli
@@ -149,15 +149,15 @@ Probability density/mass functions, distribution functions, characteristic funct
 ## :triangular_ruler: Mathematics <a name="maths"></a>
 
 + Optimisation:
-    + [x] Gradient Descent
-    + [ ] Bisection
-    + [ ] Newton
-    + [ ] Secant
+  + [x] Gradient Descent
+  + [ ] Bisection
+  + [ ] Newton
+  + [ ] Secant
 + Numerical Integration (needed for Heston model, for example):
-    + [x] Tanh-Sinh (double exponential) quadrature 
-    + [x] Composite Midpoint Rule
-    + [x] Composite Trapezoidal Rule
-    + [x] Composite Simpson's 3/8 Rule
+  + [x] Tanh-Sinh (double exponential) quadrature
+  + [x] Composite Midpoint Rule
+  + [x] Composite Trapezoidal Rule
+  + [x] Composite Simpson's 3/8 Rule
 + [x] Risk-Reward Measures (Sharpe, Treynor, Sortino, etc)
 + [x] Newton-Raphson
 + [x] Standard Normal Distribution (Distribution/Density functions, and generation of variates)
@@ -165,7 +165,7 @@ Probability density/mass functions, distribution functions, characteristic funct
 
 ## :handshake: Helper Functions and Macros <a name="helpers"></a>
 
-A collection of utility functions and macros. 
+A collection of utility functions and macros.
 
 + [x] Plot a vector.
 + [x] Write vector to file.
@@ -181,11 +181,11 @@ NOTE: You can run these in `./examples/`:
 cargo run --example automatic_differentiation
 ```
 
-I would not recommend using RustQuant within any other libraries for some time, as it will most likely go through many breaking changes as I learn more Rust and settle on a decent structure for the library. 
+I would not recommend using RustQuant within any other libraries for some time, as it will most likely go through many breaking changes as I learn more Rust and settle on a decent structure for the library.
 
 :pray: I would greatly appreciate contributions so it can get to the `v1.0.0` mark ASAP.
 
-### Download data from Yahoo! Finance:
+### Download data from Yahoo! Finance
 
 You can download data from Yahoo! Finance into a Polars `DataFrame`.
 
@@ -228,7 +228,7 @@ Apple's quotes: Some(shape: (252, 7)
 └────────────┴───────────┴───────────┴───────────┴───────────┴────────────┴───────────┘)
 ```
 
-### Read/write data:
+### Read/write data
 
 ```rust
 use RustQuant::data::*;
@@ -251,7 +251,7 @@ fn main() {
 }
 ```
 
-### Compute gradients:
+### Compute gradients
 
 ```rust
 use RustQuant::autodiff::*;
@@ -275,7 +275,7 @@ fn main() {
 }
 ```
 
-### Compute integrals:
+### Compute integrals
 
 ```rust
 use RustQuant::math::*;
@@ -294,7 +294,7 @@ fn main() {
 }
 ```
 
-### Gradient Descent:
+### Gradient Descent
 
 Note: the reason you need to specify the lifetimes and use the type `Variable` is because the gradient descent optimiser uses the `RustQuant::autodiff` module to compute the gradients. This is a slight inconvenience, but the speed-up is enormous when working with functions with many inputs (when compared with using finite-difference quotients).
 
@@ -326,8 +326,7 @@ fn main() {
 }
 ```
 
-
-### Price options:
+### Price options
 
 ```rust
 use RustQuant::options::*;
@@ -349,7 +348,7 @@ fn main() {
 }
 ```
 
-### Generate stochastic processes:
+### Generate stochastic processes
 
 ```rust
 use RustQuant::stochastics::*;
