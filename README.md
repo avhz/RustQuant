@@ -28,20 +28,7 @@ Contact: <rustquantcontact@gmail.com>
 
 ## :newspaper: Latest features
 
-+ Simple linear regression using `nalgebra`.
-+ Gradient descent optimizer for functions $f: \mathbb{R}^n \rightarrow \mathbb{R}$.
-+ Download time series data from [Yahoo! Finance](https://finance.yahoo.com/).
-+ Read (write) from (to) `.csv`, `.json`, and `.parquet` files, using [Polars `DataFrames`](https://pola-rs.github.io/polars-book/).
-+ Arithmetic Brownian Motion generator.
-+ Gamma, exponential, and chi-squared distributions.
-+ Forward start option pricer (Rubinstein 1990 formula).
-+ Gap option and cash-or-nothing option pricers (currently adding more binary options).
-+ Asian option pricer (closed-form solution for continuous geometric average).
-+ Heston Model option pricer (uses the tanh-sinh quadrature numerical integrator).
-+ Tanh-sinh (double exponential) quadrature for evaluating integrals.
-  + Plus other basic numerical integrators (midpoint, trapezoid, Simpson's 3/8).
-+ Characteristic functions and density functions for common distributions:
-  + Gaussian, Bernoulli, Binomial, Poisson, Uniform, Chi-Squared, Gamma, and Exponential.
+See [CHANGELOG.md](./CHANGELOG.md) for a full list of changes.
 
 # Table of Contents
 
@@ -58,6 +45,8 @@ Contact: <rustquantcontact@gmail.com>
 ## :link: Automatic Differentiation <a name="autodiff"></a>
 
 Currently only gradients can be computed. Suggestions on how to extend the functionality to Hessian matrices are definitely welcome.
+
+Additionally, only functions $f: \mathbb{R}^n \rightarrow \mathbb{R}$ (scalar output) are supported. However, you can manually apply the differentiation to multiple functions that could represent a vector output.
 
 + [x] Reverse (Adjoint) Mode
   + Implementation via Operator and Function Overloading.
@@ -117,8 +106,6 @@ The following is a list of stochastic processes that can be generated.
 + [x] Black-Derman-Toy (1990)
   + $d\ln[X(t)] = \left[ \theta(t) + \frac{\sigma'(t)}{\sigma(t)}\ln[X(t)] \right]dt + \sigma_t dW(t)$
   + $d\ln[X(t)] = \theta(t) dt + \sigma dW(t)$
-+ [ ] Merton's model (1973)
-  + $dX(t) = adt + \sigma dW^*(t)$
 
 ## :chart_with_downwards_trend: Bonds <a name="bonds"></a>
 
@@ -175,7 +162,7 @@ A collection of utility functions and macros.
 
 ## :heavy_check_mark: How-tos <a name="howto"></a>
 
-NOTE: You can run these in `./examples/`:
+See [/examples](./examples) for more details. Run them with:
 
 ```bash
 cargo run --example automatic_differentiation
