@@ -105,7 +105,7 @@ impl LinearRegressionInput<f64> {
                 }
             }
             Decomposition::SVD => {
-                let svd = x.clone().svd(true, true);
+                let svd = x.svd(true, true);
                 let v = svd.v_t.unwrap().transpose();
                 let s_inv = DMatrix::from_diagonal(&svd.singular_values.map(|x| 1.0 / x));
                 let u = svd.u.unwrap();
