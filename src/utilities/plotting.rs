@@ -19,7 +19,7 @@ pub fn write_vector(v: &[f64]) -> Result<(), Box<dyn Error>> {
 }
 
 /// Prepare vector for plotting in `plot_vector()`.
-fn prepare_vec(vals: Vec<f64>) -> (Vec<(f64, f64)>, f64, f64) {
+fn prepare_vector(vals: Vec<f64>) -> (Vec<(f64, f64)>, f64, f64) {
     let mut out = vec![(0.0, 0.0); vals.len()];
     let mut min = vals[0];
     let mut max = vals[0];
@@ -37,7 +37,7 @@ fn prepare_vec(vals: Vec<f64>) -> (Vec<(f64, f64)>, f64, f64) {
 
 /// Plot a vector of values.
 pub fn plot_vector(v: Vec<f64>, file: &str) -> Result<(), Box<dyn std::error::Error>> {
-    let (vec2d, min, max) = prepare_vec(v);
+    let (vec2d, min, max) = prepare_vector(v);
 
     let root = BitMapBackend::new(file, (640, 480)).into_drawing_area();
 
@@ -87,7 +87,7 @@ mod tests_plotters {
     #[test]
     fn test_prepare_vec() {
         let v = vec![1.0, 2.0, 3.0, 4.0, 5.0];
-        let (out, min, max) = prepare_vec(v);
+        let (out, min, max) = prepare_vector(v);
 
         assert_eq!(out.len(), 5);
         assert_eq!(min, 1.0);

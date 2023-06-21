@@ -6,13 +6,8 @@
 //
 // See the ./images/ directory for the output.
 
-use RustQuant::{
-    stochastics::{
-        black_derman_toy::{BlackDermanToy, Sigma},
-        *,
-    },
-    utilities::plot_vector,
-};
+use RustQuant::stochastics::*;
+use RustQuant::utilities::plot_vector;
 
 #[rustfmt::skip]
 fn main() {
@@ -29,15 +24,15 @@ fn main() {
 
     // Generate path using Euler-Maruyama scheme.
     // Parameters: x_0, t_0, t_n, n, sims, parallel.
-    let abm_out = (&abm).euler_maruyama(10.0, 0.0, 0.5, 100, 1, false);
-    let bdt_out = (&bdt).euler_maruyama(10.0, 0.0, 0.5, 100, 1, false);
-    let bm_out  = (&bm).euler_maruyama(10.0, 0.0, 0.5, 100, 1, false);
-    let cir_out = (&cir).euler_maruyama(10.0, 0.0, 0.5, 100, 1, false);
-    let ev_out  = (&ev).euler_maruyama(10.0, 0.0, 0.5, 100, 1, false);
-    let gbm_out = (&gbm).euler_maruyama(10.0, 0.0, 0.5, 100, 1, false);
-    let hl_out  = (&hl).euler_maruyama(10.0, 0.0, 0.5, 100, 1, false);
-    let hw_out  = (&hw).euler_maruyama(10.0, 0.0, 0.5, 100, 1, false);
-    let ou_out  = (&ou).euler_maruyama(10.0, 0.0, 0.5, 100, 1, false);
+    let abm_out = (&abm).euler_maruyama(10.0, 0.0, 0.5, 1000, 1, false);
+    let bdt_out = (&bdt).euler_maruyama(10.0, 0.0, 0.5, 1000, 1, false);
+    let bm_out  = (&bm).euler_maruyama(10.0, 0.0, 0.5, 1000, 1, false);
+    let cir_out = (&cir).euler_maruyama(10.0, 0.0, 0.5, 1000, 1, false);
+    let ev_out  = (&ev).euler_maruyama(10.0, 0.0, 0.5, 1000, 1, false);
+    let gbm_out = (&gbm).euler_maruyama(10.0, 0.0, 0.5, 1000, 1, false);
+    let hl_out  = (&hl).euler_maruyama(10.0, 0.0, 0.5, 1000, 1, false);
+    let hw_out  = (&hw).euler_maruyama(10.0, 0.0, 0.5, 1000, 1, false);
+    let ou_out  = (&ou).euler_maruyama(10.0, 0.0, 0.5, 1000, 1, false);
 
     // Plot the paths.
     plot_vector((&abm_out.paths[0]).clone(), "./images/arithmetic_brownian_motion.png").unwrap();

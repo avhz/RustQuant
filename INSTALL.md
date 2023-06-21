@@ -1,7 +1,7 @@
 # Installation of RustQuant
 
 If you haven't already, you obviously need to install Rust.
-See here: https://www.rust-lang.org/tools/install
+See here: <https://www.rust-lang.org/tools/install>
 
 Create a new Rust project:
 
@@ -9,7 +9,7 @@ Create a new Rust project:
 cargo new my_project && cd my_project
 ```
 
-In your Rust project's root directory, simply run: 
+In your Rust project's root directory, simply run:
 
 ```bash
 cargo add RustQuant
@@ -25,4 +25,3 @@ RustQuant = "*"
 ```
 
 replacing `"*"` with the version number you require, such as `"0.0.17"`.
-

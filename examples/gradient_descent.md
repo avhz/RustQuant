@@ -74,36 +74,6 @@ $$
 \end{aligned}
 $$
 
-To do this, we can use `GradientDescent` from the `optimisation` module:
+To do this, we can use `GradientDescent` from the `optimisation` module.
 
-```rust
-use RustQuant::optimisation::GradientDescent;
-
-// Define the objective function
-// The reason you need to specify the type of the variables
-// is because the function is evaluated using automatic differentiation 
-// from the `autodiff` module.
-// This may be a slight inconvenience, but it is a big benefit when 
-// dealing with large, complex functions with many inputs.
-fn himmelblau<'v>(variables: &[Variable<'v>]) -> Variable<'v> {
-    let x = variables[0];
-    let y = variables[1];
-
-    ((x.powf(2.0) + y - 11.0).powf(2.0) + (x + y.powf(2.0) - 7.0).powf(2.0))
-}
-
-fn main() {
-    // Create a new GradientDescent object,
-    // with a step size of 0.005, a maximum of 10000 iterations,
-    // and a tolerance of sqrt(machine epsilon).
-    let gd = GradientDescent::new(0.005, 10000, std::f64::EPSILON.sqrt() );
-
-    // Perform the optimisation,
-    // starting from the initial guess (10.0, 10.0),
-    // with verbose output.
-    let result = gd.optimize(&himmelblau, &vec![10.0, 10.0], true);
-    
-    // Print the result.
-    println!("{:?}", result.minimizer);
-}
-```
+See [this example](./examples/gradient_descent.rs) for more details.

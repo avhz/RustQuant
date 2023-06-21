@@ -48,7 +48,12 @@ fn main() {
     };
 
     // Fit the model to the training data.
-    let output = input.fit();
+    // You need to specify which method (decomposition) to use for fitting the model.
+    // The available methods are:
+    //     - `None`: No decomposition is used.
+    //     - `QR`: QR decomposition is used.
+    //     - `SVD`: SVD decomposition is used.
+    let output = input.fit(Decomposition::QR);
 
     // Predict the response for the test data.
     let preds = output.predict(x_test);

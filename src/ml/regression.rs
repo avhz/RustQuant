@@ -17,6 +17,7 @@ use nalgebra::{DMatrix, DVector};
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 /// Struct to hold the input data for a linear regression.
+#[derive(Clone, Debug)]
 pub struct LinearRegressionInput<T> {
     /// The input data matrix, also known as the design matrix.
     pub x: DMatrix<T>,
@@ -25,6 +26,7 @@ pub struct LinearRegressionInput<T> {
 }
 
 /// Struct to hold the output data for a linear regression.
+#[derive(Clone, Debug)]
 pub struct LinearRegressionOutput<T> {
     /// The intercept of the linear regression,
     /// often denoted as b0 or alpha.
@@ -34,29 +36,92 @@ pub struct LinearRegressionOutput<T> {
     pub coefficients: DVector<T>,
 }
 
+/// Enum for type of matrix decomposition used.
+pub enum Decomposition {
+    /// No decomposition to be used.
+    /// Naive implementation of linear regression.
+    None,
+    /// QR decomposition.
+    /// X = Q * R
+    /// where
+    ///     - Q is an orthogonal matrix, and
+    ///     - R is an upper triangular matrix.
+    QR,
+    /// SVD decomposition.
+    /// X = U * S * V^T
+    /// where
+    ///     - U is an orthogonal matrix, and
+    ///     - S is a diagonal matrix, and
+    ///     - V is an orthogonal matrix.
+    SVD,
+}
+
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // IMPLEMENTATIONS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 impl LinearRegressionInput<f64> {
     /// Fits a linear regression to the input data.
-    pub fn fit(&self) -> LinearRegressionOutput<f64> {
+    /// Returns the intercept and coefficients.
+    /// The intercept is the first value of the coefficients.
+    /// A `method` can be specified to use a matrix decomposition.
+    /// Possible decommpositions are:
+    ///     - `None`: No decomposition to be used.
+    ///     - `QR` decomposition (generally fastest).
+    ///     - `SVD` decomposition (generally most stable).
+    /// Both QR and SVD are usually faster than the naive implementation.
+    pub fn fit(&self, method: Decomposition) -> LinearRegressionOutput<f64> {
         // Insert a column of 1s to the input data matrix,
         // to account for the intercept.
         let x = self.x.clone().insert_column(0, 1.);
         let y = self.y.clone();
 
-        let x_t = x.transpose();
-        let x_t_x = x_t.clone() * x;
-        let x_t_x_inv = x_t_x.try_inverse().unwrap();
-        let x_t_y = x_t * y;
+        match method {
+            Decomposition::None => {
+                let x_t = x.transpose();
+                let x_t_x = x_t.clone() * x;
+                let x_t_x_inv = x_t_x.try_inverse().unwrap();
+                let x_t_y = x_t * y;
 
-        let coefficients = x_t_x_inv * x_t_y;
-        let intercept = coefficients[0];
+                let coefficients = x_t_x_inv * x_t_y;
+                let intercept = coefficients[0];
 
-        LinearRegressionOutput {
-            intercept,
-            coefficients,
+                LinearRegressionOutput {
+                    intercept,
+                    coefficients,
+                }
+            }
+            Decomposition::QR => {
+                let qr = x.qr();
+                let q = qr.q();
+                let r = qr.r();
+
+                let coefficients = r.try_inverse().unwrap() * q.transpose() * y;
+                let intercept = coefficients[0];
+
+                LinearRegressionOutput {
+                    intercept,
+                    coefficients,
+                }
+            }
+            Decomposition::SVD => {
+                let svd = x.clone().svd(true, true);
+                let v = svd.v_t.unwrap().transpose();
+                let s_inv = DMatrix::from_diagonal(&svd.singular_values.map(|x| 1.0 / x));
+                let u = svd.u.unwrap();
+
+                let pseudo_inverse = v * s_inv * u.transpose();
+                let coefficients = &pseudo_inverse * y;
+
+                // The first value of the coefficients is not always the intercept
+                // Depends on how the input data is structured
+                let intercept = coefficients[0];
+
+                LinearRegressionOutput {
+                    intercept,
+                    coefficients,
+                }
+            }
         }
     }
 }
@@ -78,6 +143,8 @@ impl LinearRegressionOutput<f64> {
 
 #[cfg(test)]
 mod tests_regression {
+    use std::time::Instant;
+
     use crate::assert_approx_equal;
 
     use super::*;
@@ -126,7 +193,31 @@ mod tests_regression {
             x: x_train,
             y: response,
         };
-        let output = input.fit();
+
+        let start_none = Instant::now();
+        let output = input.fit(Decomposition::None);
+        let elapsed_none = start_none.elapsed();
+
+        let start_qr = Instant::now();
+        let output_qr = input.fit(Decomposition::QR);
+        let elapsed_qr = start_qr.elapsed();
+
+        let start_svd = Instant::now();
+        let output_svd = input.fit(Decomposition::SVD);
+        let elapsed_svd = start_svd.elapsed();
+
+        println!(
+            "None: time {:?}, Coefs: {:?}\n",
+            elapsed_none, output.coefficients
+        );
+        println!(
+            "QR: time {:?}, Coefs: {:?}\n",
+            elapsed_qr, output_qr.coefficients
+        );
+        println!(
+            "SVD: time {:?}, Coefs: {:?}\n",
+            elapsed_svd, output_svd.coefficients
+        );
 
         // Predict the response for the test data.
         let preds = output.predict(x_test);

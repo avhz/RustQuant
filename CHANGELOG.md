@@ -1,5 +1,9 @@
 # Change Log
 
+## 21 June 2023
+
+- Updated regression to use QR or SVD decomposition.
+
 ## 20 June 2023
 
 - Simple linear regression using `nalgebra`.

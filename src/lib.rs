@@ -106,7 +106,7 @@ pub mod data {
 #[macro_use]
 pub mod utilities {
     pub use crate::utilities::{
-        cumsum::*, linspace::*, macros::*, mean::*, minmax::*, plot::*, variance::*,
+        cumsum::*, linspace::*, macros::*, mean::*, minmax::*, plotting::*, variance::*,
     };
 
     /// Submodule of `utilities`: implements the cumulative sum of a vector.
@@ -120,7 +120,7 @@ pub mod utilities {
     /// Submodule of `utilities`: min and max of a vector.
     pub mod minmax;
     /// Submodule of `utilities`: implements plotting/writing vectors to files.
-    pub mod plot;
+    pub mod plotting;
     /// Submodule of `utilities`: variance of a vector.
     pub mod variance;
 }
@@ -206,9 +206,9 @@ pub mod distributions {
 /// Parent module containing: Monte Carlo engines to simulate stochastic processes.
 pub mod stochastics {
     pub use crate::stochastics::{
-        arithmetic_brownian_motion::*, brownian_motion::*, cox_ingersoll_ross::*,
-        extended_vasicek::*, geometric_brownian_motion::*, ho_lee::*, hull_white::*,
-        ornstein_uhlenbeck::*, process::*,
+        arithmetic_brownian_motion::*, black_derman_toy::*, brownian_motion::*,
+        cox_ingersoll_ross::*, extended_vasicek::*, geometric_brownian_motion::*, ho_lee::*,
+        hull_white::*, ornstein_uhlenbeck::*, process::*,
     };
 
     /// Submodule of `stochastics`: implements Arithmetic Brownian Motion.
