@@ -89,7 +89,7 @@ impl GradientDescent {
 
             for (xi, gi) in result.minimizer.iter_mut().zip(&gradient) {
                 // Cannot use -= since it is not implemented for `Variable`.
-                *xi -= self.learning_rate * (*gi);
+                *xi = (*xi) - self.learning_rate * (*gi);
             }
 
             result.minimum = f(&location).value;
