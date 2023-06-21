@@ -38,9 +38,10 @@ See [CHANGELOG.md](./CHANGELOG.md) for a full list of changes.
 4. [Bonds](#bonds)
 5. [Distributions](#distributions)
 6. [Mathematics](#maths)
-7. [Helper Functions and Macros](#helpers)
-8. [How-tos](#howto)
-9. [References](#references)
+7. [Machine Learning](#ml)
+8. [Helper Functions and Macros](#helpers)
+9. [How-tos](#howto)
+10. [References](#references)
 
 ## :link: Automatic Differentiation <a name="autodiff"></a>
 
@@ -149,6 +150,20 @@ Probability density/mass functions, distribution functions, characteristic funct
 + [x] Newton-Raphson
 + [x] Standard Normal Distribution (Distribution/Density functions, and generation of variates)
 + [ ] Interpolation
+
+## :crystal_ball: Machine Learning <a name="ml"></a>
+
++ [x] Linear Regression (using QR or SVD decomposition)
++ [ ] Logistic Regression
++ [ ] K-Means Clustering
++ [ ] K-Nearest Neighbours
++ [ ] Naive Bayes
++ [ ] Decision Trees
++ [ ] Random Forests
++ [ ] Support Vector Machines
++ [ ] Principal Component Analysis
++ [ ] Linear Discriminant Analysis
++ [ ] Neural Networks
 
 ## :handshake: Helper Functions and Macros <a name="helpers"></a>
 
