@@ -343,10 +343,11 @@ pub mod time {
 /// Parent module containing: machine learning functionality.
 /// This module relies on the `nalgebra` crate.
 pub mod ml {
-    pub use crate::ml::regression::linear::*;
+    pub use crate::ml::regression::{linear::*, logistic::*};
 
     /// Submodule of `ml`: regression implentations.
     pub mod regression {
         pub mod linear;
+        pub mod logistic;
     }
 }

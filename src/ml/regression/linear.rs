@@ -61,6 +61,11 @@ pub enum Decomposition {
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 impl LinearRegressionInput<f64> {
+    /// Create a new `LinearRegressionInput` struct.
+    pub fn new(x: DMatrix<f64>, y: DVector<f64>) -> Self {
+        Self { x, y }
+    }
+
     /// Fits a linear regression to the input data.
     /// Returns the intercept and coefficients.
     /// The intercept is the first value of the coefficients.
@@ -142,7 +147,7 @@ impl LinearRegressionOutput<f64> {
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 #[cfg(test)]
-mod tests_regression {
+mod tests_linear_regression {
     use std::time::Instant;
 
     use crate::assert_approx_equal;
