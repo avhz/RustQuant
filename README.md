@@ -153,15 +153,20 @@ Probability density/mass functions, distribution functions, characteristic funct
 
 ## :crystal_ball: Machine Learning <a name="ml"></a>
 
-+ [x] Linear Regression (using QR or SVD decomposition)
-+ [ ] Logistic Regression
++ Regression:
+  + [x] Linear (using QR or SVD decomposition)
+  + [ ] Logistic (MLE or IRLS)
+  + [ ] Ridge
+  + [ ] LASSO
+  + [ ] Elastic Net
+  + [ ] Quantile
+  + [ ] Principal Components
 + [ ] K-Means Clustering
 + [ ] K-Nearest Neighbours
 + [ ] Naive Bayes
 + [ ] Decision Trees
 + [ ] Random Forests
 + [ ] Support Vector Machines
-+ [ ] Principal Component Analysis
 + [ ] Linear Discriminant Analysis
 + [ ] Neural Networks
 
