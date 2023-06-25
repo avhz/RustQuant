@@ -4,10 +4,10 @@
 // See LICENSE or <https://www.gnu.org/licenses/>.
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-//! This module contains the implementation of the `Tape`.
-//! The tape is also known as a Wengert List.
+//! This module contains the implementation of the `Graph`.
+//! The graph is also known as a Wengert List.
 //!
-//! The tape is an abstract data structure that contains `Vertex`s. These
+//! The graph is an abstract data structure that contains `Vertex`s. These
 //! contain the adjoints and indices to the parent vertices.
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -22,72 +22,72 @@ use std::cell::RefCell;
 // VERTEX AND TAPE STRUCTS AND IMPLEMENTATIONS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-/// Struct to contain the tape (Wengert list), as a vector of `Vertex`s.
+/// Struct to contain the graph (Wengert list), as a vector of `Vertex`s.
 #[derive(Debug, Clone)]
-pub struct Tape {
+pub struct Graph {
     /// Vector containing the vertices in the Wengert List.
     pub vertices: RefCell<Vec<Vertex>>,
     // pub vertices: RefCell<Rc<[Vertex]>>,
 }
 
-impl Default for Tape {
+impl Default for Graph {
     #[inline]
     fn default() -> Self {
-        Tape {
+        Graph {
             vertices: RefCell::new(Vec::new()),
             // vertices: RefCell::new(Rc::new([])),
         }
     }
 }
 
-/// Implementation for the `Tape` struct.
-impl Tape {
-    /// Instantiate a new tape.
+/// Implementation for the `Graph` struct.
+impl Graph {
+    /// Instantiate a new graph.
     #[inline]
     pub fn new() -> Self {
-        Tape {
+        Graph {
             vertices: RefCell::new(Vec::new()),
             // vertices: RefCell::new(Rc::new([])),
         }
     }
 
-    /// Add a new variable to to the tape.
+    /// Add a new variable to to the graph.
     /// Returns a new `Variable` instance (the contents of a vertex).
     #[inline]
     pub fn var(&self, value: f64) -> Variable {
         Variable {
-            tape: self,
+            graph: self,
             value,
             index: self.push_nullary(),
         }
     }
 
-    /// Add a multiple variables (a slice) to the tape.
+    /// Add a multiple variables (a slice) to the graph.
     /// Useful for larger functions with many inputs.
     #[inline]
     pub fn vars<'v>(&'v self, values: &[f64]) -> Vec<Variable<'v>> {
         values.iter().map(|&val| self.var(val)).collect()
     }
 
-    /// Returns the length of the tape so new vertices can index to the correct position.
+    /// Returns the length of the graph so new vertices can index to the correct position.
     #[inline]
     pub fn len(&self) -> usize {
         self.vertices.borrow().len()
     }
 
-    /// Returns true/false depending on whether the tape is empty or not.
+    /// Returns true/false depending on whether the graph is empty or not.
     #[inline]
     pub fn is_empty(&self) -> bool {
         self.vertices.borrow().len() == 0
     }
 
-    /// Clears the entire tape.
+    /// Clears the entire graph.
     #[inline]
     pub fn clear(&self) {
         self.vertices.borrow_mut().clear();
     }
 
-    /// Zeroes the adjoints in the tape.
+    /// Zeroes the adjoints in the graph.
     #[inline]
     pub fn zero(&self) {
         self.vertices
@@ -97,10 +97,10 @@ impl Tape {
     }
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    // Functions to push values to the tape (Wengert List):
+    // Functions to push values to the graph (Wengert List):
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    /// Pushes a vertex to the tape.
+    /// Pushes a vertex to the graph.
     #[inline]
     pub fn push(
         &self,
@@ -133,12 +133,12 @@ impl Tape {
 
     /// Nullary operator pushback.
     ///
-    /// The vertex pushed to the tape is the result of a **nullary** operation.
+    /// The vertex pushed to the graph is the result of a **nullary** operation.
     /// e.g. `x.neg()` ($-x$)
     /// Thus no partials and only the current index are added to the new vertex.
     ///
     /// 1. Constructs the vertex,
-    /// 2. Pushes the new vertex onto the tape,
+    /// 2. Pushes the new vertex onto the graph,
     /// 3. Returns the index of the new vertex.
     #[inline]
     pub fn push_nullary(&self) -> usize {
@@ -153,12 +153,12 @@ impl Tape {
 
     /// Unary operator pushback.
     ///
-    /// The vertex pushed to the tape is the result of a **unary** operation.
+    /// The vertex pushed to the graph is the result of a **unary** operation.
     /// e.g. `x.sin()` ($sin(x)$)
     /// Thus one partial and one parent are added to the new vertex.
     ///
     /// 1. Constructs the vertex,
-    /// 2. Pushes the new vertex onto the tape,
+    /// 2. Pushes the new vertex onto the graph,
     /// 3. Returns the index of the new vertex.
     #[inline]
     pub fn push_unary(&self, parent0: usize, partial0: f64) -> usize {
@@ -173,12 +173,12 @@ impl Tape {
 
     /// Binary operator pushback.
     ///
-    /// The vertex pushed to the tape is the result of a **binary** operation.
+    /// The vertex pushed to the graph is the result of a **binary** operation.
     /// e.g. `x + y`
     /// Thus two partials and two parents are added to the new vertex.
     ///
     /// 1. Constructs the vertex,
-    /// 2. Pushes the new vertex onto the tape,
+    /// 2. Pushes the new vertex onto the graph,
     /// 3. Returns the index of the new vertex.
     #[inline]
     pub fn push_binary(

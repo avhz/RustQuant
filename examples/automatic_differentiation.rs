@@ -2,8 +2,8 @@ use RustQuant::autodiff::*;
 
 // The general workflow for using the `autodiff` module is as follows:
 //
-// 1. Create a new tape.
-// 2. Assign variables onto the tape.
+// 1. Create a new graph.
+// 2. Assign variables onto the graph.
 // 3. Define an expression using the variables.
 // 4. Accumulate (differentiate) the expression.
 // 5. Profit.
@@ -13,10 +13,10 @@ fn main() {
     // SIMPLE EXPRESSIONS
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    let t = Tape::new();
+    let g = Graph::new();
 
-    let x = t.var(69.);
-    let y = t.var(420.);
+    let x = g.var(69.);
+    let y = g.var(420.);
 
     let z = x * y + x.sin();
 
@@ -31,10 +31,10 @@ fn main() {
     // BLOCK EXPRESSIONS
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    let t = Tape::new();
+    let g = Graph::new();
 
-    let x = t.var(69.);
-    let y = t.var(420.);
+    let x = g.var(69.);
+    let y = g.var(420.);
 
     let block = {
         let z = x.sin() + y.tan();
@@ -52,10 +52,10 @@ fn main() {
     // CLOSURES
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    let t = Tape::new();
+    let g = Graph::new();
 
-    let x = t.var(1.);
-    let y = t.var(2.);
+    let x = g.var(1.);
+    let y = g.var(2.);
 
     let closure = || (x * y).cosh() / (x.tanh() * y.sinh());
 
@@ -86,11 +86,11 @@ fn main() {
         variables[2].asinh() / constants[1]
     }
 
-    // New tape.
-    let tape = Tape::new();
+    // New graph.
+    let graph = Graph::new();
 
     // Variables and constants.
-    let variables = tape.vars(&[3.0, 2.0, 1.0]);
+    let variables = graph.vars(&[3.0, 2.0, 1.0]);
     let constants = [1., 2.];
 
     // Evaluate and differentiate the function.

@@ -19,6 +19,9 @@ keywords = [
 categories = ["finance", "mathematics", "science", "algorithms", "simulation"]
 license = "GPL-3.0-or-later"
 
+[profile.release]
+debug = true
+
 ## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ## DEPENDENCIES
 ## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

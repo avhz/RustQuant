@@ -6,8 +6,8 @@
 
 //! This module contains the implementation of the `Variable` structure.
 //!
-//! `Variable`s are used to create input variables and contain:
-//!     - a pointer to their tape
+//! `Variable`s are used to create inpug.variables and contain:
+//!     - a pointer to their graph
 //!     - an index to their vertex
 //!     - an associated value.
 
@@ -15,7 +15,7 @@
 // IMPORTS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use super::tape::Tape;
+use super::graph::Graph;
 use std::fmt::Display;
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -25,8 +25,8 @@ use std::fmt::Display;
 /// Struct to contain the initial variables.
 #[derive(Clone, Copy, Debug)]
 pub struct Variable<'v> {
-    /// Pointer to the tape.
-    pub tape: &'v Tape,
+    /// Pointer to the graph.
+    pub graph: &'v Graph,
     /// Index to the vertex.
     pub index: usize,
     /// Value associated to the vertex.
@@ -65,20 +65,20 @@ impl<'v> Variable<'v> {
         self.index
     }
 
-    /// Function to return the tape.
+    /// Function to return the graph.
     #[inline]
-    pub fn tape(&self) -> &'v Tape {
-        self.tape
+    pub fn graph(&self) -> &'v Graph {
+        self.graph
     }
 
     /// Function to reverse accumulate the gradient.
     /// 1. Allocate the array of adjoints.
     /// 2. Set the seed (dx/dx = 1).
-    /// 3. Traverse the tape backwards, updating the adjoints for the parent vertices.
+    /// 3. Traverse the graph backwards, updating the adjoints for the parent vertices.
     #[inline]
     pub fn accumulate(&self) -> Vec<f64> {
-        let length = self.tape.len();
-        let vertices = self.tape.vertices.borrow();
+        let length = self.graph.len();
+        let vertices = self.graph.vertices.borrow();
         let mut adjoints = vec![0.0; length];
 
         // Set the seed.
@@ -86,7 +86,7 @@ impl<'v> Variable<'v> {
         // dy/dy = 1
         adjoints[self.index] = 1.0;
 
-        // Traverse the tape backwards and update the adjoints for the parent vertices.
+        // Traverse the graph backwards and update the adjoints for the parent vertices.
         for (index, vertex) in vertices.iter().enumerate().rev() {
             let deriv = adjoints[index];
             adjoints[vertex.parents[0]] += vertex.partials[0] * deriv;
@@ -98,7 +98,7 @@ impl<'v> Variable<'v> {
 
 impl<'v> PartialEq for Variable<'v> {
     fn eq(&self, other: &Self) -> bool {
-        std::ptr::eq(self.tape, other.tape)
+        std::ptr::eq(self.graph, other.graph)
             && self.index == other.index
             && self.value == other.value
     }
@@ -130,9 +130,9 @@ mod tests_variable {
 
     #[test]
     fn test_value() {
-        let tape = Tape::new(); // assuming a `new` method in `Tape`
+        let graph = Graph::new(); // assuming a `new` method in `Graph`
         let var = Variable {
-            tape: &tape,
+            graph: &graph,
             index: 5,
             value: 3.14,
         };
@@ -141,9 +141,9 @@ mod tests_variable {
 
     #[test]
     fn test_index() {
-        let tape = Tape::new();
+        let graph = Graph::new();
         let var = Variable {
-            tape: &tape,
+            graph: &graph,
             index: 5,
             value: 3.14,
         };
@@ -151,26 +151,26 @@ mod tests_variable {
     }
 
     #[test]
-    fn test_tape() {
-        let tape = Tape::new();
+    fn test_graph() {
+        let graph = Graph::new();
         let var = Variable {
-            tape: &tape,
+            graph: &graph,
             index: 5,
             value: 3.14,
         };
-        assert_eq!(var.tape() as *const _, &tape as *const _);
+        assert_eq!(var.graph() as *const _, &graph as *const _);
     }
 
     #[test]
     fn test_cmp() {
-        let tape = Tape::new();
+        let graph = Graph::new();
         let var1 = Variable {
-            tape: &tape,
+            graph: &graph,
             index: 5,
             value: 3.14,
         };
         let var2 = Variable {
-            tape: &tape,
+            graph: &graph,
             index: 5,
             value: 2.71,
         };

@@ -264,12 +264,12 @@ fn main() {
 use RustQuant::autodiff::*;
 
 fn main() {
-    // Create a new Tape.
-    let t = Tape::new();
+    // Create a new Graph to store the computations.
+    let g = Graph::new();
 
     // Assign variables.
-    let x = t.var(0.5);
-    let y = t.var(4.2);
+    let x = g.var(0.5);
+    let y = g.var(4.2);
 
     // Define a function.
     let z = x * y + x.sin();

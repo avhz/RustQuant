@@ -17,7 +17,7 @@
 use crate::autodiff::OperationArity;
 
 use {
-    super::tape::Tape,
+    super::graph::Graph,
     super::variable::Variable,
     std::f64::consts::PI,
     std::iter::{Product, Sum},
@@ -47,10 +47,10 @@ impl<'v> Add<Variable<'v>> for Variable<'v> {
     /// ```
     /// use RustQuant::autodiff::*;
     ///
-    /// let t = Tape::new();
+    /// let g = Graph::new();
     ///
-    /// let x = t.var(5.0);
-    /// let y = t.var(2.0);
+    /// let x = g.var(5.0);
+    /// let y = g.var(2.0);
     /// let z = x + y;
     ///
     /// let grad = z.accumulate();
@@ -61,11 +61,11 @@ impl<'v> Add<Variable<'v>> for Variable<'v> {
     /// ```
     #[inline]
     fn add(self, other: Variable<'v>) -> Self::Output {
-        assert_eq!(self.tape as *const Tape, other.tape as *const Tape);
+        assert_eq!(self.graph as *const Graph, other.graph as *const Graph);
         Variable {
-            tape: self.tape,
+            graph: self.graph,
             value: self.value + other.value,
-            index: self.tape.push(
+            index: self.graph.push(
                 OperationArity::Binary,
                 &[self.index, other.index],
                 &[1.0, 1.0],
@@ -80,9 +80,9 @@ impl<'v> Add<f64> for Variable<'v> {
     /// ```
     /// use RustQuant::autodiff::*;
     ///
-    /// let t = Tape::new();
+    /// let g = Graph::new();
     ///
-    /// let x = t.var(2.0);
+    /// let x = g.var(2.0);
     /// let a = 5.0;
     /// let z = x + a;
     ///
@@ -94,9 +94,9 @@ impl<'v> Add<f64> for Variable<'v> {
     #[inline]
     fn add(self, other: f64) -> Self::Output {
         Variable {
-            tape: self.tape,
+            graph: self.graph,
             value: self.value + other,
-            index: self.tape.push(
+            index: self.graph.push(
                 OperationArity::Binary,
                 &[self.index, self.index],
                 &[1.0, 0.0],
@@ -111,10 +111,10 @@ impl<'v> Add<Variable<'v>> for f64 {
     /// ```
     /// use RustQuant::autodiff::*;    
     ///
-    /// let t = Tape::new();
+    /// let g = Graph::new();
     ///
     /// let a = 5.0;
-    /// let x = t.var(2.0);
+    /// let x = g.var(2.0);
     /// let z = a + x;
     ///
     /// let grad = z.accumulate();
@@ -139,10 +139,10 @@ impl<'v> Sub<Variable<'v>> for Variable<'v> {
     /// ```
     /// use RustQuant::autodiff::*;    
     ///
-    /// let t = Tape::new();
+    /// let g = Graph::new();
     ///
-    /// let x = t.var(5.0);
-    /// let y = t.var(2.0);
+    /// let x = g.var(5.0);
+    /// let y = g.var(2.0);
     /// let z = x - y;
     ///
     /// let grad = z.accumulate();
@@ -153,7 +153,7 @@ impl<'v> Sub<Variable<'v>> for Variable<'v> {
     /// ```
     #[inline]
     fn sub(self, other: Variable<'v>) -> Self::Output {
-        assert_eq!(self.tape as *const Tape, other.tape as *const Tape);
+        assert_eq!(self.graph as *const Graph, other.graph as *const Graph);
         self.add(other.neg())
     }
 }
@@ -164,9 +164,9 @@ impl<'v> Sub<f64> for Variable<'v> {
     /// ```
     /// use RustQuant::autodiff::*;
     ///
-    /// let t = Tape::new();
+    /// let g = Graph::new();
     ///
-    /// let x = t.var(5.0);
+    /// let x = g.var(5.0);
     /// let a = 2.0;
     /// let z = x - a;
     ///
@@ -187,10 +187,10 @@ impl<'v> Sub<Variable<'v>> for f64 {
     /// ```
     /// use RustQuant::autodiff::*;   
     ///  
-    /// let t = Tape::new();
+    /// let g = Graph::new();
     ///
     /// let a = 5.0;
-    /// let x = t.var(2.0);
+    /// let x = g.var(2.0);
     /// let z = a - x;
     ///
     /// let grad = z.accumulate();
@@ -201,9 +201,9 @@ impl<'v> Sub<Variable<'v>> for f64 {
     #[inline]
     fn sub(self, other: Variable<'v>) -> Self::Output {
         Variable {
-            tape: other.tape,
+            graph: other.graph,
             value: self - other.value,
-            index: other.tape.push(
+            index: other.graph.push(
                 OperationArity::Binary,
                 &[other.index, other.index],
                 &[0.0, -1.0],
@@ -223,10 +223,10 @@ impl<'v> Mul<Variable<'v>> for Variable<'v> {
     /// ```
     /// use RustQuant::autodiff::*;
     ///
-    /// let t = Tape::new();
+    /// let g = Graph::new();
     ///
-    /// let x = t.var(5.0);
-    /// let y = t.var(2.0);
+    /// let x = g.var(5.0);
+    /// let y = g.var(2.0);
     /// let z = x * y;
     ///
     /// let grad = z.accumulate();
@@ -237,12 +237,12 @@ impl<'v> Mul<Variable<'v>> for Variable<'v> {
     /// ```
     #[inline]
     fn mul(self, other: Variable<'v>) -> Self::Output {
-        assert_eq!(self.tape as *const Tape, other.tape as *const Tape);
+        assert_eq!(self.graph as *const Graph, other.graph as *const Graph);
         Variable {
-            tape: self.tape,
+            graph: self.graph,
             value: self.value * other.value,
             index: self
-                .tape
+                .graph
                 .push_binary(self.index, other.value, other.index, self.value),
         }
     }
@@ -254,9 +254,9 @@ impl<'v> Mul<f64> for Variable<'v> {
     /// ```
     /// use RustQuant::autodiff::*;
     ///
-    /// let t = Tape::new();
+    /// let g = Graph::new();
     ///
-    /// let x = t.var(5.0);
+    /// let x = g.var(5.0);
     /// let a = 2.0;
     /// let z = x * a;
     ///
@@ -268,9 +268,9 @@ impl<'v> Mul<f64> for Variable<'v> {
     #[inline]
     fn mul(self, other: f64) -> Self::Output {
         Variable {
-            tape: self.tape,
+            graph: self.graph,
             value: self.value * other,
-            index: self.tape.push_binary(self.index, other, self.index, 0.0),
+            index: self.graph.push_binary(self.index, other, self.index, 0.0),
         }
     }
 }
@@ -281,10 +281,10 @@ impl<'v> Mul<Variable<'v>> for f64 {
     /// ```
     /// use RustQuant::autodiff::*;
     ///
-    /// let t = Tape::new();
+    /// let g = Graph::new();
     ///
     /// let a = 5.0;
-    /// let x = t.var(2.0);
+    /// let x = g.var(2.0);
     /// let z = a * x;
     ///
     /// let grad = z.accumulate();
@@ -309,10 +309,10 @@ impl<'v> Div<Variable<'v>> for Variable<'v> {
     /// ```
     /// use RustQuant::autodiff::*;
     ///  
-    /// let t = Tape::new();
+    /// let g = Graph::new();
     ///
-    /// let x = t.var(5.0);
-    /// let y = t.var(2.0);
+    /// let x = g.var(5.0);
+    /// let y = g.var(2.0);
     /// let z = x / y;
     ///
     /// let grad = z.accumulate();
@@ -323,7 +323,7 @@ impl<'v> Div<Variable<'v>> for Variable<'v> {
     /// ```
     #[inline]
     fn div(self, other: Variable<'v>) -> Self::Output {
-        assert_eq!(self.tape as *const Tape, other.tape as *const Tape);
+        assert_eq!(self.graph as *const Graph, other.graph as *const Graph);
         self * other.recip()
     }
 }
@@ -334,9 +334,9 @@ impl<'v> Div<f64> for Variable<'v> {
     /// ```
     /// use RustQuant::autodiff::*;
     ///
-    /// let t = Tape::new();
+    /// let g = Graph::new();
     ///
-    /// let x = t.var(5.0);
+    /// let x = g.var(5.0);
     /// let a = 2.0;
     /// let z = x / a;
     ///
@@ -358,10 +358,10 @@ impl<'v> Div<Variable<'v>> for f64 {
     /// ```
     /// use RustQuant::autodiff::*;
     ///   
-    /// let t = Tape::new();
+    /// let g = Graph::new();
     ///
     /// let a = 5.0;
-    /// let x = t.var(2.0);
+    /// let x = g.var(2.0);
     /// let z = a / x;
     ///
     /// let grad = z.accumulate();
@@ -372,9 +372,9 @@ impl<'v> Div<Variable<'v>> for f64 {
     #[inline]
     fn div(self, other: Variable<'v>) -> Self::Output {
         Variable {
-            tape: other.tape,
+            graph: other.graph,
             value: self / other.value,
-            index: other.tape.push_binary(
+            index: other.graph.push_binary(
                 other.index,
                 0.0,
                 other.index,
@@ -392,9 +392,9 @@ impl<'v> Sum<Variable<'v>> for Variable<'v> {
     /// ```
     /// use RustQuant::autodiff::*;
     ///
-    /// let t = Tape::new();
+    /// let g = Graph::new();
     ///
-    /// let params = (0..100).map(|x| t.var(x as f64)).collect::<Vec<_>>();
+    /// let params = (0..100).map(|x| g.var(x as f64)).collect::<Vec<_>>();
     ///
     /// let sum = params.iter().copied().sum::<Variable>();
     ///
@@ -415,9 +415,9 @@ impl<'v> Product<Variable<'v>> for Variable<'v> {
     /// ```
     /// use RustQuant::autodiff::*;
     ///
-    /// let t = Tape::new();
+    /// let g = Graph::new();
     ///
-    /// let params = (1..=5).map(|x| t.var(x as f64)).collect::<Vec<_>>();
+    /// let params = (1..=5).map(|x| g.var(x as f64)).collect::<Vec<_>>();
     ///
     /// let prod = params.iter().copied().product::<Variable>();
     ///
@@ -455,11 +455,11 @@ impl<'v> Powf<Variable<'v>> for Variable<'v> {
     type Output = Variable<'v>;
     #[inline]
     fn powf(&self, other: Variable<'v>) -> Self::Output {
-        assert_eq!(self.tape as *const Tape, other.tape as *const Tape);
+        assert_eq!(self.graph as *const Graph, other.graph as *const Graph);
         Self::Output {
-            tape: self.tape,
+            graph: self.graph,
             value: self.value.powf(other.value),
-            index: self.tape.push_binary(
+            index: self.graph.push_binary(
                 self.index,
                 other.value * f64::powf(self.value, other.value - 1.),
                 other.index,
@@ -474,9 +474,9 @@ impl<'v> Powf<f64> for Variable<'v> {
     #[inline]
     fn powf(&self, n: f64) -> Self::Output {
         Self::Output {
-            tape: self.tape,
+            graph: self.graph,
             value: f64::powf(self.value, n),
-            index: self.tape.push_binary(
+            index: self.graph.push_binary(
                 self.index,
                 n * f64::powf(self.value, n - 1.0),
                 self.index,
@@ -491,9 +491,9 @@ impl<'v> Powf<Variable<'v>> for f64 {
     #[inline]
     fn powf(&self, other: Variable<'v>) -> Self::Output {
         Self::Output {
-            tape: other.tape,
+            graph: other.graph,
             value: f64::powf(*self, other.value),
-            index: other.tape.push_binary(
+            index: other.graph.push_binary(
                 other.index,
                 0.,
                 other.index,
@@ -514,15 +514,15 @@ impl<'v> Variable<'v> {
     /// ```
     /// use RustQuant::autodiff::*;
     ///
-    /// let t = Tape::new();
+    /// let g = Graph::new();
     ///
-    /// let x1 = t.var(1.0);
+    /// let x1 = g.var(1.0);
     /// let z1 = x1.abs();
     /// let grad1 = z1.accumulate();
     /// assert!((z1.value - 1.0).abs() <= 1e-15);
     /// assert!((grad1.wrt(&x1) - 1.0).abs() <= 1e-15);
     ///
-    /// let x2 = t.var(-1.0);
+    /// let x2 = g.var(-1.0);
     /// let z2 = x2.abs();
     /// let grad2 = z2.accumulate();
     /// assert!((z2.value - 1.0).abs() <= 1e-15);
@@ -531,9 +531,9 @@ impl<'v> Variable<'v> {
     #[inline]
     pub fn abs(self) -> Self {
         Variable {
-            tape: self.tape,
+            graph: self.graph,
             value: self.value.abs(),
-            index: self.tape.push_unary(self.index, self.value.signum()),
+            index: self.graph.push_unary(self.index, self.value.signum()),
         }
     }
 
@@ -543,9 +543,9 @@ impl<'v> Variable<'v> {
     /// ```
     /// use RustQuant::autodiff::*;
     ///
-    /// let t = Tape::new();
+    /// let g = Graph::new();
     ///
-    /// let x1 = t.var(0.0);
+    /// let x1 = g.var(0.0);
     /// let z1 = x1.acos();
     /// let grad1 = z1.accumulate();
     /// assert!((z1.value - 1.5707963267948966).abs() <= 1e-15);
@@ -554,9 +554,9 @@ impl<'v> Variable<'v> {
     #[inline]
     pub fn acos(self) -> Self {
         Variable {
-            tape: self.tape,
+            graph: self.graph,
             value: self.value.acos(),
-            index: self.tape.push_unary(
+            index: self.graph.push_unary(
                 self.index,
                 ((1.0 - self.value.powi(2)).sqrt()).recip().neg(),
             ),
@@ -569,9 +569,9 @@ impl<'v> Variable<'v> {
     /// ```
     /// use RustQuant::autodiff::*;
     ///
-    /// let t = Tape::new();
+    /// let g = Graph::new();
     ///
-    /// let x = t.var(5.0);
+    /// let x = g.var(5.0);
     /// let z = x.acosh();
     /// let grad = z.accumulate();
     /// assert!((z.value - 2.2924316695611777).abs() <= 1e-15);
@@ -580,9 +580,9 @@ impl<'v> Variable<'v> {
     #[inline]
     pub fn acosh(self) -> Self {
         Variable {
-            tape: self.tape,
+            graph: self.graph,
             value: self.value.acosh(),
-            index: self.tape.push_unary(
+            index: self.graph.push_unary(
                 self.index,
                 ((self.value - 1.0).sqrt() * (self.value + 1.0).sqrt()).recip(),
             ),
@@ -595,9 +595,9 @@ impl<'v> Variable<'v> {
     /// ```
     /// use RustQuant::autodiff::*;
     ///
-    /// let t = Tape::new();
+    /// let g = Graph::new();
     ///
-    /// let x = t.var(0.0);
+    /// let x = g.var(0.0);
     /// let z = x.asin();
     /// let grad = z.accumulate();
     ///
@@ -608,9 +608,9 @@ impl<'v> Variable<'v> {
     #[inline]
     pub fn asin(self) -> Self {
         Variable {
-            tape: self.tape,
+            graph: self.graph,
             value: self.value.asin(),
-            index: self.tape.push_unary(
+            index: self.graph.push_unary(
                 self.index,
                 if (self.value > -1.0) && (self.value < 1.0) {
                     ((1.0 - self.value.powi(2)).sqrt()).recip()
@@ -627,9 +627,9 @@ impl<'v> Variable<'v> {
     /// ```
     /// use RustQuant::autodiff::*;
     ///
-    /// let t = Tape::new();
+    /// let g = Graph::new();
     ///
-    /// let x = t.var(0.0);
+    /// let x = g.var(0.0);
     /// let z = x.asinh();
     /// let grad = z.accumulate();
     ///
@@ -639,10 +639,10 @@ impl<'v> Variable<'v> {
     #[inline]
     pub fn asinh(self) -> Self {
         Variable {
-            tape: self.tape,
+            graph: self.graph,
             value: self.value.asinh(),
             index: self
-                .tape
+                .graph
                 .push_unary(self.index, ((1.0 + self.value.powi(2)).sqrt()).recip()),
         }
     }
@@ -653,9 +653,9 @@ impl<'v> Variable<'v> {
     /// ```
     /// use RustQuant::autodiff::*;
     ///
-    /// let t = Tape::new();
+    /// let g = Graph::new();
     ///
-    /// let x = t.var(0.0);
+    /// let x = g.var(0.0);
     /// let z = x.atan();
     /// let grad = z.accumulate();
     ///
@@ -665,10 +665,10 @@ impl<'v> Variable<'v> {
     #[inline]
     pub fn atan(self) -> Self {
         Variable {
-            tape: self.tape,
+            graph: self.graph,
             value: self.value.atan(),
             index: self
-                .tape
+                .graph
                 .push_unary(self.index, (1.0 + self.value.powi(2)).recip()),
         }
     }
@@ -678,10 +678,10 @@ impl<'v> Variable<'v> {
     #[inline]
     pub fn atanh(self) -> Self {
         Variable {
-            tape: self.tape,
+            graph: self.graph,
             value: self.value.atanh(),
             index: self
-                .tape
+                .graph
                 .push_unary(self.index, (1.0 - self.value.powi(2)).recip()),
         }
     }
@@ -691,10 +691,10 @@ impl<'v> Variable<'v> {
     #[inline]
     pub fn cbrt(self) -> Self {
         Variable {
-            tape: self.tape,
+            graph: self.graph,
             value: self.value.cbrt(),
             index: self
-                .tape
+                .graph
                 .push_unary(self.index, (3.0 * self.value.powf(2.0 / 3.0)).recip()),
         }
     }
@@ -704,9 +704,9 @@ impl<'v> Variable<'v> {
     #[inline]
     pub fn cos(self) -> Self {
         Variable {
-            tape: self.tape,
+            graph: self.graph,
             value: self.value.cos(),
-            index: self.tape.push_unary(self.index, self.value.sin().neg()),
+            index: self.graph.push_unary(self.index, self.value.sin().neg()),
         }
     }
 
@@ -715,9 +715,9 @@ impl<'v> Variable<'v> {
     #[inline]
     pub fn cosh(self) -> Self {
         Variable {
-            tape: self.tape,
+            graph: self.graph,
             value: self.value.cosh(),
-            index: self.tape.push_unary(self.index, self.value.sinh()),
+            index: self.graph.push_unary(self.index, self.value.sinh()),
         }
     }
 
@@ -727,9 +727,9 @@ impl<'v> Variable<'v> {
     pub fn erfc(self) -> Self {
         use statrs::function::erf::erfc;
         Variable {
-            tape: self.tape,
+            graph: self.graph,
             value: erfc(self.value),
-            index: self.tape.push_unary(
+            index: self.graph.push_unary(
                 self.index,
                 (2.0 * self.value.powi(2).neg().exp()).neg() / PI.sqrt(),
             ),
@@ -742,9 +742,9 @@ impl<'v> Variable<'v> {
     /// ```
     /// use RustQuant::autodiff::*;
     ///  
-    /// let t = Tape::new();
+    /// let g = Graph::new();
     ///
-    /// let x = t.var(1.0);
+    /// let x = g.var(1.0);
     /// let z = x.exp();
     /// let grad = z.accumulate();
     ///
@@ -754,9 +754,9 @@ impl<'v> Variable<'v> {
     #[inline]
     pub fn exp(self) -> Self {
         Variable {
-            tape: self.tape,
+            graph: self.graph,
             value: self.value.exp(),
-            index: self.tape.push_unary(self.index, self.value.exp()),
+            index: self.graph.push_unary(self.index, self.value.exp()),
         }
     }
 
@@ -765,10 +765,10 @@ impl<'v> Variable<'v> {
     #[inline]
     pub fn exp2(self) -> Self {
         Variable {
-            tape: self.tape,
+            graph: self.graph,
             value: self.value.exp2(),
             index: self
-                .tape
+                .graph
                 .push_unary(self.index, 2_f64.powf(self.value) * 2_f64.ln()),
         }
     }
@@ -778,9 +778,9 @@ impl<'v> Variable<'v> {
     #[inline]
     pub fn exp_m1(self) -> Self {
         Variable {
-            tape: self.tape,
+            graph: self.graph,
             value: self.value.exp_m1(),
-            index: self.tape.push_unary(self.index, self.value.exp()),
+            index: self.graph.push_unary(self.index, self.value.exp()),
         }
     }
 
@@ -790,9 +790,9 @@ impl<'v> Variable<'v> {
     /// ```
     /// use RustQuant::autodiff::*;
     ///   
-    /// let t = Tape::new();
+    /// let g = Graph::new();
     ///
-    /// let x = t.var(std::f64::consts::E);
+    /// let x = g.var(std::f64::consts::E);
     /// let z = x.ln();
     /// let grad = z.accumulate();
     ///
@@ -802,9 +802,9 @@ impl<'v> Variable<'v> {
     #[inline]
     pub fn ln(self) -> Self {
         Variable {
-            tape: self.tape,
+            graph: self.graph,
             value: self.value.ln(),
-            index: self.tape.push_unary(self.index, self.value.recip()),
+            index: self.graph.push_unary(self.index, self.value.recip()),
         }
     }
 
@@ -813,9 +813,11 @@ impl<'v> Variable<'v> {
     #[inline]
     pub fn ln_1p(self) -> Self {
         Variable {
-            tape: self.tape,
+            graph: self.graph,
             value: self.value.ln_1p(),
-            index: self.tape.push_unary(self.index, (1.0 + self.value).recip()),
+            index: self
+                .graph
+                .push_unary(self.index, (1.0 + self.value).recip()),
         }
     }
 
@@ -824,9 +826,9 @@ impl<'v> Variable<'v> {
     #[inline]
     pub fn log10(self) -> Self {
         Variable {
-            tape: self.tape,
+            graph: self.graph,
             value: self.value.log10(),
-            index: self.tape.push_unary(self.index, self.value.recip()),
+            index: self.graph.push_unary(self.index, self.value.recip()),
         }
     }
 
@@ -835,9 +837,9 @@ impl<'v> Variable<'v> {
     #[inline]
     pub fn log2(self) -> Self {
         Variable {
-            tape: self.tape,
+            graph: self.graph,
             value: self.value.log2(),
-            index: self.tape.push_unary(self.index, self.value.recip()),
+            index: self.graph.push_unary(self.index, self.value.recip()),
         }
     }
 
@@ -847,9 +849,9 @@ impl<'v> Variable<'v> {
     /// ```
     /// use RustQuant::autodiff::*;
     ///
-    /// let t = Tape::new();
+    /// let g = Graph::new();
     ///
-    /// let x = t.var(1.0);
+    /// let x = g.var(1.0);
     /// let z = x.recip();
     /// let grad = z.accumulate();
     ///
@@ -859,10 +861,10 @@ impl<'v> Variable<'v> {
     #[inline]
     pub fn recip(self) -> Self {
         Variable {
-            tape: self.tape,
+            graph: self.graph,
             value: self.value.recip(),
             index: self
-                .tape
+                .graph
                 .push_unary(self.index, self.value.powi(2).recip().neg()),
         }
     }
@@ -872,9 +874,9 @@ impl<'v> Variable<'v> {
     #[inline]
     pub fn sin(self) -> Self {
         Variable {
-            tape: self.tape,
+            graph: self.graph,
             value: self.value.sin(),
-            index: self.tape.push_unary(self.index, self.value.cos()),
+            index: self.graph.push_unary(self.index, self.value.cos()),
         }
     }
 
@@ -883,9 +885,9 @@ impl<'v> Variable<'v> {
     #[inline]
     pub fn sinh(self) -> Self {
         Variable {
-            tape: self.tape,
+            graph: self.graph,
             value: self.value.sinh(),
-            index: self.tape.push_unary(self.index, self.value.cosh()),
+            index: self.graph.push_unary(self.index, self.value.cosh()),
         }
     }
 
@@ -895,9 +897,9 @@ impl<'v> Variable<'v> {
     /// ```
     /// use RustQuant::autodiff::*;
     ///
-    /// let t = Tape::new();
+    /// let g = Graph::new();
     ///
-    /// let x = t.var(2.0);
+    /// let x = g.var(2.0);
     /// let z = x.sqrt();
     /// let grad = z.accumulate();
     ///
@@ -907,10 +909,10 @@ impl<'v> Variable<'v> {
     #[inline]
     pub fn sqrt(self) -> Self {
         Variable {
-            tape: self.tape,
+            graph: self.graph,
             value: self.value.sqrt(),
             index: self
-                .tape
+                .graph
                 .push_unary(self.index, (2.0 * self.value.sqrt()).recip()),
         }
     }
@@ -920,10 +922,10 @@ impl<'v> Variable<'v> {
     #[inline]
     pub fn tan(self) -> Self {
         Variable {
-            tape: self.tape,
+            graph: self.graph,
             value: self.value.tan(),
             index: self
-                .tape
+                .graph
                 .push_unary(self.index, (self.value.cos().powi(2)).recip()),
         }
     }
@@ -933,10 +935,10 @@ impl<'v> Variable<'v> {
     #[inline]
     pub fn tanh(self) -> Self {
         Variable {
-            tape: self.tape,
+            graph: self.graph,
             value: self.value.tanh(),
             index: self
-                .tape
+                .graph
                 .push_unary(self.index, (self.value.cosh().powi(2)).recip()),
         }
     }
@@ -957,10 +959,10 @@ mod test_overload {
     #[test]
     fn test_add() {
         // Variable + Variable
-        let t = Tape::new();
+        let g = Graph::new();
 
-        let x = t.var(1.0);
-        let y = t.var(2.0);
+        let x = g.var(1.0);
+        let y = g.var(2.0);
         let z = x + y;
         let grad = z.accumulate();
 
@@ -969,9 +971,9 @@ mod test_overload {
         assert_eq!(grad.wrt(&y), 1.0);
 
         // Variable + f64
-        let t = Tape::new();
+        let g = Graph::new();
 
-        let x = t.var(1.0);
+        let x = g.var(1.0);
         let y = 2.0;
         let z = x + y;
         let grad = z.accumulate();
@@ -980,10 +982,10 @@ mod test_overload {
         assert_eq!(grad.wrt(&x), 1.0);
 
         // f64 + Variable
-        let t = Tape::new();
+        let g = Graph::new();
 
         let x = 1.0;
-        let y = t.var(2.0);
+        let y = g.var(2.0);
         let z = x + y;
         let grad = z.accumulate();
 
@@ -994,10 +996,10 @@ mod test_overload {
     #[test]
     fn test_sub() {
         // Variable - Variable
-        let t = Tape::new();
+        let g = Graph::new();
 
-        let x = t.var(1.0);
-        let y = t.var(2.0);
+        let x = g.var(1.0);
+        let y = g.var(2.0);
         let z = x - y;
         let grad = z.accumulate();
 
@@ -1006,9 +1008,9 @@ mod test_overload {
         assert_eq!(grad.wrt(&y), -1.0);
 
         // Variable - f64
-        let t = Tape::new();
+        let g = Graph::new();
 
-        let x = t.var(1.0);
+        let x = g.var(1.0);
         let y = 2.0;
         let z = x - y;
         let grad = z.accumulate();
@@ -1017,10 +1019,10 @@ mod test_overload {
         assert_eq!(grad.wrt(&x), 1.0);
 
         // f64 - Variable
-        let t = Tape::new();
+        let g = Graph::new();
 
         let x = 1.0;
-        let y = t.var(2.0);
+        let y = g.var(2.0);
         let z = x - y;
         let grad = z.accumulate();
 
@@ -1031,10 +1033,10 @@ mod test_overload {
     #[test]
     fn test_mul() {
         // Variable * Variable
-        let t = Tape::new();
+        let g = Graph::new();
 
-        let x = t.var(1.0);
-        let y = t.var(2.0);
+        let x = g.var(1.0);
+        let y = g.var(2.0);
         let z = x * y;
         let grad = z.accumulate();
 
@@ -1043,9 +1045,9 @@ mod test_overload {
         assert_eq!(grad.wrt(&y), 1.0);
 
         // Variable * f64
-        let t = Tape::new();
+        let g = Graph::new();
 
-        let x = t.var(1.0);
+        let x = g.var(1.0);
         let y = 2.0;
         let z = x * y;
         let grad = z.accumulate();
@@ -1054,10 +1056,10 @@ mod test_overload {
         assert_eq!(grad.wrt(&x), 2.0);
 
         // f64 * Variable
-        let t = Tape::new();
+        let g = Graph::new();
 
         let x = 1.0;
-        let y = t.var(2.0);
+        let y = g.var(2.0);
         let z = x * y;
         let grad = z.accumulate();
 
@@ -1068,10 +1070,10 @@ mod test_overload {
     #[test]
     fn test_div() {
         // Variable / Variable
-        let t = Tape::new();
+        let g = Graph::new();
 
-        let x = t.var(1.0);
-        let y = t.var(2.0);
+        let x = g.var(1.0);
+        let y = g.var(2.0);
         let z = x / y;
         let grad = z.accumulate();
 
@@ -1080,9 +1082,9 @@ mod test_overload {
         assert_eq!(grad.wrt(&y), -0.25);
 
         // Variable / f64
-        let t = Tape::new();
+        let g = Graph::new();
 
-        let x = t.var(1.0);
+        let x = g.var(1.0);
         let y = 2.0;
         let z = x / y;
         let grad = z.accumulate();
@@ -1091,10 +1093,10 @@ mod test_overload {
         assert_eq!(grad.wrt(&x), 0.5);
 
         // f64 / Variable
-        let t = Tape::new();
+        let g = Graph::new();
 
         let x = 1.0;
-        let y = t.var(2.0);
+        let y = g.var(2.0);
         let z = x / y;
         let grad = z.accumulate();
 
@@ -1104,9 +1106,9 @@ mod test_overload {
 
     #[test]
     fn test_sum() {
-        let t = Tape::new();
+        let g = Graph::new();
 
-        let params = (0..100).map(|x| t.var(x as f64)).collect::<Vec<_>>();
+        let params = (0..100).map(|x| g.var(x as f64)).collect::<Vec<_>>();
         let sum = params.iter().copied().sum::<Variable>();
         let derivs = sum.accumulate();
 
@@ -1117,9 +1119,9 @@ mod test_overload {
 
     #[test]
     fn test_product() {
-        let t = Tape::new();
+        let g = Graph::new();
 
-        let params = (1..=5).map(|x| t.var(x as f64)).collect::<Vec<_>>();
+        let params = (1..=5).map(|x| g.var(x as f64)).collect::<Vec<_>>();
         let prod = params.iter().copied().product::<Variable>();
 
         let derivs = prod.accumulate();
@@ -1136,9 +1138,9 @@ mod test_overload {
 
     // #[test]
     // fn test_powf() {
-    //     let t = Tape::new();
+    //     let g = Graph::new();
 
-    //     let x = t.var(2.0);
+    //     let x = g.var(2.0);
     //     let y = 3.0.powf(x);
 
     //     assert!((y.value() - 9.0).abs() < EPSILON);
@@ -1149,9 +1151,9 @@ mod test_overload {
 
     // #[test]
     // fn test_powf_zero() {
-    //     let t = Tape::new();
+    //     let g = Graph::new();
 
-    //     let x = t.var(0.0);
+    //     let x = g.var(0.0);
     //     let y = 3.0.powf(x);
 
     //     assert_approx_equal!(y.value(), 1.0, 1e-8); // 3^1 = 3.0
@@ -1162,9 +1164,9 @@ mod test_overload {
 
     // #[test]
     // fn test_powf_one() {
-    //     let t = Tape::new();
+    //     let g = Graph::new();
 
-    //     let x = t.var(1.0); // create a variable
+    //     let x = g.var(1.0); // create a variable
     //     let y = 3.0.powf(x); // powf operation
 
     //     assert_approx_equal!(y.value(), 3.0, 1e-8); // 3^1 = 3.0

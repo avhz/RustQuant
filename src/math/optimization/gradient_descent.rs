@@ -75,11 +75,11 @@ impl GradientDescent {
         };
 
         for k in 0..self.max_iterations {
-            let tape = Tape::new();
+            let graph = Graph::new();
 
             result.iterations = k + 1;
 
-            let location = tape.vars(&result.minimizer);
+            let location = graph.vars(&result.minimizer);
             let function = f(&location);
             let gradient = function.accumulate().wrt(&location);
 
@@ -136,8 +136,8 @@ mod test_gradient_descent {
     // Test the norm function.
     #[test]
     fn test_norm() {
-        // let tape = Tape::new();
-        // let vars = tape.vars(&vec![3.0, 4.0]);
+        // let graph = graph::new();
+        // let vars = graph.vars(&vec![3.0, 4.0]);
         assert_eq!(GradientDescent::norm(&vec![3.0, 4.0]), 5.0);
     }
 

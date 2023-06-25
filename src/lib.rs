@@ -4,7 +4,11 @@
 // See LICENSE or <https://www.gnu.org/licenses/>.
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+// Strictly enforce documentation.
 #![deny(missing_docs)]
+// Allow snake case.
+// This is because much of this library is based on mathematics, so I
+// want to adhere to the standard mathematical notation.
 #![allow(non_snake_case)]
 
 //! RustQuant: A Rust library for quantitative finance.
@@ -24,20 +28,31 @@ pub mod error;
 pub use error::*;
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// INSTRUMENTS MODULE
+// AUTOMATIC DIFFERENTIATION MODULE
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-/// Parent module defining base traits for financial instruments.
-/// Also contains all instrument modules.
-pub mod instruments {
-    pub use crate::instruments::instrument::*;
+/// Parent module containing: automatic differentation modules.
+pub mod autodiff {
+    pub use crate::autodiff::{
+        gradient::*, graph::*, graphviz::*, overload::*, variable::*, vertex::*,
+    };
 
-    /// Submodule of `instruments`: base trait for all instruments.
-    pub mod instrument;
+    /// Submodule of `autodiff`: implements the gradient computation.
+    pub mod gradient;
+    /// Submodule of `autodiff`: implements the Graph (aka. tape or Wengert List).
+    pub mod graph;
+    /// Submodule of `autodiff`: visualisation of the `Graph`.
+    pub mod graphviz;
+    /// Submodule of `autodiff`: implements operator/function overloading.
+    pub mod overload;
+    /// Submodule of `autodiff`: implements `Variable`s for `autodiff`.
+    pub mod variable;
+    /// Submodule of `autodiff`: implements `Vertex` for `autodiff`.
+    pub mod vertex;
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// BONDS
+// BONDS MODULE
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 /// Parent module containing: bond pricing models.
@@ -55,7 +70,20 @@ pub mod bonds {
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// CURRENCIES
+// INSTRUMENTS MODULE
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+/// Parent module defining base traits for financial instruments.
+/// Also contains all instrument modules.
+pub mod instruments {
+    pub use crate::instruments::instrument::*;
+
+    /// Submodule of `instruments`: base trait for all instruments.
+    pub mod instrument;
+}
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// CURRENCIES MODULE
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 /// Parent module containing: global currencies.
@@ -83,7 +111,7 @@ pub mod currencies {
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// DATA
+// DATA MODULE
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 /// Parent module containing: data reading and writing utilities.
@@ -126,7 +154,7 @@ pub mod utilities {
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// MATHEMATICS
+// MATHEMATICS MODULE
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 /// Parent module containing: mathematical and statistical tools.
@@ -169,7 +197,7 @@ pub mod math {
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// DISTRIBUTIONS
+// DISTRIBUTIONS MODULE
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 /// Parent module containing: random variable distributions (PDFs, CDFs, CFs, etc).
@@ -234,31 +262,7 @@ pub mod stochastics {
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// AUTOMATIC DIFFERENTIATION
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-/// Parent module containing: automatic differentation modules.
-pub mod autodiff {
-    pub use crate::autodiff::{
-        gradient::*, graphviz::*, overload::*, tape::*, variable::*, vertex::*,
-    };
-
-    /// Submodule of `autodiff`: implements the gradient computation.
-    pub mod gradient;
-    /// Submodule of `autodiff`: visualisation of `Tape`.
-    pub mod graphviz;
-    /// Submodule of `autodiff`: implements operator/function overloading.
-    pub mod overload;
-    /// Submodule of `autodiff`: implements the Tape (Wengert List).
-    pub mod tape;
-    /// Submodule of `autodiff`: implements `Variable`s for `autodiff`.
-    pub mod variable;
-    /// Submodule of `autodiff`: implements `Vertex` for `autodiff`.
-    pub mod vertex;
-}
-
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// OPTION PRICING
+// OPTION PRICING MODULE
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 /// Parent module containing: option pricers and sensitivity functions.
@@ -293,7 +297,7 @@ pub mod options {
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// TRADING
+// TRADING MODULE
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 /// Parent module containing: bond pricing models.
@@ -313,7 +317,7 @@ pub mod trading {
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// TIME
+// TIME AND DATE MODULE
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 /// Parent module containing: time and date functionality.
@@ -337,7 +341,7 @@ pub mod time {
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// MACHINE LEARNING
+// MACHINE LEARNING MODULE
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 /// Parent module containing: machine learning functionality.

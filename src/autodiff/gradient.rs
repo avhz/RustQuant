@@ -78,10 +78,10 @@ mod test_gradient {
 
     #[test]
     fn test_borrowed_vector() {
-        let t = Tape::new();
+        let g = Graph::new();
 
-        let x = t.var(1.0);
-        let y = t.var(2.0);
+        let x = g.var(1.0);
+        let y = g.var(2.0);
 
         let z = x * y;
 
@@ -93,10 +93,10 @@ mod test_gradient {
 
     #[test]
     fn test_borrowed_slice() {
-        let t = Tape::new();
+        let g = Graph::new();
 
-        let x = t.var(1.0);
-        let y = t.var(2.0);
+        let x = g.var(1.0);
+        let y = g.var(2.0);
 
         let z = x * y;
 
@@ -108,10 +108,10 @@ mod test_gradient {
 
     #[test]
     fn test_array() {
-        let t = Tape::new();
+        let g = Graph::new();
 
-        let x = t.var(1.0);
-        let y = t.var(2.0);
+        let x = g.var(1.0);
+        let y = g.var(2.0);
 
         let z = x * y;
 
@@ -123,10 +123,10 @@ mod test_gradient {
 
     #[test]
     fn test_borrowd_array() {
-        let t = Tape::new();
+        let g = Graph::new();
 
-        let x = t.var(1.0);
-        let y = t.var(2.0);
+        let x = g.var(1.0);
+        let y = g.var(2.0);
 
         let z = x * y;
 
@@ -138,10 +138,10 @@ mod test_gradient {
 
     #[test]
     fn x_times_y_plus_sin_x() {
-        let t = Tape::new();
+        let g = Graph::new();
 
-        let x = t.var(69.0);
-        let y = t.var(420.0);
+        let x = g.var(69.0);
+        let y = g.var(420.0);
 
         let z = x * y + x.sin();
 
@@ -154,10 +154,10 @@ mod test_gradient {
 
     #[test]
     fn x_times_y_plus_tan_x() {
-        let t = Tape::new();
+        let g = Graph::new();
 
-        let x = t.var(1.0);
-        let y = t.var(2.0);
+        let x = g.var(1.0);
+        let y = g.var(2.0);
 
         let z = x * y + x.tan();
 
@@ -170,10 +170,10 @@ mod test_gradient {
 
     #[test]
     fn cosh_x_times_y() {
-        let t = Tape::new();
+        let g = Graph::new();
 
-        let x = t.var(1.0);
-        let y = t.var(2.0);
+        let x = g.var(1.0);
+        let y = g.var(2.0);
 
         let z = (x * y).cosh();
 
@@ -188,10 +188,10 @@ mod test_gradient {
 
     #[test]
     fn cosh_xy_div_tanh_x_times_sinh_y() {
-        let t = Tape::new();
+        let g = Graph::new();
 
-        let x = t.var(1.0);
-        let y = t.var(2.0);
+        let x = g.var(1.0);
+        let y = g.var(2.0);
 
         let z = (x * y).cosh() / (x.tanh() * y.sinh());
 
@@ -204,10 +204,10 @@ mod test_gradient {
 
     #[test]
     fn test_block_assign() {
-        let t = Tape::new();
+        let g = Graph::new();
 
-        let x = t.var(1.0);
-        let y = t.var(2.0);
+        let x = g.var(1.0);
+        let y = g.var(2.0);
 
         let f = {
             let z = x.sin() + y.tan();
@@ -225,10 +225,10 @@ mod test_gradient {
 
     #[test]
     fn test_closure() {
-        let t = Tape::new();
+        let g = Graph::new();
 
-        let x = t.var(1.0);
-        let y = t.var(2.0);
+        let x = g.var(1.0);
+        let y = g.var(2.0);
 
         let z = || (x * y).cosh() / (x.tanh() * y.sinh());
 
@@ -245,8 +245,8 @@ mod test_gradient {
             params[0].powf(params[1]) + data[0].sin() - params[2].asinh() / data[1]
         }
 
-        let tape = Tape::new();
-        let params = tape.vars(&[3.0, 2.0, 1.0]);
+        let graph = Graph::new();
+        let params = graph.vars(&[3.0, 2.0, 1.0]);
         let data = [1., 2.];
         let result = diff_fn(&params, &data);
         let gradients = result.accumulate();
