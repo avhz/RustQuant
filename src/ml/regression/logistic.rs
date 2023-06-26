@@ -151,32 +151,30 @@ impl LogisticRegressionInput<f64> {
                     eta = &X * &result.coefficients;
                     mu = LogisticFunction::logistic(&eta);
                     W = DMatrix::from_diagonal(&mu.component_mul(&(&ones - &mu)));
-
-                    let working_response = match &W.clone().try_inverse() {
-                        Some(inv) => eta + inv * (&y - &mu),
-                        None => return Err("Weights matrix (W) is singular (non-invertible)."),
-                    };
-
                     let X_T_W = &X_T * &W;
                     let hessian = &X_T_W * &X;
 
+                    // println!("W = {:.4}", W.norm());
+
+                    let working_response = match &W.clone().try_inverse() {
+                        Some(inv) => eta + inv * (&y - &mu),
+                        // None => return Err("Weights matrix (W) is singular (non-invertible)."),
+                        None => break,
+                    };
+
                     beta = match hessian.try_inverse() {
-                        Some(inv) => {
-                            println!("WEIGHTS = {:.4}", W);
-
-                            result.intercept = result.coefficients[0];
-
-                            inv * (&X_T_W * working_response)
-                        }
+                        Some(inv) => inv * (&X_T_W * working_response),
                         None => {
                             return Err("Hessian matrix (X^T W X) is singular (non-invertible).")
                         }
                     };
-                    std::mem::swap(&mut result.coefficients, &mut beta);
-
                     result.iterations += 1;
+                    result.intercept = result.coefficients[0];
+
                     println!("iter = {}", result.iterations);
                     println!("w_curr = {:.4}", result.coefficients);
+
+                    std::mem::swap(&mut result.coefficients, &mut beta);
                 }
             }
         }
