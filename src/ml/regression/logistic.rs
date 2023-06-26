@@ -54,6 +54,10 @@ pub enum LogisticRegressionAlgorithm {
     /// maximizing the log-likelihood of a Bernoulli
     /// distributed process using Newton's method.
     /// """
+    ///
+    /// References:
+    ///     - Elements of Statistical Learning (Hastie, Tibshirani, Friedman 2009)
+    ///     - Machine Learning: A Probabilistic Perspective (Murphy, Kevin P. 2012)
     IRLS,
 }
 
@@ -122,6 +126,10 @@ impl LogisticRegressionInput<f64> {
             coefficients: DVector::from_element(n_cols, guess),
         };
 
+        let mut eta: DVector<f64>;
+        let mut mu: DVector<f64>;
+        let mut W: DMatrix<f64>;
+
         match method {
             // MAXIMUM LIKELIHOOD ESTIMATION
             LogisticRegressionAlgorithm::MLE => unimplemented!(),
@@ -133,12 +141,10 @@ impl LogisticRegressionInput<f64> {
                 // While not converged.
                 // Convergence is defined as the norm of the change in
                 // the weights being less than the tolerance.
-                while (&beta - &result.coefficients).norm() > tolerance {
-                    std::mem::swap(&mut result.coefficients, &mut beta);
-
-                    let eta: DVector<f64> = &X * &result.coefficients;
-                    let mu: DVector<f64> = LogisticFunction::logistic(&eta);
-                    let W: DMatrix<f64> = DMatrix::from_diagonal(&mu.component_mul(&(&ones - &mu)));
+                while (&beta - &result.coefficients).norm() >= tolerance {
+                    eta = &X * &result.coefficients;
+                    mu = LogisticFunction::logistic(&eta);
+                    W = DMatrix::from_diagonal(&mu.component_mul(&(&ones - &mu)));
 
                     let working_response = match &W.clone().try_inverse() {
                         Some(inv) => eta + inv * (&y - &mu),
@@ -153,7 +159,6 @@ impl LogisticRegressionInput<f64> {
                             println!("WEIGHTS = {:.4}", W);
 
                             result.intercept = result.coefficients[0];
-                            result.coefficients = result.coefficients.clone();
 
                             inv * (&X_T_W * working_response)
                         }
@@ -161,6 +166,7 @@ impl LogisticRegressionInput<f64> {
                             return Err("Hessian matrix (X^T W X) is singular (non-invertible).")
                         }
                     };
+                    std::mem::swap(&mut result.coefficients, &mut beta);
 
                     result.iterations += 1;
                     println!("iter = {}", result.iterations);
