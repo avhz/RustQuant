@@ -116,19 +116,21 @@ impl LogisticRegressionInput<f64> {
         // Number of rows and columns in the design matrix.
         let (n_rows, n_cols) = X.shape();
 
+        // Vector of ones.
         let ones: DVector<f64> = DVector::from_element(n_rows, 1.0);
+
+        // Initial guess for the coefficients.
         let guess: f64 = (y.mean() / (1. - y.mean())).ln();
+
+        // Vector of coefficients.
         let mut beta: DVector<f64> = DVector::zeros(n_rows);
 
+        // Initialise the output struct, with the initial guess for the coefficients.
         let mut result = LogisticRegressionOutput {
             intercept: 0_f64,
             iterations: 0_usize,
             coefficients: DVector::from_element(n_cols, guess),
         };
-
-        let mut eta: DVector<f64>;
-        let mut mu: DVector<f64>;
-        let mut W: DMatrix<f64>;
 
         match method {
             // MAXIMUM LIKELIHOOD ESTIMATION
@@ -138,6 +140,10 @@ impl LogisticRegressionInput<f64> {
             //      - Elements of Statistical Learning (Hastie, Tibshirani, Friedman 2009)
             //      - Machine Learning: A Probabilistic Perspective (Murphy, Kevin P. 2012)
             LogisticRegressionAlgorithm::IRLS => {
+                let mut eta: DVector<f64>;
+                let mut mu: DVector<f64>;
+                let mut W: DMatrix<f64>;
+
                 // While not converged.
                 // Convergence is defined as the norm of the change in
                 // the weights being less than the tolerance.
