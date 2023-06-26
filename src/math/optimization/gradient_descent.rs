@@ -64,6 +64,7 @@ impl GradientDescent {
     // }
 
     /// Performs gradient descent optimization.
+    #[allow(clippy::assign_op_pattern)]
     pub fn optimize<F>(&self, f: F, x0: &[f64], verbose: bool) -> GradientDescentResult
     where
         F: for<'v> Fn(&[Variable<'v>]) -> Variable<'v>,
