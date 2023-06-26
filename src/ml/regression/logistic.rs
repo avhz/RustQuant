@@ -163,6 +163,7 @@ impl LogisticRegressionInput<f64> {
                     };
 
                     result.iterations += 1;
+                    println!("iter = {}", result.iterations);
                     println!("w_curr = {:.4}", result.coefficients);
                 }
             }
