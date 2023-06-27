@@ -7,7 +7,7 @@
 use time::OffsetDateTime;
 
 use crate::distributions::{Distribution, Gaussian};
-use crate::options::european::*;
+use crate::instruments::options::european::*;
 use crate::time::{DayCountConvention, DayCounter};
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

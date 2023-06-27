@@ -4,7 +4,7 @@
 // See LICENSE or <https://www.gnu.org/licenses/>.
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use super::Currency;
+use super::currency::*;
 
 /// Argentina Peso (ARS)
 /// The ISO three-letter code is ARS; the numeric code is 32.

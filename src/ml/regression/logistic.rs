@@ -14,6 +14,8 @@
 
 use nalgebra::{DMatrix, DVector};
 
+// use crate::autodiff::{Graph, Variable};
+
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // STRUCTS, ENUMS, AND TRAITS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -31,11 +33,9 @@ pub struct LogisticRegressionInput<T> {
 /// Struct to hold the output data for a logistic regression.
 #[derive(Clone, Debug)]
 pub struct LogisticRegressionOutput<T> {
-    /// The intercept of the logistic regression,
-    /// often denoted as b0 or alpha.
-    pub intercept: T,
     /// The coefficients of the logistic regression,
-    /// often denoted as b1, b2, ..., bn.
+    /// often denoted as b0, b1, b2, ..., bn.
+    /// The first coefficient is the intercept (aka. b0 or alpha).
     pub coefficients: DVector<T>,
     /// Number of iterations required to converge.
     pub iterations: usize,
@@ -117,24 +117,29 @@ impl LogisticRegressionInput<f64> {
         let (n_rows, n_cols) = X.shape();
 
         // Vector of ones.
-        let ones: DVector<f64> = DVector::from_element(n_rows, 1.0);
+        let ones: DVector<f64> = DVector::from_element(n_rows, 1.);
 
         // Initial guess for the coefficients.
         let guess: f64 = (y.mean() / (1. - y.mean())).ln();
 
+        // Diagonal matrix  of lambdas (tolerance).
+        // let lambda = DMatrix::from_diagonal(&DVector::from_element(n_cols, 1e-6));
+
         // Vector of coefficients.
-        let mut beta: DVector<f64> = DVector::zeros(n_rows);
+        let mut coefs: DVector<f64> = DVector::zeros(n_rows);
 
         // Initialise the output struct, with the initial guess for the coefficients.
         let mut result = LogisticRegressionOutput {
-            intercept: 0_f64,
             iterations: 0_usize,
             coefficients: DVector::from_element(n_cols, guess),
         };
 
         match method {
             // MAXIMUM LIKELIHOOD ESTIMATION
+            // Using Algorithmic Adjoint Differentiation (AAD)
+            // from the `autodiff` module.
             LogisticRegressionAlgorithm::MLE => unimplemented!(),
+
             // ITERATIVELY RE-WEIGHTED LEAST SQUARES
             // References:
             //      - Elements of Statistical Learning (Hastie, Tibshirani, Friedman 2009)
@@ -147,7 +152,7 @@ impl LogisticRegressionInput<f64> {
                 // While not converged.
                 // Convergence is defined as the norm of the change in
                 // the weights being less than the tolerance.
-                while (&beta - &result.coefficients).norm() >= tolerance {
+                while (&coefs - &result.coefficients).norm() >= tolerance {
                     eta = &X * &result.coefficients;
                     mu = LogisticFunction::logistic(&eta);
                     W = DMatrix::from_diagonal(&mu.component_mul(&(&ones - &mu)));
@@ -156,25 +161,29 @@ impl LogisticRegressionInput<f64> {
 
                     // println!("W = {:.4}", W.norm());
 
-                    let working_response = match &W.clone().try_inverse() {
+                    // let working_response = match (W + &lambda).clone().try_inverse() {
+                    let working_response = match W.clone().try_inverse() {
                         Some(inv) => eta + inv * (&y - &mu),
                         // None => return Err("Weights matrix (W) is singular (non-invertible)."),
-                        None => break,
+                        None => {
+                            // result.intercept = result.coefficients[0];
+                            break;
+                        }
                     };
 
-                    beta = match hessian.try_inverse() {
+                    coefs = match hessian.try_inverse() {
                         Some(inv) => inv * (&X_T_W * working_response),
                         None => {
                             return Err("Hessian matrix (X^T W X) is singular (non-invertible).")
                         }
                     };
                     result.iterations += 1;
-                    result.intercept = result.coefficients[0];
+                    // result.intercept = result.coefficients[0];
 
-                    println!("iter = {}", result.iterations);
+                    // println!("iter = {}", result.iterations);
                     println!("w_curr = {:.4}", result.coefficients);
 
-                    std::mem::swap(&mut result.coefficients, &mut beta);
+                    std::mem::swap(&mut result.coefficients, &mut coefs);
                 }
             }
         }
@@ -249,7 +258,7 @@ mod tests_logistic_regression {
             Ok(output) => {
                 println!("Iterations: \t{}", output.iterations);
                 println!("Time taken: \t{:?}", elapsed_none);
-                println!("Intercept: \t{:?}", output.intercept);
+                // println!("Intercept: \t{:?}", output.intercept);
                 println!("Coefficients: \t{:?}", output.coefficients);
             }
             Err(err) => {

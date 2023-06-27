@@ -10,6 +10,10 @@
 // This is because much of this library is based on mathematics, so I
 // want to adhere to the standard mathematical notation.
 #![allow(non_snake_case)]
+// Enforce SAFETY comments.
+// There is no unsafe code currently, but for anyone to add any, it must be
+// documented with a SAFETY comment.
+#![deny(clippy::undocumented_unsafe_blocks)]
 
 //! RustQuant: A Rust library for quantitative finance.
 //!
@@ -52,24 +56,6 @@ pub mod autodiff {
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// BONDS MODULE
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-/// Parent module containing: bond pricing models.
-pub mod bonds {
-    pub use crate::bonds::{bond::*, cox_ingersoll_ross::*, vasicek::*};
-
-    /// Submodule of `bonds`: contains the generic bond traits.
-    pub mod bond;
-    /// Submodule of `bonds`: implements Cox-Ingersoll-Ross bond pricing model.
-    pub mod cox_ingersoll_ross;
-    /// Submodule of `bonds`: implements one-factor Hull-White bond pricing model.
-    pub mod hull_white;
-    /// Submodule of `bonds`: implements Vasicek bond pricing model.
-    pub mod vasicek;
-}
-
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // INSTRUMENTS MODULE
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -80,34 +66,96 @@ pub mod instruments {
 
     /// Submodule of `instruments`: base trait for all instruments.
     pub mod instrument;
+
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // BONDS MODULE
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    /// Parent module containing: bond pricing models.
+    pub mod bonds {
+        pub use crate::instruments::bonds::{bond::*, cox_ingersoll_ross::*, vasicek::*};
+
+        /// Submodule of `bonds`: contains the generic bond traits.
+        pub mod bond;
+        /// Submodule of `bonds`: implements Cox-Ingersoll-Ross bond pricing model.
+        pub mod cox_ingersoll_ross;
+        /// Submodule of `bonds`: implements one-factor Hull-White bond pricing model.
+        pub mod hull_white;
+        /// Submodule of `bonds`: implements Vasicek bond pricing model.
+        pub mod vasicek;
+    }
+
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // OPTION PRICING MODULE
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    /// Parent module containing: option pricers and sensitivity functions.
+    pub mod options {
+        pub use crate::instruments::options::{
+            american::*, asian::*, barrier::*, binary::*, binomial::*, european::*,
+            forward_start::*, greeks::*, heston::*, lookback::*, option::*,
+        };
+
+        /// Submodule of `options`: implements American option pricers.
+        pub mod american;
+        /// Submodule of `options`: implements Asian option pricers.
+        pub mod asian;
+        /// Submodule of `options`: implements Barrier option pricers.
+        pub mod barrier;
+        /// Submodule of `options`: implements Binary option pricers.
+        pub mod binary;
+        /// Submodule of `options`: implements Binomial option pricers.
+        pub mod binomial;
+        /// Submodule of `options`: implements European option pricers.
+        pub mod european;
+        /// Submodule of `options`: forward start options.
+        pub mod forward_start;
+        /// Submodule of `options`: implements option Greeks/sensitivities.
+        pub mod greeks;
+        /// Submodule of `options`: implements the Heston model.
+        pub mod heston;
+        /// Submodule of `options`: implements Lookback options.
+        pub mod lookback;
+        /// Submodule of `options`: base option traits.
+        pub mod option;
+    }
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// CURRENCIES MODULE
+// MONEY RELATED ITEMS MODULE
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-/// Parent module containing: global currencies.
-pub mod currencies {
-    pub use crate::currencies::{
-        africa::*, america::*, asia::*, currency::*, europe::*, oceania::*,
-    };
+/// Parent module containing all money related items.
+/// This includes currencies, cashflows, exchange rates, and money types,
+/// among other things.
+pub mod money {
 
-    /// Submodule of `currencies`: African currencies.
-    pub mod africa;
-    /// Submodule of `currencies`: American currencies.
-    pub mod america;
-    /// Submodule of `currencies`: Antarctic currency.
-    pub mod antarctica;
-    /// Submodule of `currencies`: Asian currencies.
-    pub mod asia;
-    /// Submodule of `currencies`: currency data struct.
-    pub mod currency;
-    /// Submodule of `currencies`: European currencies.
-    pub mod europe;
-    /// Submodule of `currencies`: currency exchange rates.
-    pub mod exchange;
-    /// Submodule of `currencies`: Oceanian currencies.
-    pub mod oceania;
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // CURRENCIES MODULE
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    /// Parent module containing: global currencies.
+    pub mod currencies {
+        pub use crate::money::currencies::{
+            africa::*, america::*, asia::*, currency::*, europe::*, oceania::*,
+        };
+
+        /// Submodule of `currencies`: African currencies.
+        pub mod africa;
+        /// Submodule of `currencies`: American currencies.
+        pub mod america;
+        /// Submodule of `currencies`: Antarctic currency.
+        pub mod antarctica;
+        /// Submodule of `currencies`: Asian currencies.
+        pub mod asia;
+        /// Submodule of `currencies`: currency data struct.
+        pub mod currency;
+        /// Submodule of `currencies`: European currencies.
+        pub mod europe;
+        /// Submodule of `currencies`: currency exchange rates.
+        pub mod exchange;
+        /// Submodule of `currencies`: Oceanian currencies.
+        pub mod oceania;
+    }
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -262,41 +310,6 @@ pub mod stochastics {
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// OPTION PRICING MODULE
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-/// Parent module containing: option pricers and sensitivity functions.
-pub mod options {
-    pub use crate::options::{
-        american::*, asian::*, barrier::*, binary::*, binomial::*, european::*, forward_start::*,
-        greeks::*, heston::*, lookback::*, option::*,
-    };
-
-    /// Submodule of `options`: implements American option pricers.
-    pub mod american;
-    /// Submodule of `options`: implements Asian option pricers.
-    pub mod asian;
-    /// Submodule of `options`: implements Barrier option pricers.
-    pub mod barrier;
-    /// Submodule of `options`: implements Binary option pricers.
-    pub mod binary;
-    /// Submodule of `options`: implements Binomial option pricers.
-    pub mod binomial;
-    /// Submodule of `options`: implements European option pricers.
-    pub mod european;
-    /// Submodule of `options`: forward start options.
-    pub mod forward_start;
-    /// Submodule of `options`: implements option Greeks/sensitivities.
-    pub mod greeks;
-    /// Submodule of `options`: implements the Heston model.
-    pub mod heston;
-    /// Submodule of `options`: implements Lookback options.
-    pub mod lookback;
-    /// Submodule of `options`: base option traits.
-    pub mod option;
-}
-
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // TRADING MODULE
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -347,6 +360,7 @@ pub mod time {
 /// Parent module containing: machine learning functionality.
 /// This module relies on the `nalgebra` crate.
 pub mod ml {
+    pub use crate::ml::activations::*;
     pub use crate::ml::regression::{linear::*, logistic::*};
 
     /// Submodule of `ml`: regression implentations.
@@ -354,4 +368,6 @@ pub mod ml {
         pub mod linear;
         pub mod logistic;
     }
+    /// Submodule of `ml`: activation functions.
+    pub mod activations;
 }

@@ -33,6 +33,52 @@ See [CHANGELOG.md](./CHANGELOG.md) for a full list of changes.
 # Table of Contents
 
 1. [Automatic Differentiation](#autodiff)
+2. [Data](#data)
+
+- Read and write data from various sources (CSV, JSON, Parquet).
+- Download data from Yahoo! Finance.
+
+3. [Distributions](#distributions)
+
+- PDFs, CDFs, MGFs, CFs, and other ditrubution related functions for common distributions.
+
+4. [Instruments](#instruments)
+
+- Bonds
+- Options
+
+5. [Mathematics](#maths)
+
+- Integration (double-exponential quadrature).
+- Optimization and root finding (gradient descent, Newton-Raphson).
+- Risk-reward metrics.
+
+6. [Machine Learning](#ml)
+
+- Regression:
+  - Linear
+  - Logistic
+
+7. [Money](#money)
+
+- Cashflows
+- Currencies
+- Quotes
+
+8. [Stochastic Processes](#stochastics)
+
+- Brownian Motion (standard, arithmetric and geometric)
+- Short Rate Models (CIR, OU, Vasicek, Hull-White, etc)
+
+9. [Time and Dates](#time)
+
+- `DayCounter` for pricing.
+
+10. [Utilities/Helpers](#utils)
+11. [How-tos](#howto)
+12. [References](#references)
+
+<!-- 1. [Automatic Differentiation](#autodiff)
 2. [Option Pricers](#options)
 3. [Stochastic Processes and Short Rate Models](#stochastics)
 4. [Bonds](#bonds)
@@ -41,7 +87,7 @@ See [CHANGELOG.md](./CHANGELOG.md) for a full list of changes.
 7. [Machine Learning](#ml)
 8. [Helper Functions and Macros](#helpers)
 9. [How-tos](#howto)
-10. [References](#references)
+10. [References](#references) -->
 
 ## :link: Automatic Differentiation <a name="autodiff"></a>
 
@@ -49,150 +95,38 @@ Currently only gradients can be computed. Suggestions on how to extend the funct
 
 Additionally, only functions $f: \mathbb{R}^n \rightarrow \mathbb{R}$ (scalar output) are supported. However, you can manually apply the differentiation to multiple functions that could represent a vector output.
 
-+ [x] Reverse (Adjoint) Mode
-  + Implementation via Operator and Function Overloading.
-  + Useful when number of outputs is *smaller* than number of inputs.
-    + i.e for functions $f:\mathbb{R}^n \rightarrow \mathbb{R}^m$, where $m \ll n$
-+ [ ] Forward (Tangent) Mode
-  + Implementation via Dual Numbers.
-  + Useful when number of outputs is *larger* than number of inputs.
-    + i.e. for functions $f:\mathbb{R}^n \rightarrow \mathbb{R}^m$, where $m \gg n$
+- [x] Reverse (Adjoint) Mode
+  - Implementation via Operator and Function Overloading.
+  - Useful when number of outputs is *smaller* than number of inputs.
+    - i.e for functions $f:\mathbb{R}^n \rightarrow \mathbb{R}^m$, where $m \ll n$
+- [ ] Forward (Tangent) Mode
+  - Implementation via Dual Numbers.
+  - Useful when number of outputs is *larger* than number of inputs.
+    - i.e. for functions $f:\mathbb{R}^n \rightarrow \mathbb{R}^m$, where $m \gg n$
 
-## :money_with_wings: Option Pricers <a name="options"></a>
+```rust
+use RustQuant::autodiff::*;
 
-+ Closed-form price solutions:
-  + [x] Heston Model
-  + [x] Barrier
-  + [x] European
-  + [x] Greeks/Sensitivities
-  + [x] Lookback
-  + [x] Asian: Continuous Geometric Average
-  + [x] Forward Start
-  + [ ] Basket
-  + [ ] Rainbow
-  + [ ] American
+fn main() {
+    // Create a new Graph to store the computations.
+    let g = Graph::new();
 
-+ Lattice models:
-  + [x] Binomial Tree (Cox-Ross-Rubinstein)
+    // Assign variables.
+    let x = g.var(0.5);
+    let y = g.var(4.2);
 
-The stochastic process generators can be used to price path-dependent options via Monte-Carlo.
+    // Define a function.
+    let z = x * y + x.sin();
 
-+ Monte Carlo pricing:
-  + [x] Lookback
-  + [ ] Asian
-  + [ ] Chooser
-  + [ ] Barrier
+    // Accumulate the gradient.
+    let grad = z.accumulate();
 
-## :chart_with_upwards_trend: Stochastic Processes and Short Rate Models <a name="stochastics"></a>
-
-The following is a list of stochastic processes that can be generated.
-
-+ [x] Brownian Motion
-+ [x] Arithmetic Brownian Motion
-  + $dX(t) = \mu dt + \sigma dW(t)$
-+ [x] Geometric Brownian Motion
-  + $dX(t) = \mu X(t) dt + \sigma X(t) dW(t)$
-  + Models: Black-Scholes (1973), Rendleman-Bartter (1980)
-+ [x] Cox-Ingersoll-Ross (1985)
-  + $dX(t) = \left[ \theta - \alpha X(t) \right] dt + \sigma \sqrt{r_t} dW(t)$
-+ [x] Ornstein-Uhlenbeck process
-  + $dX(t) = \theta \left[ \mu - X(t) \right] dt + \sigma dW(t)$
-  + Models: Vasicek (1977)
-+ [x] Ho-Lee (1986)
-  + $dX(t) = \theta(t) dt + \sigma dW(t)$
-+ [x] Hull-White (1990)
-  + $dX(t) = \left[ \theta(t) - \alpha X(t) \right]dt + \sigma dW(t)$
-+ [x] Extended Vasicek (1990)
-  + $dX(t) = \left[ \theta(t) - \alpha(t) X(t) \right] dt + \sigma dW(t)$
-+ [x] Black-Derman-Toy (1990)
-  + $d\ln[X(t)] = \left[ \theta(t) + \frac{\sigma'(t)}{\sigma(t)}\ln[X(t)] \right]dt + \sigma_t dW(t)$
-  + $d\ln[X(t)] = \theta(t) dt + \sigma dW(t)$
-
-## :chart_with_downwards_trend: Bonds <a name="bonds"></a>
-
-+ Prices:
-  + [x] The Vasicek Model
-  + [x] The Cox, Ingersoll, and Ross Model
-  + [x] The Hull–White (One-Factor) Model
-  + [ ] The Rendleman and Bartter Model
-  + [ ] The Ho–Lee Model
-  + [ ] The Black–Derman–Toy Model
-  + [ ] The Black–Karasinski Model
-+ [ ] Duration
-+ [ ] Convexity
-
-## :bar_chart: Distributions <a name="distributions"></a>
-
-Probability density/mass functions, distribution functions, characteristic functions, etc.
-
-+ [x] Gaussian
-+ [x] Bernoulli
-+ [x] Binomial
-+ [x] Poisson
-+ [x] Uniform (discrete & continuous)
-+ [x] Chi-Squared
-+ [x] Gamma
-+ [x] Exponential
-
-## :triangular_ruler: Mathematics <a name="maths"></a>
-
-+ Optimisation:
-  + [x] Gradient Descent
-  + [ ] Bisection
-  + [ ] Newton
-  + [ ] Secant
-+ Numerical Integration (needed for Heston model, for example):
-  + [x] Tanh-Sinh (double exponential) quadrature
-  + [x] Composite Midpoint Rule
-  + [x] Composite Trapezoidal Rule
-  + [x] Composite Simpson's 3/8 Rule
-+ [x] Risk-Reward Measures (Sharpe, Treynor, Sortino, etc)
-+ [x] Newton-Raphson
-+ [x] Standard Normal Distribution (Distribution/Density functions, and generation of variates)
-+ [ ] Interpolation
-
-## :crystal_ball: Machine Learning <a name="ml"></a>
-
-+ Regression:
-  + [x] Linear (using QR or SVD decomposition)
-  + [ ] Logistic (MLE or IRLS)
-  + [ ] Ridge
-  + [ ] LASSO
-  + [ ] Elastic Net
-  + [ ] Quantile
-  + [ ] Principal Components
-+ [ ] K-Means Clustering
-+ [ ] K-Nearest Neighbours
-+ [ ] Naive Bayes
-+ [ ] Decision Trees
-+ [ ] Random Forests
-+ [ ] Support Vector Machines
-+ [ ] Linear Discriminant Analysis
-+ [ ] Neural Networks
-
-## :handshake: Helper Functions and Macros <a name="helpers"></a>
-
-A collection of utility functions and macros.
-
-+ [x] Plot a vector.
-+ [x] Write vector to file.
-+ [x] Cumulative sum of vector.
-+ [x] Linearly spaced sequence.
-+ [x] `assert_approx_equal!`
-
-## :heavy_check_mark: How-tos <a name="howto"></a>
-
-See [/examples](./examples) for more details. Run them with:
-
-```bash
-cargo run --example automatic_differentiation
+    println!("Function = {}", z);
+    println!("Gradient = {:?}", grad.wrt([x, y]));
+}
 ```
 
-I would not recommend using RustQuant within any other libraries for some time, as it will most likely go through many breaking changes as I learn more Rust and settle on a decent structure for the library.
-
-:pray: I would greatly appreciate contributions so it can get to the `v1.0.0` mark ASAP.
-
-### Download data from Yahoo! Finance
+## :bar_chart: Data <a name="data"></a>
 
 You can download data from Yahoo! Finance into a Polars `DataFrame`.
 
@@ -258,50 +192,85 @@ fn main() {
 }
 ```
 
-### Compute gradients
+## :bar_chart: Distributions <a name="distributions"></a>
+
+Probability density/mass functions, distribution functions, characteristic functions, etc.
+
+- [x] Gaussian
+- [x] Bernoulli
+- [x] Binomial
+- [x] Poisson
+- [x] Uniform (discrete & continuous)
+- [x] Chi-Squared
+- [x] Gamma
+- [x] Exponential
+
+## :chart_with_upwards_trend: Instruments <a name="instruments"></a>
+
+### :chart_with_downwards_trend: Bonds <a name="bonds"></a>
+
+- Prices:
+  - [x] The Vasicek Model
+  - [x] The Cox, Ingersoll, and Ross Model
+  - [x] The Hull–White (One-Factor) Model
+  - [ ] The Rendleman and Bartter Model
+  - [ ] The Ho–Lee Model
+  - [ ] The Black–Derman–Toy Model
+  - [ ] The Black–Karasinski Model
+- [ ] Duration
+- [ ] Convexity
+
+### :money_with_wings: Option Pricing <a name="options"></a>
+
+- Closed-form price solutions:
+  - [x] Heston Model
+  - [x] Barrier
+  - [x] European
+  - [x] Greeks/Sensitivities
+  - [x] Lookback
+  - [x] Asian: Continuous Geometric Average
+  - [x] Forward Start
+  - [ ] Basket
+  - [ ] Rainbow
+  - [ ] American
+
+- Lattice models:
+  - [x] Binomial Tree (Cox-Ross-Rubinstein)
+
+The stochastic process generators can be used to price path-dependent options via Monte-Carlo.
+
+- Monte Carlo pricing:
+  - [x] Lookback
+  - [ ] Asian
+  - [ ] Chooser
+  - [ ] Barrier
 
 ```rust
-use RustQuant::autodiff::*;
+use RustQuant::options::*;
 
 fn main() {
-    // Create a new Graph to store the computations.
-    let g = Graph::new();
+    let VanillaOption = EuropeanOption {
+        initial_price: 100.0,
+        strike_price: 110.0,
+        risk_free_rate: 0.05,
+        volatility: 0.2,
+        dividend_rate: 0.02,
+        time_to_maturity: 0.5,
+    };
 
-    // Assign variables.
-    let x = g.var(0.5);
-    let y = g.var(4.2);
+    let prices = VanillaOption.price();
 
-    // Define a function.
-    let z = x * y + x.sin();
-
-    // Accumulate the gradient.
-    let grad = z.accumulate();
-
-    println!("Function = {}", z);
-    println!("Gradient = {:?}", grad.wrt([x, y]));
+    println!("Call price = {}", prices.0);
+    println!("Put price = {}", prices.1);
 }
 ```
 
-### Compute integrals
+## :triangular_ruler: Mathematics <a name="maths"></a>
 
-```rust
-use RustQuant::math::*;
+## Optimization and Root Finding
 
-fn main() {
-    // Define a function to integrate: e^(sin(x))
-    fn f(x: f64) -> f64 {
-        (x.sin()).exp()
-    }
-
-    // Integrate from 0 to 5.
-    let integral = integrate(f, 0.0, 5.0);
-
-    // ~ 7.18911925
-    println!("Integral = {}", integral); 
-}
-```
-
-### Gradient Descent
+- [x] Gradient Descent
+- [x] Newton-Raphson
 
 Note: the reason you need to specify the lifetimes and use the type `Variable` is because the gradient descent optimiser uses the `RustQuant::autodiff` module to compute the gradients. This is a slight inconvenience, but the speed-up is enormous when working with functions with many inputs (when compared with using finite-difference quotients).
 
@@ -333,29 +302,72 @@ fn main() {
 }
 ```
 
-### Price options
+### Integration
+
+- Numerical Integration (needed for Heston model, for example):
+  - [x] Tanh-Sinh (double exponential) quadrature
+  - [x] Composite Midpoint Rule
+  - [x] Composite Trapezoidal Rule
+  - [x] Composite Simpson's 3/8 Rule
 
 ```rust
-use RustQuant::options::*;
+use RustQuant::math::*;
 
 fn main() {
-    let VanillaOption = EuropeanOption {
-        initial_price: 100.0,
-        strike_price: 110.0,
-        risk_free_rate: 0.05,
-        volatility: 0.2,
-        dividend_rate: 0.02,
-        time_to_maturity: 0.5,
-    };
+    // Define a function to integrate: e^(sin(x))
+    fn f(x: f64) -> f64 {
+        (x.sin()).exp()
+    }
 
-    let prices = VanillaOption.price();
+    // Integrate from 0 to 5.
+    let integral = integrate(f, 0.0, 5.0);
 
-    println!("Call price = {}", prices.0);
-    println!("Put price = {}", prices.1);
+    // ~ 7.18911925
+    println!("Integral = {}", integral); 
 }
 ```
 
-### Generate stochastic processes
+### Risk-Reward Metrics
+
+- [x] Risk-Reward Measures (Sharpe, Treynor, Sortino, etc)
+
+## :crystal_ball: Machine Learning <a name="ml"></a>
+
+### Regression
+
+- [x] Linear (using QR or SVD decomposition)
+- [ ] Logistic (using MLE or IRLS)
+
+## :moneybag: Money <a name="money"></a>
+
+- Cashflows
+- Currencies
+- Quotes
+
+## :chart_with_upwards_trend: Stochastic Processes and Short Rate Models <a name="stochastics"></a>
+
+The following is a list of stochastic processes that can be generated.
+
+- [x] Brownian Motion
+- [x] Arithmetic Brownian Motion
+  - $dX(t) = \mu dt + \sigma dW(t)$
+- [x] Geometric Brownian Motion
+  - $dX(t) = \mu X(t) dt + \sigma X(t) dW(t)$
+  - Models: Black-Scholes (1973), Rendleman-Bartter (1980)
+- [x] Cox-Ingersoll-Ross (1985)
+  - $dX(t) = \left[ \theta - \alpha X(t) \right] dt + \sigma \sqrt{r_t} dW(t)$
+- [x] Ornstein-Uhlenbeck process
+  - $dX(t) = \theta \left[ \mu - X(t) \right] dt + \sigma dW(t)$
+  - Models: Vasicek (1977)
+- [x] Ho-Lee (1986)
+  - $dX(t) = \theta(t) dt + \sigma dW(t)$
+- [x] Hull-White (1990)
+  - $dX(t) = \left[ \theta(t) - \alpha X(t) \right]dt + \sigma dW(t)$
+- [x] Extended Vasicek (1990)
+  - $dX(t) = \left[ \theta(t) - \alpha(t) X(t) \right] dt + \sigma dW(t)$
+- [x] Black-Derman-Toy (1990)
+  - $d\ln[X(t)] = \left[ \theta(t) + \frac{\sigma'(t)}{\sigma(t)}\ln[X(t)] \right]dt + \sigma_t dW(t)$
+  - $d\ln[X(t)] = \theta(t) dt + \sigma dW(t)$
 
 ```rust
 use RustQuant::stochastics::*;
@@ -372,12 +384,34 @@ fn main() {
 }
 ```
 
+## :handshake: Helper Functions and Macros <a name="helpers"></a>
+
+A collection of utility functions and macros.
+
+- [x] Plot a vector.
+- [x] Write vector to file.
+- [x] Cumulative sum of vector.
+- [x] Linearly spaced sequence.
+- [x] `assert_approx_equal!`
+
+## :heavy_check_mark: How-tos <a name="howto"></a>
+
+See [/examples](./examples) for more details. Run them with:
+
+```bash
+cargo run --example automatic_differentiation
+```
+
+I would not recommend using RustQuant within any other libraries for some time, as it will most likely go through many breaking changes as I learn more Rust and settle on a decent structure for the library.
+
+:pray: I would greatly appreciate contributions so it can get to the `v1.0.0` mark ASAP.
+
 ## :book: References: <a name="references"></a>
 
-+ John C. Hull - *Options, Futures, and Other Derivatives*
-+ Damiano Brigo & Fabio Mercurio - *Interest Rate Models - Theory and Practice (With Smile, Inflation and Credit)*
-+ Paul Glasserman - *Monte Carlo Methods in Financial Engineering*
-+ Andreas Griewank & Andrea Walther - *Evaluating Derivatives - Principles and Techniques of Algorithmic Differentiation*
-+ Steven E. Shreve - *Stochastic Calculus for Finance II: Continuous-Time Models*
-+ Espen Gaarder Haug - *Option Pricing Formulas*
-+ Antoine Savine - *Modern Computational Finance: AAD and Parallel Simulations*
+- John C. Hull - *Options, Futures, and Other Derivatives*
+- Damiano Brigo & Fabio Mercurio - *Interest Rate Models - Theory and Practice (With Smile, Inflation and Credit)*
+- Paul Glasserman - *Monte Carlo Methods in Financial Engineering*
+- Andreas Griewank & Andrea Walther - *Evaluating Derivatives - Principles and Techniques of Algorithmic Differentiation*
+- Steven E. Shreve - *Stochastic Calculus for Finance II: Continuous-Time Models*
+- Espen Gaarder Haug - *Option Pricing Formulas*
+- Antoine Savine - *Modern Computational Finance: AAD and Parallel Simulations*

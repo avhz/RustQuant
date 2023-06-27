@@ -6,7 +6,7 @@
 
 use crate::{
     distributions::{Distribution, Gaussian},
-    options::*,
+    instruments::options::*,
     stochastics::*,
     utilities::*,
 };

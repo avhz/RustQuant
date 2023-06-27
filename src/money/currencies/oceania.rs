@@ -4,7 +4,7 @@
 // See LICENSE or <https://www.gnu.org/licenses/>.
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use crate::currencies::currency::*;
+use crate::money::currencies::currency::*;
 
 /// Australian dollar
 /// The ISO three-letter code is AUD; the numeric code is 36.

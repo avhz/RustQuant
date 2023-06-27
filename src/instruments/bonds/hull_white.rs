@@ -19,8 +19,8 @@
 //! - `t`: time to check price at
 //! - `maturity`: time at bond maturity
 
-use super::super::math::integrate;
-use crate::bonds::*;
+use crate::instruments::bonds::*;
+use crate::math::integrate;
 
 /// Struct containing the Hull-White model parameters.
 pub struct HullWhite {

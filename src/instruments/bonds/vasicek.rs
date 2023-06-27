@@ -17,7 +17,7 @@
 //! - `θ`: is the level to which it gets pulled.
 //! - `σ`: is the diffusion coefficient.
 
-use crate::bonds::*;
+use crate::instruments::bonds::*;
 
 /// Struct containing the Vasicek model parameters.
 pub struct Vasicek {

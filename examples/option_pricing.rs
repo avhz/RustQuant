@@ -1,7 +1,8 @@
 use time::{Duration, OffsetDateTime};
-use RustQuant::options::*;
+use RustQuant::instruments::options::*;
 
 fn main() {
+    // Also has a new() method.
     let vanilla_option = EuropeanOption {
         initial_price: 100.0,
         strike_price: 110.0,

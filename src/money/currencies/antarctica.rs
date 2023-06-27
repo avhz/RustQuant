@@ -4,7 +4,7 @@
 // See LICENSE or <https://www.gnu.org/licenses/>.
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use crate::currencies::currency::*;
+use crate::money::currencies::currency::*;
 
 /// Antarctic dollar
 /// The ISO three-letter code is AAD.

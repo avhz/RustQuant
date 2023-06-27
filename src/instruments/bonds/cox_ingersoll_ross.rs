@@ -20,7 +20,7 @@
 //! This means that, as the short-term interest rate increases,
 //! the standard deviation increases.
 
-use crate::bonds::*;
+use crate::instruments::bonds::*;
 
 /// Struct containing the Cox-Ingersoll-Ross model parameters.
 pub struct CoxIngersollRoss {

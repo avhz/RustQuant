@@ -41,6 +41,29 @@ pub struct EuropeanOption {
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 impl EuropeanOption {
+    /// New European Option
+    pub fn new(
+        initial_price: f64,
+        strike_price: f64,
+        risk_free_rate: f64,
+        volatility: f64,
+        dividend_rate: f64,
+        // time_to_maturity: f64,
+        valuation_date: Option<OffsetDateTime>,
+        expiry_date: OffsetDateTime,
+    ) -> Self {
+        Self {
+            initial_price,
+            strike_price,
+            risk_free_rate,
+            volatility,
+            dividend_rate,
+            // time_to_maturity,
+            valuation_date,
+            expiry_date,
+        }
+    }
+
     /// Black-Scholes European Call Option Price
     /// Returns a tuple: `(call_price, put_price)`
     /// # Note:
@@ -103,18 +126,19 @@ mod tests_black_scholes {
 
     #[test]
     fn TEST_black_scholes() {
-        let VanillaOption = EuropeanOption {
-            initial_price: 100.0,
-            strike_price: 110.0,
-            risk_free_rate: 0.05,
-            volatility: 0.2,
-            dividend_rate: 0.0,
-            // time_to_maturity: 0.5,
-            valuation_date: None,
-            expiry_date: OffsetDateTime::now_utc() + Duration::days(182),
-        };
+        let expiry_date = OffsetDateTime::now_utc() + Duration::days(182);
 
-        let prices = VanillaOption.price();
+        let vanilla_option = EuropeanOption::new(
+            100.,        // Underlying price
+            110.,        // Strike price
+            0.05,        // Risk-free rate
+            0.2,         // Volatility
+            0.0,         // Dividend rate
+            None,        // Valuation date
+            expiry_date, // Expiry date
+        );
+
+        let prices = vanilla_option.price();
         assert_approx_equal!(prices.0, 2.8, 0.1);
         assert_approx_equal!(prices.1, 10.18, 0.01);
     }
