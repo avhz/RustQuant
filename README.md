@@ -32,42 +32,18 @@ See [CHANGELOG.md](./CHANGELOG.md) for a full list of changes.
 
 # Table of Contents
 
-1. [Automatic Differentiation](#autodiff)
-2. [Data](#data)
-
-Methods for reading and writing data from/to various sources (`CSV`, `JSON`, `PARQUET`). Can also download data from Yahoo! Finance.
-
-3. [Distributions](#distributions)
-
-PDFs, CDFs, MGFs, CFs, and other ditrubution related functions for common distributions.
-
-4. [Instruments](#instruments)
-
-Various implementations for instruments like `Bonds` and `Options`, and the pricing of them. Others coming in the future (swaps, futures, CDSs, etc).
-
-5. [Mathematics](#maths)
-
-Numerical integration (double-exponential quadrature), root finding (gradient descent, Newton-Raphson), and risk-reward metrics.
-
-6. [Machine Learning](#ml)
-
-Currently only linear regression is implemented (and working on logistic regression). More to come in the future.
-
-7. [Money](#money)
-
-Implementations for `Cashflows`, `Currencies`, and `Quotes`, and similar objects.
-
-8. [Stochastic Processes](#stochastics)
-
-Can generate Brownian Motion (standard, arithmetric and geometric) and various short-rate models (CIR, OU, Vasicek, Hull-White, etc).
-
-9. [Time and Dates](#time)
-
-Time and date functionality. Mostly the `DayCounter` for pricing options and bonds.
-
-10. [Utilities/Helpers](#helpers)
-11. [How-tos](#howto)
-12. [References](#references)
+1. [Automatic Differentiation](#autodiff) - Reverse (Adjoint) Mode Automatic Differentiation.
+2. [Data](#data) - Methods for reading and writing data from/to various sources (`CSV`, `JSON`, `PARQUET`). Can also download data from Yahoo! Finance.
+3. [Distributions](#distributions) - PDFs, CDFs, MGFs, CFs, and other ditrubution related functions for common distributions.
+4. [Instruments](#instruments) - Various implementations for instruments like `Bonds` and `Options`, and the pricing of them. Others coming in the future (swaps, futures, CDSs, etc).
+5. [Mathematics](#maths) - Numerical integration (double-exponential quadrature), root finding (gradient descent, Newton-Raphson), and risk-reward metrics.
+6. [Machine Learning](#ml) - Currently only linear regression is implemented (and working on logistic regression). More to come in the future.
+7. [Money](#money) - Implementations for `Cashflows`, `Currencies`, and `Quotes`, and similar objects.
+8. [Stochastic Processes](#stochastics) - Can generate Brownian Motion (standard, arithmetric and geometric) and various short-rate models (CIR, OU, Vasicek, Hull-White, etc).
+9. [Time and Dates](#time) - Time and date functionality. Mostly the `DayCounter` for pricing options and bonds.
+10. [Utilities/Helpers](#helpers) - Various helper functions and macros.
+11. [How-tos](#howto) - How to do various things with RustQuant.
+12. [References](#references) - References and resources used for this project.
 
 ## :link: Automatic Differentiation <a name="autodiff"></a>
 
