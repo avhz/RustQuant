@@ -4,6 +4,7 @@
 // See LICENSE or <https://www.gnu.org/licenses/>.
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+use crate::distributions::Distribution as RQ_Distribution;
 use num_complex::Complex;
 
 /// Binomial distribution: X ~ Bin(n, p)
@@ -16,26 +17,30 @@ pub struct Binomial {
 
 impl Binomial {
     /// New instance of a Binomial distribution.
-    pub fn new(trials: usize, probability: f64) -> Binomial {
+    pub fn new(trials: usize, probability: f64) -> Self {
         assert!((0.0..=1.0).contains(&probability));
 
-        Binomial {
+        Self {
             n: trials,
             p: probability,
         }
     }
+}
 
-    /// Binomial characteristic function.
-    pub fn cf(&self, t: f64) -> Complex<f64> {
+impl RQ_Distribution for Binomial {
+    fn cf(&self, t: f64) -> Complex<f64> {
         assert!((0.0..=1.0).contains(&self.p));
 
         let i: Complex<f64> = Complex::i();
         (1.0 - self.p + self.p * (i * t).exp()).powi(self.n as i32)
     }
 
-    /// Binomial mass function.
-    pub fn pmf(&self, k: usize) -> f64 {
-        assert!(k <= self.n);
+    fn pdf(&self, x: f64) -> f64 {
+        self.pmf(x)
+    }
+
+    fn pmf(&self, k: f64) -> f64 {
+        assert!(k as usize <= self.n);
         assert!((0.0..=1.0).contains(&self.p));
 
         let n_C_k = |n: u32, k: u32| -> u32 {
@@ -44,12 +49,51 @@ impl Binomial {
 
         n_C_k(self.n as u32, k as u32) as f64
             * self.p.powi(k as i32)
-            * (1.0 - self.p).powi((self.n - k) as i32)
+            * (1.0 - self.p).powi((self.n - k as usize) as i32)
     }
 
-    /// Binomial distribution function.
-    pub fn cdf(&self, k: i32) -> f64 {
-        statrs::function::beta::beta_reg((self.n - k as usize) as f64, (1 + k) as f64, 1.0 - self.p)
+    fn cdf(&self, k: f64) -> f64 {
+        statrs::function::beta::beta_reg((self.n - k as usize) as f64, (1. + k) as f64, 1. - self.p)
+    }
+
+    fn inv_cdf(&self, _p: f64) -> f64 {
+        todo!()
+    }
+
+    fn mean(&self) -> f64 {
+        todo!()
+    }
+
+    fn median(&self) -> f64 {
+        todo!()
+    }
+
+    fn mode(&self) -> f64 {
+        todo!()
+    }
+
+    fn variance(&self) -> f64 {
+        todo!()
+    }
+
+    fn skewness(&self) -> f64 {
+        todo!()
+    }
+
+    fn kurtosis(&self) -> f64 {
+        todo!()
+    }
+
+    fn entropy(&self) -> f64 {
+        todo!()
+    }
+
+    fn mgf(&self, t: f64) -> f64 {
+        todo!()
+    }
+
+    fn sample(&self, n: usize) -> Vec<f64> {
+        todo!()
     }
 }
 
@@ -70,12 +114,12 @@ mod tests {
 
         // Probability mass function
         // k = 1 successes.
-        let pmf = dist.pmf(1);
+        let pmf = dist.pmf(1.);
         assert_approx_equal!(pmf, 0.5, 1e-10);
 
         // Distribution function
         // k = 1 successes.
-        let cdf = dist.cdf(1);
+        let cdf = dist.cdf(1.);
         assert_approx_equal!(cdf, 0.75, 1e-10);
     }
 }

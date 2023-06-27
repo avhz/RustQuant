@@ -4,6 +4,7 @@
 // See LICENSE or <https://www.gnu.org/licenses/>.
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+use crate::distributions::Distribution as RQ_Distribution;
 use num_complex::Complex;
 use statrs::function::gamma::{gamma, gamma_li};
 
@@ -50,6 +51,64 @@ impl Gamma {
         let beta = self.beta;
 
         gamma_li(alpha, beta * x) / gamma(alpha)
+    }
+}
+
+impl RQ_Distribution for Gamma {
+    fn cf(&self, t: f64) -> Complex<f64> {
+        todo!()
+    }
+
+    fn pdf(&self, x: f64) -> f64 {
+        todo!()
+    }
+
+    fn pmf(&self, x: f64) -> f64 {
+        todo!()
+    }
+
+    fn cdf(&self, x: f64) -> f64 {
+        todo!()
+    }
+
+    fn inv_cdf(&self, p: f64) -> f64 {
+        todo!()
+    }
+
+    fn mean(&self) -> f64 {
+        todo!()
+    }
+
+    fn median(&self) -> f64 {
+        todo!()
+    }
+
+    fn mode(&self) -> f64 {
+        todo!()
+    }
+
+    fn variance(&self) -> f64 {
+        todo!()
+    }
+
+    fn skewness(&self) -> f64 {
+        todo!()
+    }
+
+    fn kurtosis(&self) -> f64 {
+        todo!()
+    }
+
+    fn entropy(&self) -> f64 {
+        todo!()
+    }
+
+    fn mgf(&self, t: f64) -> f64 {
+        todo!()
+    }
+
+    fn sample(&self, n: usize) -> Vec<f64> {
+        todo!()
     }
 }
 

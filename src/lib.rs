@@ -4,8 +4,15 @@
 // See LICENSE or <https://www.gnu.org/licenses/>.
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+//! RustQuant: A Rust library for quantitative finance.
+//!
+//! Contact: rustquantcontact@gmail.com
+//!
+//! This library is a work in progress.
+//! Any contributions are greatly appreciated.
+
 // Strictly enforce documentation.
-#![deny(missing_docs)]
+#![forbid(missing_docs)]
 // Allow snake case.
 // This is because much of this library is based on mathematics, so I
 // want to adhere to the standard mathematical notation.
@@ -13,14 +20,7 @@
 // Enforce SAFETY comments.
 // There is no unsafe code currently, but for anyone to add any, it must be
 // documented with a SAFETY comment.
-#![deny(clippy::undocumented_unsafe_blocks)]
-
-//! RustQuant: A Rust library for quantitative finance.
-//!
-//! Contact: rustquantcontact@gmail.com
-//!
-//! This library is a work in progress.
-//! Any contributions are greatly appreciated.
+#![forbid(clippy::undocumented_unsafe_blocks)]
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // RUSTQUANT ERROR HANDLING MODULE

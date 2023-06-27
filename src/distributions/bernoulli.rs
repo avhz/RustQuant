@@ -4,9 +4,10 @@
 // See LICENSE or <https://www.gnu.org/licenses/>.
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use super::Distribution;
+use super::Distribution as RQ_Distribution;
 use core::panic;
 use num_complex::Complex;
+use rand::{distributions::Distribution, thread_rng};
 
 /// Bernoulli distribution: X ~ Bern(p)
 pub struct Bernoulli {
@@ -23,7 +24,7 @@ impl Bernoulli {
     }
 }
 
-impl Distribution for Bernoulli {
+impl RQ_Distribution for Bernoulli {
     fn cf(&self, t: f64) -> Complex<f64> {
         assert!((0.0..=1.0).contains(&self.p));
 
@@ -92,6 +93,20 @@ impl Distribution for Bernoulli {
     fn mgf(&self, t: f64) -> f64 {
         1.0 - self.p + self.p * f64::exp(t)
     }
+
+    fn sample(&self, n: usize) -> Vec<f64> {
+        let mut rng = thread_rng();
+
+        let bernoulli = rand::distributions::Bernoulli::new(self.p).unwrap();
+
+        let mut variates: Vec<f64> = Vec::with_capacity(n);
+
+        for _ in 0..variates.capacity() {
+            variates.push(bernoulli.sample(&mut rng) as usize as f64);
+        }
+
+        variates
+    }
 }
 
 #[cfg(test)]
@@ -101,7 +116,7 @@ mod tests_bernoulli {
 
     #[test]
     fn test_bernoulli_functions() {
-        let dist: Bernoulli = Bernoulli::new(1.0);
+        let dist = Bernoulli::new(1.0);
 
         // Characteristic function
         let cf = dist.cf(1.0);

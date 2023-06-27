@@ -14,6 +14,7 @@ use {
 };
 
 /// Gaussian (normal) distribution: X ~ N(mu, sigma^2)
+/// https://en.wikipedia.org/wiki/Normal_distribution
 pub struct Gaussian {
     /// Mean (location).
     mean: f64,
@@ -32,23 +33,10 @@ impl Default for Gaussian {
 
 impl Gaussian {
     /// New instance of a Gaussian distribution.
-    pub fn new(mean: f64, variance: f64) -> Gaussian {
+    pub fn new(mean: f64, variance: f64) -> Self {
         assert!(variance > 0.0);
 
-        Gaussian { mean, variance }
-    }
-
-    /// Standard Normal Random Variates Generator
-    pub fn sample(&self, n: usize) -> Vec<f64> {
-        let mut rng = thread_rng();
-        let normal = Normal::new(0.0, 1.0).unwrap();
-        let mut variates: Vec<f64> = Vec::with_capacity(n);
-
-        for _ in 0..variates.capacity() {
-            variates.push(normal.sample(&mut rng));
-        }
-
-        variates
+        Self { mean, variance }
     }
 }
 
@@ -63,7 +51,6 @@ impl RQ_Distribution for Gaussian {
     }
 
     /// Probability density function of the Gaussian distribution.
-    /// https://en.wikipedia.org/wiki/Normal_distribution
     fn pdf(&self, x: f64) -> f64 {
         assert!(self.variance > 0.0);
 
@@ -94,37 +81,31 @@ impl RQ_Distribution for Gaussian {
     }
 
     /// Returns the mean of the Gaussian distribution.
-    /// https://en.wikipedia.org/wiki/Mean
     fn mean(&self) -> f64 {
         self.mean
     }
 
     /// Returns the median of the Gaussian distribution.
-    /// https://en.wikipedia.org/wiki/Median
     fn median(&self) -> f64 {
         self.mean
     }
 
     /// Returns the mode of the Gaussian distribution.
-    /// https://en.wikipedia.org/wiki/Mode_(statistics)
     fn mode(&self) -> f64 {
         self.mean
     }
 
     /// Returns the variance of the Gaussian distribution.
-    /// https://en.wikipedia.org/wiki/Variance
     fn variance(&self) -> f64 {
         self.variance
     }
 
     /// Returns the skewness of the Gaussian distribution.
-    /// https://en.wikipedia.org/wiki/Skewness
     fn skewness(&self) -> f64 {
         0.0
     }
 
     /// Returns the kurtosis of the Gaussian distribution.
-    /// https://en.wikipedia.org/wiki/Kurtosis
     fn kurtosis(&self) -> f64 {
         0.0
     }
@@ -135,12 +116,24 @@ impl RQ_Distribution for Gaussian {
     }
 
     /// Returns the moment generating function of the Gaussian distribution.
-    /// https://en.wikipedia.org/wiki/Moment-generating_function
     /// M(t) = E(e^tX)
     fn mgf(&self, t: f64) -> f64 {
         assert!(self.variance > 0.0);
 
         (self.mean * t + self.variance * t * t / 2.0).exp()
+    }
+
+    /// Standard Normal Random Variates Generator
+    fn sample(&self, n: usize) -> Vec<f64> {
+        let mut rng = thread_rng();
+        let normal = Normal::new(self.mean, self.variance.sqrt()).unwrap();
+        let mut variates: Vec<f64> = Vec::with_capacity(n);
+
+        for _ in 0..variates.capacity() {
+            variates.push(normal.sample(&mut rng));
+        }
+
+        variates
     }
 }
 

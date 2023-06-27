@@ -4,6 +4,7 @@
 // See LICENSE or <https://www.gnu.org/licenses/>.
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+use crate::distributions::Distribution as RQ_Distribution;
 use num_complex::Complex;
 use statrs::function::gamma::{gamma, gamma_li};
 
@@ -20,17 +21,17 @@ impl ChiSquared {
 
         Self { k }
     }
+}
 
-    /// Chi-Squared characteristic function.
-    pub fn cf(&self, t: f64) -> Complex<f64> {
+impl RQ_Distribution for ChiSquared {
+    fn cf(&self, t: f64) -> Complex<f64> {
         let i: Complex<f64> = Complex::i();
         let k = self.k;
 
         (1.0 - 2.0 * i * t).powf(-(k as f64 / 2.0))
     }
 
-    /// Chi-Squared probability density function.
-    pub fn pdf(&self, x: f64) -> f64 {
+    fn pdf(&self, x: f64) -> f64 {
         assert!(if self.k == 1 { x > 0.0 } else { x >= 0.0 });
 
         let k = self.k;
@@ -39,13 +40,56 @@ impl ChiSquared {
             / (2_f64.powf(k as f64 / 2.0) * gamma(k as f64 / 2.0))
     }
 
-    /// Chi-Squared distribution function.
-    pub fn cdf(&self, x: f64) -> f64 {
+    fn cdf(&self, x: f64) -> f64 {
         assert!(if self.k == 1 { x > 0.0 } else { x >= 0.0 });
 
         let k = self.k;
 
         gamma_li(k as f64 / 2.0, x / 2.0) / gamma(k as f64 / 2.0)
+    }
+
+    fn inv_cdf(&self, _p: f64) -> f64 {
+        todo!()
+    }
+
+    fn pmf(&self, x: f64) -> f64 {
+        todo!()
+    }
+
+    fn mean(&self) -> f64 {
+        todo!()
+    }
+
+    fn median(&self) -> f64 {
+        todo!()
+    }
+
+    fn mode(&self) -> f64 {
+        todo!()
+    }
+
+    fn variance(&self) -> f64 {
+        todo!()
+    }
+
+    fn skewness(&self) -> f64 {
+        todo!()
+    }
+
+    fn kurtosis(&self) -> f64 {
+        todo!()
+    }
+
+    fn entropy(&self) -> f64 {
+        todo!()
+    }
+
+    fn mgf(&self, t: f64) -> f64 {
+        todo!()
+    }
+
+    fn sample(&self, n: usize) -> Vec<f64> {
+        todo!()
     }
 }
 

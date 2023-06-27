@@ -6,6 +6,14 @@
 
 use num_complex::Complex;
 
+/// Distribution type.
+pub enum DistributionType {
+    /// Discrete distribution.
+    Discrete,
+    /// Continuous distribution.
+    Continuous,
+}
+
 /// Base trait for all distributions.
 /// Provides common methods for all distributions.
 /// All distributions must implement this trait.
@@ -36,26 +44,32 @@ pub trait Distribution {
 
     /// Returns the mean of the distribution.
     /// Mean is the average value of the distribution.
+    /// https://en.wikipedia.org/wiki/Mean
     fn mean(&self) -> f64;
 
     /// Returns the median of the distribution.
     /// Median is the value that splits the distribution into two equal parts.
+    /// https://en.wikipedia.org/wiki/Median
     fn median(&self) -> f64;
 
     /// Returns the mode of the distribution.
     /// Mode is the value that maximizes the probability density function.
+    /// https://en.wikipedia.org/wiki/Mode_(statistics)
     fn mode(&self) -> f64;
 
     /// Returns the variance of the distribution.
     /// Variance is a measure of the spread of the distribution.
+    /// https://en.wikipedia.org/wiki/Variance
     fn variance(&self) -> f64;
 
     /// Returns the skewness of the distribution.
     /// Skewness is a measure of the asymmetry of the distribution.
+    /// https://en.wikipedia.org/wiki/Skewness
     fn skewness(&self) -> f64;
 
     /// Returns the kurtosis of the distribution.
     /// Kurtosis is a measure of the "tailedness" of the distribution.
+    /// https://en.wikipedia.org/wiki/Kurtosis
     fn kurtosis(&self) -> f64;
 
     /// Returns the entropy of the distribution.
@@ -64,5 +78,9 @@ pub trait Distribution {
 
     /// Moment generating function of the distribution.
     /// M = E[e^{tX}]
+    /// https://en.wikipedia.org/wiki/Moment-generating_function
     fn mgf(&self, t: f64) -> f64;
+
+    /// Generates a random sample from the distribution.
+    fn sample(&self, n: usize) -> Vec<f64>;
 }

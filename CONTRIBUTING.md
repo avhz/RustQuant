@@ -1,10 +1,10 @@
 # Contributing to RustQuant
 
-If you're reading this, I assume you're interested in contributing to this project. 
-If so, thank you very much! I would love to grow the project and have a solid, 
+If you're reading this, I assume you're interested in contributing to this project.
+If so, thank you very much! I would love to grow the project and have a solid,
 stable library by the end of 2023.
 
-Firstly, this contribution guide is a work in progress, so bare with me. 
+Firstly, this contribution guide is a work in progress, so bare with me.
 
 I welcome contributions of all kinds, including:
 
@@ -15,12 +15,12 @@ I welcome contributions of all kinds, including:
 * Documentation improvements.
 * Unit tests.
 
-If you have any ideas, feel free to make an issue to discuss it, 
+If you have any ideas, feel free to make an issue to discuss it,
 or just make a pull request.
 
-Additionally, feel free to contact me directly at: rustquantcontact@gmail.com
+Additionally, feel free to contact me directly at: <rustquantcontact@gmail.com>
 
-If you decide to contribute, please include the following 
+If you decide to contribute, please include the following
 license header in any files you create:
 
 ```rust
@@ -43,7 +43,7 @@ cargo build
 ```
 
 I also like to separate the code as below, as I think it improves the readability
-a lot, and I would encourage any PRs to do the same (or similar). Of course, 
+a lot, and I would encourage any PRs to do the same (or similar). Of course,
 any suggestions or opinions on different styles are welcome!
 
 ```rust
@@ -77,5 +77,7 @@ mod tests {
     fn very_thorough_test() {}
 }
 ```
+
+One last thing, add an entry to the `CHANGELOG.md` file so that people can see what you've done.
 
 Thank you for your interest in contributing to RustQuant!

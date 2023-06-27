@@ -14,14 +14,12 @@
 // IMPORTS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use crate::autodiff::OperationArity;
+use crate::autodiff::*;
 
-use {
-    super::graph::Graph,
-    super::variable::Variable,
-    std::f64::consts::PI,
-    std::iter::{Product, Sum},
-    std::ops::{Add, Div, Mul, Neg, Sub},
+use std::{
+    f64::consts::PI,
+    iter::{Product, Sum},
+    ops::{Add, Div, Mul, Neg, Sub},
 };
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

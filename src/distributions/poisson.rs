@@ -5,6 +5,7 @@
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 use {
+    crate::distributions::Distribution as RQ_Distribution,
     // Needed for the characteristic function.
     num_complex::Complex,
     // Needed for the CDF.
@@ -39,6 +40,64 @@ impl Poisson {
     /// Poisson distribution function.
     pub fn cdf(&self, k: usize) -> f64 {
         1.0 - gamma_li((k + 1) as f64, self.lambda) / gamma_ui((k + 1) as f64, self.lambda)
+    }
+}
+
+impl RQ_Distribution for Poisson {
+    fn cf(&self, t: f64) -> Complex<f64> {
+        todo!()
+    }
+
+    fn pdf(&self, x: f64) -> f64 {
+        todo!()
+    }
+
+    fn pmf(&self, x: f64) -> f64 {
+        todo!()
+    }
+
+    fn cdf(&self, x: f64) -> f64 {
+        todo!()
+    }
+
+    fn inv_cdf(&self, p: f64) -> f64 {
+        todo!()
+    }
+
+    fn mean(&self) -> f64 {
+        todo!()
+    }
+
+    fn median(&self) -> f64 {
+        todo!()
+    }
+
+    fn mode(&self) -> f64 {
+        todo!()
+    }
+
+    fn variance(&self) -> f64 {
+        todo!()
+    }
+
+    fn skewness(&self) -> f64 {
+        todo!()
+    }
+
+    fn kurtosis(&self) -> f64 {
+        todo!()
+    }
+
+    fn entropy(&self) -> f64 {
+        todo!()
+    }
+
+    fn mgf(&self, t: f64) -> f64 {
+        todo!()
+    }
+
+    fn sample(&self, n: usize) -> Vec<f64> {
+        todo!()
     }
 }
 

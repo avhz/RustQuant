@@ -1,5 +1,10 @@
 # Change Log
 
+## 27 June 2023
+
+- Moved `options` and `bonds` modules to the parent module `instruments`.
+- Moved `cashflows`, `quotes` and `currencies` modules to the parent module `money`.
+
 ## 21 June 2023
 
 - Updated regression to use QR or SVD decomposition.

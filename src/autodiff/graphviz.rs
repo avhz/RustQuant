@@ -12,7 +12,7 @@
 //! language. At the moment, I'm simply trying to make a function that outputs
 //! `dot` code for a given graph.
 
-use super::*;
+use crate::autodiff::*;
 
 // impl std::fmt::Display for Graph {
 //     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {

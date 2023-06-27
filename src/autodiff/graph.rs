@@ -14,8 +14,10 @@
 // IMPORTS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use super::{variable::Variable, vertex::Vertex, OperationArity};
+use crate::autodiff::*;
+
 use std::cell::RefCell;
+
 // use std::{rc::Rc, sync::Arc};
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
