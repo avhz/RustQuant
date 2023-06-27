@@ -7,86 +7,47 @@
 use crate::distributions::Distribution as RQ_Distribution;
 use num_complex::Complex;
 
+use super::DistributionClass;
+
 /// Uniform distribution: X ~ Uni(a, b)
-pub struct Uniform<'a> {
+pub struct Uniform {
     /// Lower bound.
     a: f64,
     /// Upper bound.
     b: f64,
     /// Continuous or discrete ?
-    class: &'a str,
+    class: DistributionClass,
 }
 
-impl Uniform<'_> {
+impl Uniform {
     /// New instance of a Uniform distribution.
-    pub fn new(a: f64, b: f64, class: &str) -> Uniform {
+    pub fn new(a: f64, b: f64, class: DistributionClass) -> Self {
         assert!(a <= b);
-        assert!(class == "discrete" || class == "continuous");
 
-        if class == "discrete" {
-            Uniform {
+        match class {
+            DistributionClass::Discrete => Self {
                 a: a.round(),
                 b: b.round(),
                 class,
-            }
-        } else if class == "continuous" {
-            Uniform { a, b, class }
-        } else {
-            panic!("Class should be either 'discrete' or 'continuous'.")
-        }
-    }
-
-    /// Uniform characteristic function.
-    pub fn cf(&self, t: f64) -> Complex<f64> {
-        let i: Complex<f64> = Complex::i();
-
-        if self.class == "discrete" {
-            ((i * t * self.a).exp() - (i * t * (self.b + 1.0)).exp())
-                / ((1.0 - (i * t).exp()) * (self.b - self.a + 1.0))
-        } else if self.class == "continuous" {
-            ((i * t * self.b).exp() - (i * t * self.a).exp()) / (i * t * (self.b - self.a))
-        } else {
-            panic!("Class should be either 'discrete' or 'continuous'.")
-        }
-    }
-
-    /// Uniform mass function.
-    pub fn pmf(&self, x: f64) -> f64 {
-        if self.class == "discrete" {
-            1.0 / (self.b - self.a + 1.0)
-        } else if self.class == "continuous" {
-            if x >= self.a && x <= self.b {
-                (self.b - self.a).recip()
-            } else {
-                0.0
-            }
-        } else {
-            panic!("Class should be either 'discrete' or 'continuous'.")
-        }
-    }
-
-    /// Uniform distribution function.
-    pub fn cdf(&self, x: f64) -> f64 {
-        if self.class == "discrete" {
-            assert!(x >= self.a && x <= self.b);
-            (x.floor() - self.a + 1.0) / (self.b - self.a + 1.0)
-        } else if self.class == "continuous" {
-            if x < self.a {
-                0.0
-            } else if x >= self.a && x <= self.b {
-                (x - self.a) / (self.b - self.a)
-            } else {
-                1.0
-            }
-        } else {
-            panic!("Class should be either 'discrete' or 'continuous'.")
+            },
+            DistributionClass::Continuous => Self { a, b, class },
         }
     }
 }
 
-impl RQ_Distribution for Uniform<'_> {
+impl RQ_Distribution for Uniform {
     fn cf(&self, t: f64) -> Complex<f64> {
-        todo!()
+        let i: Complex<f64> = Complex::i();
+
+        match self.class {
+            DistributionClass::Discrete => {
+                ((i * t * self.a).exp() - (i * t * (self.b + 1.0)).exp())
+                    / ((1.0 - (i * t).exp()) * (self.b - self.a + 1.0))
+            }
+            DistributionClass::Continuous => {
+                ((i * t * self.b).exp() - (i * t * self.a).exp()) / (i * t * (self.b - self.a))
+            }
+        }
     }
 
     fn pdf(&self, x: f64) -> f64 {
@@ -94,11 +55,45 @@ impl RQ_Distribution for Uniform<'_> {
     }
 
     fn pmf(&self, x: f64) -> f64 {
-        todo!()
+        match self.class {
+            DistributionClass::Discrete => {
+                if x >= self.a && x <= self.b {
+                    (self.b - self.a + 1.0).recip()
+                } else {
+                    0.0
+                }
+            }
+            DistributionClass::Continuous => {
+                if x >= self.a && x <= self.b {
+                    (self.b - self.a).recip()
+                } else {
+                    0.0
+                }
+            }
+        }
     }
 
     fn cdf(&self, x: f64) -> f64 {
-        todo!()
+        match self.class {
+            DistributionClass::Discrete => {
+                if x < self.a {
+                    0.0
+                } else if x >= self.a && x <= self.b {
+                    (x.floor() - self.a + 1.0) / (self.b - self.a + 1.0)
+                } else {
+                    1.0
+                }
+            }
+            DistributionClass::Continuous => {
+                if x < self.a {
+                    0.0
+                } else if x >= self.a && x <= self.b {
+                    (x - self.a) / (self.b - self.a)
+                } else {
+                    1.0
+                }
+            }
+        }
     }
 
     fn inv_cdf(&self, p: f64) -> f64 {
@@ -149,7 +144,7 @@ mod tests {
 
     #[test]
     fn test_uniform_distribution_continuous() {
-        let dist: Uniform = Uniform::new(0.0, 1.0, "continuous");
+        let dist: Uniform = Uniform::new(0.0, 1.0, DistributionClass::Continuous);
 
         // Characteristic function
         let cf = dist.cf(1.0);
@@ -167,7 +162,7 @@ mod tests {
 
     #[test]
     fn test_uniform_distribution_discrete() {
-        let dist: Uniform = Uniform::new(0.0, 1.0, "discrete");
+        let dist: Uniform = Uniform::new(0.0, 1.0, DistributionClass::Discrete);
 
         // Characteristic function
         let cf = dist.cf(1.0);

@@ -6,8 +6,8 @@
 
 use num_complex::Complex;
 
-/// Distribution type.
-pub enum DistributionType {
+/// Distribution class/type.
+pub enum DistributionClass {
     /// Discrete distribution.
     Discrete,
     /// Continuous distribution.

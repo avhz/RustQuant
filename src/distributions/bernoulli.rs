@@ -7,7 +7,7 @@
 use super::Distribution as RQ_Distribution;
 use core::panic;
 use num_complex::Complex;
-use rand::{distributions::Distribution, thread_rng};
+// use rand::{distributions::Distribution, thread_rng};
 
 /// Bernoulli distribution: X ~ Bern(p)
 pub struct Bernoulli {
@@ -95,14 +95,17 @@ impl RQ_Distribution for Bernoulli {
     }
 
     fn sample(&self, n: usize) -> Vec<f64> {
+        use rand::thread_rng;
+        use rand_distr::{Bernoulli, Distribution};
+
         let mut rng = thread_rng();
 
-        let bernoulli = rand::distributions::Bernoulli::new(self.p).unwrap();
+        let dist = Bernoulli::new(self.p).unwrap();
 
         let mut variates: Vec<f64> = Vec::with_capacity(n);
 
         for _ in 0..variates.capacity() {
-            variates.push(bernoulli.sample(&mut rng) as usize as f64);
+            variates.push(dist.sample(&mut rng) as usize as f64);
         }
 
         variates

@@ -4,8 +4,9 @@
 // See LICENSE or <https://www.gnu.org/licenses/>.
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use crate::distributions::Distribution as RQ_Distribution;
+use crate::distributions::Distribution;
 use num_complex::Complex;
+use std::f64::consts::{E, PI};
 
 /// Binomial distribution: X ~ Bin(n, p)
 pub struct Binomial {
@@ -27,7 +28,7 @@ impl Binomial {
     }
 }
 
-impl RQ_Distribution for Binomial {
+impl Distribution for Binomial {
     fn cf(&self, t: f64) -> Complex<f64> {
         assert!((0.0..=1.0).contains(&self.p));
 
@@ -61,39 +62,52 @@ impl RQ_Distribution for Binomial {
     }
 
     fn mean(&self) -> f64 {
-        todo!()
+        self.n as f64 * self.p
     }
 
     fn median(&self) -> f64 {
-        todo!()
+        self.mean().floor()
     }
 
     fn mode(&self) -> f64 {
-        todo!()
+        ((self.n as f64 + 1.) * self.p).floor()
     }
 
     fn variance(&self) -> f64 {
-        todo!()
+        self.n as f64 * self.p * (1. - self.p)
     }
 
     fn skewness(&self) -> f64 {
-        todo!()
+        (1. - 2. * self.p) / self.variance().sqrt()
     }
 
     fn kurtosis(&self) -> f64 {
-        todo!()
+        (1. - 6. * self.p * (1. - self.p)) / self.variance()
     }
 
     fn entropy(&self) -> f64 {
-        todo!()
+        0.5 * (2. * PI * E * self.variance()).ln()
     }
 
     fn mgf(&self, t: f64) -> f64 {
-        todo!()
+        ((1. - self.p) + self.p * t.exp()).powi(self.n as i32)
     }
 
     fn sample(&self, n: usize) -> Vec<f64> {
-        todo!()
+        use rand::thread_rng;
+        use rand_distr::{Binomial, Distribution};
+
+        let mut rng = thread_rng();
+
+        let dist = Binomial::new(n as u64, self.p).unwrap();
+
+        let mut variates: Vec<f64> = Vec::with_capacity(n);
+
+        for _ in 0..variates.capacity() {
+            variates.push(dist.sample(&mut rng) as f64);
+        }
+
+        variates
     }
 }
 
