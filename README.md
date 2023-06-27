@@ -35,59 +35,39 @@ See [CHANGELOG.md](./CHANGELOG.md) for a full list of changes.
 1. [Automatic Differentiation](#autodiff)
 2. [Data](#data)
 
-- Read and write data from various sources (CSV, JSON, Parquet).
-- Download data from Yahoo! Finance.
+Methods for reading and writing data from/to various sources (`CSV`, `JSON`, `PARQUET`). Can also download data from Yahoo! Finance.
 
 3. [Distributions](#distributions)
 
-- PDFs, CDFs, MGFs, CFs, and other ditrubution related functions for common distributions.
+PDFs, CDFs, MGFs, CFs, and other ditrubution related functions for common distributions.
 
 4. [Instruments](#instruments)
 
-- Bonds
-- Options
+Various implementations for instruments like `Bonds` and `Options`, and the pricing of them. Others coming in the future (swaps, futures, CDSs, etc).
 
 5. [Mathematics](#maths)
 
-- Integration (double-exponential quadrature).
-- Optimization and root finding (gradient descent, Newton-Raphson).
-- Risk-reward metrics.
+Numerical integration (double-exponential quadrature), root finding (gradient descent, Newton-Raphson), and risk-reward metrics.
 
 6. [Machine Learning](#ml)
 
-- Regression:
-  - Linear
-  - Logistic
+Currently only linear regression is implemented (and working on logistic regression). More to come in the future.
 
 7. [Money](#money)
 
-- Cashflows
-- Currencies
-- Quotes
+Implementations for `Cashflows`, `Currencies`, and `Quotes`, and similar objects.
 
 8. [Stochastic Processes](#stochastics)
 
-- Brownian Motion (standard, arithmetric and geometric)
-- Short Rate Models (CIR, OU, Vasicek, Hull-White, etc)
+Can generate Brownian Motion (standard, arithmetric and geometric) and various short-rate models (CIR, OU, Vasicek, Hull-White, etc).
 
 9. [Time and Dates](#time)
 
-- `DayCounter` for pricing.
+Time and date functionality. Mostly the `DayCounter` for pricing options and bonds.
 
-10. [Utilities/Helpers](#utils)
+10. [Utilities/Helpers](#helpers)
 11. [How-tos](#howto)
 12. [References](#references)
-
-<!-- 1. [Automatic Differentiation](#autodiff)
-2. [Option Pricers](#options)
-3. [Stochastic Processes and Short Rate Models](#stochastics)
-4. [Bonds](#bonds)
-5. [Distributions](#distributions)
-6. [Mathematics](#maths)
-7. [Machine Learning](#ml)
-8. [Helper Functions and Macros](#helpers)
-9. [How-tos](#howto)
-10. [References](#references) -->
 
 ## :link: Automatic Differentiation <a name="autodiff"></a>
 
@@ -336,13 +316,13 @@ fn main() {
 ### Regression
 
 - [x] Linear (using QR or SVD decomposition)
-- [ ] Logistic (using MLE or IRLS)
+- [ ] Logistic (using MLE or IRLS). Work in progress.
 
 ## :moneybag: Money <a name="money"></a>
 
-- Cashflows
-- Currencies
-- Quotes
+- `Cashflows`
+- `Currencies`
+- `Quotes`
 
 ## :chart_with_upwards_trend: Stochastic Processes and Short Rate Models <a name="stochastics"></a>
 
