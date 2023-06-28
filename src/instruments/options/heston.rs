@@ -4,8 +4,12 @@
 // See LICENSE or <https://www.gnu.org/licenses/>.
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use crate::math::*;
+use crate::{
+    math::*,
+    time::{DayCountConvention, DayCounter},
+};
 use num_complex::Complex;
+use time::OffsetDateTime;
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // FUNCTIONS
@@ -14,17 +18,33 @@ use num_complex::Complex;
 /// Heston model for option pricing.
 #[allow(clippy::too_many_arguments)]
 pub fn heston(
-    S0: f64,    // Initial asset value.
-    V0: f64,    // Initial variance value.
-    K: f64,     // Strike price.
-    tau: f64,   // Time to expiry.
+    S0: f64, // Initial asset value.
+    V0: f64, // Initial variance value.
+    K: f64,  // Strike price.
+    // tau: f64,   // Time to expiry.
     r: f64,     // Risk-free rate.
     q: f64,     // Dividend yield.
     rho: f64,   // Correlation between the two Brownian motions.
     sigma: f64, // Volatility-of-volatility.
     kappa: f64, // Mean reversion rate in the variance process' drift term.
     theta: f64, // Long run mean of the variance process.
+    valuation_date: Option<OffsetDateTime>,
+    expiry_date: OffsetDateTime,
 ) -> (f64, f64) {
+    // Time to expiry.
+    let tau = match valuation_date {
+        Some(valuation_date) => DayCounter::day_count_factor(
+            valuation_date,
+            expiry_date,
+            &DayCountConvention::Actual365,
+        ),
+        None => DayCounter::day_count_factor(
+            OffsetDateTime::now_utc(),
+            expiry_date,
+            &DayCountConvention::Actual365,
+        ),
+    };
+
     // Market price of volatility risk (set to 0 for simplicity).
     // Should probably include, though, since for equity options it has been shown
     // to be non-zero (Lamoureux & Lastrapes, 1993).
@@ -131,24 +151,52 @@ the put price decreases, to 5.3790, and the call price increases, to 6.8678.
 
 #[cfg(test)]
 mod tests {
+    use time::Duration;
+
     use crate::assert_approx_equal;
 
     use super::*;
 
     #[test]
     fn test_heston_options() {
-        // WITH DIVIDEND YIELD.
-        let heston1 = heston(100.0, 0.05, 100.0, 0.5, 0.03, 0.02, -0.8, 0.5, 5.0, 0.05);
+        // 6 Month expiry.
+        let expiry_date = OffsetDateTime::now_utc() + Duration::days(183);
+
+        let heston1 = heston(
+            100.0,
+            0.05,
+            100.0,
+            0.03,
+            0.02,
+            -0.8,
+            0.5,
+            5.0,
+            0.05,
+            None,
+            expiry_date,
+        );
         // Call price.
-        assert_approx_equal!(heston1.0, 6.2528, 1e-4);
+        assert_approx_equal!(heston1.0, 6.2442, 1e-4);
         // Put price.
-        assert_approx_equal!(heston1.1, 5.7590, 1e-4);
+        assert_approx_equal!(heston1.1, 5.7517, 1e-4);
 
         // WITHOUT DIVIDEND YIELD.
-        let heston2 = heston(100.0, 0.05, 100.0, 0.5, 0.03, 0.0, -0.8, 0.5, 5.0, 0.05);
+        let heston2 = heston(
+            100.0,
+            0.05,
+            100.0,
+            0.03,
+            0.0,
+            -0.8,
+            0.5,
+            5.0,
+            0.05,
+            None,
+            expiry_date,
+        );
         // Call price.
-        assert_approx_equal!(heston2.0, 6.8678, 1e-4);
+        assert_approx_equal!(heston2.0, 6.8575, 1e-4);
         // Put price.
-        assert_approx_equal!(heston2.1, 5.3790, 1e-4);
+        assert_approx_equal!(heston2.1, 5.3727, 1e-4);
     }
 }

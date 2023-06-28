@@ -28,8 +28,6 @@ pub struct EuropeanOption {
     pub volatility: f64,
     /// `q` - Dividend rate.
     pub dividend_rate: f64,
-    // /// `T` - Time to expiry/maturity.
-    // pub time_to_maturity: f64,
     /// `valuation_date` - Valuation date.
     pub valuation_date: Option<OffsetDateTime>,
     /// `expiry_date` - Expiry date.
@@ -48,7 +46,6 @@ impl EuropeanOption {
         risk_free_rate: f64,
         volatility: f64,
         dividend_rate: f64,
-        // time_to_maturity: f64,
         valuation_date: Option<OffsetDateTime>,
         expiry_date: OffsetDateTime,
     ) -> Self {
@@ -58,7 +55,6 @@ impl EuropeanOption {
             risk_free_rate,
             volatility,
             dividend_rate,
-            // time_to_maturity,
             valuation_date,
             expiry_date,
         }

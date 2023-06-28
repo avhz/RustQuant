@@ -14,6 +14,8 @@
 
 use nalgebra::{DMatrix, DVector};
 
+use crate::ml::ActivationFunction;
+
 // use crate::autodiff::{Graph, Variable};
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -61,36 +63,36 @@ pub enum LogisticRegressionAlgorithm {
     IRLS,
 }
 
-/// Logistic function.
-/// Also known as the sigmoid, logit, or squashing function.
-///
-/// sigmoid(x) = 1 / (1 + exp(-x)) = exp(x) / (exp(x) + 1)
-///
-/// Note:
-///
-/// mu(x) = E[Y | X] = P(Y = 1 | X) = sigmoid(w^T x)
-pub trait LogisticFunction {
-    /// Logistic function.
-    fn logistic(&self) -> Self;
-}
+// /// Logistic function.
+// /// Also known as the sigmoid, logit, or squashing function.
+// ///
+// /// sigmoid(x) = 1 / (1 + exp(-x)) = exp(x) / (exp(x) + 1)
+// ///
+// /// Note:
+// ///
+// /// mu(x) = E[Y | X] = P(Y = 1 | X) = sigmoid(w^T x)
+// pub trait LogisticFunction {
+//     /// Logistic function.
+//     fn logistic(&self) -> Self;
+// }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // IMPLEMENTATIONS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-impl LogisticFunction for f64 {
-    #[inline]
-    fn logistic(&self) -> Self {
-        (1. + (-*self).exp()).recip()
-    }
-}
+// impl LogisticFunction for f64 {
+//     #[inline]
+//     fn logistic(&self) -> Self {
+//         (1. + (-*self).exp()).recip()
+//     }
+// }
 
-impl LogisticFunction for DVector<f64> {
-    #[inline]
-    fn logistic(&self) -> Self {
-        self.map(|x| LogisticFunction::logistic(&x))
-    }
-}
+// impl LogisticFunction for DVector<f64> {
+//     #[inline]
+//     fn logistic(&self) -> Self {
+//         self.map(|x| LogisticFunction::logistic(&x))
+//     }
+// }
 
 impl LogisticRegressionInput<f64> {
     /// Create a new `LogisticRegressionInput` struct.
@@ -100,39 +102,67 @@ impl LogisticRegressionInput<f64> {
         Self { x, y }
     }
 
+    /// Function to validate and prepare the input data.
+    fn prepare_input(&self) -> Result<(DMatrix<f64>, DMatrix<f64>, DVector<f64>), &'static str> {
+        // Check that the response vector is either 0 or 1.
+        if self.y.iter().any(|&x| x != 0. && x != 1.) {
+            return Err("The elements of the response vector should be either 0 or 1.");
+        }
+
+        // Check dimensions match.
+        let (n_rows, _) = self.x.shape();
+
+        if n_rows != self.y.len() {
+            return Err("The number of rows in the design matrix should match the length of the response vector.");
+        }
+
+        // Check the input data is finite.
+        if self.x.iter().any(|&x| !x.is_finite()) || self.y.iter().any(|&x| !x.is_finite()) {
+            return Err("The input data should be finite.");
+        }
+
+        // Add a column of ones to the design matrix.
+        let x = self.x.clone().insert_column(0, 1.0);
+
+        // Also return the transpose of the design matrix.
+        Ok((x.clone(), x.transpose(), self.y.clone()))
+    }
+
+    /// Function to validate and prepare the output data.
+    fn prepare_output(&self) -> Result<LogisticRegressionOutput<f64>, &'static str> {
+        // Initial guess for the coefficients.
+        let guess: f64 = (self.y.mean() / (1. - self.y.mean())).ln();
+
+        // Return the output struct, with the initial guess for the coefficients.
+        Ok(LogisticRegressionOutput {
+            coefficients: DVector::from_element(self.x.ncols() + 1, guess),
+            iterations: 0,
+        })
+    }
+
     /// Fit a logistic regression model to the input data.
     pub fn fit(
         &self,
         method: LogisticRegressionAlgorithm,
         tolerance: f64,
     ) -> Result<LogisticRegressionOutput<f64>, &'static str> {
-        // Response vector.
-        let y = self.y.clone();
+        // Validate and prepare the input data.
+        let (X, X_T, y) = self.prepare_input()?;
 
-        // Design matrix and its transpose.
-        let X = self.x.clone().insert_column(0, 1.0);
-        let X_T = X.transpose();
+        // Prepare the output data.
+        let mut output = self.prepare_output()?;
 
         // Number of rows and columns in the design matrix.
-        let (n_rows, n_cols) = X.shape();
+        let (n_rows, _) = X.shape();
 
         // Vector of ones.
         let ones: DVector<f64> = DVector::from_element(n_rows, 1.);
 
-        // Initial guess for the coefficients.
-        let guess: f64 = (y.mean() / (1. - y.mean())).ln();
-
         // Diagonal matrix  of lambdas (tolerance).
         // let lambda = DMatrix::from_diagonal(&DVector::from_element(n_cols, 1e-6));
 
-        // Vector of coefficients.
+        // Vector of coefficients that we update each iteration.
         let mut coefs: DVector<f64> = DVector::zeros(n_rows);
-
-        // Initialise the output struct, with the initial guess for the coefficients.
-        let mut result = LogisticRegressionOutput {
-            iterations: 0_usize,
-            coefficients: DVector::from_element(n_cols, guess),
-        };
 
         match method {
             // MAXIMUM LIKELIHOOD ESTIMATION
@@ -152,9 +182,9 @@ impl LogisticRegressionInput<f64> {
                 // While not converged.
                 // Convergence is defined as the norm of the change in
                 // the weights being less than the tolerance.
-                while (&coefs - &result.coefficients).norm() >= tolerance {
-                    eta = &X * &result.coefficients;
-                    mu = LogisticFunction::logistic(&eta);
+                while (&coefs - &output.coefficients).norm() >= tolerance {
+                    eta = &X * &output.coefficients;
+                    mu = ActivationFunction::logistic(&eta);
                     W = DMatrix::from_diagonal(&mu.component_mul(&(&ones - &mu)));
                     let X_T_W = &X_T * &W;
                     let hessian = &X_T_W * &X;
@@ -172,23 +202,25 @@ impl LogisticRegressionInput<f64> {
                     };
 
                     coefs = match hessian.try_inverse() {
+                        // Keep this bracketed to improve performance since
+                        // `working_response` is a vector and not a matrix.
                         Some(inv) => inv * (&X_T_W * working_response),
                         None => {
                             return Err("Hessian matrix (X^T W X) is singular (non-invertible).")
                         }
                     };
-                    result.iterations += 1;
+                    output.iterations += 1;
                     // result.intercept = result.coefficients[0];
 
                     // println!("iter = {}", result.iterations);
-                    println!("w_curr = {:.4}", result.coefficients);
+                    println!("w_curr = {:.4}", output.coefficients);
 
-                    std::mem::swap(&mut result.coefficients, &mut coefs);
+                    std::mem::swap(&mut output.coefficients, &mut coefs);
                 }
             }
         }
 
-        Ok(result)
+        Ok(output)
     }
 }
 

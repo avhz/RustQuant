@@ -9,3 +9,6 @@
 // and provide a global point of access to it.
 //
 // From the Gang of Four book, aka "Design Patterns: Elements of Reusable Object-Oriented Software"
+
+// IS THIS REALLY A GOOD IDEA?
+// https://stackoverflow.com/questions/137975/what-is-so-bad-about-singletons
