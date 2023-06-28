@@ -4,10 +4,8 @@
 // See LICENSE or <https://www.gnu.org/licenses/>.
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use super::Distribution as RQ_Distribution;
-use core::panic;
+use super::Distribution;
 use num_complex::Complex;
-// use rand::{distributions::Distribution, thread_rng};
 
 /// Bernoulli distribution: X ~ Bern(p)
 pub struct Bernoulli {
@@ -24,7 +22,7 @@ impl Bernoulli {
     }
 }
 
-impl RQ_Distribution for Bernoulli {
+impl Distribution for Bernoulli {
     fn cf(&self, t: f64) -> Complex<f64> {
         assert!((0.0..=1.0).contains(&self.p));
 
@@ -32,8 +30,8 @@ impl RQ_Distribution for Bernoulli {
         1.0 - self.p + self.p * (i * t).exp()
     }
 
-    fn pdf(&self, _x: f64) -> f64 {
-        panic!("Bernoulli distribution is discrete. Use pmf() instead.");
+    fn pdf(&self, x: f64) -> f64 {
+        self.pmf(x)
     }
 
     fn pmf(&self, k: f64) -> f64 {
@@ -56,7 +54,7 @@ impl RQ_Distribution for Bernoulli {
     }
 
     fn inv_cdf(&self, _p: f64) -> f64 {
-        panic!("Generalised inverse CDF not implemented for Bernoulli distribution.");
+        todo!()
     }
 
     fn mean(&self) -> f64 {
@@ -65,11 +63,11 @@ impl RQ_Distribution for Bernoulli {
 
     /// Returns the median of the Bernoulli distribution.
     fn median(&self) -> f64 {
-        panic!("Median not implemented for Bernoulli distribution.");
+        todo!()
     }
 
     fn mode(&self) -> f64 {
-        panic!("Mode not implemented for Bernoulli distribution.");
+        todo!()
     }
 
     fn variance(&self) -> f64 {
@@ -95,6 +93,8 @@ impl RQ_Distribution for Bernoulli {
     }
 
     fn sample(&self, n: usize) -> Vec<f64> {
+        // IMPORT HERE TO AVOID CLASH WITH
+        // `RustQuant::distributions::Distribution`
         use rand::thread_rng;
         use rand_distr::{Bernoulli, Distribution};
 

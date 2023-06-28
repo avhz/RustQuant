@@ -20,83 +20,83 @@ impl Exponential {
 
         Self { lambda }
     }
+}
 
-    /// Exponential characteristic function.
-    pub fn cf(&self, t: f64) -> Complex<f64> {
+impl RQ_Distribution for Exponential {
+    fn cf(&self, t: f64) -> Complex<f64> {
         let i: Complex<f64> = Complex::i();
         1.0 / (1.0 - i * t / self.lambda)
     }
 
-    /// Exponential probability density function.
-    pub fn pdf(&self, x: f64) -> f64 {
+    fn pdf(&self, x: f64) -> f64 {
         assert!(x >= 0.0);
 
         self.lambda * (-self.lambda * x).exp()
     }
 
-    /// Exponential distribution function.
-    pub fn cdf(&self, x: f64) -> f64 {
+    fn pmf(&self, x: f64) -> f64 {
+        self.pdf(x)
+    }
+
+    fn cdf(&self, x: f64) -> f64 {
         assert!(x >= 0.0);
 
         1.0 - (-self.lambda * x).exp()
     }
-}
-
-impl RQ_Distribution for Exponential {
-    fn cf(&self, t: f64) -> Complex<f64> {
-        todo!()
-    }
-
-    fn pdf(&self, x: f64) -> f64 {
-        todo!()
-    }
-
-    fn pmf(&self, x: f64) -> f64 {
-        todo!()
-    }
-
-    fn cdf(&self, x: f64) -> f64 {
-        todo!()
-    }
 
     fn inv_cdf(&self, p: f64) -> f64 {
-        todo!()
+        -(1. - p).ln() / self.lambda
     }
 
     fn mean(&self) -> f64 {
-        todo!()
+        self.lambda.recip()
     }
 
     fn median(&self) -> f64 {
-        todo!()
+        2_f64.ln() / self.lambda
     }
 
     fn mode(&self) -> f64 {
-        todo!()
+        0.0
     }
 
     fn variance(&self) -> f64 {
-        todo!()
+        self.lambda.recip().powi(2)
     }
 
     fn skewness(&self) -> f64 {
-        todo!()
+        2.0
     }
 
     fn kurtosis(&self) -> f64 {
-        todo!()
+        6.0
     }
 
     fn entropy(&self) -> f64 {
-        todo!()
+        1.0 - self.lambda.ln()
     }
 
     fn mgf(&self, t: f64) -> f64 {
-        todo!()
+        assert!(t < self.lambda);
+
+        self.lambda * (self.lambda - t).recip()
     }
 
     fn sample(&self, n: usize) -> Vec<f64> {
-        todo!()
+        // IMPORT HERE TO AVOID CLASH WITH
+        // `RustQuant::distributions::Distribution`
+        use rand::thread_rng;
+        use rand_distr::{Distribution, Exp};
+
+        let mut rng = thread_rng();
+        let dist = Exp::new(self.lambda).unwrap();
+        let mut variates: Vec<f64> = Vec::with_capacity(n);
+
+        for _ in 0..variates.capacity() {
+            variates.push(dist.sample(&mut rng));
+        }
+
+        variates
     }
 }
 

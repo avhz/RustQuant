@@ -8,7 +8,16 @@ use crate::distributions::Distribution as RQ_Distribution;
 use num_complex::Complex;
 use statrs::function::gamma::{gamma, gamma_li};
 
-/// Gamma distribution: X ~ Gamma(alpha, beta) = Gamma(alpha, 1/beta)
+/// Gamma distribution
+///
+/// There are two common parametrizations for the Gamma distribution.
+///
+/// 1. X ~ Gamma(alpha, beta) = Gamma(shape, rate)
+/// 2. X ~ Gamma(k, theta) = Gamma(shape, scale)
+///
+/// This implementation uses the first parametrization (shape, rate).
+///
+/// Note that scale = 1 / rate <=> rate = 1 / scale.
 pub struct Gamma {
     /// Alpha: the shape parameter.
     alpha: f64,
@@ -23,9 +32,10 @@ impl Gamma {
 
         Self { alpha, beta }
     }
+}
 
-    /// Gamma characteristic function.
-    pub fn cf(&self, t: f64) -> Complex<f64> {
+impl RQ_Distribution for Gamma {
+    fn cf(&self, t: f64) -> Complex<f64> {
         let i: Complex<f64> = Complex::i();
         let alpha = self.alpha;
         let beta = self.beta;
@@ -33,8 +43,7 @@ impl Gamma {
         (1.0 - i * t / beta).powf(-alpha)
     }
 
-    /// Gamma probability density function.
-    pub fn pdf(&self, x: f64) -> f64 {
+    fn pdf(&self, x: f64) -> f64 {
         assert!(x > 0.0);
 
         let alpha = self.alpha;
@@ -43,8 +52,11 @@ impl Gamma {
         beta.powf(alpha) * x.powf(alpha - 1.0) * (-beta * x).exp() / gamma(alpha)
     }
 
-    /// Gamma distribution function.
-    pub fn cdf(&self, x: f64) -> f64 {
+    fn pmf(&self, x: f64) -> f64 {
+        self.pdf(x)
+    }
+
+    fn cdf(&self, x: f64) -> f64 {
         assert!(x > 0.0);
 
         let alpha = self.alpha;
@@ -52,51 +64,37 @@ impl Gamma {
 
         gamma_li(alpha, beta * x) / gamma(alpha)
     }
-}
 
-impl RQ_Distribution for Gamma {
-    fn cf(&self, t: f64) -> Complex<f64> {
-        todo!()
-    }
-
-    fn pdf(&self, x: f64) -> f64 {
-        todo!()
-    }
-
-    fn pmf(&self, x: f64) -> f64 {
-        todo!()
-    }
-
-    fn cdf(&self, x: f64) -> f64 {
-        todo!()
-    }
-
-    fn inv_cdf(&self, p: f64) -> f64 {
-        todo!()
+    fn inv_cdf(&self, _p: f64) -> f64 {
+        unimplemented!()
     }
 
     fn mean(&self) -> f64 {
-        todo!()
+        self.alpha / self.beta
     }
 
     fn median(&self) -> f64 {
-        todo!()
+        unimplemented!()
     }
 
     fn mode(&self) -> f64 {
-        todo!()
+        if self.alpha >= 1.0 {
+            (self.alpha - 1.0) / self.beta
+        } else {
+            0.0
+        }
     }
 
     fn variance(&self) -> f64 {
-        todo!()
+        self.alpha / self.beta.powi(2)
     }
 
     fn skewness(&self) -> f64 {
-        todo!()
+        2. / self.alpha.sqrt()
     }
 
     fn kurtosis(&self) -> f64 {
-        todo!()
+        6. / self.alpha
     }
 
     fn entropy(&self) -> f64 {
@@ -104,11 +102,28 @@ impl RQ_Distribution for Gamma {
     }
 
     fn mgf(&self, t: f64) -> f64 {
-        todo!()
+        assert!(t < self.beta);
+
+        (1.0 - t / self.beta).powf(-self.alpha)
     }
 
     fn sample(&self, n: usize) -> Vec<f64> {
-        todo!()
+        // IMPORT HERE TO AVOID CLASH WITH
+        // `RustQuant::distributions::Distribution`
+        use rand::thread_rng;
+        use rand_distr::{Distribution, Gamma};
+
+        let mut rng = thread_rng();
+
+        let dist = Gamma::new(self.alpha, self.beta.recip()).unwrap();
+
+        let mut variates: Vec<f64> = Vec::with_capacity(n);
+
+        for _ in 0..variates.capacity() {
+            variates.push(dist.sample(&mut rng) as usize as f64);
+        }
+
+        variates
     }
 }
 
