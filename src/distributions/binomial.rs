@@ -8,6 +8,10 @@ use crate::distributions::Distribution;
 use num_complex::Complex;
 use std::f64::consts::{E, PI};
 
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// STRUCTS
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 /// Binomial distribution: X ~ Bin(n, p)
 pub struct Binomial {
     /// Number of trials.
@@ -15,6 +19,10 @@ pub struct Binomial {
     /// Probability of k = 1 (q = 1 - p: probability of k = 0).
     p: f64,
 }
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// IMPLMENTATIONS
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 impl Binomial {
     /// New instance of a Binomial distribution.
@@ -54,7 +62,7 @@ impl Distribution for Binomial {
     }
 
     fn cdf(&self, k: f64) -> f64 {
-        statrs::function::beta::beta_reg((self.n - k as usize) as f64, (1. + k) as f64, 1. - self.p)
+        statrs::function::beta::beta_reg((self.n - k as usize) as f64, 1. + k, 1. - self.p)
     }
 
     fn inv_cdf(&self, _p: f64) -> f64 {
@@ -94,6 +102,8 @@ impl Distribution for Binomial {
     }
 
     fn sample(&self, n: usize) -> Vec<f64> {
+        // IMPORT HERE TO AVOID CLASH WITH
+        // `RustQuant::distributions::Distribution`
         use rand::thread_rng;
         use rand_distr::{Binomial, Distribution};
 
@@ -110,6 +120,10 @@ impl Distribution for Binomial {
         variates
     }
 }
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// UNIT TESTS
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 #[cfg(test)]
 mod tests {

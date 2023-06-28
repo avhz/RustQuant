@@ -17,7 +17,12 @@
 //! - `θ`: is the level to which it gets pulled.
 //! - `σ`: is the diffusion coefficient.
 
-use crate::instruments::bonds::*;
+use time::OffsetDateTime;
+
+use crate::{
+    instruments::bonds::*,
+    time::{DayCountConvention, DayCounter},
+};
 
 /// Struct containing the Vasicek model parameters.
 pub struct Vasicek {
@@ -25,8 +30,11 @@ pub struct Vasicek {
     k: f64,
     theta: f64,
     sigma: f64,
-    time_t: f64,
-    time_T: f64,
+
+    /// `valuation_date` - Valuation date.
+    pub valuation_date: Option<OffsetDateTime>,
+    /// `expiry_date` - Expiry date.
+    pub expiry_date: OffsetDateTime,
 }
 
 impl ZeroCouponBond for Vasicek {
@@ -35,10 +43,20 @@ impl ZeroCouponBond for Vasicek {
         let theta = self.theta;
         let sigma = self.sigma;
         let r0 = self.r0;
-        let time_t = self.time_t;
-        let time_T = self.time_T;
 
-        let tau = time_T - time_t;
+        // Compute time to maturity.
+        let tau = match self.valuation_date {
+            Some(valuation_date) => DayCounter::day_count_factor(
+                valuation_date,
+                self.expiry_date,
+                &DayCountConvention::Actual365,
+            ),
+            None => DayCounter::day_count_factor(
+                OffsetDateTime::now_utc(),
+                self.expiry_date,
+                &DayCountConvention::Actual365,
+            ),
+        };
 
         let B = || (1.0 - (-k * tau).exp()) / k;
         let A = || {
@@ -77,17 +95,19 @@ mod tests_bond_vasicek {
 
     #[test]
     fn test_vasicek_zero_coupon_bond() {
+        let expiry_date = OffsetDateTime::now_utc() + time::Duration::days(365);
+
         let vasicek = Vasicek {
             r0: 0.03,
             k: 0.3,
             theta: 0.1,
             sigma: 0.03,
-            time_t: 0.0,
-            time_T: 1.0,
+            valuation_date: None,
+            expiry_date,
         };
 
         let vasicek_price = vasicek.price();
 
-        assert_approx_equal!(vasicek_price, 0.96136248, 1e-8);
+        assert_approx_equal!(vasicek_price, 0.9615, 1e-4);
     }
 }

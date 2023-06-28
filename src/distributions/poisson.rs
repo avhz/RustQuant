@@ -8,11 +8,19 @@ use crate::distributions::Distribution;
 use num_complex::Complex;
 use statrs::function::gamma::*;
 
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// STRUCTS
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 /// Poisson distribution: X ~ Pois(lambda)
 pub struct Poisson {
     /// Rate parameter.
     lambda: f64,
 }
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// IMPLEMENTATIONS
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 impl Poisson {
     /// New instance of a Poisson distribution.
@@ -39,10 +47,10 @@ impl Distribution for Poisson {
     }
 
     fn cdf(&self, x: f64) -> f64 {
-        1.0 - gamma_li((x + 1.) as f64, self.lambda) / gamma_ui((x + 1.) as f64, self.lambda)
+        1.0 - gamma_li(x + 1., self.lambda) / gamma_ui(x + 1., self.lambda)
     }
 
-    fn inv_cdf(&self, p: f64) -> f64 {
+    fn inv_cdf(&self, _p: f64) -> f64 {
         todo!()
     }
 
@@ -74,14 +82,20 @@ impl Distribution for Poisson {
         todo!()
     }
 
-    fn mgf(&self, t: f64) -> f64 {
+    fn mgf(&self, _t: f64) -> f64 {
         todo!()
     }
 
-    fn sample(&self, n: usize) -> Vec<f64> {
+    fn sample(&self, _n: usize) -> Vec<f64> {
+        // IMPORT HERE TO AVOID CLASH WITH
+        // `RustQuant::distributions::Distribution`
         todo!()
     }
 }
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// UNIT TESTS
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 #[cfg(test)]
 mod tests {

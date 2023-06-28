@@ -8,7 +8,12 @@
 // FORWARD START OPTION STRUCT
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use crate::distributions::{Distribution, Gaussian};
+use time::OffsetDateTime;
+
+use crate::{
+    distributions::{Distribution, Gaussian},
+    time::{DayCountConvention, DayCounter},
+};
 
 /// Forward Start Option parameters struct
 #[derive(Debug)]
@@ -27,10 +32,13 @@ pub struct ForwardStartOption {
     pub volatility: f64,
     /// `q` - Dividend rate.
     pub dividend_rate: f64,
+    /// `valuation_date` - Valuation date.
+    pub valuation_date: Option<OffsetDateTime>,
+
     /// `start` - Time until the start of the option (`T` in most literature).
-    pub start: f64,
+    pub start: OffsetDateTime,
     /// `end` - Time until the end of the option (`t` in most literature).
-    pub end: f64,
+    pub end: OffsetDateTime,
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -45,11 +53,35 @@ impl ForwardStartOption {
     pub fn price(&self) -> (f64, f64) {
         let S = self.initial_price;
         let a = self.alpha;
-        let T = self.end;
-        let t = self.start;
+
         let r = self.risk_free_rate;
         let v = self.volatility;
         let q = self.dividend_rate;
+
+        let T = match self.valuation_date {
+            Some(valuation_date) => DayCounter::day_count_factor(
+                valuation_date,
+                self.end,
+                &DayCountConvention::Actual365,
+            ),
+            None => DayCounter::day_count_factor(
+                OffsetDateTime::now_utc(),
+                self.end,
+                &DayCountConvention::Actual365,
+            ),
+        };
+        let t = match self.valuation_date {
+            Some(valuation_date) => DayCounter::day_count_factor(
+                valuation_date,
+                self.start,
+                &DayCountConvention::Actual365,
+            ),
+            None => DayCounter::day_count_factor(
+                OffsetDateTime::now_utc(),
+                self.start,
+                &DayCountConvention::Actual365,
+            ),
+        };
 
         let b = r - q;
 
@@ -87,19 +119,23 @@ mod tests {
 
     #[test]
     fn TEST_forward_start_option() {
+        let start = OffsetDateTime::now_utc() + time::Duration::days(91);
+        let end = OffsetDateTime::now_utc() + time::Duration::days(365);
+
         let ForwardStart = ForwardStartOption {
             initial_price: 60.0,
             alpha: 1.1,
             risk_free_rate: 0.08,
             volatility: 0.3,
             dividend_rate: 0.04,
-            start: 0.25,
-            end: 1.0,
+            valuation_date: None,
+            start,
+            end,
         };
 
         let prices = ForwardStart.price();
 
         // Call price example from Haug's book.
-        assert_approx_equal!(prices.0, 4.4064, 0.0001);
+        assert_approx_equal!(prices.0, 4.4102, 0.0001);
     }
 }

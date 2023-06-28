@@ -4,15 +4,23 @@
 // See LICENSE or <https://www.gnu.org/licenses/>.
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use crate::distributions::Distribution as RQ_Distribution;
+use crate::distributions::Distribution;
 use num_complex::Complex;
 use statrs::function::gamma::{gamma, gamma_li};
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// STRUCTS
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 /// Chi-Squared distribution: X ~ ChiSq(k)
 pub struct ChiSquared {
     /// k: degrees of freedom.
     k: usize,
 }
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// IMPLEMENTATIONS
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 impl ChiSquared {
     /// New instance of a Chi-Squared distribution.
@@ -23,7 +31,7 @@ impl ChiSquared {
     }
 }
 
-impl RQ_Distribution for ChiSquared {
+impl Distribution for ChiSquared {
     fn cf(&self, t: f64) -> Complex<f64> {
         let i: Complex<f64> = Complex::i();
         let k = self.k;
@@ -52,7 +60,7 @@ impl RQ_Distribution for ChiSquared {
         todo!()
     }
 
-    fn pmf(&self, x: f64) -> f64 {
+    fn pmf(&self, _x: f64) -> f64 {
         todo!()
     }
 
@@ -84,14 +92,18 @@ impl RQ_Distribution for ChiSquared {
         todo!()
     }
 
-    fn mgf(&self, t: f64) -> f64 {
+    fn mgf(&self, _t: f64) -> f64 {
         todo!()
     }
 
-    fn sample(&self, n: usize) -> Vec<f64> {
+    fn sample(&self, _n: usize) -> Vec<f64> {
         todo!()
     }
 }
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// UNIT TESTS
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 #[cfg(test)]
 mod tests {

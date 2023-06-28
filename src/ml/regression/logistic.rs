@@ -7,15 +7,16 @@
 //! Module for logistic regression (classification) algorithms.
 //!
 //! BROKEN: This module is currently broken and does not work.
+//! The problem is that the diagonal weights matrix W becomes singular
+//! as the diagonal elements approach 0.
+//! If you know how to fix this, submit a pull request!
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // IMPORTS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use nalgebra::{DMatrix, DVector};
-
 use crate::ml::ActivationFunction;
-
+use nalgebra::{DMatrix, DVector};
 // use crate::autodiff::{Graph, Variable};
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -63,36 +64,9 @@ pub enum LogisticRegressionAlgorithm {
     IRLS,
 }
 
-// /// Logistic function.
-// /// Also known as the sigmoid, logit, or squashing function.
-// ///
-// /// sigmoid(x) = 1 / (1 + exp(-x)) = exp(x) / (exp(x) + 1)
-// ///
-// /// Note:
-// ///
-// /// mu(x) = E[Y | X] = P(Y = 1 | X) = sigmoid(w^T x)
-// pub trait LogisticFunction {
-//     /// Logistic function.
-//     fn logistic(&self) -> Self;
-// }
-
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // IMPLEMENTATIONS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-// impl LogisticFunction for f64 {
-//     #[inline]
-//     fn logistic(&self) -> Self {
-//         (1. + (-*self).exp()).recip()
-//     }
-// }
-
-// impl LogisticFunction for DVector<f64> {
-//     #[inline]
-//     fn logistic(&self) -> Self {
-//         self.map(|x| LogisticFunction::logistic(&x))
-//     }
-// }
 
 impl LogisticRegressionInput<f64> {
     /// Create a new `LogisticRegressionInput` struct.

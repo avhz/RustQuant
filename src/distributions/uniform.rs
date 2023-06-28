@@ -4,10 +4,13 @@
 // See LICENSE or <https://www.gnu.org/licenses/>.
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use crate::distributions::Distribution as RQ_Distribution;
+use super::DistributionClass;
+use crate::distributions::Distribution;
 use num_complex::Complex;
 
-use super::DistributionClass;
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// STRUCTS
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 /// Uniform distribution: X ~ Uni(a, b)
 pub struct Uniform {
@@ -18,6 +21,10 @@ pub struct Uniform {
     /// Continuous or discrete ?
     class: DistributionClass,
 }
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// IMPLEMENTATIONS
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 impl Uniform {
     /// New instance of a Uniform distribution.
@@ -35,7 +42,7 @@ impl Uniform {
     }
 }
 
-impl RQ_Distribution for Uniform {
+impl Distribution for Uniform {
     fn cf(&self, t: f64) -> Complex<f64> {
         let i: Complex<f64> = Complex::i();
 
@@ -50,7 +57,7 @@ impl RQ_Distribution for Uniform {
         }
     }
 
-    fn pdf(&self, x: f64) -> f64 {
+    fn pdf(&self, _x: f64) -> f64 {
         todo!()
     }
 
@@ -96,7 +103,7 @@ impl RQ_Distribution for Uniform {
         }
     }
 
-    fn inv_cdf(&self, p: f64) -> f64 {
+    fn inv_cdf(&self, _p: f64) -> f64 {
         todo!()
     }
 
@@ -128,14 +135,20 @@ impl RQ_Distribution for Uniform {
         todo!()
     }
 
-    fn mgf(&self, t: f64) -> f64 {
+    fn mgf(&self, _t: f64) -> f64 {
         todo!()
     }
 
-    fn sample(&self, n: usize) -> Vec<f64> {
+    fn sample(&self, _n: usize) -> Vec<f64> {
+        // IMPORT HERE TO AVOID CLASH WITH
+        // `RustQuant::distributions::Distribution`
         todo!()
     }
 }
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// UNIT TESTS
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 #[cfg(test)]
 mod tests {

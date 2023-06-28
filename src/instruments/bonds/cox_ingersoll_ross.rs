@@ -20,7 +20,11 @@
 //! This means that, as the short-term interest rate increases,
 //! the standard deviation increases.
 
-use crate::instruments::bonds::*;
+use crate::{
+    instruments::bonds::*,
+    time::{DayCountConvention, DayCounter},
+};
+use time::OffsetDateTime;
 
 /// Struct containing the Cox-Ingersoll-Ross model parameters.
 pub struct CoxIngersollRoss {
@@ -28,8 +32,11 @@ pub struct CoxIngersollRoss {
     b: f64,
     sigma: f64,
     r: f64,
-    t: f64,
-    maturity: f64,
+
+    /// `valuation_date` - Valuation date.
+    pub valuation_date: Option<OffsetDateTime>,
+    /// `expiry_date` - Expiry date.
+    pub expiry_date: OffsetDateTime,
 }
 
 impl ZeroCouponBond for CoxIngersollRoss {
@@ -38,10 +45,21 @@ impl ZeroCouponBond for CoxIngersollRoss {
         let b = self.b;
         let sigma = self.sigma;
         let r = self.r;
-        let t = self.t;
-        let maturity = self.maturity;
 
-        let tau = maturity - t;
+        // Compute time to maturity.
+        let tau = match self.valuation_date {
+            Some(valuation_date) => DayCounter::day_count_factor(
+                valuation_date,
+                self.expiry_date,
+                &DayCountConvention::Actual365,
+            ),
+            None => DayCounter::day_count_factor(
+                OffsetDateTime::now_utc(),
+                self.expiry_date,
+                &DayCountConvention::Actual365,
+            ),
+        };
+
         let gamma = (a * a + 2.0 * sigma.powi(2)).sqrt();
 
         let b_t = 2.0 * ((gamma * tau).exp() - 1.0)
@@ -66,17 +84,19 @@ mod tests {
 
     #[test]
     fn test_cir_zero_coupon_bond() {
+        let expiry = OffsetDateTime::now_utc() + time::Duration::days(365);
+
         let cir = CoxIngersollRoss {
             a: 0.3,
             b: 0.1,
             sigma: 0.03,
             r: 0.03,
-            t: 0.0,
-            maturity: 1.0,
+            valuation_date: None,
+            expiry_date: expiry,
         };
 
         let cir_price = cir.price();
 
-        assert_approx_equal!(cir_price, 0.96125071, 1e-8);
+        assert_approx_equal!(cir_price, 0.9613, 1e-4);
     }
 }

@@ -4,6 +4,8 @@
 // See LICENSE or <https://www.gnu.org/licenses/>.
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+// TODO: Update Hull-White pricer to accept dates instead of time to maturity.
+
 //! Hull-White model for zero-coupon bond prices.
 //!
 //! The risk-neutral short rate follows the process:

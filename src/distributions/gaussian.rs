@@ -5,13 +5,15 @@
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 use {
-    super::Distribution as RQ_Distribution,
+    super::Distribution,
     num_complex::Complex,
-    rand::thread_rng,
-    rand_distr::{Distribution, Normal},
     statrs::function::erf,
     std::f64::consts::{PI, SQRT_2},
 };
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// STRUCTS
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 /// Gaussian (normal) distribution: X ~ N(mu, sigma^2)
 /// https://en.wikipedia.org/wiki/Normal_distribution
@@ -21,6 +23,10 @@ pub struct Gaussian {
     /// Variance (squared scale).
     variance: f64,
 }
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// IMPLEMENTATIONS
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 impl Default for Gaussian {
     fn default() -> Self {
@@ -40,7 +46,7 @@ impl Gaussian {
     }
 }
 
-impl RQ_Distribution for Gaussian {
+impl Distribution for Gaussian {
     /// Characteristic function of the Gaussian distribution.
     fn cf(&self, t: f64) -> Complex<f64> {
         assert!(self.variance > 0.0);
@@ -125,6 +131,11 @@ impl RQ_Distribution for Gaussian {
 
     /// Standard Normal Random Variates Generator
     fn sample(&self, n: usize) -> Vec<f64> {
+        // IMPORT HERE TO AVOID CLASH WITH
+        // `RustQuant::distributions::Distribution`
+        use rand::thread_rng;
+        use rand_distr::{Distribution, Normal};
+
         let mut rng = thread_rng();
         let normal = Normal::new(self.mean, self.variance.sqrt()).unwrap();
         let mut variates: Vec<f64> = Vec::with_capacity(n);
@@ -136,6 +147,10 @@ impl RQ_Distribution for Gaussian {
         variates
     }
 }
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// UNIT TESTS
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 #[cfg(test)]
 mod tests_gaussian {

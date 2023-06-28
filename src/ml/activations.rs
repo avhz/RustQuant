@@ -14,6 +14,10 @@ pub trait ActivationFunction {
     /// Applies the identity function to the input.
     fn identity(&self) -> Self;
     /// Applies the logistic function to the input.
+    ///
+    /// Note (for logistic regression):
+    /// sigmoid(x) = 1 / (1 + exp(-x)) = exp(x) / (exp(x) + 1)    
+    /// mu(x) = E[Y | X] = P(Y = 1 | X) = sigmoid(w^T x)
     fn logistic(&self) -> Self;
     /// Applies the rectified linear unit function to the input.
     fn relu(&self) -> Self;
