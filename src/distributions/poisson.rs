@@ -55,41 +55,54 @@ impl Distribution for Poisson {
     }
 
     fn mean(&self) -> f64 {
-        todo!()
+        self.lambda
     }
 
     fn median(&self) -> f64 {
-        todo!()
+        (self.lambda + 1.0 / 3.0 - 0.02 / self.lambda).floor()
     }
 
     fn mode(&self) -> f64 {
-        todo!()
+        self.lambda.floor()
     }
 
     fn variance(&self) -> f64 {
-        todo!()
+        self.lambda
     }
 
     fn skewness(&self) -> f64 {
-        todo!()
+        self.lambda.sqrt().recip()
     }
 
     fn kurtosis(&self) -> f64 {
-        todo!()
+        self.lambda.recip()
     }
 
     fn entropy(&self) -> f64 {
         todo!()
     }
 
-    fn mgf(&self, _t: f64) -> f64 {
-        todo!()
+    fn mgf(&self, t: f64) -> f64 {
+        (self.lambda * (t.exp() - 1.0)).exp()
     }
 
-    fn sample(&self, _n: usize) -> Vec<f64> {
+    fn sample(&self, n: usize) -> Vec<f64> {
         // IMPORT HERE TO AVOID CLASH WITH
         // `RustQuant::distributions::Distribution`
-        todo!()
+        use rand::thread_rng;
+        use rand_distr::{Distribution, Poisson};
+
+        let mut rng = thread_rng();
+
+        let dist = Poisson::new(self.lambda).unwrap();
+
+        let mut variates: Vec<f64> = Vec::with_capacity(n);
+
+        for _ in 0..variates.capacity() {
+            variates.push(dist.sample(&mut rng) as usize as f64);
+        }
+
+        variates
     }
 }
 

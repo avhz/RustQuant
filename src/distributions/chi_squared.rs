@@ -60,44 +60,61 @@ impl Distribution for ChiSquared {
         todo!()
     }
 
-    fn pmf(&self, _x: f64) -> f64 {
-        todo!()
+    fn pmf(&self, x: f64) -> f64 {
+        self.pdf(x)
     }
 
     fn mean(&self) -> f64 {
-        todo!()
+        self.k as f64
     }
 
     fn median(&self) -> f64 {
-        todo!()
+        self.k as f64 * (1.0 - (2.0 / (9.0 * self.k as f64))).powf(3.0)
     }
 
     fn mode(&self) -> f64 {
-        todo!()
+        0_f64.max(self.k as f64 - 2.0)
     }
 
     fn variance(&self) -> f64 {
-        todo!()
+        2.0 * self.k as f64
     }
 
     fn skewness(&self) -> f64 {
-        todo!()
+        (8.0 / self.k as f64).sqrt()
     }
 
     fn kurtosis(&self) -> f64 {
-        todo!()
+        12.0 / self.k as f64
     }
 
     fn entropy(&self) -> f64 {
         todo!()
     }
 
-    fn mgf(&self, _t: f64) -> f64 {
-        todo!()
+    fn mgf(&self, t: f64) -> f64 {
+        assert!(t < 0.5);
+
+        (1.0 - 2.0 * t).powf(-(self.k as f64) / 2.0)
     }
 
-    fn sample(&self, _n: usize) -> Vec<f64> {
-        todo!()
+    fn sample(&self, n: usize) -> Vec<f64> {
+        // IMPORT HERE TO AVOID CLASH WITH
+        // `RustQuant::distributions::Distribution`
+        use rand::thread_rng;
+        use rand_distr::{ChiSquared, Distribution};
+
+        let mut rng = thread_rng();
+
+        let dist = ChiSquared::new(self.k as f64).unwrap();
+
+        let mut variates: Vec<f64> = Vec::with_capacity(n);
+
+        for _ in 0..variates.capacity() {
+            variates.push(dist.sample(&mut rng) as usize as f64);
+        }
+
+        variates
     }
 }
 

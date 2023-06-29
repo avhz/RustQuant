@@ -57,8 +57,23 @@ impl Distribution for Uniform {
         }
     }
 
-    fn pdf(&self, _x: f64) -> f64 {
-        todo!()
+    fn pdf(&self, x: f64) -> f64 {
+        match self.class {
+            DistributionClass::Discrete => {
+                if x >= self.a && x <= self.b {
+                    (self.b - self.a + 1.0).recip()
+                } else {
+                    0.0
+                }
+            }
+            DistributionClass::Continuous => {
+                if x >= self.a && x <= self.b {
+                    (self.b - self.a).recip()
+                } else {
+                    0.0
+                }
+            }
+        }
     }
 
     fn pmf(&self, x: f64) -> f64 {
@@ -108,11 +123,11 @@ impl Distribution for Uniform {
     }
 
     fn mean(&self) -> f64 {
-        todo!()
+        0.5 * (self.a + self.b)
     }
 
     fn median(&self) -> f64 {
-        todo!()
+        0.5 * (self.a + self.b)
     }
 
     fn mode(&self) -> f64 {
@@ -120,29 +135,62 @@ impl Distribution for Uniform {
     }
 
     fn variance(&self) -> f64 {
-        todo!()
+        match self.class {
+            DistributionClass::Discrete => (self.b - self.a + 1.0).powi(2) / 12.0,
+            DistributionClass::Continuous => (self.b - self.a).powi(2) / 12.0,
+        }
     }
 
     fn skewness(&self) -> f64 {
-        todo!()
+        0.0
     }
 
     fn kurtosis(&self) -> f64 {
-        todo!()
+        let n = self.b - self.a + 1.0;
+
+        match self.class {
+            DistributionClass::Discrete => -(6. * (n * n + 1.)) / (5. * (n * n - 1.)),
+            DistributionClass::Continuous => -6.0 / 5.0,
+        }
     }
 
     fn entropy(&self) -> f64 {
-        todo!()
+        match self.class {
+            DistributionClass::Discrete => (self.b - self.a + 1.0).ln(),
+            DistributionClass::Continuous => (self.b - self.a).ln(),
+        }
     }
 
-    fn mgf(&self, _t: f64) -> f64 {
-        todo!()
+    fn mgf(&self, t: f64) -> f64 {
+        let n = self.b - self.a + 1.0;
+
+        match self.class {
+            DistributionClass::Discrete => {
+                ((t * self.a).exp() - (t * (self.b + 1.0)).exp()) / (n * (1.0 - (t).exp()))
+            }
+            DistributionClass::Continuous => {
+                ((t * self.b).exp() - (t * self.a).exp()) / (t * (self.b - self.a))
+            }
+        }
     }
 
-    fn sample(&self, _n: usize) -> Vec<f64> {
+    fn sample(&self, n: usize) -> Vec<f64> {
         // IMPORT HERE TO AVOID CLASH WITH
         // `RustQuant::distributions::Distribution`
-        todo!()
+        use rand::thread_rng;
+        use rand_distr::{Distribution, Uniform};
+
+        let mut rng = thread_rng();
+
+        let dist = Uniform::new(self.a, self.b);
+
+        let mut variates: Vec<f64> = Vec::with_capacity(n);
+
+        for _ in 0..variates.capacity() {
+            variates.push(dist.sample(&mut rng) as usize as f64);
+        }
+
+        variates
     }
 }
 
