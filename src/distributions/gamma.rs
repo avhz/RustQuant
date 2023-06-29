@@ -121,6 +121,8 @@ impl Distribution for Gamma {
         use rand::thread_rng;
         use rand_distr::{Distribution, Gamma};
 
+        assert!(n > 0);
+
         let mut rng = thread_rng();
 
         let dist = Gamma::new(self.alpha, self.beta.recip()).unwrap();

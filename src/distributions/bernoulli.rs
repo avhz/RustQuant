@@ -21,6 +21,12 @@ pub struct Bernoulli {
 // IMPLEMENTATIONS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+impl Default for Bernoulli {
+    fn default() -> Self {
+        Self::new(0.5)
+    }
+}
+
 impl Bernoulli {
     /// New instance of a Bernoulli distribution.
     pub fn new(probability: f64) -> Bernoulli {
@@ -69,7 +75,6 @@ impl Distribution for Bernoulli {
         self.p
     }
 
-    /// Returns the median of the Bernoulli distribution.
     fn median(&self) -> f64 {
         todo!()
     }
@@ -105,6 +110,8 @@ impl Distribution for Bernoulli {
         // `RustQuant::distributions::Distribution`
         use rand::thread_rng;
         use rand_distr::{Bernoulli, Distribution};
+
+        assert!(n > 0);
 
         let mut rng = thread_rng();
 
@@ -198,5 +205,84 @@ mod tests_bernoulli {
             bernoulli.entropy(),
             -(0.5f64.ln() * 0.5 + (1.0 - 0.5 as f64).ln() * (1.0 - 0.5))
         );
+    }
+
+    #[test]
+    fn test_default() {
+        let bernoulli = Bernoulli::default();
+        assert_eq!(bernoulli.p, 0.5);
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_new_invalid_probability_low() {
+        Bernoulli::new(-0.5);
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_new_invalid_probability_high() {
+        Bernoulli::new(1.5);
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_pmf_invalid_input() {
+        let bernoulli = Bernoulli::new(0.5);
+        bernoulli.pmf(2.0);
+    }
+
+    #[test]
+    fn test_cdf_negative_input() {
+        let bernoulli = Bernoulli::new(0.5);
+        let cdf_neg = bernoulli.cdf(-1.0);
+        assert_eq!(cdf_neg, 0.0);
+    }
+
+    #[test]
+    fn test_cdf_positive_input() {
+        let bernoulli = Bernoulli::new(0.5);
+        let cdf_one = bernoulli.cdf(1.0);
+        let cdf_two = bernoulli.cdf(2.0);
+        assert_eq!(cdf_one, 1.0);
+        assert_eq!(cdf_two, 1.0);
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_inv_cdf_not_implemented() {
+        let bernoulli = Bernoulli::new(0.5);
+        bernoulli.inv_cdf(0.5);
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_median_not_implemented() {
+        let bernoulli = Bernoulli::new(0.5);
+        bernoulli.median();
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_mode_not_implemented() {
+        let bernoulli = Bernoulli::new(0.5);
+        bernoulli.mode();
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_sample_zero_size() {
+        let bernoulli = Bernoulli::new(0.5);
+        bernoulli.sample(0);
+    }
+
+    #[test]
+    fn test_sample_positive_size() {
+        let bernoulli = Bernoulli::new(0.5);
+        let sample = bernoulli.sample(100);
+        assert_eq!(sample.len(), 100);
+        for &value in sample.iter() {
+            assert!(value == 0.0 || value == 1.0);
+        }
     }
 }

@@ -136,6 +136,8 @@ impl Distribution for Gaussian {
         use rand::thread_rng;
         use rand_distr::{Distribution, Normal};
 
+        assert!(n > 0);
+
         let mut rng = thread_rng();
         let normal = Normal::new(self.mean, self.variance.sqrt()).unwrap();
         let mut variates: Vec<f64> = Vec::with_capacity(n);

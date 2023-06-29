@@ -92,6 +92,8 @@ impl Distribution for Poisson {
         use rand::thread_rng;
         use rand_distr::{Distribution, Poisson};
 
+        assert!(n > 0);
+
         let mut rng = thread_rng();
 
         let dist = Poisson::new(self.lambda).unwrap();

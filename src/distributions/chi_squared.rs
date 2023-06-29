@@ -104,6 +104,8 @@ impl Distribution for ChiSquared {
         use rand::thread_rng;
         use rand_distr::{ChiSquared, Distribution};
 
+        assert!(n > 0);
+
         let mut rng = thread_rng();
 
         let dist = ChiSquared::new(self.k as f64).unwrap();

@@ -180,6 +180,8 @@ impl Distribution for Uniform {
         use rand::thread_rng;
         use rand_distr::{Distribution, Uniform};
 
+        assert!(n > 0);
+
         let mut rng = thread_rng();
 
         let dist = Uniform::new(self.a, self.b);

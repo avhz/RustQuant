@@ -24,6 +24,12 @@ pub struct Binomial {
 // IMPLMENTATIONS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+impl Default for Binomial {
+    fn default() -> Self {
+        Self::new(1, 0.5)
+    }
+}
+
 impl Binomial {
     /// New instance of a Binomial distribution.
     pub fn new(trials: usize, probability: f64) -> Self {
@@ -107,6 +113,8 @@ impl Distribution for Binomial {
         use rand::thread_rng;
         use rand_distr::{Binomial, Distribution};
 
+        assert!(n > 0);
+
         let mut rng = thread_rng();
 
         let dist = Binomial::new(n as u64, self.p).unwrap();
@@ -126,7 +134,7 @@ impl Distribution for Binomial {
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 #[cfg(test)]
-mod tests {
+mod tests_binomial_distribution {
     use super::*;
     use crate::assert_approx_equal;
 
@@ -149,5 +157,32 @@ mod tests {
         // k = 1 successes.
         let cdf = dist.cdf(1.);
         assert_approx_equal!(cdf, 0.75, 1e-10);
+    }
+
+    #[test]
+    fn test_binomial_functions() {
+        let binomial = Binomial::new(5, 0.4);
+
+        // Characteristic function
+        let cf = binomial.cf(1.0);
+        assert_approx_equal!(cf.re, -0.2014034, 1e-6);
+        assert_approx_equal!(cf.im, 0.4969347, 1e-6);
+
+        // Probability mass function
+        let pmf = binomial.pmf(3.0);
+        assert_approx_equal!(pmf, 0.2304, 1e-4);
+
+        // Distribution function
+        let cdf = binomial.cdf(3.0);
+        assert_approx_equal!(cdf, 0.91296, 1e-5);
+
+        assert_eq!(binomial.mean(), 2.0);
+        assert_eq!(binomial.median(), 2.0);
+        assert_eq!(binomial.mode(), 2.0);
+        assert_approx_equal!(binomial.variance(), 1.2, 1e-6);
+        assert_approx_equal!(binomial.skewness(), 0.182574, 1e-6);
+        assert_approx_equal!(binomial.kurtosis(), -0.366667, 1e-6);
+        assert_approx_equal!(binomial.entropy(), 1.510099, 1e-6);
+        assert_approx_equal!(binomial.mgf(1.0), 13.67659, 1e-5);
     }
 }

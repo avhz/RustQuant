@@ -96,6 +96,8 @@ impl Distribution for Exponential {
         use rand::thread_rng;
         use rand_distr::{Distribution, Exp};
 
+        assert!(n > 0);
+
         let mut rng = thread_rng();
         let dist = Exp::new(self.lambda).unwrap();
         let mut variates: Vec<f64> = Vec::with_capacity(n);
