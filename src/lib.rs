@@ -326,7 +326,7 @@ pub mod trading {
     /// Submodule of `trading`: order side definitions.
     pub mod order_side;
     /// Submodule of `trading`: order types definitions.
-    pub mod order_types;
+    pub mod order_type;
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

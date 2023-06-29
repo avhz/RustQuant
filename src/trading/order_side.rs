@@ -4,25 +4,36 @@
 // See LICENSE or <https://www.gnu.org/licenses/>.
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+use std::fmt;
+
 /// Enum to indicate which side of the book the order falls on.
 ///
 /// `BID`: The side containing buy orders.
 /// `ASK`: The side containing sell orders.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum Side {
+pub enum OrderSide {
     /// Bid (buy) side.
     BID,
     /// Ask (sell) side.
     ASK,
 }
 
-impl std::ops::Not for Side {
-    type Output = Side;
+impl std::ops::Not for OrderSide {
+    type Output = OrderSide;
 
     fn not(self) -> Self::Output {
         match self {
-            Side::BID => Side::ASK,
-            Side::ASK => Side::BID,
+            OrderSide::BID => OrderSide::ASK,
+            OrderSide::ASK => OrderSide::BID,
+        }
+    }
+}
+
+impl fmt::Display for OrderSide {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            OrderSide::BID => write!(f, "BID (buy)"),
+            OrderSide::ASK => write!(f, "ASK (sell)"),
         }
     }
 }

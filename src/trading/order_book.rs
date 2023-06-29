@@ -4,7 +4,7 @@
 // See LICENSE or <https://www.gnu.org/licenses/>.
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use super::{order::Order, order_side::Side};
+use super::{order::Order, order_side::OrderSide};
 use std::collections::VecDeque;
 // use time::OffsetDateTime;
 
@@ -35,9 +35,9 @@ impl OrderBook {
 
     /// Insert an `Order` into an existing `OrderBook`.
     pub fn insert_order(&mut self, order: Order) {
-        match order.side {
-            Side::BID => self.bids.push_back(order),
-            Side::ASK => self.asks.push_back(order),
+        match order.order_side {
+            OrderSide::BID => self.bids.push_back(order),
+            OrderSide::ASK => self.asks.push_back(order),
         }
     }
 
