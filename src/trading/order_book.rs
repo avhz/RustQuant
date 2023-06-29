@@ -56,6 +56,11 @@ impl OrderBook {
     //     self.bids.front().map(|order| order.price)
     // }
 
+    // /// Get the best ask price.
+    // pub fn best_ask(&self) -> Option<f64> {
+    //     self.asks.front().map(|order| order.price)
+    // }
+
     // /// Cancel an `Order` within the `OrderBook`.
     // pub fn cancel_order(&mut self, id: Order::ID) {}
 
