@@ -17,7 +17,7 @@
 // This is because much of this library is based on mathematics, so I
 // want to adhere to the standard mathematical notation.
 #![allow(non_snake_case)]
-// Enforce SAFETY comments.
+// Strictly enforce SAFETY comments.
 // There is no unsafe code currently, but for anyone to add any, it must be
 // documented with a SAFETY comment.
 #![forbid(clippy::undocumented_unsafe_blocks)]

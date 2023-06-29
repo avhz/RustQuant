@@ -17,8 +17,17 @@ pub fn integrate<F>(f: F, a: f64, b: f64) -> f64
 where
     F: Fn(f64) -> f64,
 {
+    // Apply a linear change of variables:
+    //
+    // x = c * t + d
+    //
+    // where:
+    //      c = 0.5 * (b - a)
+    //      d = 0.5 * (a + b)
+
     let c = 0.5 * (b - a);
     let d = 0.5 * (a + b);
+
     c * tanhsinh(|x| {
         let out = f(c * x + d);
         if out.is_finite() {
@@ -29,6 +38,7 @@ where
     })
 }
 
+// This method integrates the function f(c * x + d).
 fn tanhsinh<F>(f: F) -> f64
 where
     F: Fn(f64) -> f64,

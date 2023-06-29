@@ -8,7 +8,7 @@
 ///
 /// `BID`: The side containing buy orders.
 /// `ASK`: The side containing sell orders.
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Side {
     /// Bid (buy) side.
     BID,
