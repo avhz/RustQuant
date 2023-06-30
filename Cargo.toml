@@ -4,6 +4,7 @@
 
 [package]
 name = "RustQuant"
+authors = ["avhz <rustquantcontact@gmail.com>"]
 description = "A Rust library for quantitative finance tools."
 version = "0.0.21"
 edition = "2021"
@@ -27,26 +28,37 @@ debug = true
 ## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 [dependencies]
-# csv = "1.2.1"             # https://docs.rs/csv/latest/csv/
 nalgebra = "0.32.2"         # https://docs.rs/nalgebra/latest/nalgebra/
 num-complex = "0.4.2"       # https://docs.rs/num-complex/latest/num_complex/
 plotters = "0.3.4"          # https://docs.rs/plotters/latest/plotters/
 rand = "0.8.5"              # https://docs.rs/rand/latest/rand/
 rand_distr = "0.4.3"        # https://docs.rs/rand_distr/latest/rand_distr/
 rayon = "1.6.0"             # https://docs.rs/rayon/latest/rayon/
-serde = "1.0.163"           # https://docs.rs/serde/latest/serde/
-serde_json = "1.0.96"       # https://docs.rs/serde_json/latest/serde_json/
 statrs = "0.16.0"           # https://docs.rs/statrs/latest/statrs/
 tempfile = "3.5.0"          # https://docs.rs/tempfile/latest/tempfile/
 time = "0.3.20"             # https://docs.rs/time/latest/time/
-tokio = "1.28.1"            # https://docs.rs/tokio/latest/tokio/
-tokio-test = "0.4.2"        # https://docs.rs/tokio-test/latest/tokio_test/
 yahoo_finance_api = "2.0.0" # https://docs.rs/yahoo-finance-api/latest/yahoo_finance_api/
 
 [dependencies.polars] # https://docs.rs/polars/latest/polars/  
 version = "0.30.0"
 optional = true
 features = ["serde", "json", "parquet", "dtype-struct", "dtype-date", "lazy"]
+
+[dependencies.tokio] # https://docs.rs/tokio/latest/tokio/
+version = "1.28.1"
+optional = true
+
+[dependencies.tokio-test] # https://docs.rs/tokio-test/latest/tokio_test/
+version = "0.4.2"
+optional = true
+
+## The following dependencies will be used for the terminal user interface.
+
+# crossterm = "0.26.1"        # https://docs.rs/crossterm/latest/crossterm
+# csv = "1.2.1"               # https://docs.rs/csv/latest/csv/
+# serde = "1.0.163"           # https://docs.rs/serde/latest/serde
+# serde_json = "1.0.96"       # https://docs.rs/serde_json/latest/serde_json
+# tui = "0.19.0"              # https://docs.rs/tui/latest/tui
 
 ## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ## FEATURES
@@ -56,7 +68,7 @@ features = ["serde", "json", "parquet", "dtype-struct", "dtype-date", "lazy"]
 ## This feature is used to enable the use of the `data` module.
 ## It is disabled by default, since the addition of Polars
 ## increases the compilation time substantially.
-data = ["dep:polars"]
+data = ["dep:polars", "dep:tokio", "dep:tokio-test"]
 
 ## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ## EXAMPLES
@@ -65,6 +77,17 @@ data = ["dep:polars"]
 [[example]]
 name = "yahoo_finance"
 required-features = ["data"]
+
+## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+## TERMINAL USER INTERFACE
+## This is simply a plan for the future.
+##
+## Run it: cargo run 
+## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+[[bin]]
+name = "RustQuant"
+path = "src/interactive/main.rs"
 
 ## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ## PYTHON BINDINGS
