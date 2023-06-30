@@ -1,0 +1,6 @@
+{
+    "name": "RustQuant",
+    "description": "A Quantitative Finance Library written in Rust.",
+    "repository": "https://github.com/avhz/RustQuant",
+    "users": "quants"
+}
