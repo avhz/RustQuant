@@ -4,42 +4,60 @@
 // See LICENSE or <https://www.gnu.org/licenses/>.
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use crate::distributions::Distribution;
+use crate::statistics::distributions::Distribution;
 use num_complex::Complex;
+use statrs::function::gamma::{gamma, gamma_li};
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // STRUCTS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-/// Exponential distribution: X ~ Exp(lambda)
-pub struct Exponential {
-    /// Rate (inverse scale).
-    lambda: f64,
+/// Gamma distribution
+///
+/// There are two common parametrizations for the Gamma distribution.
+///
+/// 1. X ~ Gamma(alpha, beta) = Gamma(shape, rate)
+/// 2. X ~ Gamma(k, theta) = Gamma(shape, scale)
+///
+/// This implementation uses the first parametrization (shape, rate).
+///
+/// Note that scale = 1 / rate <=> rate = 1 / scale.
+pub struct Gamma {
+    /// Alpha: the shape parameter.
+    alpha: f64,
+    /// Beta: the rate parameter (inverse scale).
+    beta: f64,
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // IMPLEMENTATIONS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-impl Exponential {
-    /// New instance of a Exponential distribution.
-    pub fn new(lambda: f64) -> Self {
-        assert!(lambda > 0.0);
+impl Gamma {
+    /// New instance of a Gamma distribution.
+    pub fn new(alpha: f64, beta: f64) -> Self {
+        assert!(alpha > 0.0 && beta > 0.0);
 
-        Self { lambda }
+        Self { alpha, beta }
     }
 }
 
-impl Distribution for Exponential {
+impl Distribution for Gamma {
     fn cf(&self, t: f64) -> Complex<f64> {
         let i: Complex<f64> = Complex::i();
-        1.0 / (1.0 - i * t / self.lambda)
+        let alpha = self.alpha;
+        let beta = self.beta;
+
+        (1.0 - i * t / beta).powf(-alpha)
     }
 
     fn pdf(&self, x: f64) -> f64 {
-        assert!(x >= 0.0);
+        assert!(x > 0.0);
 
-        self.lambda * (-self.lambda * x).exp()
+        let alpha = self.alpha;
+        let beta = self.beta;
+
+        beta.powf(alpha) * x.powf(alpha - 1.0) * (-beta * x).exp() / gamma(alpha)
     }
 
     fn pmf(&self, x: f64) -> f64 {
@@ -47,63 +65,72 @@ impl Distribution for Exponential {
     }
 
     fn cdf(&self, x: f64) -> f64 {
-        assert!(x >= 0.0);
+        assert!(x > 0.0);
 
-        1.0 - (-self.lambda * x).exp()
+        let alpha = self.alpha;
+        let beta = self.beta;
+
+        gamma_li(alpha, beta * x) / gamma(alpha)
     }
 
-    fn inv_cdf(&self, p: f64) -> f64 {
-        -(1. - p).ln() / self.lambda
+    fn inv_cdf(&self, _p: f64) -> f64 {
+        unimplemented!()
     }
 
     fn mean(&self) -> f64 {
-        self.lambda.recip()
+        self.alpha / self.beta
     }
 
     fn median(&self) -> f64 {
-        2_f64.ln() / self.lambda
+        unimplemented!()
     }
 
     fn mode(&self) -> f64 {
-        0.0
+        if self.alpha >= 1.0 {
+            (self.alpha - 1.0) / self.beta
+        } else {
+            0.0
+        }
     }
 
     fn variance(&self) -> f64 {
-        self.lambda.recip().powi(2)
+        self.alpha / self.beta.powi(2)
     }
 
     fn skewness(&self) -> f64 {
-        2.0
+        2. / self.alpha.sqrt()
     }
 
     fn kurtosis(&self) -> f64 {
-        6.0
+        6. / self.alpha
     }
 
     fn entropy(&self) -> f64 {
-        1.0 - self.lambda.ln()
+        todo!()
     }
 
     fn mgf(&self, t: f64) -> f64 {
-        assert!(t < self.lambda);
+        assert!(t < self.beta);
 
-        self.lambda * (self.lambda - t).recip()
+        (1.0 - t / self.beta).powf(-self.alpha)
     }
 
     fn sample(&self, n: usize) -> Vec<f64> {
         // IMPORT HERE TO AVOID CLASH WITH
         // `RustQuant::distributions::Distribution`
         use rand::thread_rng;
-        use rand_distr::{Distribution, Exp};
+        use rand_distr::{Distribution, Gamma};
 
         assert!(n > 0);
 
         let mut rng = thread_rng();
-        let dist = Exp::new(self.lambda).unwrap();
+
+        let dist = Gamma::new(self.alpha, self.beta.recip()).unwrap();
+
         let mut variates: Vec<f64> = Vec::with_capacity(n);
 
         for _ in 0..variates.capacity() {
-            variates.push(dist.sample(&mut rng));
+            variates.push(dist.sample(&mut rng) as usize as f64);
         }
 
         variates
@@ -120,8 +147,8 @@ mod tests {
     use crate::assert_approx_equal;
 
     #[test]
-    fn test_exponential_characteristic_function() {
-        let dist: Exponential = Exponential::new(1.0);
+    fn test_gamma_characteristic_function() {
+        let dist: Gamma = Gamma::new(1.0, 1.0);
 
         // // Characteristic function
         let cf = dist.cf(1.0);
@@ -130,11 +157,12 @@ mod tests {
     }
 
     #[test]
-    fn test_exponential_density_function() {
-        let dist: Exponential = Exponential::new(1.0);
+    fn test_gamma_density_function() {
+        // Gamma(1,1) is equivalent to Exp(1)
+        let dist: Gamma = Gamma::new(1.0, 1.0);
 
         // Values computed using R
-        assert_approx_equal!(dist.pdf(0.0), 1.00000000, 1e-8);
+        // assert_approx_equal!(dist.pdf(0.0), 1.00000000, 1e-8);
         assert_approx_equal!(dist.pdf(1.0), 0.36787944, 1e-8);
         assert_approx_equal!(dist.pdf(2.0), 0.13533528, 1e-8);
         assert_approx_equal!(dist.pdf(3.0), 0.04978707, 1e-8);
@@ -142,11 +170,11 @@ mod tests {
     }
 
     #[test]
-    fn test_exponential_distribution_function() {
-        let dist: Exponential = Exponential::new(1.0);
+    fn test_gamma_distribution_function() {
+        let dist: Gamma = Gamma::new(1.0, 1.0);
 
         // Values computed using R
-        assert_approx_equal!(dist.cdf(0.0), 0.0000000, 1e-7);
+        // assert_approx_equal!(dist.cdf(0.0), 0.0000000, 1e-7);
         assert_approx_equal!(dist.cdf(1.0), 0.6321206, 1e-7);
         assert_approx_equal!(dist.cdf(2.0), 0.8646647, 1e-7);
         assert_approx_equal!(dist.cdf(3.0), 0.9502129, 1e-7);

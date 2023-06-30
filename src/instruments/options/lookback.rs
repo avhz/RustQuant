@@ -5,8 +5,8 @@
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 use crate::{
-    distributions::{Distribution, Gaussian},
     instruments::options::*,
+    statistics::distributions::{Distribution, Gaussian},
     stochastics::*,
     utilities::*,
 };

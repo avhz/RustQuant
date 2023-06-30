@@ -4,7 +4,7 @@
 // See LICENSE or <https://www.gnu.org/licenses/>.
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use crate::distributions::Distribution;
+use crate::statistics::distributions::Distribution;
 use num_complex::Complex;
 use statrs::function::gamma::*;
 

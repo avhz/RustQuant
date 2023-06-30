@@ -7,7 +7,7 @@
 use time::OffsetDateTime;
 
 use crate::{
-    distributions::{gaussian::*, Distribution},
+    statistics::distributions::{gaussian::*, Distribution},
     time::{DayCountConvention, DayCounter},
 };
 

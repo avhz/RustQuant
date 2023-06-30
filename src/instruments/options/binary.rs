@@ -6,7 +6,7 @@
 
 //! This module contains various 'binary', or 'digital', option types.
 
-use crate::distributions::{gaussian::*, Distribution};
+use crate::statistics::distributions::{gaussian::*, Distribution};
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // STRUCTS

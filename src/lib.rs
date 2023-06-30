@@ -159,6 +159,51 @@ pub mod money {
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// STATISTICS MODULE
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+/// Parent module containing: all statistics related items.
+pub mod statistics {
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // COPULAS MODULE
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    /// Parent module containing: copula implementations.
+    pub mod copulas {}
+
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // DISTRIBUTIONS MODULE
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    /// Parent module containing: random variable distributions (PDFs, CDFs, CFs, etc).
+    pub mod distributions {
+        pub use crate::statistics::distributions::{
+            bernoulli::*, binomial::*, chi_squared::*, distribution::*, exponential::*, gamma::*,
+            gaussian::*, poisson::*, uniform::*,
+        };
+
+        /// Submodule of `distributions`: the Bernoulli distribution.
+        pub mod bernoulli;
+        /// Submodule of `distributions`: the Binomial distribution.
+        pub mod binomial;
+        /// Submodule of `distributions`: the Chi-Squared distribution.
+        pub mod chi_squared;
+        /// Submodule of `distributions`: base trait for all distributions.
+        pub mod distribution;
+        /// Submodule of `distributions`: the Exponential distribution.
+        pub mod exponential;
+        /// Submodule of `distributions`: the Gamma distribution.
+        pub mod gamma;
+        /// Submodule of `distributions`: the Gaussian (normal) distribution.
+        pub mod gaussian;
+        /// Submodule of `distributions`: the Poisson distribution.
+        pub mod poisson;
+        /// Submodule of `distributions`: the Uniform distribution.
+        pub mod uniform;
+    }
+}
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // DATA MODULE
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -242,37 +287,6 @@ pub mod math {
     pub mod newton_raphson;
     /// Submodule of `math`: implements simple risk/reward functions.
     pub mod risk_reward;
-}
-
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// DISTRIBUTIONS MODULE
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-/// Parent module containing: random variable distributions (PDFs, CDFs, CFs, etc).
-pub mod distributions {
-    pub use crate::distributions::{
-        bernoulli::*, binomial::*, chi_squared::*, distribution::*, exponential::*, gamma::*,
-        gaussian::*, poisson::*, uniform::*,
-    };
-
-    /// Submodule of `distributions`: the Bernoulli distribution.
-    pub mod bernoulli;
-    /// Submodule of `distributions`: the Binomial distribution.
-    pub mod binomial;
-    /// Submodule of `distributions`: the Chi-Squared distribution.
-    pub mod chi_squared;
-    /// Submodule of `distributions`: base trait for all distributions.
-    pub mod distribution;
-    /// Submodule of `distributions`: the Exponential distribution.
-    pub mod exponential;
-    /// Submodule of `distributions`: the Gamma distribution.
-    pub mod gamma;
-    /// Submodule of `distributions`: the Gaussian (normal) distribution.
-    pub mod gaussian;
-    /// Submodule of `distributions`: the Poisson distribution.
-    pub mod poisson;
-    /// Submodule of `distributions`: the Uniform distribution.
-    pub mod uniform;
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

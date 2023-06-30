@@ -11,7 +11,7 @@
 use time::OffsetDateTime;
 
 use crate::{
-    distributions::{Distribution, Gaussian},
+    statistics::distributions::{Distribution, Gaussian},
     time::{DayCountConvention, DayCounter},
 };
 
