@@ -371,3 +371,7 @@ I would not recommend using RustQuant within any other libraries for some time, 
 - Steven E. Shreve - *Stochastic Calculus for Finance II: Continuous-Time Models*
 - Espen Gaarder Haug - *Option Pricing Formulas*
 - Antoine Savine - *Modern Computational Finance: AAD and Parallel Simulations*
+
+## :star: Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=avhz/RustQuant&type=Date)](https://star-history.com/#avhz/RustQuant&Date)
