@@ -376,4 +376,6 @@ I would not recommend using RustQuant within any other libraries for some time, 
 
 ![Star History](./images/star-history-202371.png)
 
+<iframe style="width:100%;height:auto;min-width:600px;min-height:400px;" src="https://star-history.com/embed?secret=Z2hwXzJ2d3c2cFE0dG5VR0UwTVFiTXRSdmdKU3Nvd1h6aDRmR0lHVg==#avhz/RustQuant&Date" frameBorder="0"></iframe>
+
 <!-- [![Star History Chart](https://api.star-history.com/svg?repos=avhz/RustQuant&type=Date)](https://star-history.com/#avhz/RustQuant&Date) -->
