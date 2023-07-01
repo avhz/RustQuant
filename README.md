@@ -374,4 +374,6 @@ I would not recommend using RustQuant within any other libraries for some time, 
 
 ## :star: Star History
 
-[![Star History Chart](https://api.star-history.com/svg?repos=avhz/RustQuant&type=Date)](https://star-history.com/#avhz/RustQuant&Date)
+![Star History](./images/star-history-202371.png)
+
+<!-- [![Star History Chart](https://api.star-history.com/svg?repos=avhz/RustQuant&type=Date)](https://star-history.com/#avhz/RustQuant&Date) -->
