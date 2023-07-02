@@ -1,3 +1,9 @@
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// RustQuant: A Rust library for quantitative finance tools.
+// Copyright (C) 2023 https://github.com/avhz
+// See LICENSE.md or <https://www.gnu.org/licenses/>.
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 //! Interactive binary for the library.
 //! This will hopefully be a user interface for the library,
 //! in the form of a command line interface (CLI).
@@ -13,68 +19,83 @@
 // documented with a SAFETY comment.
 #![forbid(clippy::undocumented_unsafe_blocks)]
 
-// use crossterm::event;
-// use crossterm::terminal::enable_raw_mode;
-use serde_json::Value;
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// IMPORTS
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+pub mod actions;
+pub mod app;
+pub mod banner;
+pub mod draw;
+pub mod events;
+pub mod input;
+pub mod io;
+pub mod key;
+pub mod state;
+pub mod ui;
+
+use actions::*;
+use app::*;
+use banner::*;
+use draw::*;
+use events::*;
+use input::*;
+use io::*;
+use key::*;
+use state::*;
+use ui::*;
+
+use eyre::Result;
+use log::LevelFilter;
+use std::sync::Arc;
+use std::{cell::RefCell, error::Error, rc::Rc};
+
+// use crate::banner::BANNER;
+// use crossterm::{
+//     event::{self, DisableMouseCapture, EnableMouseCapture, Event, KeyCode},
+//     execute,
+//     terminal::{disable_raw_mode, enable_raw_mode, EnterAlternateScreen, LeaveAlternateScreen},
+// };
+// use serde_json::Value;
+// use std::{fs::File, io, thread, time::Duration};
+// use tui::{
+//     backend::Backend,
+//     backend::CrosstermBackend,
+//     layout::{Constraint, Direction, Layout},
+//     widgets::{Block, Borders, Widget},
+//     Frame, Terminal,
+// };
+// use std::sync::mpsc;
 // use std::thread;
 // use std::time::{Duration, Instant};
-use std::{fs::File, sync::mpsc};
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// MAIN
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 const DB: &str = "./src/interactive/db.json";
 
-fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let file = File::open(DB).expect("Could not open JSON file");
-    let json: Value = serde_json::from_reader(file).expect("JSON was not well-formatted");
+#[tokio::main]
+async fn main() -> Result<()> {
+    let (sync_io_tx, mut sync_io_rx) = tokio::sync::mpsc::channel::<IoEvent>(100);
 
-    println!("Hello, {}!", json.get("users").unwrap());
+    // We need to share the App between thread
+    let app = Arc::new(tokio::sync::Mutex::new(App::new(sync_io_tx.clone())));
+    let app_ui = Arc::clone(&app);
 
-    // enable_raw_mode().expect("can run in raw mode");
+    // Configure log
+    tui_logger::init_logger(LevelFilter::Debug).unwrap();
+    tui_logger::set_default_level(log::LevelFilter::Debug);
 
-    // let (tx, rx) = mpsc::channel();
-    // let tick_rate = Duration::from_millis(200);
-    // thread::spawn(move || {
-    //     let mut last_tick = Instant::now();
-    //     loop {
-    //         let timeout = tick_rate
-    //             .checked_sub(last_tick.elapsed())
-    //             .unwrap_or_else(|| Duration::from_secs(0));
+    // Handle IO in a specifc thread
+    tokio::spawn(async move {
+        let mut handler = IoAsyncHandler::new(app);
+        while let Some(io_event) = sync_io_rx.recv().await {
+            handler.handle_io_event(io_event).await;
+        }
+    });
 
-    //         if event::poll(timeout).expect("poll works") {
-    //             if let CEvent::Key(key) = event::read().expect("can read events") {
-    //                 tx.send(Event::Input(key)).expect("can send events");
-    //             }
-    //         }
-
-    //         if last_tick.elapsed() >= tick_rate {
-    //             if let Ok(_) = tx.send(Event::Tick) {
-    //                 last_tick = Instant::now();
-    //             }
-    //         }
-    //     }
-    // });
+    start_ui(&app_ui).await?;
 
     Ok(())
 }
-
-// enum Event<I> {
-//     Input(I),
-//     Tick,
-// }
-
-// enum MenuItem {
-//     Home,
-//     Pricing,
-//     About,
-//     Quit,
-// }
-
-// impl From<MenuItem> for usize {
-//     fn from(input: MenuItem) -> usize {
-//         match input {
-//             MenuItem::Home => 0,
-//             MenuItem::Pricing => 1,
-//             MenuItem::About => 2,
-//             MenuItem::Quit => 3,
-//         }
-//     }
-// }

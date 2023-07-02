@@ -385,3 +385,12 @@ pub mod ml {
     /// Submodule of `ml`: activation functions.
     pub mod activations;
 }
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// RUSTQUANT INTERACTIVE
+// This is the parent module for the interactive TUI.
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+/// Parent module containing: RustQuant interactive TUI.
+#[cfg(feature = "interactive")]
+pub mod interactive {}
