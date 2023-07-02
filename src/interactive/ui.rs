@@ -8,30 +8,10 @@
 // IMPORTS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use crate::actions::*;
-use crate::app::*;
-use crate::banner::*;
-use crate::draw::*;
-use crate::events::*;
-use crate::input::*;
-use crate::io::*;
-use crate::key::*;
-use crate::state::*;
-use crate::ui::*;
-use app::{App, AppReturn};
+use crate::{actions::*, app::*, banner::BANNER, events::*, io::*, state::*};
 use eyre::Result;
-use inputs::events::Events;
-use inputs::InputEvent;
-use io::IoEvent;
-use std::{
-    io::stdout,
-    sync::Arc,
-    time::Duration,
-    time::Duration,
-    {cell::RefCell, io::stdout, rc::Rc, time::Duration},
-};
+use std::{io::stdout, sync::Arc, time::Duration};
 use symbols::line;
-use tokio::*;
 use tui::{
     backend::{Backend, CrosstermBackend},
     layout::{Alignment, Constraint, Direction, Layout, Rect},
@@ -43,13 +23,10 @@ use tui::{
 use tui_logger::TuiLoggerWidget;
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// Structs, enums, and traits
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Implementations, functions, and macros
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+/// Start the user interface
 pub async fn start_ui(app: &Arc<tokio::sync::Mutex<App>>) -> Result<()> {
     // Configure Crossterm backend for tui
     let stdout = stdout();
@@ -74,7 +51,7 @@ pub async fn start_ui(app: &Arc<tokio::sync::Mutex<App>>) -> Result<()> {
         let mut app = app.lock().await;
 
         // Render
-        terminal.draw(|rect| ui::draw(rect, &app))?;
+        terminal.draw(|rect| draw(rect, &app))?;
 
         // Handle inputs
         let result = match events.next().await {
@@ -96,6 +73,7 @@ pub async fn start_ui(app: &Arc<tokio::sync::Mutex<App>>) -> Result<()> {
     Ok(())
 }
 
+/// Draw the user interface
 pub fn draw<B>(rect: &mut Frame<B>, app: &App)
 where
     B: Backend,
@@ -108,7 +86,7 @@ where
         .direction(Direction::Vertical)
         .constraints(
             [
-                Constraint::Length(3),
+                Constraint::Length(10),
                 Constraint::Min(10),
                 Constraint::Length(3),
                 Constraint::Length(12),
@@ -145,7 +123,7 @@ where
 }
 
 fn draw_title<'a>() -> Paragraph<'a> {
-    Paragraph::new("Plop with TUI")
+    Paragraph::new(BANNER)
         .style(Style::default().fg(Color::LightCyan))
         .alignment(Alignment::Center)
         .block(
@@ -154,15 +132,6 @@ fn draw_title<'a>() -> Paragraph<'a> {
                 .style(Style::default().fg(Color::White))
                 .border_type(BorderType::Plain),
         )
-}
-
-fn check_size(rect: &Rect) {
-    if rect.width < 52 {
-        panic!("Require width >= 52, (got {})", rect.width);
-    }
-    if rect.height < 28 {
-        panic!("Require height >= 28, (got {})", rect.height);
-    }
 }
 
 fn draw_body<'a>(loading: bool, state: &AppState) -> Paragraph<'a> {
@@ -187,6 +156,7 @@ fn draw_body<'a>(loading: bool, state: &AppState) -> Paragraph<'a> {
         Spans::from(Span::raw(loading_text)),
         Spans::from(Span::raw(sleep_text)),
         Spans::from(Span::raw(tick_text)),
+        // Spans::from(Span::raw(BANNER)),
     ])
     .style(Style::default().fg(Color::LightCyan))
     .alignment(Alignment::Left)
@@ -225,8 +195,10 @@ fn draw_help(actions: &Actions) -> Table {
     let help_style = Style::default().fg(Color::Gray);
 
     let mut rows = vec![];
+
     for action in actions.actions().iter() {
         let mut first = true;
+
         for key in action.keys() {
             let help = if first {
                 first = false;
@@ -267,6 +239,15 @@ fn draw_logs<'a>() -> TuiLoggerWidget<'a> {
                 .borders(Borders::ALL),
         )
         .style(Style::default().fg(Color::White).bg(Color::Black))
+}
+
+fn check_size(rect: &Rect) {
+    if rect.width < 59 {
+        panic!("Require width >= 59, (got {})", rect.width);
+    }
+    if rect.height < 28 {
+        panic!("Require height >= 28, (got {})", rect.height);
+    }
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -8,15 +8,6 @@
 // IMPORTS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use crate::actions::*;
-use crate::app::*;
-use crate::banner::*;
-use crate::draw::*;
-use crate::events::*;
-use crate::input::*;
-use crate::key::*;
-use crate::state::*;
-use crate::ui::*;
 use crossterm::event;
 use std::fmt::{self, Display, Formatter};
 
@@ -84,9 +75,15 @@ pub enum Key {
     F11,
     /// F12 key
     F12,
+
+    /// Char
     Char(char),
+    /// Ctrl
     Ctrl(char),
+    /// Alt
     Alt(char),
+
+    /// Unknown key
     Unknown,
 }
 
@@ -148,58 +145,72 @@ impl From<event::KeyEvent> for Key {
                 code: event::KeyCode::Esc,
                 ..
             } => Key::Esc,
+
             event::KeyEvent {
                 code: event::KeyCode::Backspace,
                 ..
             } => Key::Backspace,
+
             event::KeyEvent {
                 code: event::KeyCode::Left,
                 ..
             } => Key::Left,
+
             event::KeyEvent {
                 code: event::KeyCode::Right,
                 ..
             } => Key::Right,
+
             event::KeyEvent {
                 code: event::KeyCode::Up,
                 ..
             } => Key::Up,
+
             event::KeyEvent {
                 code: event::KeyCode::Down,
                 ..
             } => Key::Down,
+
             event::KeyEvent {
                 code: event::KeyCode::Home,
                 ..
             } => Key::Home,
+
             event::KeyEvent {
                 code: event::KeyCode::End,
                 ..
             } => Key::End,
+
             event::KeyEvent {
                 code: event::KeyCode::PageUp,
                 ..
             } => Key::PageUp,
+
             event::KeyEvent {
                 code: event::KeyCode::PageDown,
                 ..
             } => Key::PageDown,
+
             event::KeyEvent {
                 code: event::KeyCode::Delete,
                 ..
             } => Key::Delete,
+
             event::KeyEvent {
                 code: event::KeyCode::Insert,
                 ..
             } => Key::Ins,
+
             event::KeyEvent {
                 code: event::KeyCode::F(n),
                 ..
             } => Key::from_f(n),
+
             event::KeyEvent {
                 code: event::KeyCode::Enter,
                 ..
             } => Key::Enter,
+
             event::KeyEvent {
                 code: event::KeyCode::Tab,
                 ..
@@ -211,6 +222,7 @@ impl From<event::KeyEvent> for Key {
                 modifiers: event::KeyModifiers::ALT,
                 ..
             } => Key::Alt(c),
+
             event::KeyEvent {
                 code: event::KeyCode::Char(c),
                 modifiers: event::KeyModifiers::CONTROL,

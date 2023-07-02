@@ -8,28 +8,22 @@
 // IMPORTS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-// use self::state::AppState;
-
-// pub mod state;
-// pub mod ui;
-
-use log::{debug, error, warn};
-
 use crate::actions::*;
-use crate::banner::*;
-use crate::draw::*;
-use crate::events::*;
-use crate::input::*;
+use crate::io::*;
+use crate::key::*;
 use crate::state::*;
-use crate::ui::*;
+use log::{debug, error, warn};
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Structs, enums, and traits
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+/// App return
 #[derive(Debug, PartialEq, Eq)]
 pub enum AppReturn {
+    /// Exit
     Exit,
+    /// Continue
     Continue,
 }
 
@@ -49,6 +43,7 @@ pub struct App {
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 impl App {
+    /// New app
     pub fn new(io_tx: tokio::sync::mpsc::Sender<IoEvent>) -> Self {
         let actions = vec![Action::Quit].into();
         let is_loading = false;
@@ -85,6 +80,10 @@ impl App {
                     self.state.decrement_delay();
                     AppReturn::Continue
                 }
+                Action::OptionPricing => {
+                    self.state.option_pricing();
+                    AppReturn::Continue
+                }
             }
         } else {
             warn!("No action accociated to {}", key);
@@ -109,17 +108,22 @@ impl App {
         };
     }
 
+    /// Actions
     pub fn actions(&self) -> &Actions {
         &self.actions
     }
+
+    /// State
     pub fn state(&self) -> &AppState {
         &self.state
     }
 
+    /// Checks if loading
     pub fn is_loading(&self) -> bool {
         self.is_loading
     }
 
+    /// Initialised
     pub fn initialized(&mut self) {
         // Update contextual actions
         self.actions = vec![
@@ -132,10 +136,12 @@ impl App {
         self.state = AppState::initialized()
     }
 
+    /// check if loaded
     pub fn loaded(&mut self) {
         self.is_loading = false;
     }
 
+    /// Slept
     pub fn slept(&mut self) {
         self.state.incr_sleep();
     }

@@ -8,17 +8,10 @@
 // IMPORTS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+use crate::key::*;
 use std::collections::HashMap;
 use std::fmt::{self, Display};
 use std::slice::Iter;
-
-use crate::app::*;
-use crate::banner::*;
-use crate::draw::*;
-use crate::events::*;
-use crate::input::*;
-use crate::state::*;
-use crate::ui::*;
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Structs, enums, and traits
@@ -27,10 +20,16 @@ use crate::ui::*;
 /// We define all available action
 #[derive(Debug, Clone, Copy, Eq, PartialEq)]
 pub enum Action {
+    /// Quit the app
     Quit,
+    /// Sleep
     Sleep,
+    /// Increment the delay
     IncrementDelay,
+    /// Decrement the delay
     DecrementDelay,
+    /// Option Pricing
+    OptionPricing,
 }
 
 /// The application should have some contextual actions.
@@ -44,11 +43,12 @@ pub struct Actions(Vec<Action>);
 impl Action {
     /// All available actions
     pub fn iterator() -> Iter<'static, Action> {
-        static ACTIONS: [Action; 4] = [
+        static ACTIONS: [Action; 5] = [
             Action::Quit,
             Action::Sleep,
             Action::IncrementDelay,
             Action::DecrementDelay,
+            Action::OptionPricing,
         ];
         ACTIONS.iter()
     }
@@ -60,6 +60,7 @@ impl Action {
             Action::Sleep => &[Key::Char('s')],
             Action::IncrementDelay => &[Key::Char('+')],
             Action::DecrementDelay => &[Key::Char('-')],
+            Action::OptionPricing => &[Key::Char('O')],
         }
     }
 }
@@ -72,6 +73,7 @@ impl Display for Action {
             Action::Sleep => "Sleep",
             Action::IncrementDelay => "Increment delay",
             Action::DecrementDelay => "Decrement delay",
+            Action::OptionPricing => "Option Pricing",
         };
         write!(f, "{}", str)
     }

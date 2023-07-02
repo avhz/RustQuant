@@ -69,15 +69,15 @@ mod tests_cir {
         // E[X_T] = https://en.wikipedia.org/wiki/Cox%E2%80%93Ingersoll%E2%80%93Ross_model
         assert_approx_equal!(
             E_XT,
-            10. * (-0.01 * 0.5 as f64).exp() + 0.15 * (1. - (-0.01 * 0.5 as f64).exp()),
+            10. * (-0.01 * 0.5_f64).exp() + 0.15 * (1. - (-0.01 * 0.5_f64).exp()),
             0.5
         );
         // V[X_T] = see https://en.wikipedia.org/wiki/Cox%E2%80%93Ingersoll%E2%80%93Ross_model
         assert_approx_equal!(
             V_XT,
             10. * (0.45 * 0.45 / 0.01)
-                * ((-0.01 * 0.5 as f64).exp() - (-2. * 0.01 * 0.5 as f64).exp())
-                + (0.15 * 0.45 * 0.45 / (2. * 0.01)) * (1. - (-0.01 * 0.5 as f64).exp()).powi(2),
+                * ((-0.01 * 0.5_f64).exp() - (-2. * 0.01 * 0.5_f64).exp())
+                + (0.15 * 0.45 * 0.45 / (2. * 0.01)) * (1. - (-0.01 * 0.5_f64).exp()).powi(2),
             0.5
         );
 

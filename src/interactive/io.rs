@@ -18,11 +18,13 @@ use std::time::Duration;
 // Structs, enums, and traits
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-// For this dummy application we only need two IO event
+/// I/O Events
 #[derive(Debug, Clone)]
 pub enum IoEvent {
-    Initialize,      // Launch to initialize the application
-    Sleep(Duration), // Just take a little break
+    /// Launch to initialize the application
+    Initialize,
+    /// Just take a little break   
+    Sleep(Duration),
 }
 
 /// In the IO thread, we handle IO event without blocking the UI thread
@@ -35,6 +37,7 @@ pub struct IoAsyncHandler {
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 impl IoAsyncHandler {
+    /// New app
     pub fn new(app: Arc<tokio::sync::Mutex<App>>) -> Self {
         Self { app }
     }

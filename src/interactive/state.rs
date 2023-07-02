@@ -14,12 +14,18 @@ use std::time::Duration;
 // Structs, enums, and traits
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+/// App state
 #[derive(Clone)]
 pub enum AppState {
+    /// Init
     Init,
+    /// Initialised
     Initialized {
+        /// Duration
         duration: Duration,
+        /// Counter sleep
         counter_sleep: u32,
+        /// Counter tick
         counter_tick: u64,
     },
 }
@@ -29,6 +35,7 @@ pub enum AppState {
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 impl AppState {
+    /// Initilised app
     pub fn initialized() -> Self {
         let duration = Duration::from_secs(1);
         let counter_sleep = 0;
@@ -40,22 +47,26 @@ impl AppState {
         }
     }
 
+    /// Checks if app is initialised
     pub fn is_initialized(&self) -> bool {
         matches!(self, &Self::Initialized { .. })
     }
 
+    /// Increment the sleep
     pub fn incr_sleep(&mut self) {
         if let Self::Initialized { counter_sleep, .. } = self {
             *counter_sleep += 1;
         }
     }
 
+    /// Increment the tick
     pub fn incr_tick(&mut self) {
         if let Self::Initialized { counter_tick, .. } = self {
             *counter_tick += 1;
         }
     }
 
+    /// Count the sleep
     pub fn count_sleep(&self) -> Option<u32> {
         if let Self::Initialized { counter_sleep, .. } = self {
             Some(*counter_sleep)
@@ -64,6 +75,7 @@ impl AppState {
         }
     }
 
+    /// Count the tick
     pub fn count_tick(&self) -> Option<u64> {
         if let Self::Initialized { counter_tick, .. } = self {
             Some(*counter_tick)
@@ -72,6 +84,7 @@ impl AppState {
         }
     }
 
+    /// Duration
     pub fn duration(&self) -> Option<&Duration> {
         if let Self::Initialized { duration, .. } = self {
             Some(duration)
@@ -80,6 +93,7 @@ impl AppState {
         }
     }
 
+    /// Increment the delay
     pub fn increment_delay(&mut self) {
         if let Self::Initialized { duration, .. } = self {
             // Set the duration, note that the duration is in 1s..10s
@@ -88,12 +102,18 @@ impl AppState {
         }
     }
 
+    /// Decrement the delay
     pub fn decrement_delay(&mut self) {
         if let Self::Initialized { duration, .. } = self {
             // Set the duration, note that the duration is in 1s..10s
             let secs = (duration.as_secs() - 1).clamp(1, 10);
             *duration = Duration::from_secs(secs);
         }
+    }
+
+    /// Option pricing
+    pub fn option_pricing(&mut self) {
+        println!("Option pricing - check back soon.");
     }
 }
 

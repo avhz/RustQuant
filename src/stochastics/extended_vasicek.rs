@@ -79,7 +79,7 @@ mod tests_extended_vasicek {
         // Expectation with constant reduces to Hull-White
         assert_approx_equal!(
             E_XT,
-            (-alpha * 1.0 as f64).exp() * 10.0 + (theta / alpha) * (1.0 - alpha * 1.0 as f64).exp(),
+            (-alpha * 1.0_f64).exp() * 10.0 + (theta / alpha) * (1.0 - alpha * 1.0_f64).exp(),
             0.25
         );
 

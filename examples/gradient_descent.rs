@@ -26,7 +26,7 @@ fn main() {
     // Perform the optimisation,
     // starting from the initial guess (5.0, 5.0),
     // with verbose output.
-    let result = gd.optimize(&himmelblau, &vec![5.0, 5.0], true);
+    let result = gd.optimize(himmelblau, &[5.0, 5.0], true);
 
     // Print the result.
     // The initial guess (5.0, 5.0) should result in

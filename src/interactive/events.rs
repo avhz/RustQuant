@@ -8,25 +8,11 @@
 // IMPORTS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-// use super::input::*;
-use std::sync::mpsc::{Receiver, Sender};
-
-use crate::actions::*;
-use crate::app::*;
-use crate::banner::*;
-use crate::draw::*;
-use crate::input::*;
-use crate::state::*;
-use crate::ui::*;
-
+use crate::key::*;
+use log::error;
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::Arc;
 use std::time::Duration;
-
-use log::error;
-
-use super::key::Key;
-use super::InputEvent;
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Structs, enums, and traits
@@ -37,9 +23,17 @@ use super::InputEvent;
 pub struct Events {
     rx: tokio::sync::mpsc::Receiver<InputEvent>,
     // Need to be kept around to prevent disposing the sender side.
-    _tx: tokio::sync::mpsc::Sender<InputEvent>,
+    tx: tokio::sync::mpsc::Sender<InputEvent>,
     // To stop the loop
     stop_capture: Arc<AtomicBool>,
+}
+
+/// Input events
+pub enum InputEvent {
+    /// An input event occurred.
+    Input(Key),
+    /// An tick event occurred.
+    Tick,
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -76,7 +70,7 @@ impl Events {
 
         Events {
             rx,
-            _tx: tx,
+            tx,
             stop_capture,
         }
     }
