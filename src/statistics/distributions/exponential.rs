@@ -31,59 +31,163 @@ impl Exponential {
 }
 
 impl Distribution for Exponential {
+    /// ```
+    /// use RustQuant::statistics::distributions::*;
+    ///
+    /// let exp = Exponential::new(1.0);
+    ///
+    /// assert_eq!(exp.cf(0.0).re, 1.0);
+    /// assert_eq!(exp.cf(0.0).im, 0.0);
+    /// ```
     fn cf(&self, t: f64) -> Complex<f64> {
         let i: Complex<f64> = Complex::i();
         1.0 / (1.0 - i * t / self.lambda)
     }
 
+    /// ```
+    /// use RustQuant::assert_approx_equal;
+    /// use RustQuant::statistics::distributions::*;
+    ///
+    /// let exp = Exponential::new(1.0);
+    ///
+    /// assert_approx_equal!(exp.pdf(1.0), 0.3678794, 1e-7);
+    /// ```
     fn pdf(&self, x: f64) -> f64 {
         assert!(x >= 0.0);
 
         self.lambda * (-self.lambda * x).exp()
     }
 
+    /// ```
+    /// use RustQuant::assert_approx_equal;
+    /// use RustQuant::statistics::distributions::*;
+    ///
+    /// let exp = Exponential::new(1.0);
+    ///
+    /// assert_approx_equal!(exp.pdf(1.0), 0.3678794, 1e-7);
+    /// ```
     fn pmf(&self, x: f64) -> f64 {
         self.pdf(x)
     }
 
+    /// ```
+    /// use RustQuant::assert_approx_equal;
+    /// use RustQuant::statistics::distributions::*;
+    ///
+    /// let exp = Exponential::new(1.0);
+    ///
+    /// assert_approx_equal!(exp.cdf(1.0), 0.6321206, 1e-7);
+    /// ```
     fn cdf(&self, x: f64) -> f64 {
         assert!(x >= 0.0);
 
         1.0 - (-self.lambda * x).exp()
     }
 
+    /// ```
+    /// use RustQuant::assert_approx_equal;
+    /// use RustQuant::statistics::distributions::*;
+    ///
+    /// let exp = Exponential::new(1.0);
+    ///
+    /// assert_approx_equal!(exp.inv_cdf(0.5), 0.6931472, 1e-7);
+    /// ```
     fn inv_cdf(&self, p: f64) -> f64 {
         -(1. - p).ln() / self.lambda
     }
 
+    /// ```
+    /// use RustQuant::assert_approx_equal;
+    /// use RustQuant::statistics::distributions::*;
+    ///
+    /// let exp = Exponential::new(1.0);
+    ///
+    /// assert_approx_equal!(exp.mean(), 1.0, 1e-10);
+    /// ```
     fn mean(&self) -> f64 {
         self.lambda.recip()
     }
 
+    /// ```
+    /// use RustQuant::assert_approx_equal;
+    /// use RustQuant::statistics::distributions::*;
+    ///
+    /// let exp = Exponential::new(1.0);
+    ///
+    /// assert_approx_equal!(exp.median(), 0.6931472, 1e-7);
+    /// ```
     fn median(&self) -> f64 {
         2_f64.ln() / self.lambda
     }
 
+    /// ```
+    /// use RustQuant::assert_approx_equal;
+    /// use RustQuant::statistics::distributions::*;
+    ///
+    /// let exp = Exponential::new(1.0);
+    ///
+    /// assert_approx_equal!(exp.mode(), 0.0, 1e-10);
+    /// ```
     fn mode(&self) -> f64 {
         0.0
     }
 
+    /// ```
+    /// use RustQuant::assert_approx_equal;
+    /// use RustQuant::statistics::distributions::*;
+    ///
+    /// let exp = Exponential::new(1.0);
+    ///
+    /// assert_approx_equal!(exp.variance(), 1.0, 1e-10);
+    /// ```
     fn variance(&self) -> f64 {
         self.lambda.recip().powi(2)
     }
 
+    /// ```
+    /// use RustQuant::assert_approx_equal;
+    /// use RustQuant::statistics::distributions::*;
+    ///
+    /// let exp = Exponential::new(1.0);
+    ///
+    /// assert_approx_equal!(exp.skewness(), 2.0, 1e-10);
+    /// ```
     fn skewness(&self) -> f64 {
         2.0
     }
 
+    /// ```
+    /// use RustQuant::assert_approx_equal;
+    /// use RustQuant::statistics::distributions::*;
+    ///
+    /// let exp = Exponential::new(1.0);
+    ///
+    /// assert_approx_equal!(exp.kurtosis(), 6.0, 1e-10);
+    /// ```
     fn kurtosis(&self) -> f64 {
         6.0
     }
 
+    /// ```
+    /// use RustQuant::assert_approx_equal;
+    /// use RustQuant::statistics::distributions::*;
+    ///
+    /// let exp = Exponential::new(1.0);
+    ///
+    /// assert_approx_equal!(exp.entropy(), 1.0, 1e-10);
+    /// ```
     fn entropy(&self) -> f64 {
         1.0 - self.lambda.ln()
     }
 
+    /// ```
+    /// use RustQuant::assert_approx_equal;
+    /// use RustQuant::statistics::distributions::*;
+    ///
+    /// let exp = Exponential::new(1.0);
+    ///
+    /// assert_approx_equal!(exp.mgf(0.5), 2.0, 1e-10);
+    /// ```
     fn mgf(&self, t: f64) -> f64 {
         assert!(t < self.lambda);
 

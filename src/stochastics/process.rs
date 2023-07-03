@@ -98,13 +98,13 @@ mod test_process {
         let gbm = GeometricBrownianMotion::new(0.05, 0.9);
 
         let start = Instant::now();
-        (&gbm).euler_maruyama(10.0, 0.0, 1.0, 125, 10000, false);
+        gbm.euler_maruyama(10.0, 0.0, 1.0, 125, 10000, false);
         let serial = start.elapsed();
 
         println!("Serial: \t {:?}", serial);
 
         let start = Instant::now();
-        (&gbm).euler_maruyama(10.0, 0.0, 1.0, 125, 10000, true);
+        gbm.euler_maruyama(10.0, 0.0, 1.0, 125, 10000, true);
         let parallel = start.elapsed();
 
         println!("Parallel: \t {:?}", parallel);

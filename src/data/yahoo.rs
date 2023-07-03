@@ -7,8 +7,6 @@
 //! Module to fetch data from Yahoo! Finance,
 //! and store it in a Polars DataFrame object.
 
-// use std::io::Cursor;
-// use time::{macros::datetime, Date};
 use polars::prelude::*;
 use time::OffsetDateTime;
 use yahoo_finance_api as yahoo;

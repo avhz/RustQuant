@@ -24,6 +24,12 @@ pub struct OrderBook {
     pub asks: VecDeque<Order>,
 }
 
+impl Default for OrderBook {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl OrderBook {
     /// New `OrderBook` instance.
     pub fn new() -> Self {

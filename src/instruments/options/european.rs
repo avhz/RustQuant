@@ -114,11 +114,9 @@ impl EuropeanOption {
 
 #[cfg(test)]
 mod tests_black_scholes {
-    use time::Duration;
-
-    use crate::assert_approx_equal;
-
     use super::*;
+    use crate::assert_approx_equal;
+    use time::Duration;
 
     #[test]
     fn TEST_black_scholes() {

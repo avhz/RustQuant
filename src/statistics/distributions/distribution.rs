@@ -6,6 +6,10 @@
 
 use num_complex::Complex;
 
+/// Imaginary unit.
+#[allow(non_upper_case_globals)]
+pub const i: Complex<f64> = Complex { re: 0.0, im: 1.0 };
+
 /// Distribution class/type.
 pub enum DistributionClass {
     /// Discrete distribution.
