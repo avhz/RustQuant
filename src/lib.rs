@@ -253,14 +253,17 @@ pub mod utilities {
 /// Parent module containing: mathematical and statistical tools.
 pub mod math {
     pub use crate::math::{
-        integration::midpoint::*, integration::simpsons::*, integration::tanhsinh::*,
-        integration::trapezoid::*, interpolation::*, newton_raphson::*, risk_reward::*,
+        integration::constants::*, integration::midpoint::*, integration::simpsons::*,
+        integration::tanhsinh::*, integration::trapezoid::*, interpolation::*, newton_raphson::*,
+        risk_reward::*,
     };
 
     /// Submodule of `math`: implements numerical integration prodecures.
     /// The primary integrator is the Tanh-Sinh implementation.
     /// The midpoint, trapezoid, and Simpson integrators are innacurate.
     pub mod integration {
+        /// Constants used in numerical integration.
+        pub mod constants;
         /// Composite Midpoint rule.
         pub mod midpoint;
         /// Composite Simpson's 3/8 rule.
@@ -389,6 +392,8 @@ pub mod ml {
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // RUSTQUANT INTERACTIVE
 // This is the parent module for the interactive TUI.
+// All boilerplate currently taken from:
+// https://www.monkeypatch.io/blog/2021-05-31-rust-tui
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 /// Parent module containing: RustQuant interactive TUI.

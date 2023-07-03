@@ -4,6 +4,9 @@
 // See LICENSE.md or <https://www.gnu.org/licenses/>.
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+// All boilerplate currently taken from:
+// https://www.monkeypatch.io/blog/2021-05-31-rust-tui
+
 //! Interactive binary for the library.
 //! This will hopefully be a user interface for the library,
 //! in the form of a command line interface (CLI).
