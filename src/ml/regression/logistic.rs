@@ -127,7 +127,7 @@ impl LogisticRegressionInput<f64> {
         let mut output = self.prepare_output()?;
 
         // Number of rows and columns in the design matrix.
-        let (n_rows, _) = X.shape();
+        let (n_rows, n_cols) = X.shape();
 
         // Vector of ones.
         let ones: DVector<f64> = DVector::from_element(n_rows, 1.);
@@ -136,7 +136,7 @@ impl LogisticRegressionInput<f64> {
         // let lambda = DMatrix::from_diagonal(&DVector::from_element(n_cols, 1e-6));
 
         // Vector of coefficients that we update each iteration.
-        let mut coefs: DVector<f64> = DVector::zeros(n_rows);
+        let mut coefs: DVector<f64> = DVector::zeros(n_cols);
 
         match method {
             // MAXIMUM LIKELIHOOD ESTIMATION
@@ -295,5 +295,79 @@ mod tests_logistic_regression {
         //         1e-3
         //     );
         // }
+    }
+
+    #[test]
+    fn test_logistic_regression2() {
+        // PROFILE THIS UNIT TEST WITH (on MacOS):
+        // sudo -E cargo flamegraph --release --freq 5000 --unit-test -- tests_logistic_regression::test_logistic_regression
+
+        // Test generates sample data in the following way:
+        // - For N samples of the training set draw K feature values each from uniform distribution over (-1.,1.) and arrange as design matrix "X_train".
+        // - For the coefficients of the generating distribution draw K values from surface of sphere S_(K-1)  and a bias from uniform(-0.5,0.5); arrange as DVector "coefs_train"
+        // - compute vector of probabilities(target=1) as sigmoid(X_train_ext * coefs_train)
+        // - for target values :for each sample i draw from Bernouilli(prob_i)
+
+        use rand::prelude::*;
+        use rand_distr::{Bernoulli, StandardNormal, Uniform};
+
+        let N = 2000; //Number of Samples
+        let K = 3; //Number of Features
+
+        //generate random coefficients which will be used to generate target values for the x_i (direction uniform from sphere, bias uniform between -0. and 0.5 )
+        let it_normal = rand::thread_rng().sample_iter(StandardNormal).take(K);
+        let bias = rand::thread_rng().sample(Uniform::new(-0.5, 0.5));
+        let coefs_train = DVector::<f64>::from_iterator(K, it_normal)
+            .normalize()
+            .insert_row(0, bias);
+
+        //generate random design matrix
+        let it_uniform = rand::thread_rng()
+            .sample_iter(Uniform::new(-1., 1.))
+            .take(N * K);
+        let x_train = DMatrix::<f64>::from_iterator(N, K, it_uniform);
+
+        //extend each feature vector by 1. so that coefs_train[0] acts as bias
+        let x_train_extended = x_train.clone().insert_column(0, 1.0);
+
+        let eta = &x_train_extended * &coefs_train;
+        //compute probabilities for each sample x_i
+        let probs = ActivationFunction::logistic(&eta);
+        // sample from Bernoulli distribution with p=p_i for each sample i
+        let t_train =
+            probs.map(|p| Bernoulli::new(p).unwrap().sample(&mut rand::thread_rng()) as i32 as f64);
+
+        // Fit the model to the training data.
+        let input = LogisticRegressionInput {
+            x: x_train,
+            y: t_train,
+        };
+
+        let start_none = Instant::now();
+        let output = input.fit(LogisticRegressionAlgorithm::IRLS, f64::EPSILON.sqrt());
+        let elapsed_none = start_none.elapsed();
+
+        match output {
+            Ok(output) => {
+                println!("number of samples N={}, number of Features K={}", N, K);
+                println!("Iterations: \t{}", output.iterations);
+                println!("Time taken: \t{:?}", elapsed_none);
+                // println!("Intercept: \t{:?}", output.intercept);
+                // print computed coeffs and original coeffs, scaled so that direction components are normalized
+                println!(
+                    "Coefficients found by IRLS(standardized):\n{:?}",
+                    &output
+                        .coefficients
+                        .scale(1. / output.coefficients.rows_range(1..K).magnitude())
+                );
+                println!(
+                    "Coefficients used for generation of training data(standardized):\n{:?}",
+                    &coefs_train.scale(1. / coefs_train.rows_range(1..K).magnitude())
+                );
+            }
+            Err(err) => {
+                panic!("Failed to fit logistic regression model: {}", err);
+            }
+        }
     }
 }
