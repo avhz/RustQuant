@@ -26,7 +26,7 @@ use std::time::Duration;
 pub struct Events {
     rx: tokio::sync::mpsc::Receiver<InputEvent>,
     // Need to be kept around to prevent disposing the sender side.
-    tx: tokio::sync::mpsc::Sender<InputEvent>,
+    _tx: tokio::sync::mpsc::Sender<InputEvent>,
     // To stop the loop
     stop_capture: Arc<AtomicBool>,
 }
@@ -73,7 +73,7 @@ impl Events {
 
         Events {
             rx,
-            tx,
+            _tx: tx,
             stop_capture,
         }
     }

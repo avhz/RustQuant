@@ -36,7 +36,7 @@ pub struct DayCounter {
 /// Trait for converting a month to a usize.
 /// Needed so that we can perform arithmetic on months.
 trait MonthNumeric {
-    fn as_usize(&self) -> usize;
+    fn as_isize(&self) -> isize;
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -44,7 +44,7 @@ trait MonthNumeric {
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 impl MonthNumeric for time::Month {
-    fn as_usize(&self) -> usize {
+    fn as_isize(&self) -> isize {
         match *self {
             time::Month::January => 1,
             time::Month::February => 2,
@@ -93,8 +93,8 @@ impl DayCounter {
     ) -> f64 {
         // THIS FUNCTION NEEDS WORK.
 
-        let start_month = start.month().as_usize();
-        let end_month = end.month().as_usize();
+        let start_month = start.month().as_isize();
+        let end_month = end.month().as_isize();
 
         let days = (end - start).whole_days() as f64;
         let months = (end_month - start_month) as f64;
