@@ -299,48 +299,62 @@ mod tests_logistic_regression {
 
     #[test]
     fn test_logistic_regression2() {
-        // PROFILE THIS UNIT TEST WITH (on MacOS):
-        // sudo -E cargo flamegraph --release --freq 5000 --unit-test -- tests_logistic_regression::test_logistic_regression2
+        // cargo test --release   tests_logistic_regression::test_logistic_regression2 -- --nocapture
 
-        // Test generates sample data in the following way:
-        // - For N samples of the training set draw K feature values each from uniform distribution over (-1.,1.) and arrange as design matrix "X_train".
-        // - For the coefficients of the generating distribution draw K values from surface of sphere S_(K-1)  and a bias from uniform(-0.5,0.5); arrange as DVector "coefs_train"
-        // - compute vector of probabilities(target=1) as sigmoid(X_train_ext * coefs_train)
-        // - for target values :for each sample i draw from Bernouilli(prob_i)
+        // The test generates sample data in the following way:
+        // - For each of the N samples (train/test) draw K feature values each from uniform distribution over (-1.,1.) and arrange as design matrix "X".
+        // - For the coefficients of the generating distribution draw K values from surface of sphere S_(K-1)  and a bias from uniform(-0.5,0.5); arrange as DVector "coefs"
+        // - compute vector of probabilities(target=1) as sigmoid(X_ext * coefs)
+        // - compute target values:for each sample i draw from Bernouilli(prob_i)
 
         use rand::prelude::*;
         use rand_distr::{Bernoulli, StandardNormal, Uniform};
 
-        let N = 2000; //Number of Samples
-        let K = 3; //Number of Features
+        let N_train = 500; //Number of training samples
+        let N_test = 80; //Number of test samples
+        let K = 5; //Number of Features
 
-        //generate random coefficients which will be used to generate target values for the x_i (direction uniform from sphere, bias uniform between -0. and 0.5 )
+        //generate random coefficients which will be used to generate target values for the x_i (direction uniform from sphere, bias uniform between -0.5 and 0.5 ) scaled by steepness
         let it_normal = rand::thread_rng().sample_iter(StandardNormal).take(K);
         let bias = rand::thread_rng().sample(Uniform::new(-0.5, 0.5));
-        let coefs_train = DVector::<f64>::from_iterator(K, it_normal)
+        let steepness = rand::thread_rng().sample(Uniform::new(1., 5.));
+        let coefs = DVector::<f64>::from_iterator(K, it_normal)
             .normalize()
-            .insert_row(0, bias);
+            .insert_row(0, bias)
+            .scale(steepness);
 
-        //generate random design matrix
-        let it_uniform = rand::thread_rng()
-            .sample_iter(Uniform::new(-1., 1.))
-            .take(N * K);
-        let x_train = DMatrix::<f64>::from_iterator(N, K, it_uniform);
+        //generate random design matrix for train/test
+        let distr_uniform = Uniform::new(-1., 1.);
+        let it_uniform_train = rand::thread_rng()
+            .sample_iter(distr_uniform)
+            .take(N_train * K);
+        let x_train = DMatrix::<f64>::from_iterator(N_train, K, it_uniform_train);
+        let it_uniform_test = rand::thread_rng()
+            .sample_iter(distr_uniform)
+            .take(N_test * K);
+        let x_test = DMatrix::<f64>::from_iterator(N_test, K, it_uniform_test);
 
         //extend each feature vector by 1. so that coefs_train[0] acts as bias
         let x_train_extended = x_train.clone().insert_column(0, 1.0);
+        let x_test_extended = x_test.clone().insert_column(0, 1.0);
 
-        let eta = &x_train_extended * &coefs_train;
+        let eta_train = &x_train_extended * &coefs;
+        let eta_test = &x_test_extended * &coefs;
+
         //compute probabilities for each sample x_i
-        let probs = ActivationFunction::logistic(&eta);
+        let probs_train = ActivationFunction::logistic(&eta_train);
+        let probs_test = ActivationFunction::logistic(&eta_test);
+
         // sample from Bernoulli distribution with p=p_i for each sample i
-        let t_train =
-            probs.map(|p| Bernoulli::new(p).unwrap().sample(&mut rand::thread_rng()) as i32 as f64);
+        let y_train = probs_train
+            .map(|p| Bernoulli::new(p).unwrap().sample(&mut rand::thread_rng()) as i32 as f64);
+        let y_test = probs_test
+            .map(|p| Bernoulli::new(p).unwrap().sample(&mut rand::thread_rng()) as i32 as f64);
 
         // Fit the model to the training data.
         let input = LogisticRegressionInput {
             x: x_train,
-            y: t_train,
+            y: y_train,
         };
 
         let start_none = Instant::now();
@@ -349,20 +363,23 @@ mod tests_logistic_regression {
 
         match output {
             Ok(output) => {
-                println!("number of samples N={}, number of Features K={}", N, K);
+                let eta_hat = &x_test_extended * &output.coefficients;
+                let y_hat =
+                    ActivationFunction::logistic(&eta_hat).map(|p| if p > 0.5 { 1. } else { 0. });
+                let missclassification_rate = (y_hat - y_test).abs().sum() / N_test as f64;
+                println!(
+                    "number of samples N_train={}, N_test={}, number of Features K={}",
+                    N_train, N_test, K
+                );
+                println!("missclassification_rate: \t{}", missclassification_rate);
                 println!("Iterations: \t{}", output.iterations);
                 println!("Time taken: \t{:?}", elapsed_none);
                 // println!("Intercept: \t{:?}", output.intercept);
-                // print computed coeffs and original coeffs, scaled so that direction components are normalized
+                // print computed coeffs and original coeffs
+                println!("Coefficients found by IRLS:\n{:?}", &output.coefficients);
                 println!(
-                    "Coefficients found by IRLS(standardized):\n{:?}",
-                    &output
-                        .coefficients
-                        .scale(1. / output.coefficients.rows_range(1..K).magnitude())
-                );
-                println!(
-                    "Coefficients used for generation of training data(standardized):\n{:?}",
-                    &coefs_train.scale(1. / coefs_train.rows_range(1..K).magnitude())
+                    "Coefficients used for the generation of the training data:\n{:?}",
+                    &coefs
                 );
             }
             Err(err) => {
