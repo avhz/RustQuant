@@ -300,7 +300,7 @@ mod tests_logistic_regression {
     #[test]
     fn test_logistic_regression2() {
         // PROFILE THIS UNIT TEST WITH (on MacOS):
-        // sudo -E cargo flamegraph --release --freq 5000 --unit-test -- tests_logistic_regression::test_logistic_regression
+        // sudo -E cargo flamegraph --release --freq 5000 --unit-test -- tests_logistic_regression::test_logistic_regression2
 
         // Test generates sample data in the following way:
         // - For N samples of the training set draw K feature values each from uniform distribution over (-1.,1.) and arrange as design matrix "X_train".
