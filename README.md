@@ -68,8 +68,8 @@ fn main() {
     let g = Graph::new();
 
     // Assign variables.
-    let x = g.var(0.5);
-    let y = g.var(4.2);
+    let x = g.var(69);
+    let y = g.var(420);
 
     // Define a function.
     let z = x * y + x.sin();
