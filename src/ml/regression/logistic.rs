@@ -302,8 +302,8 @@ mod tests_logistic_regression {
         // cargo test --release   tests_logistic_regression::test_logistic_regression2 -- --nocapture
 
         // The test generates sample data in the following way:
-        // - For each of the N samples (train/test) draw K feature values each from uniform distribution over (-1.,1.) and arrange as design matrix "X".
-        // - For the coefficients of the generating distribution draw K values from surface of sphere S_(K-1)  and a bias from uniform(-0.5,0.5); arrange as DVector "coefs"
+        // - For each of the N samples (train/test) draw K feature values each from a uniform distribution over (-1.,1.) and arrange as design matrix "X".
+        // - For the coefficients of the generating distribution draw K values from surface of the unit sphere S_(K-1)  and a bias from uniform(-0.5,0.5); arrange as DVector "coefs"
         // - compute vector of probabilities(target=1) as sigmoid(X_ext * coefs)
         // - compute target values:for each sample i draw from Bernouilli(prob_i)
 
@@ -312,7 +312,7 @@ mod tests_logistic_regression {
 
         let N_train = 500; //Number of training samples
         let N_test = 80; //Number of test samples
-        let K = 5; //Number of Features
+        let K = 2; //Number of Features
 
         //generate random coefficients which will be used to generate target values for the x_i (direction uniform from sphere, bias uniform between -0.5 and 0.5 ) scaled by steepness
         let it_normal = rand::thread_rng().sample_iter(StandardNormal).take(K);
@@ -371,7 +371,10 @@ mod tests_logistic_regression {
                     "number of samples N_train={}, N_test={}, number of Features K={}",
                     N_train, N_test, K
                 );
-                println!("missclassification_rate: \t{}", missclassification_rate);
+                println!(
+                    "missclassification_rate(out of sample): \t{}",
+                    missclassification_rate
+                );
                 println!("Iterations: \t{}", output.iterations);
                 println!("Time taken: \t{:?}", elapsed_none);
                 // println!("Intercept: \t{:?}", output.intercept);
