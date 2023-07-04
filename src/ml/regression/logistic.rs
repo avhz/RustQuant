@@ -127,7 +127,7 @@ impl LogisticRegressionInput<f64> {
         let mut output = self.prepare_output()?;
 
         // Number of rows and columns in the design matrix.
-        let (n_rows, _) = X.shape();
+        let (n_rows, n_cols) = X.shape();
 
         // Vector of ones.
         let ones: DVector<f64> = DVector::from_element(n_rows, 1.);
@@ -136,7 +136,7 @@ impl LogisticRegressionInput<f64> {
         // let lambda = DMatrix::from_diagonal(&DVector::from_element(n_cols, 1e-6));
 
         // Vector of coefficients that we update each iteration.
-        let mut coefs: DVector<f64> = DVector::zeros(n_rows);
+        let mut coefs: DVector<f64> = DVector::zeros(n_cols);
 
         match method {
             // MAXIMUM LIKELIHOOD ESTIMATION
@@ -295,5 +295,99 @@ mod tests_logistic_regression {
         //         1e-3
         //     );
         // }
+    }
+
+    #[test]
+    fn test_logistic_regression2() {
+        // cargo test --release   tests_logistic_regression::test_logistic_regression2 -- --nocapture
+
+        // The test generates sample data in the following way:
+        // - For each of the N samples (train/test) draw K feature values each from a uniform distribution over (-1.,1.) and arrange as design matrix "X".
+        // - For the coefficients of the generating distribution draw K values from surface of the unit sphere S_(K-1)  and a bias from uniform(-0.5,0.5); arrange as DVector "coefs"
+        // - compute vector of probabilities(target=1) as sigmoid(X_ext * coefs)
+        // - compute target values:for each sample i draw from Bernouilli(prob_i)
+
+        use rand::prelude::*;
+        use rand_distr::{Bernoulli, StandardNormal, Uniform};
+
+        let N_train = 500; //Number of training samples
+        let N_test = 80; //Number of test samples
+        let K = 2; //Number of Features
+
+        //generate random coefficients which will be used to generate target values for the x_i (direction uniform from sphere, bias uniform between -0.5 and 0.5 ) scaled by steepness
+        let it_normal = rand::thread_rng().sample_iter(StandardNormal).take(K);
+        let bias = rand::thread_rng().sample(Uniform::new(-0.5, 0.5));
+        let steepness = rand::thread_rng().sample(Uniform::new(1., 5.));
+        let coefs = DVector::<f64>::from_iterator(K, it_normal)
+            .normalize()
+            .insert_row(0, bias)
+            .scale(steepness);
+
+        //generate random design matrix for train/test
+        let distr_uniform = Uniform::new(-1., 1.);
+        let it_uniform_train = rand::thread_rng()
+            .sample_iter(distr_uniform)
+            .take(N_train * K);
+        let x_train = DMatrix::<f64>::from_iterator(N_train, K, it_uniform_train);
+        let it_uniform_test = rand::thread_rng()
+            .sample_iter(distr_uniform)
+            .take(N_test * K);
+        let x_test = DMatrix::<f64>::from_iterator(N_test, K, it_uniform_test);
+
+        //extend each feature vector by 1. so that coefs_train[0] acts as bias
+        let x_train_extended = x_train.clone().insert_column(0, 1.0);
+        let x_test_extended = x_test.clone().insert_column(0, 1.0);
+
+        let eta_train = &x_train_extended * &coefs;
+        let eta_test = &x_test_extended * &coefs;
+
+        //compute probabilities for each sample x_i
+        let probs_train = ActivationFunction::logistic(&eta_train);
+        let probs_test = ActivationFunction::logistic(&eta_test);
+
+        // sample from Bernoulli distribution with p=p_i for each sample i
+        let y_train = probs_train
+            .map(|p| Bernoulli::new(p).unwrap().sample(&mut rand::thread_rng()) as i32 as f64);
+        let y_test = probs_test
+            .map(|p| Bernoulli::new(p).unwrap().sample(&mut rand::thread_rng()) as i32 as f64);
+
+        // Fit the model to the training data.
+        let input = LogisticRegressionInput {
+            x: x_train,
+            y: y_train,
+        };
+
+        let start_none = Instant::now();
+        let output = input.fit(LogisticRegressionAlgorithm::IRLS, f64::EPSILON.sqrt());
+        let elapsed_none = start_none.elapsed();
+
+        match output {
+            Ok(output) => {
+                let eta_hat = &x_test_extended * &output.coefficients;
+                let y_hat =
+                    ActivationFunction::logistic(&eta_hat).map(|p| if p > 0.5 { 1. } else { 0. });
+                let missclassification_rate = (y_hat - y_test).abs().sum() / N_test as f64;
+                println!(
+                    "number of samples N_train={}, N_test={}, number of Features K={}",
+                    N_train, N_test, K
+                );
+                println!(
+                    "missclassification_rate(out of sample): \t{}",
+                    missclassification_rate
+                );
+                println!("Iterations: \t{}", output.iterations);
+                println!("Time taken: \t{:?}", elapsed_none);
+                // println!("Intercept: \t{:?}", output.intercept);
+                // print computed coeffs and original coeffs
+                println!("Coefficients found by IRLS:\n{:?}", &output.coefficients);
+                println!(
+                    "Coefficients used for the generation of the training data:\n{:?}",
+                    &coefs
+                );
+            }
+            Err(err) => {
+                panic!("Failed to fit logistic regression model: {}", err);
+            }
+        }
     }
 }
