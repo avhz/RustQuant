@@ -95,6 +95,66 @@ impl<'v> Variable<'v> {
         }
         adjoints
     }
+
+    /// Check if variable is finite.
+    #[inline]
+    pub fn is_finite(&self) -> bool {
+        self.value.is_finite()
+    }
+
+    /// Check if variable is infinite.
+    #[inline]
+    pub fn is_infinite(&self) -> bool {
+        self.value.is_infinite()
+    }
+
+    /// Check if variable is NaN.
+    #[inline]
+    pub fn is_nan(&self) -> bool {
+        self.value.is_nan()
+    }
+
+    /// Check if variable is normal.
+    #[inline]
+    pub fn is_normal(&self) -> bool {
+        self.value.is_normal()
+    }
+
+    /// Check if variable is subnormal.
+    #[inline]
+    pub fn is_subnormal(&self) -> bool {
+        self.value.is_subnormal()
+    }
+
+    /// Check if variable is zero.
+    #[inline]
+    pub fn is_zero(&self) -> bool {
+        self.value == 0.0
+    }
+
+    /// Check if variable is positive.
+    #[inline]
+    pub fn is_positive(&self) -> bool {
+        self.value.is_sign_positive()
+    }
+
+    /// Check if variable is negative.
+    #[inline]
+    pub fn is_negative(&self) -> bool {
+        self.value.is_sign_negative()
+    }
+
+    /// Round variable to nearest integer.
+    #[inline]
+    pub fn round(&self) -> f64 {
+        self.value.round()
+    }
+
+    /// Returns the sign of the variable.
+    #[inline]
+    pub fn signum(&self) -> f64 {
+        self.value.signum()
+    }
 }
 
 impl<'v> PartialEq for Variable<'v> {

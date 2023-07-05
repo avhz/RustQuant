@@ -4,6 +4,7 @@
 // See LICENSE or <https://www.gnu.org/licenses/>.
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+use crate::autodiff::*;
 use nalgebra::DVector;
 use statrs::function::erf;
 
@@ -31,6 +32,48 @@ pub trait ActivationFunction {
     fn gaussian(&self) -> Self;
     /// Applies the natural logarithm function to the input.
     fn ln(&self) -> Self;
+}
+
+impl ActivationFunction for Variable<'_> {
+    #[inline]
+    fn sigmoid(&self) -> Self {
+        ((-(*self)).exp() + 1_f64).recip()
+    }
+
+    #[inline]
+    fn identity(&self) -> Self {
+        *self
+    }
+
+    #[inline]
+    fn logistic(&self) -> Self {
+        ((-(*self)).exp() + 1_f64).recip()
+    }
+
+    #[inline]
+    fn relu(&self) -> Self {
+        (*self + (*self).abs()) / 2_f64
+    }
+
+    #[inline]
+    fn gelu(&self) -> Self {
+        0.5_f64 * (*self) * (1.0 + ((*self) / 2_f64.sqrt()).erf())
+    }
+
+    #[inline]
+    fn tanh(&self) -> Self {
+        (*self).tanh()
+    }
+
+    #[inline]
+    fn softplus(&self) -> Self {
+        (1.0 + self.exp()).ln()
+    }
+
+    #[inline]
+    fn gaussian(&self) -> Self {
+        (-self.powi(2)).exp()
+    }
 }
 
 impl ActivationFunction for f64 {
@@ -75,7 +118,7 @@ impl ActivationFunction for f64 {
 
     #[inline]
     fn gaussian(&self) -> Self {
-        (-self.powi(2)).exp()
+        (f64::powi(-self, 2)).exp()
     }
     #[inline]
     fn ln(&self) -> Self {

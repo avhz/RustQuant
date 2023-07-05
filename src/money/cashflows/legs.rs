@@ -7,17 +7,40 @@
 //! Submodule of cashflows for defining legs.
 //! A leg is a sequence of cashflows.
 
-/// Leg trait.
-pub trait Leg {
-    fn size(&self) -> usize;
-    fn npv(&self) -> f64;
-    fn start_date(&self) -> OffsetDateTime;
-    fn end_date(&self) -> OffsetDateTime;
-    fn maturity_date(&self) -> OffsetDateTime;
-    fn is_active(&self) -> bool;
-    fn is_inactive(&self) -> bool;
+use time::OffsetDateTime;
+
+pub struct Leg {
+    cashflows: Vec<Box<dyn Cashflow>>,
 }
 
-pub struct SimpleLeg {
-    cashflows: Vec<SimpleCashflow>,
+impl Leg {
+    pub fn new(cashflows: Vec<Box<dyn Cashflow>>) -> Self {
+        Leg { cashflows }
+    }
+
+    pub fn size(&self) -> usize {
+        self.cashflows.len()
+    }
+
+    pub fn npv<F>(&self, df: F) -> f64
+    where
+        F: Fn(OffsetDateTime) -> f64,
+    {
+        self.cashflows.iter().map(|x| x.npv(&df)).sum()
+    }
+
+    pub fn start_date(&self) -> Option<OffsetDateTime> {
+        self.cashflows.iter().map(|x| x.date()).min()
+    }
+
+    pub fn end_date(&self) -> Option<OffsetDateTime> {
+        self.cashflows.iter().map(|x| x.date()).max()
+    }
+
+    pub fn is_active(&self, current_date: OffsetDateTime) -> bool {
+        match (self.start_date(), self.end_date()) {
+            (Some(start), Some(end)) => current_date >= start && current_date <= end,
+            _ => false,
+        }
+    }
 }

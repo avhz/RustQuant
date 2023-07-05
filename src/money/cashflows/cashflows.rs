@@ -6,11 +6,15 @@
 
 //! Cashflows module.
 
+use time::OffsetDateTime;
+
 /// Cashflow trait.
 pub trait Cashflow {
     fn amount(&self) -> f64;
-    fn date(&self) -> f64;
-    fn npv(&self, df: f64) -> f64;
+    fn date(&self) -> OffsetDateTime;
+    fn npv<F>(&self, df: F) -> f64
+    where
+        F: Fn(OffsetDateTime) -> f64;
 }
 
 /// Simple cashflow type.
@@ -34,7 +38,28 @@ impl Cashflow for SimpleCashflow {
         self.date
     }
 
-    fn npv(&self, df: f64) -> f64 {
-        self.amount * df
+    fn npv<F>(&self, df: F) -> f64
+    where
+        F: Fn(OffsetDateTime) -> f64,
+    {
+        self.amount * df(self.date)
+    }
+}
+
+/// Cashflows type.
+pub struct Cashflows {
+    cashflows: Vec<Box<dyn Cashflow>>,
+}
+
+impl Cashflows {
+    pub fn new(cashflows: Vec<Box<dyn Cashflow>>) -> Self {
+        Cashflows { cashflows }
+    }
+
+    pub fn npv<F>(&self, df: F) -> f64
+    where
+        F: Fn(OffsetDateTime) -> f64,
+    {
+        self.cashflows.iter().map(|x| x.npv(&df)).sum()
     }
 }

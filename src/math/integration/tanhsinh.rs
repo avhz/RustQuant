@@ -4,7 +4,6 @@
 // See LICENSE or <https://www.gnu.org/licenses/>.
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-// use rayon::prelude::*;
 use crate::math::integration::constants::*;
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -29,8 +28,8 @@ where
     let c = 0.5 * (b - a);
     let d = 0.5 * (a + b);
 
-    c * tanhsinh(|x| {
-        let out = f(c * x + d);
+    c * tanhsinh(|t| {
+        let out = f(c * t + d);
         if out.is_finite() {
             out
         } else {
@@ -58,10 +57,9 @@ where
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 #[cfg(test)]
-mod tests {
-    use crate::assert_approx_equal;
-
+mod tests_integration {
     use super::*;
+    use crate::assert_approx_equal;
 
     #[test]
     fn test_quadrature() {
