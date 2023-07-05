@@ -28,6 +28,7 @@ use std::{
 
 impl<'v> Neg for Variable<'v> {
     type Output = Self;
+
     #[inline]
     fn neg(self) -> Self::Output {
         self * -1.0
@@ -449,11 +450,14 @@ pub trait Powf<T> {
     fn powf(&self, other: T) -> Self::Output;
 }
 
+// Variable<'v> ^ Variable<'v>
 impl<'v> Powf<Variable<'v>> for Variable<'v> {
     type Output = Variable<'v>;
+
     #[inline]
     fn powf(&self, other: Variable<'v>) -> Self::Output {
         assert_eq!(self.graph as *const Graph, other.graph as *const Graph);
+
         Self::Output {
             graph: self.graph,
             value: self.value.powf(other.value),
@@ -467,8 +471,10 @@ impl<'v> Powf<Variable<'v>> for Variable<'v> {
     }
 }
 
+// Variable<'v> ^ f64
 impl<'v> Powf<f64> for Variable<'v> {
     type Output = Variable<'v>;
+
     #[inline]
     fn powf(&self, n: f64) -> Self::Output {
         Self::Output {
@@ -484,8 +490,10 @@ impl<'v> Powf<f64> for Variable<'v> {
     }
 }
 
+// f64 ^ Variable<'v>
 impl<'v> Powf<Variable<'v>> for f64 {
     type Output = Variable<'v>;
+
     #[inline]
     fn powf(&self, other: Variable<'v>) -> Self::Output {
         Self::Output {
@@ -496,6 +504,74 @@ impl<'v> Powf<Variable<'v>> for f64 {
                 0.,
                 other.index,
                 other.value * f64::powf(*self, other.value - 1.0),
+            ),
+        }
+    }
+}
+
+/// Overload the `Powi` trait.
+pub trait Powi<T> {
+    /// Return type of `Powi`
+    type Output;
+
+    /// Overloaded `powi` function.
+    fn powi(&self, other: T) -> Self::Output;
+}
+
+// Variable<'v> ^ Variable<'v>
+impl<'v> Powi<Variable<'v>> for Variable<'v> {
+    type Output = Variable<'v>;
+
+    #[inline]
+    fn powi(&self, other: Variable<'v>) -> Self::Output {
+        assert_eq!(self.graph as *const Graph, other.graph as *const Graph);
+
+        Self::Output {
+            graph: self.graph,
+            value: self.value.powf(other.value),
+            index: self.graph.push_binary(
+                self.index,
+                other.value * f64::powf(self.value, other.value - 1.),
+                other.index,
+                f64::powf(self.value, other.value) * f64::ln(self.value),
+            ),
+        }
+    }
+}
+
+// Variable<'v> ^ f64
+impl<'v> Powi<i32> for Variable<'v> {
+    type Output = Variable<'v>;
+
+    #[inline]
+    fn powi(&self, n: i32) -> Self::Output {
+        Self::Output {
+            graph: self.graph,
+            value: f64::powi(self.value, n),
+            index: self.graph.push_binary(
+                self.index,
+                n as f64 * f64::powi(self.value, n - 1),
+                self.index,
+                0.0,
+            ),
+        }
+    }
+}
+
+// f64 ^ Variable<'v>
+impl<'v> Powi<Variable<'v>> for f64 {
+    type Output = Variable<'v>;
+
+    #[inline]
+    fn powi(&self, other: Variable<'v>) -> Self::Output {
+        Self::Output {
+            graph: other.graph,
+            value: f64::powf(*self, other.value),
+            index: other.graph.push_binary(
+                other.index,
+                0.,
+                other.index,
+                other.value * f64::powf(*self, other.value - 1_f64),
             ),
         }
     }
@@ -719,11 +795,27 @@ impl<'v> Variable<'v> {
         }
     }
 
+    /// Error function.
+    /// d/dx erf(x) = 2e^(-x^2) / sqrt(PI)
+    #[inline]
+    pub fn erf(self) -> Self {
+        use statrs::function::erf::erf;
+
+        Variable {
+            graph: self.graph,
+            value: erf(self.value),
+            index: self
+                .graph
+                .push_unary(self.index, 2.0 * self.value.powi(2).neg().exp() / PI.sqrt()),
+        }
+    }
+
     /// Error function (complementary).
     /// d/dx erfc(x) = -2e^(-x^2) / sqrt(PI)
     #[inline]
     pub fn erfc(self) -> Self {
         use statrs::function::erf::erfc;
+
         Variable {
             graph: self.graph,
             value: erfc(self.value),
@@ -840,6 +932,18 @@ impl<'v> Variable<'v> {
             index: self.graph.push_unary(self.index, self.value.recip()),
         }
     }
+
+    // /// Maximum value.
+    // /// f(x) = max(x, y)
+    // /// d/dx log_2(x) = 1 / x
+    // #[inline]
+    // pub fn log2(self) -> Self {
+    //     Variable {
+    //         graph: self.graph,
+    //         value: self.value.log2(),
+    //         index: self.graph.push_unary(self.index, self.value.recip()),
+    //     }
+    // }
 
     /// Reciprocal function.
     /// d/dx 1 / x =  - 1 / x^2
