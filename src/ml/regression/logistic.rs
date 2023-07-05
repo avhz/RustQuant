@@ -274,9 +274,10 @@ impl LogisticRegressionOutput<f64> {
 
         let y_complement = (-y).add_scalar(1.);
         let p_complement = (-p_hat).add_scalar(1.);
-
+        let log_p = p_hat.map(|x| x.ln());
+        let log_p_complement = p_complement.map(|x| x.ln());
         let crossentropy =
-            (y.component_mul(&p_hat.ln()) + y_complement.component_mul(&p_complement.ln())).sum();
+            (y.component_mul(&log_p) + y_complement.component_mul(&log_p_complement)).mean();
         crossentropy
     }
 }
@@ -444,14 +445,17 @@ mod tests_logistic_regression {
             Ok(output) => {
                 let y_hat = output.predict(&x_test);
                 let misclassification_rate = output.score_misclassification(&y_test, &y_hat);
+                let p_hat = output.predict_proba(&x_test);
+                let crossentropy = output.score_crossentropy(&y_test, &p_hat);
                 println!(
-                    "number of samples N_train={}, N_test={}, number of Features K={}",
+                    "Number of samples N_train={}, N_test={}, number of Features K={}",
                     N_train, N_test, K
                 );
                 println!(
-                    "misclassification_rate(out of sample): \t{}",
+                    "Misclassification_rate(out of sample): \t{}",
                     misclassification_rate
                 );
+                println!("Avg crossentropy(out of sample): \t{}", crossentropy);
                 println!("Iterations: \t{}", output.iterations);
                 println!("Time taken: \t{:?}", elapsed_none);
                 // println!("Intercept: \t{:?}", output.intercept);

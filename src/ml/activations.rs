@@ -30,8 +30,6 @@ pub trait ActivationFunction {
     fn softplus(&self) -> Self;
     /// Applies the gaussian function to the input.
     fn gaussian(&self) -> Self;
-    /// Applies the natural logarithm function to the input.
-    fn ln(&self) -> Self;
 }
 
 impl ActivationFunction for Variable<'_> {
@@ -120,10 +118,6 @@ impl ActivationFunction for f64 {
     fn gaussian(&self) -> Self {
         (f64::powi(-self, 2)).exp()
     }
-    #[inline]
-    fn ln(&self) -> Self {
-        f64::ln(*self)
-    }
 }
 
 impl ActivationFunction for DVector<f64> {
@@ -165,10 +159,5 @@ impl ActivationFunction for DVector<f64> {
     #[inline]
     fn gaussian(&self) -> Self {
         self.map(|x| x.gaussian())
-    }
-
-    #[inline]
-    fn ln(&self) -> Self {
-        self.map(|x| x.ln())
     }
 }
