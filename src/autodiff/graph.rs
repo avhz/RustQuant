@@ -21,7 +21,7 @@ use std::cell::RefCell;
 // use std::{rc::Rc, sync::Arc};
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// VERTEX AND TAPE STRUCTS AND IMPLEMENTATIONS
+// GRAPH STRUCTS AND IMPLEMENTATIONS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 /// Struct to contain the graph (Wengert list), as a vector of `Vertex`s.

@@ -68,13 +68,13 @@ mod tests_ornstein_uhlenbeck {
         // E[X_T] = https://en.wikipedia.org/wiki/Ornstein%E2%80%93Uhlenbeck_process
         assert_approx_equal!(
             E_XT,
-            10. * (-0.01 * 0.5 as f64).exp() + 0.15 * (1. - (-0.01 * 0.5 as f64).exp()),
+            10. * (-0.01 * 0.5_f64).exp() + 0.15 * (1. - (-0.01 * 0.5_f64).exp()),
             0.5
         );
         // V[X_T] = https://en.wikipedia.org/wiki/Ornstein%E2%80%93Uhlenbeck_process
         assert_approx_equal!(
             V_XT,
-            (0.45 * 0.45 / (2. * 0.01)) * (1. - (-2. * 0.01 * 0.5 as f64).exp()),
+            (0.45 * 0.45 / (2. * 0.01)) * (1. - (-2. * 0.01 * 0.5_f64).exp()),
             0.5
         );
 

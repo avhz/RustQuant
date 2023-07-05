@@ -29,8 +29,6 @@ debug = true
 ## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 [dependencies]
-# csv = "1.2.1"             # https://docs.rs/csv/latest/csv/
-crossterm = "0.26.1"        # https://docs.rs/crossterm/latest/crossterm
 nalgebra = "0.32.2"         # https://docs.rs/nalgebra/latest/nalgebra/
 num-complex = "0.4.2"       # https://docs.rs/num-complex/latest/num_complex/
 plotters = "0.3.4"          # https://docs.rs/plotters/latest/plotters/
@@ -42,23 +40,40 @@ serde_json = "1.0.96"       # https://docs.rs/serde_json/latest/serde_json
 statrs = "0.16.0"           # https://docs.rs/statrs/latest/statrs/
 tempfile = "3.5.0"          # https://docs.rs/tempfile/latest/tempfile/
 time = "0.3.20"             # https://docs.rs/time/latest/time/
-tui = "0.19.0"              # https://docs.rs/tui/latest/tui
 yahoo_finance_api = "2.0.0" # https://docs.rs/yahoo-finance-api/latest/yahoo_finance_api/
 
+[dependencies.crossterm] # https://docs.rs/crossterm/latest/crossterm/
+version = "0.26.1"
+optional = true
+
+[dependencies.eyre] # https://docs.rs/eyre/latest/eyre/
+version = "0.6.8"
+optional = true
+
+[dependencies.log] # https://docs.rs/log/latest/log/
+version = "0.4.19"
+optional = true
 
 [dependencies.polars] # https://docs.rs/polars/latest/polars/  
 version = "0.30.0"
 optional = true
 features = ["serde", "json", "parquet", "dtype-struct", "dtype-date", "lazy"]
 
-
 [dependencies.tokio] # https://docs.rs/tokio/latest/tokio/
 version = "1.28.1"
 optional = true
-
+features = ["macros", "rt-multi-thread"]
 
 [dependencies.tokio-test] # https://docs.rs/tokio-test/latest/tokio_test/
 version = "0.4.2"
+optional = true
+
+[dependencies.tui] # https://docs.rs/tui/latest/tui/
+version = "0.19.0"
+optional = true
+
+[dependencies.tui-logger] # https://docs.rs/tui-logger/latest/tui_logger/
+version = "0.9.2"
 optional = true
 
 
@@ -71,6 +86,15 @@ optional = true
 ## It is disabled by default, since the addition of Polars
 ## increases the compilation time substantially.
 data = ["dep:polars", "dep:tokio", "dep:tokio-test"]
+## This feature is used to enable the use of the `interactive` module.
+interactive = [
+    "dep:tui",
+    "dep:tokio",
+    "dep:tui-logger",
+    "dep:crossterm",
+    "dep:eyre",
+    "dep:log",
+]
 
 
 ## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -92,6 +116,7 @@ required-features = ["data"]
 [[bin]]
 name = "RustQuant"
 path = "src/interactive/main.rs"
+required-features = ["interactive"]
 
 
 ## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

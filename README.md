@@ -68,17 +68,22 @@ fn main() {
     let g = Graph::new();
 
     // Assign variables.
-    let x = g.var(69);
-    let y = g.var(420);
+    let x = g.var(69.);
+    let y = g.var(420.);
 
     // Define a function.
-    let z = x * y + x.sin();
+    let f = {
+      let a = x.powi(2);
+      let b = y.powi(2);
+
+      a + b + (x * y).exp()
+    };
 
     // Accumulate the gradient.
-    let grad = z.accumulate();
+    let gradient = f.accumulate();
 
-    println!("Function = {}", z);
-    println!("Gradient = {:?}", grad.wrt([x, y]));
+    println!("Function = {}", f);
+    println!("Gradient = {:?}", gradient.wrt([x, y]));
 }
 ```
 

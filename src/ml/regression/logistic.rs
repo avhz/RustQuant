@@ -17,7 +17,7 @@
 
 use crate::ml::ActivationFunction;
 use nalgebra::{DMatrix, DVector};
-// use crate::autodiff::{Graph, Variable};
+// use crate::autodiff::*;
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // STRUCTS, ENUMS, AND TRAITS
@@ -132,9 +132,6 @@ impl LogisticRegressionInput<f64> {
         // Vector of ones.
         let ones: DVector<f64> = DVector::from_element(n_rows, 1.);
 
-        // Diagonal matrix  of lambdas (tolerance).
-        // let lambda = DMatrix::from_diagonal(&DVector::from_element(n_cols, 1e-6));
-
         // Vector of coefficients that we update each iteration.
         let mut coefs: DVector<f64> = DVector::zeros(n_cols);
 
@@ -163,14 +160,9 @@ impl LogisticRegressionInput<f64> {
                     let X_T_W = &X_T * &W;
                     let hessian = &X_T_W * &X;
 
-                    // println!("W = {:.4}", W.norm());
-
-                    // let working_response = match (W + &lambda).clone().try_inverse() {
                     let working_response = match W.clone().try_inverse() {
                         Some(inv) => eta + inv * (&y - &mu),
-                        // None => return Err("Weights matrix (W) is singular (non-invertible)."),
                         None => {
-                            // result.intercept = result.coefficients[0];
                             break;
                         }
                     };
@@ -184,9 +176,7 @@ impl LogisticRegressionInput<f64> {
                         }
                     };
                     output.iterations += 1;
-                    // result.intercept = result.coefficients[0];
 
-                    // println!("iter = {}", result.iterations);
                     println!("w_curr = {:.4}", output.coefficients);
 
                     std::mem::swap(&mut output.coefficients, &mut coefs);
