@@ -105,11 +105,39 @@ impl LogisticRegressionInput<f64> {
     /// Function to validate and prepare the output data.
     fn prepare_output(&self) -> Result<LogisticRegressionOutput<f64>, &'static str> {
         // Initial guess for the coefficients.
-        let guess: f64 = (self.y.mean() / (1. - self.y.mean())).ln();
+        // hyperplane orthogonal to line between  means of class 0 and 1; plane goes through the location of (weighted) mean of both clusters
+
+        //<let guess: f64 = (self.y.mean() / (1. - self.y.mean())).ln();
+
+        let (_n_sample, n_feat) = self.x.shape();
+
+        let ones = DVector::from_element(n_feat, 1.).transpose();
+        //calculate mean of features of samples of class 0
+        let mask0 = &self.y * &ones;
+        //println!("{:?},{:?}", mask0.shape(), self.x.shape());
+        let x0_mean = self.x.component_mul(&mask0).row_mean();
+        //calculate mean of features of samples of class 1
+        let mask1 = (-&mask0).add_scalar(1.);
+        let x1_mean = self.x.component_mul(&mask1).row_mean();
+
+        //vector from x0_mean to x1_mean
+        let delta = &x1_mean - &x0_mean;
+
+        //fraction of samples in class 1 , used as weight
+        let y_mean = self.y.mean();
+        let mid = x1_mean * y_mean + x0_mean * (1. - y_mean);
+
+        //compute projection of weighted mean of class on direction delta
+        let scaler = mid.dot(&delta) / delta.magnitude_squared();
+        let dir = delta * scaler;
+
+        // <dir,x>=|dir|^2 is the plane orthogonal to dir with distance |dir| from the origin
+        let bias = -(&dir).magnitude_squared();
+        let coef = dir.insert_column(0, bias);
 
         // Return the output struct, with the initial guess for the coefficients.
         Ok(LogisticRegressionOutput {
-            coefficients: DVector::from_element(self.x.ncols() + 1, guess),
+            coefficients: coef.transpose(),
             iterations: 0,
         })
     }
@@ -130,14 +158,15 @@ impl LogisticRegressionInput<f64> {
         let (n_rows, n_cols) = X.shape();
 
         // Vector of ones.
-        let ones: DVector<f64> = DVector::from_element(n_rows, 1.);
+        let ones_samples: DVector<f64> = DVector::from_element(n_rows, 1.);
 
         // Diagonal matrix  of lambdas (tolerance).
         // let lambda = DMatrix::from_diagonal(&DVector::from_element(n_cols, 1e-6));
 
         // Vector of coefficients that we update each iteration.
         let mut coefs: DVector<f64> = DVector::zeros(n_cols);
-
+        // Vector of ones.
+        let ones_features = DVector::from_element(n_cols, 1.);
         match method {
             // MAXIMUM LIKELIHOOD ESTIMATION
             // Using Algorithmic Adjoint Differentiation (AAD)
@@ -151,50 +180,110 @@ impl LogisticRegressionInput<f64> {
             LogisticRegressionAlgorithm::IRLS => {
                 let mut eta: DVector<f64>;
                 let mut mu: DVector<f64>;
-                let mut W: DMatrix<f64>;
-
                 // While not converged.
                 // Convergence is defined as the norm of the change in
                 // the weights being less than the tolerance.
                 while (&coefs - &output.coefficients).norm() >= tolerance {
                     eta = &X * &output.coefficients;
                     mu = ActivationFunction::logistic(&eta);
-                    W = DMatrix::from_diagonal(&mu.component_mul(&(&ones - &mu)));
-                    let X_T_W = &X_T * &W;
+                    //multiplication of matrix  with diagonal matrix equals elementwise multiplication of each row / col  with diagonal entries
+                    //can be realized by elementwise multiplication with ones * diag_entries.T
+                    //
+                    let diag_entries = &mu.component_mul(&(&ones_samples - &mu));
+
+                    // break if data turns out to be linearly separable
+                    if (&y - &mu).max() < tolerance {
+                        break;
+                    }
+
+                    // for diag-matrix product as elementwise
+                    let diag_repeated = &ones_features * diag_entries.transpose();
+                    let X_T_W = X_T.component_mul(&diag_repeated);
                     let hessian = &X_T_W * &X;
 
                     // println!("W = {:.4}", W.norm());
 
-                    // let working_response = match (W + &lambda).clone().try_inverse() {
-                    let working_response = match W.clone().try_inverse() {
-                        Some(inv) => eta + inv * (&y - &mu),
-                        // None => return Err("Weights matrix (W) is singular (non-invertible)."),
-                        None => {
-                            // result.intercept = result.coefficients[0];
-                            break;
-                        }
-                    };
+                    let z = &X_T * (&y - &mu);
+                    //let hessian_LU = hessian.lu();
+                    let delta_coefs = hessian
+                        .lu()
+                        .solve(&z)
+                        .expect(&format!("IRLS[{}]:", output.iterations));
 
-                    coefs = match hessian.try_inverse() {
-                        // Keep this bracketed to improve performance since
-                        // `working_response` is a vector and not a matrix.
-                        Some(inv) => inv * (&X_T_W * working_response),
-                        None => {
-                            return Err("Hessian matrix (X^T W X) is singular (non-invertible).")
-                        }
-                    };
+                    coefs = &output.coefficients + delta_coefs;
+
                     output.iterations += 1;
                     // result.intercept = result.coefficients[0];
 
                     // println!("iter = {}", result.iterations);
-                    println!("w_curr = {:.4}", output.coefficients);
 
                     std::mem::swap(&mut output.coefficients, &mut coefs);
+
+                    /*  println!(
+                                           "IRLS[{}]:w_curr = {:.4}",
+                                           output.iterations,
+                                           (&output.coefficients).transpose(),
+                                       );
+                    */
+                    println!(
+                        "IRLS[{}]:misclassif = {:.8}",
+                        output.iterations,
+                        output.score_misclassification(&y, &output.predict(&self.x))
+                    );
+                    println!(
+                        "IRLS[{}]:crossentropy = {:.8}",
+                        output.iterations,
+                        output.score_crossentropy(&y, &output.predict_proba(&self.x))
+                    );
+                    /* println!(
+                        "IRLS[{}]:det(hessian) = {:.4}",
+                        output.iterations,
+                        hessian.determinant()
+
+                    ); */
                 }
             }
         }
 
         Ok(output)
+    }
+}
+
+impl LogisticRegressionOutput<f64> {
+    /// Predicts the output for the given input data.
+    pub fn predict(&self, input: &DMatrix<f64>) -> DVector<f64> {
+        let probabilities = self.predict_proba(input);
+        let y_hat = probabilities.map(|p| if p > 0.5 { 1. } else { 0. });
+        y_hat
+    }
+    /// Compute the probabilities Pr(output_i=1|input_i,coefficients) for the given input data.
+    pub fn predict_proba(&self, input: &DMatrix<f64>) -> DVector<f64> {
+        let coef = self.coefficients.clone();
+        let bias = coef[0];
+        let n = coef.remove_row(0);
+        let eta = (input * n).add_scalar(bias);
+        let probabilities = ActivationFunction::logistic(&eta);
+        probabilities
+    }
+
+    /// Compute the misclassification rate for given y and y_hat.
+    pub fn score_misclassification(&self, y: &DVector<f64>, y_hat: &DVector<f64>) -> f64 {
+        assert_eq!(y.shape(), y_hat.shape());
+        let (N_samples, _) = y.shape();
+        (y - y_hat).abs().sum() / N_samples as f64
+    }
+
+    /// Compute average crossentropy for given y and p_hat.
+    pub fn score_crossentropy(&self, y: &DVector<f64>, p_hat: &DVector<f64>) -> f64 {
+        //could be done with only one param input:&LogisticRegressionInput
+        assert_eq!(y.shape(), p_hat.shape());
+
+        let y_complement = (-y).add_scalar(1.);
+        let p_complement = (-p_hat).add_scalar(1.);
+
+        let crossentropy =
+            (y.component_mul(&p_hat.ln()) + y_complement.component_mul(&p_complement.ln())).sum();
+        crossentropy
     }
 }
 
@@ -204,9 +293,11 @@ impl LogisticRegressionInput<f64> {
 
 #[cfg(test)]
 mod tests_logistic_regression {
-    use super::*;
-    use std::time::Instant;
+    use crate::statistics::distributions::DistributionClass;
 
+    use super::*;
+
+    use std::time::Instant;
     // use crate::assert_approx_equal;
 
     #[test]
@@ -298,58 +389,52 @@ mod tests_logistic_regression {
     }
 
     #[test]
-    fn test_logistic_regression2() {
+    fn test_logistic_regression_stochastic() {
         // cargo test --release   tests_logistic_regression::test_logistic_regression2 -- --nocapture
 
         // The test generates sample data in the following way:
         // - For each of the N samples (train/test) draw K feature values each from a uniform distribution over (-1.,1.) and arrange as design matrix "X".
-        // - For the coefficients of the generating distribution draw K values from surface of the unit sphere S_(K-1)  and a bias from uniform(-0.5,0.5); arrange as DVector "coefs"
+        // - For the coefficients of the generating distribution draw K values from surface of the unit sphere S_(K-1)  and a bias from uniform(-0.7,0.7); arrange as DVector "coefs"
         // - compute vector of probabilities(target=1) as sigmoid(X_ext * coefs)
         // - compute target values:for each sample i draw from Bernouilli(prob_i)
+        use crate::statistics::distributions::{Bernoulli, Distribution, Gaussian, Uniform};
 
-        use rand::prelude::*;
-        use rand_distr::{Bernoulli, StandardNormal, Uniform};
+        let N_train = 100000; //Number of training samples
+        let N_test = 1000; //Number of test samples
+        let K = 30; //Number of Features
 
-        let N_train = 500; //Number of training samples
-        let N_test = 80; //Number of test samples
-        let K = 2; //Number of Features
+        let distr_normal = Gaussian::default();
+        let distr_uniform_bias = Uniform::new(-0.7, 0.7, DistributionClass::Continuous);
+        let distr_uniform_steepness = Uniform::new(0.5, 5., DistributionClass::Continuous);
 
         //generate random coefficients which will be used to generate target values for the x_i (direction uniform from sphere, bias uniform between -0.5 and 0.5 ) scaled by steepness
-        let it_normal = rand::thread_rng().sample_iter(StandardNormal).take(K);
-        let bias = rand::thread_rng().sample(Uniform::new(-0.5, 0.5));
-        let steepness = rand::thread_rng().sample(Uniform::new(1., 5.));
-        let coefs = DVector::<f64>::from_iterator(K, it_normal)
+        let bias = distr_uniform_bias.sample(1)[0];
+        let steepness = distr_uniform_steepness.sample(1)[0];
+
+        let coefs = DVector::from_vec(distr_normal.sample(K))
             .normalize()
             .insert_row(0, bias)
             .scale(steepness);
 
+        let logistic_regression = LogisticRegressionOutput {
+            coefficients: coefs,
+            iterations: 0,
+        };
+
         //generate random design matrix for train/test
-        let distr_uniform = Uniform::new(-1., 1.);
-        let it_uniform_train = rand::thread_rng()
-            .sample_iter(distr_uniform)
-            .take(N_train * K);
-        let x_train = DMatrix::<f64>::from_iterator(N_train, K, it_uniform_train);
-        let it_uniform_test = rand::thread_rng()
-            .sample_iter(distr_uniform)
-            .take(N_test * K);
-        let x_test = DMatrix::<f64>::from_iterator(N_test, K, it_uniform_test);
+        let distr_uniform_features = Uniform::new(-0.5, 0.5, DistributionClass::Continuous);
 
-        //extend each feature vector by 1. so that coefs_train[0] acts as bias
-        let x_train_extended = x_train.clone().insert_column(0, 1.0);
-        let x_test_extended = x_test.clone().insert_column(0, 1.0);
-
-        let eta_train = &x_train_extended * &coefs;
-        let eta_test = &x_test_extended * &coefs;
+        let x_train =
+            DMatrix::<f64>::from_vec(N_train, K, distr_uniform_features.sample(N_train * K));
+        let x_test = DMatrix::from_vec(N_test, K, distr_uniform_features.sample(N_test * K));
 
         //compute probabilities for each sample x_i
-        let probs_train = ActivationFunction::logistic(&eta_train);
-        let probs_test = ActivationFunction::logistic(&eta_test);
+        let probs_train = logistic_regression.predict_proba(&x_train);
+        let probs_test = logistic_regression.predict_proba(&x_test);
 
         // sample from Bernoulli distribution with p=p_i for each sample i
-        let y_train = probs_train
-            .map(|p| Bernoulli::new(p).unwrap().sample(&mut rand::thread_rng()) as i32 as f64);
-        let y_test = probs_test
-            .map(|p| Bernoulli::new(p).unwrap().sample(&mut rand::thread_rng()) as i32 as f64);
+        let y_train = probs_train.map(|p| Bernoulli::new(p).sample(1)[0]);
+        let y_test = probs_test.map(|p| Bernoulli::new(p).sample(1)[0]);
 
         // Fit the model to the training data.
         let input = LogisticRegressionInput {
@@ -363,17 +448,15 @@ mod tests_logistic_regression {
 
         match output {
             Ok(output) => {
-                let eta_hat = &x_test_extended * &output.coefficients;
-                let y_hat =
-                    ActivationFunction::logistic(&eta_hat).map(|p| if p > 0.5 { 1. } else { 0. });
-                let missclassification_rate = (y_hat - y_test).abs().sum() / N_test as f64;
+                let y_hat = output.predict(&x_test);
+                let misclassification_rate = output.score_misclassification(&y_test, &y_hat);
                 println!(
                     "number of samples N_train={}, N_test={}, number of Features K={}",
                     N_train, N_test, K
                 );
                 println!(
-                    "missclassification_rate(out of sample): \t{}",
-                    missclassification_rate
+                    "misclassification_rate(out of sample): \t{}",
+                    misclassification_rate
                 );
                 println!("Iterations: \t{}", output.iterations);
                 println!("Time taken: \t{:?}", elapsed_none);
@@ -382,7 +465,7 @@ mod tests_logistic_regression {
                 println!("Coefficients found by IRLS:\n{:?}", &output.coefficients);
                 println!(
                     "Coefficients used for the generation of the training data:\n{:?}",
-                    &coefs
+                    &logistic_regression.coefficients
                 );
             }
             Err(err) => {

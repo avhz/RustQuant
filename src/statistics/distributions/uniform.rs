@@ -187,9 +187,17 @@ impl Distribution for Uniform {
         let dist = Uniform::new(self.a, self.b);
 
         let mut variates: Vec<f64> = Vec::with_capacity(n);
-
-        for _ in 0..variates.capacity() {
-            variates.push(dist.sample(&mut rng) as usize as f64);
+        match self.class {
+            DistributionClass::Discrete => {
+                for _ in 0..variates.capacity() {
+                    variates.push(dist.sample(&mut rng) as usize as f64)
+                }
+            }
+            DistributionClass::Continuous => {
+                for _ in 0..variates.capacity() {
+                    variates.push(dist.sample(&mut rng))
+                }
+            }
         }
 
         variates
