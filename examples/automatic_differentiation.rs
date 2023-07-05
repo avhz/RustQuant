@@ -15,17 +15,21 @@ fn main() {
 
     let g = Graph::new();
 
+    let a = 1.;
+    let b = 2.;
     let x = g.var(69.);
     let y = g.var(420.);
 
-    let z = x * y + x.sin();
+    // Define a function.
+    let f = a + b + (x * y).exp();
 
-    let grad = z.accumulate();
+    // Accumulate the gradient.
+    let gradient = f.accumulate();
 
-    println!("z = {}", z.value);
-    println!("dz/dx = {}", grad.wrt(&x));
-    println!("dz/dy = {}", grad.wrt(&y));
-    println!("grad = {:?}", grad.wrt(&[x, y]));
+    println!("z = {}", f.value);
+    println!("dz/dx = {}", gradient.wrt(&x));
+    println!("dz/dy = {}", gradient.wrt(&y));
+    println!("grad = {:?}", gradient.wrt(&[x, y]));
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // BLOCK EXPRESSIONS

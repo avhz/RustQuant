@@ -164,7 +164,7 @@ mod test_gradient {
         let grad = z.accumulate();
 
         assert_approx_equal!(z.value, 3.5574077246549, 1e-14);
-        assert_approx_equal!(grad.wrt(&x), 5.4255188208147597, 1e-15);
+        assert_approx_equal!(grad.wrt(&x), 5.425_518_820_814_76, 1e-15);
         assert_approx_equal!(grad.wrt(&y), 1.0, 1e-15);
     }
 
@@ -181,8 +181,8 @@ mod test_gradient {
 
         println!("{}", grad.wrt(&x));
 
-        assert_approx_equal!(z.value, 3.762195691083631459, 1e-10);
-        assert_approx_equal!(grad.wrt(&x), 7.2537208156940375, 1e-10);
+        assert_approx_equal!(z.value, 3.762_195_691_083_631_4, 1e-10);
+        assert_approx_equal!(grad.wrt(&x), 7.253_720_815_694_037, 1e-10);
         assert_approx_equal!(grad.wrt(&y), 3.62686040784701, 1e-10);
     }
 
@@ -198,8 +198,8 @@ mod test_gradient {
         let grad = z.accumulate();
 
         assert_approx_equal!(z.value, 1.3620308304831552, 1e-8);
-        assert_approx_equal!(grad.wrt(&x), 1.87499075136386965, 1e-15);
-        assert_approx_equal!(grad.wrt(&y), -0.099819345045613269, 1e-15);
+        assert_approx_equal!(grad.wrt(&x), 1.874_990_751_363_869_7, 1e-15);
+        assert_approx_equal!(grad.wrt(&y), -0.099_819_345_045_613_27, 1e-15);
     }
 
     #[test]
@@ -219,8 +219,8 @@ mod test_gradient {
         println!("Grad wrt x = 1.0: \t{}", grad.wrt(&x));
         println!("Grad wrt y = 2.0: \t{}", grad.wrt(&y));
 
-        assert_approx_equal!(grad.wrt(&x), 0.1409718084254616945815, 1e-15);
-        assert_approx_equal!(grad.wrt(&y), 1.5066148885971964908277, 1e-15);
+        assert_approx_equal!(grad.wrt(&x), 0.140_971_808_425_461_7, 1e-15);
+        assert_approx_equal!(grad.wrt(&y), 1.506_614_888_597_196_4, 1e-15);
     }
 
     #[test]
@@ -235,8 +235,8 @@ mod test_gradient {
         let grad = z().accumulate();
 
         assert_approx_equal!(z().value, 1.3620308304831552, 1e-8);
-        assert_approx_equal!(grad.wrt(&x), 1.87499075136386965, 1e-15);
-        assert_approx_equal!(grad.wrt(&y), -0.099819345045613269, 1e-15);
+        assert_approx_equal!(grad.wrt(&x), 1.874_990_751_363_869_7, 1e-15);
+        assert_approx_equal!(grad.wrt(&y), -0.099_819_345_045_613_27, 1e-15);
     }
 
     #[test]

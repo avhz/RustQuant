@@ -17,7 +17,7 @@
 
 use crate::ml::ActivationFunction;
 use nalgebra::{DMatrix, DVector};
-// use crate::autodiff::{Graph, Variable};
+// use crate::autodiff::*;
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // STRUCTS, ENUMS, AND TRAITS
@@ -160,9 +160,6 @@ impl LogisticRegressionInput<f64> {
         // Vector of ones.
         let ones_samples: DVector<f64> = DVector::from_element(n_rows, 1.);
 
-        // Diagonal matrix  of lambdas (tolerance).
-        // let lambda = DMatrix::from_diagonal(&DVector::from_element(n_cols, 1e-6));
-
         // Vector of coefficients that we update each iteration.
         let mut coefs: DVector<f64> = DVector::zeros(n_cols);
         // Vector of ones.
@@ -213,9 +210,6 @@ impl LogisticRegressionInput<f64> {
                     coefs = &output.coefficients + delta_coefs;
 
                     output.iterations += 1;
-                    // result.intercept = result.coefficients[0];
-
-                    // println!("iter = {}", result.iterations);
 
                     std::mem::swap(&mut output.coefficients, &mut coefs);
 

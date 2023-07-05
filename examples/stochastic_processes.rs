@@ -24,26 +24,26 @@ fn main() {
 
     // Generate path using Euler-Maruyama scheme.
     // Parameters: x_0, t_0, t_n, n, sims, parallel.
-    let abm_out = (&abm).euler_maruyama(10.0, 0.0, 0.5, 1000, 1, false);
-    let bdt_out = (&bdt).euler_maruyama(10.0, 0.0, 0.5, 1000, 1, false);
-    let bm_out  = (&bm).euler_maruyama(10.0, 0.0, 0.5, 1000, 1, false);
-    let cir_out = (&cir).euler_maruyama(10.0, 0.0, 0.5, 1000, 1, false);
-    let ev_out  = (&ev).euler_maruyama(10.0, 0.0, 0.5, 1000, 1, false);
-    let gbm_out = (&gbm).euler_maruyama(10.0, 0.0, 0.5, 1000, 1, false);
-    let hl_out  = (&hl).euler_maruyama(10.0, 0.0, 0.5, 1000, 1, false);
-    let hw_out  = (&hw).euler_maruyama(10.0, 0.0, 0.5, 1000, 1, false);
-    let ou_out  = (&ou).euler_maruyama(10.0, 0.0, 0.5, 1000, 1, false);
+    let abm_out = abm.euler_maruyama(10.0, 0.0, 0.5, 1000, 1, false);
+    let bdt_out = bdt.euler_maruyama(10.0, 0.0, 0.5, 1000, 1, false);
+    let bm_out  = bm.euler_maruyama(10.0, 0.0, 0.5, 1000, 1, false);
+    let cir_out = cir.euler_maruyama(10.0, 0.0, 0.5, 1000, 1, false);
+    let ev_out  = ev.euler_maruyama(10.0, 0.0, 0.5, 1000, 1, false);
+    let gbm_out = gbm.euler_maruyama(10.0, 0.0, 0.5, 1000, 1, false);
+    let hl_out  = hl.euler_maruyama(10.0, 0.0, 0.5, 1000, 1, false);
+    let hw_out  = hw.euler_maruyama(10.0, 0.0, 0.5, 1000, 1, false);
+    let ou_out  = ou.euler_maruyama(10.0, 0.0, 0.5, 1000, 1, false);
 
     // Plot the paths.
-    plot_vector((&abm_out.paths[0]).clone(), "./images/arithmetic_brownian_motion.png").unwrap();
-    plot_vector((&bdt_out.paths[0]).clone(), "./images/black_derman_toy.png").unwrap();
-    plot_vector((&bm_out.paths[0]).clone(),  "./images/brownian_motion.png").unwrap();
-    plot_vector((&cir_out.paths[0]).clone(), "./images/cox_ingersoll_ross.png").unwrap();
-    plot_vector((&ev_out.paths[0]).clone(),  "./images/extended_vasicek.png").unwrap();
-    plot_vector((&gbm_out.paths[0]).clone(), "./images/geometric_brownian_motion.png").unwrap();
-    plot_vector((&hl_out.paths[0]).clone(),  "./images/ho_lee.png").unwrap();
-    plot_vector((&hw_out.paths[0]).clone(),  "./images/hull_white.png").unwrap();
-    plot_vector((&ou_out.paths[0]).clone(),  "./images/ornstein_uhlenbeck.png").unwrap();
+    plot_vector(abm_out.paths[0].clone(), "./images/arithmetic_brownian_motion.png").unwrap();
+    plot_vector(bdt_out.paths[0].clone(), "./images/black_derman_toy.png").unwrap();
+    plot_vector(bm_out.paths[0].clone(),  "./images/brownian_motion.png").unwrap();
+    plot_vector(cir_out.paths[0].clone(), "./images/cox_ingersoll_ross.png").unwrap();
+    plot_vector(ev_out.paths[0].clone(),  "./images/extended_vasicek.png").unwrap();
+    plot_vector(gbm_out.paths[0].clone(), "./images/geometric_brownian_motion.png").unwrap();
+    plot_vector(hl_out.paths[0].clone(),  "./images/ho_lee.png").unwrap();
+    plot_vector(hw_out.paths[0].clone(),  "./images/hull_white.png").unwrap();
+    plot_vector(ou_out.paths[0].clone(),  "./images/ornstein_uhlenbeck.png").unwrap();
 }
 
 fn theta_t(_t: f64) -> f64 {

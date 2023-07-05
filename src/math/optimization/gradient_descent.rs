@@ -128,10 +128,10 @@ mod test_gradient_descent {
     #[test]
     fn test_is_stationary() {
         assert!(GradientDescent::is_stationary(
-            &vec![0.00001, 0.00001],
+            &[0.00001, 0.00001],
             0.0001
         ));
-        assert!(!GradientDescent::is_stationary(&vec![0.01, 0.01], 0.0001));
+        assert!(!GradientDescent::is_stationary(&[0.01, 0.01], 0.0001));
     }
 
     // Test the norm function.
@@ -139,7 +139,7 @@ mod test_gradient_descent {
     fn test_norm() {
         // let graph = graph::new();
         // let vars = graph.vars(&vec![3.0, 4.0]);
-        assert_eq!(GradientDescent::norm(&vec![3.0, 4.0]), 5.0);
+        assert_eq!(GradientDescent::norm(&[3.0, 4.0]), 5.0);
     }
 
     // Test the optimize function on x^2.
@@ -154,7 +154,7 @@ mod test_gradient_descent {
 
         // GradientDescent::new(learning_rate, max_iterations, tolerance)
         let gd = GradientDescent::new(0.1, 1000, 0.000001);
-        let result = gd.optimize(f, &vec![10.0], false);
+        let result = gd.optimize(f, &[10.0], false);
 
         println!("Minimum: {:?}", result.minimum);
         println!("Minimizer: {:?}", result.minimizer);
@@ -177,7 +177,7 @@ mod test_gradient_descent {
 
         // GradientDescent::new(learning_rate, max_iterations, tolerance)
         let gd = GradientDescent::new(0.1, 1000, 0.000001);
-        let result = gd.optimize(f, &vec![5.0, 5.0], false);
+        let result = gd.optimize(f, &[5.0, 5.0], false);
 
         println!("Minimum: {:?}", result.minimum);
         println!("Minimizer: {:?}", result.minimizer);
@@ -200,7 +200,7 @@ mod test_gradient_descent {
 
         // GradientDescent::new(learning_rate, max_iterations, tolerance)
         let gd = GradientDescent::new(0.001, 10000, 0.000001);
-        let result = gd.optimize(f, &vec![0.0, 5.0], false);
+        let result = gd.optimize(f, &[0.0, 5.0], false);
 
         println!("Minimum: {:?}", result.minimum);
         println!("Minimizer: {:?}", result.minimizer);

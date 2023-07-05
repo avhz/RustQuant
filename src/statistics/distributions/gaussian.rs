@@ -230,7 +230,7 @@ mod tests_gaussian {
         assert_approx_equal!(normal.kurtosis(), 0.0, 1e-8);
         assert_approx_equal!(
             normal.entropy(),
-            1.418938533204672741780329736405617639861397473637783412817,
+            1.418_938_533_204_672_7,
             1e-8
         );
     }
@@ -240,8 +240,8 @@ mod tests_gaussian {
         let normal = Gaussian::default();
 
         assert_approx_equal!(normal.mgf(0.0), 1.0, 1e-8);
-        assert_approx_equal!(normal.mgf(1.0), (1.0 as f64).exp().sqrt(), 1e-8);
-        assert_approx_equal!(normal.mgf(2.0), (1.0 as f64).exp().powi(2), 1e-8);
+        assert_approx_equal!(normal.mgf(1.0), 1.0_f64.exp().sqrt(), 1e-8);
+        assert_approx_equal!(normal.mgf(2.0), 1.0_f64.exp().powi(2), 1e-8);
     }
 
     #[test]
@@ -250,7 +250,7 @@ mod tests_gaussian {
 
         assert_approx_equal!(
             normal.entropy(),
-            1.418938533204672741780329736405617639861397473637783412817,
+            1.418_938_533_204_672_7,
             1e-8
         );
     }

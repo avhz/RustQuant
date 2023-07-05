@@ -1,6 +1,4 @@
-use time::macros::date;
 use RustQuant::data::*;
-
 fn main() {
     // New YahooFinanceData instance.
     // By default, date range is: 1970-01-01 to present.

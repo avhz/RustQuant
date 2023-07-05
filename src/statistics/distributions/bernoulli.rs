@@ -203,7 +203,7 @@ mod tests_bernoulli {
         // Test entropy
         assert_eq!(
             bernoulli.entropy(),
-            -(0.5f64.ln() * 0.5 + (1.0 - 0.5 as f64).ln() * (1.0 - 0.5))
+            -(0.5f64.ln() * 0.5 + (1.0 - 0.5_f64).ln() * (1.0 - 0.5))
         );
     }
 
