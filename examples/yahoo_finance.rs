@@ -1,4 +1,8 @@
+// To run this example, use:
+//      cargo run --example yahoo_finance --features=data
+
 use RustQuant::data::*;
+
 fn main() {
     // New YahooFinanceData instance.
     // By default, date range is: 1970-01-01 to present.
@@ -11,7 +15,14 @@ fn main() {
     // Download the historical data.
     yfd.get_price_history();
 
-    println!("Apple's quotes: {:?}", yfd.price_history)
+    // Compute the returns.
+    // Specify the type of returns to compute (Simple, Logarithmic, Absolute)
+    // You don't need to run .get_price_history() first, .compute_returns()
+    // will do it for you if necessary.
+    yfd.compute_returns(ReturnsType::Logarithmic);
+
+    println!("Apple's quotes: {:?}", yfd.price_history);
+    println!("Apple's returns: {:?}", yfd.returns);
 }
 
 // Output should look something like this:
@@ -33,3 +44,21 @@ fn main() {
 // │ 2019-12-31 ┆ 72.482498 ┆ 73.419998 ┆ 72.379997 ┆ 73.412498 ┆ 1.008056e8 ┆ 71.711739 │
 // └────────────┴───────────┴───────────┴───────────┴───────────┴────────────┴───────────┘)
 //
+
+// Apple's returns: Some(shape: (252, 7)
+// ┌────────────┬────────────┬───────────────┬───────────────┬───────────────┬──────────────┬──────────────┐
+// │ date       ┆ volume     ┆ open_logarith ┆ high_logarith ┆ low_logarithm ┆ close_logari ┆ adjusted_log │
+// │ ---        ┆ ---        ┆ mic           ┆ mic           ┆ ic            ┆ thmic        ┆ arithmic     │
+// │ date       ┆ f64        ┆ ---           ┆ ---           ┆ ---           ┆ ---          ┆ ---          │
+// │            ┆            ┆ f64           ┆ f64           ┆ f64           ┆ f64          ┆ f64          │
+// ╞════════════╪════════════╪═══════════════╪═══════════════╪═══════════════╪══════════════╪══════════════╡
+// │ 2019-01-02 ┆ 1.481588e8 ┆ null          ┆ null          ┆ null          ┆ null         ┆ null         │
+// │ 2019-01-03 ┆ 3.652488e8 ┆ -0.073041     ┆ -0.086273     ┆ -0.082618     ┆ -0.104924    ┆ -0.104925    │
+// │ 2019-01-04 ┆ 2.344284e8 ┆ 0.003813      ┆ 0.019235      ┆ 0.012596      ┆ 0.041803     ┆ 0.041803     │
+// │ 2019-01-07 ┆ 2.191112e8 ┆ 0.028444      ┆ 0.001883      ┆ 0.014498      ┆ -0.002228    ┆ -0.002228    │
+// │ …          ┆ …          ┆ …             ┆ …             ┆ …             ┆ …            ┆ …            │
+// │ 2019-12-26 ┆ 9.31212e7  ┆ 0.000457      ┆ 0.017709      ┆ 0.006272      ┆ 0.019646     ┆ 0.019646     │
+// │ 2019-12-27 ┆ 1.46266e8  ┆ 0.021878      ┆ 0.013666      ┆ 0.011941      ┆ -0.00038     ┆ -0.00038     │
+// │ 2019-12-30 ┆ 1.441144e8 ┆ -0.005718     ┆ -0.004364     ┆ -0.010116     ┆ 0.005918     ┆ 0.005918     │
+// │ 2019-12-31 ┆ 1.008056e8 ┆ 0.001622      ┆ 0.003377      ┆ 0.014964      ┆ 0.00728      ┆ 0.00728      │
+// └────────────┴────────────┴───────────────┴───────────────┴───────────────┴──────────────┴──────────────┘)

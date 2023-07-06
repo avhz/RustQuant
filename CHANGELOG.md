@@ -1,5 +1,9 @@
 # Change Log
 
+## 6 July 2023
+
+- Compute returns (simple, arithmetic, absolute) on Yahoo! Finance timeseries downloaded into Polars `DataFrame`s.
+
 ## 27 June 2023
 
 - Moved `options` and `bonds` modules to the parent module `instruments`.

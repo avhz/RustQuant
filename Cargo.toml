@@ -6,7 +6,7 @@
 name = "RustQuant"
 authors = ["avhz <rustquantcontact@gmail.com>"]
 description = "A Rust library for quantitative finance tools."
-version = "0.0.21"
+version = "0.0.22"
 edition = "2021"
 readme = "README.md"
 repository = "https://github.com/avhz/RustQuant"
@@ -110,7 +110,7 @@ required-features = ["data"]
 ## TERMINAL USER INTERFACE
 ## This is simply a plan for the future.
 ##
-## Run it: cargo run 
+## Run it: cargo run --features=interactive
 ## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 [[bin]]
