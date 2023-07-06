@@ -4,7 +4,7 @@
 // See LICENSE or <https://www.gnu.org/licenses/>.
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-//! This module contains the implementation of the `Graph`.
+//! This module contains the implementation of the computation `Graph`.
 //! The graph is also known as a Wengert List.
 //!
 //! The graph is an abstract data structure that contains `Vertex`s. These
@@ -15,9 +15,7 @@
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 use crate::autodiff::*;
-
 use std::cell::RefCell;
-
 // use std::{rc::Rc, sync::Arc};
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -104,28 +102,35 @@ impl Graph {
 
     /// Pushes a vertex to the graph.
     #[inline]
-    pub fn push(
-        &self,
-        operation: OperationArity,
-        parents: &[usize; 2],
-        partials: &[f64; 2],
-    ) -> usize {
+    pub fn push(&self, operation: OperationArity, parents: &[usize], partials: &[f64]) -> usize {
         let mut vertices = self.vertices.borrow_mut();
         let len = vertices.len();
 
         let vertex = match operation {
-            OperationArity::Nullary => Vertex {
-                partials: [0.0, 0.0],
-                parents: [len, len],
-            },
-            OperationArity::Unary => Vertex {
-                partials: [partials[0], 0.0],
-                parents: [parents[0], len],
-            },
-            OperationArity::Binary => Vertex {
-                partials: [partials[0], partials[1]],
-                parents: [parents[0], parents[1]],
-            },
+            OperationArity::Nullary => {
+                assert!(parents.is_empty());
+
+                Vertex {
+                    partials: [0.0, 0.0],
+                    parents: [len, len],
+                }
+            }
+            OperationArity::Unary => {
+                assert!(parents.len() == 1);
+
+                Vertex {
+                    partials: [partials[0], 0.0],
+                    parents: [parents[0], len],
+                }
+            }
+            OperationArity::Binary => {
+                assert!(parents.len() == 2);
+
+                Vertex {
+                    partials: [partials[0], partials[1]],
+                    parents: [parents[0], parents[1]],
+                }
+            }
         };
 
         vertices.push(vertex);

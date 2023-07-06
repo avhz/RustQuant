@@ -146,9 +146,9 @@ impl YahooFinanceData {
                 }
 
                 // THIS IS EXTREMELY HACKY AND SHOULD BE FIXED
-                // IF YOU SEE THIS, PLEASE SUBMIT A PULL REQUEST
+                // IF YOU SEE THIS, FEEL FREE TO SUBMIT A PULL REQUEST
                 // If you venture past here, you'll see more .unwrap()
-                // calls than you've ever seen in your life.
+                // calls than you've ever seen before in your life.
                 let mut prices = self.price_history.clone().unwrap();
                 prices.apply("open", logarithm).unwrap();
                 prices.apply("high", logarithm).unwrap();

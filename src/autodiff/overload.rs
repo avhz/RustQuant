@@ -15,7 +15,6 @@
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 use crate::autodiff::*;
-
 use std::{
     f64::consts::PI,
     iter::{Product, Sum},
@@ -43,6 +42,7 @@ impl<'v> Neg for Variable<'v> {
 /// Variable<'v> + Variable<'v>
 impl<'v> Add<Variable<'v>> for Variable<'v> {
     type Output = Variable<'v>;
+
     /// ```
     /// use RustQuant::autodiff::*;
     ///
@@ -60,7 +60,8 @@ impl<'v> Add<Variable<'v>> for Variable<'v> {
     /// ```
     #[inline]
     fn add(self, other: Variable<'v>) -> Self::Output {
-        assert_eq!(self.graph as *const Graph, other.graph as *const Graph);
+        assert!(std::ptr::eq(self.graph, other.graph));
+
         Variable {
             graph: self.graph,
             value: self.value + other.value,
@@ -76,6 +77,7 @@ impl<'v> Add<Variable<'v>> for Variable<'v> {
 /// Variable<'v> + f64
 impl<'v> Add<f64> for Variable<'v> {
     type Output = Variable<'v>;
+
     /// ```
     /// use RustQuant::autodiff::*;
     ///
@@ -107,6 +109,7 @@ impl<'v> Add<f64> for Variable<'v> {
 /// f64 + Variable<'v>
 impl<'v> Add<Variable<'v>> for f64 {
     type Output = Variable<'v>;
+
     /// ```
     /// use RustQuant::autodiff::*;    
     ///
@@ -135,6 +138,7 @@ impl<'v> Add<Variable<'v>> for f64 {
 /// Variable<'v> - Variable<'v>
 impl<'v> Sub<Variable<'v>> for Variable<'v> {
     type Output = Variable<'v>;
+
     /// ```
     /// use RustQuant::autodiff::*;    
     ///
@@ -152,7 +156,8 @@ impl<'v> Sub<Variable<'v>> for Variable<'v> {
     /// ```
     #[inline]
     fn sub(self, other: Variable<'v>) -> Self::Output {
-        assert_eq!(self.graph as *const Graph, other.graph as *const Graph);
+        assert!(std::ptr::eq(self.graph, other.graph));
+
         self.add(other.neg())
     }
 }
@@ -160,6 +165,7 @@ impl<'v> Sub<Variable<'v>> for Variable<'v> {
 /// Variable<'v> - f64
 impl<'v> Sub<f64> for Variable<'v> {
     type Output = Variable<'v>;
+
     /// ```
     /// use RustQuant::autodiff::*;
     ///
@@ -183,6 +189,7 @@ impl<'v> Sub<f64> for Variable<'v> {
 /// f64 - Variable<'v>
 impl<'v> Sub<Variable<'v>> for f64 {
     type Output = Variable<'v>;
+
     /// ```
     /// use RustQuant::autodiff::*;   
     ///  
@@ -219,6 +226,7 @@ impl<'v> Sub<Variable<'v>> for f64 {
 /// Variable<'v> * Variable<'v>
 impl<'v> Mul<Variable<'v>> for Variable<'v> {
     type Output = Variable<'v>;
+
     /// ```
     /// use RustQuant::autodiff::*;
     ///
@@ -236,13 +244,16 @@ impl<'v> Mul<Variable<'v>> for Variable<'v> {
     /// ```
     #[inline]
     fn mul(self, other: Variable<'v>) -> Self::Output {
-        assert_eq!(self.graph as *const Graph, other.graph as *const Graph);
+        assert!(std::ptr::eq(self.graph, other.graph));
+
         Variable {
             graph: self.graph,
             value: self.value * other.value,
-            index: self
-                .graph
-                .push_binary(self.index, other.value, other.index, self.value),
+            index: self.graph.push(
+                OperationArity::Binary,
+                &[self.index, other.index],
+                &[other.value, self.value],
+            ),
         }
     }
 }
@@ -250,6 +261,7 @@ impl<'v> Mul<Variable<'v>> for Variable<'v> {
 /// Variable<'v> * f64
 impl<'v> Mul<f64> for Variable<'v> {
     type Output = Variable<'v>;
+
     /// ```
     /// use RustQuant::autodiff::*;
     ///
@@ -269,7 +281,11 @@ impl<'v> Mul<f64> for Variable<'v> {
         Variable {
             graph: self.graph,
             value: self.value * other,
-            index: self.graph.push_binary(self.index, other, self.index, 0.0),
+            index: self.graph.push(
+                OperationArity::Binary,
+                &[self.index, self.index],
+                &[other, 0.0],
+            ),
         }
     }
 }
@@ -277,6 +293,7 @@ impl<'v> Mul<f64> for Variable<'v> {
 /// f64 * Variable<'v>
 impl<'v> Mul<Variable<'v>> for f64 {
     type Output = Variable<'v>;
+
     /// ```
     /// use RustQuant::autodiff::*;
     ///
@@ -305,6 +322,7 @@ impl<'v> Mul<Variable<'v>> for f64 {
 /// Variable<'v> / Variable<'v>
 impl<'v> Div<Variable<'v>> for Variable<'v> {
     type Output = Variable<'v>;
+
     /// ```
     /// use RustQuant::autodiff::*;
     ///  
@@ -322,7 +340,8 @@ impl<'v> Div<Variable<'v>> for Variable<'v> {
     /// ```
     #[inline]
     fn div(self, other: Variable<'v>) -> Self::Output {
-        assert_eq!(self.graph as *const Graph, other.graph as *const Graph);
+        assert!(std::ptr::eq(self.graph, other.graph));
+
         self * other.recip()
     }
 }
@@ -330,6 +349,7 @@ impl<'v> Div<Variable<'v>> for Variable<'v> {
 /// Variable<'v> / f64
 impl<'v> Div<f64> for Variable<'v> {
     type Output = Variable<'v>;
+
     /// ```
     /// use RustQuant::autodiff::*;
     ///
@@ -354,6 +374,7 @@ impl<'v> Div<f64> for Variable<'v> {
 /// f64 / Variable<'v>
 impl<'v> Div<Variable<'v>> for f64 {
     type Output = Variable<'v>;
+
     /// ```
     /// use RustQuant::autodiff::*;
     ///   
@@ -373,11 +394,10 @@ impl<'v> Div<Variable<'v>> for f64 {
         Variable {
             graph: other.graph,
             value: self / other.value,
-            index: other.graph.push_binary(
-                other.index,
-                0.0,
-                other.index,
-                -self / (other.value * other.value),
+            index: other.graph.push(
+                OperationArity::Binary,
+                &[other.index, other.index],
+                &[0.0, -self / (other.value * other.value)],
             ),
         }
     }
@@ -456,16 +476,18 @@ impl<'v> Powf<Variable<'v>> for Variable<'v> {
 
     #[inline]
     fn powf(&self, other: Variable<'v>) -> Self::Output {
-        assert_eq!(self.graph as *const Graph, other.graph as *const Graph);
+        assert!(std::ptr::eq(self.graph, other.graph));
 
         Self::Output {
             graph: self.graph,
             value: self.value.powf(other.value),
-            index: self.graph.push_binary(
-                self.index,
-                other.value * f64::powf(self.value, other.value - 1.),
-                other.index,
-                f64::powf(self.value, other.value) * f64::ln(self.value),
+            index: self.graph.push(
+                OperationArity::Binary,
+                &[self.index, other.index],
+                &[
+                    other.value * f64::powf(self.value, other.value - 1.),
+                    f64::powf(self.value, other.value) * f64::ln(self.value),
+                ],
             ),
         }
     }
@@ -480,11 +502,10 @@ impl<'v> Powf<f64> for Variable<'v> {
         Self::Output {
             graph: self.graph,
             value: f64::powf(self.value, n),
-            index: self.graph.push_binary(
-                self.index,
-                n * f64::powf(self.value, n - 1.0),
-                self.index,
-                0.0,
+            index: self.graph.push(
+                OperationArity::Binary,
+                &[self.index, self.index],
+                &[n * f64::powf(self.value, n - 1.0), 0.0],
             ),
         }
     }
@@ -499,11 +520,10 @@ impl<'v> Powf<Variable<'v>> for f64 {
         Self::Output {
             graph: other.graph,
             value: f64::powf(*self, other.value),
-            index: other.graph.push_binary(
-                other.index,
-                0.,
-                other.index,
-                other.value * f64::powf(*self, other.value - 1.0),
+            index: other.graph.push(
+                OperationArity::Binary,
+                &[other.index, other.index],
+                &[0.0, other.value * f64::powf(*self, other.value - 1.0)],
             ),
         }
     }
@@ -524,16 +544,18 @@ impl<'v> Powi<Variable<'v>> for Variable<'v> {
 
     #[inline]
     fn powi(&self, other: Variable<'v>) -> Self::Output {
-        assert_eq!(self.graph as *const Graph, other.graph as *const Graph);
+        assert!(std::ptr::eq(self.graph, other.graph));
 
         Self::Output {
             graph: self.graph,
             value: self.value.powf(other.value),
-            index: self.graph.push_binary(
-                self.index,
-                other.value * f64::powf(self.value, other.value - 1.),
-                other.index,
-                f64::powf(self.value, other.value) * f64::ln(self.value),
+            index: self.graph.push(
+                OperationArity::Binary,
+                &[self.index, other.index],
+                &[
+                    other.value * f64::powf(self.value, other.value - 1.),
+                    f64::powf(self.value, other.value) * f64::ln(self.value),
+                ],
             ),
         }
     }
@@ -548,11 +570,10 @@ impl<'v> Powi<i32> for Variable<'v> {
         Self::Output {
             graph: self.graph,
             value: f64::powi(self.value, n),
-            index: self.graph.push_binary(
-                self.index,
-                n as f64 * f64::powi(self.value, n - 1),
-                self.index,
-                0.0,
+            index: self.graph.push(
+                OperationArity::Binary,
+                &[self.index, self.index],
+                &[n as f64 * f64::powi(self.value, n - 1), 0.0],
             ),
         }
     }
@@ -567,11 +588,10 @@ impl<'v> Powi<Variable<'v>> for f64 {
         Self::Output {
             graph: other.graph,
             value: f64::powf(*self, other.value),
-            index: other.graph.push_binary(
-                other.index,
-                0.,
-                other.index,
-                other.value * f64::powf(*self, other.value - 1_f64),
+            index: other.graph.push(
+                OperationArity::Binary,
+                &[other.index, other.index],
+                &[0.0, other.value * f64::powf(*self, other.value - 1.0)],
             ),
         }
     }
@@ -607,7 +627,9 @@ impl<'v> Variable<'v> {
         Variable {
             graph: self.graph,
             value: self.value.abs(),
-            index: self.graph.push_unary(self.index, self.value.signum()),
+            index: self
+                .graph
+                .push(OperationArity::Unary, &[self.index], &[self.value.signum()]),
         }
     }
 
@@ -630,9 +652,10 @@ impl<'v> Variable<'v> {
         Variable {
             graph: self.graph,
             value: self.value.acos(),
-            index: self.graph.push_unary(
-                self.index,
-                ((1.0 - self.value.powi(2)).sqrt()).recip().neg(),
+            index: self.graph.push(
+                OperationArity::Unary,
+                &[self.index],
+                &[((1.0 - self.value.powi(2)).sqrt()).recip().neg()],
             ),
         }
     }
@@ -656,9 +679,10 @@ impl<'v> Variable<'v> {
         Variable {
             graph: self.graph,
             value: self.value.acosh(),
-            index: self.graph.push_unary(
-                self.index,
-                ((self.value - 1.0).sqrt() * (self.value + 1.0).sqrt()).recip(),
+            index: self.graph.push(
+                OperationArity::Unary,
+                &[self.index],
+                &[((self.value - 1.0).sqrt() * (self.value + 1.0).sqrt()).recip()],
             ),
         }
     }

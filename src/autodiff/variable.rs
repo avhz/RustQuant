@@ -7,8 +7,8 @@
 //! This module contains the implementation of the `Variable` structure.
 //!
 //! `Variable`s are used to create inpug.variables and contain:
-//!     - a pointer to their graph
-//!     - an index to their vertex
+//!     - a pointer to their computation graph,
+//!     - an index to their vertex,
 //!     - an associated value.
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -16,7 +16,6 @@
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 use crate::autodiff::*;
-
 use std::fmt::Display;
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -34,26 +33,39 @@ pub struct Variable<'v> {
     pub value: f64, // Value,
 }
 
-// /// Value of the Variable.
-// #[derive(Clone, /* Copy */ Debug)]
-// pub enum Value {
-//     /// Scalar valued Variable.
-//     Scalar(f64),
-//     /// Vector valued Variable.
-//     Vector(nalgebra::DVector<f64>),
-//     /// Matrix valued Variable.
-//     Matrix(nalgebra::DMatrix<f64>),
-// }
-
-/// Implement formatting for the `Variable` struct.
-impl<'v> Display for Variable<'v> {
-    #[inline]
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{:?}", self.value)
-    }
+/// Value of the Variable.
+#[derive(Clone, Debug, PartialEq, PartialOrd)]
+pub enum Value {
+    /// Scalar valued Variable.
+    Scalar(f64),
+    /// Vector valued Variable.
+    Vector(nalgebra::DVector<f64>),
+    /// Matrix valued Variable.
+    Matrix(nalgebra::DMatrix<f64>),
 }
 
 impl<'v> Variable<'v> {
+    /// Function to reverse accumulate the gradient.
+    /// 1. Allocate the array of adjoints.
+    /// 2. Set the seed (dx/dx = 1).
+    /// 3. Traverse the graph backwards, updating the adjoints for the parent vertices.
+    #[inline]
+    pub fn accumulate(&self) -> Vec<f64> {
+        // Set the seed.
+        // The seed is the derivative of the output with respect to itself.
+        // dy/dy = 1
+        let mut adjoints = vec![0.0; self.graph.len()];
+        adjoints[self.index] = 1.0; // SEED
+
+        // Traverse the graph backwards and update the adjoints for the parent vertices.
+        for (index, vertex) in self.graph.vertices.borrow().iter().enumerate().rev() {
+            let deriv = adjoints[index];
+            adjoints[vertex.parents[0]] += vertex.partials[0] * deriv;
+            adjoints[vertex.parents[1]] += vertex.partials[1] * deriv;
+        }
+        adjoints
+    }
+
     /// Function to return the value contained in a vertex.
     #[inline]
     pub fn value(&self) -> f64 {
@@ -70,30 +82,6 @@ impl<'v> Variable<'v> {
     #[inline]
     pub fn graph(&self) -> &'v Graph {
         self.graph
-    }
-
-    /// Function to reverse accumulate the gradient.
-    /// 1. Allocate the array of adjoints.
-    /// 2. Set the seed (dx/dx = 1).
-    /// 3. Traverse the graph backwards, updating the adjoints for the parent vertices.
-    #[inline]
-    pub fn accumulate(&self) -> Vec<f64> {
-        let length = self.graph.len();
-        let vertices = self.graph.vertices.borrow();
-        let mut adjoints = vec![0.0; length];
-
-        // Set the seed.
-        // The seed is the derivative of the output with respect to itself.
-        // dy/dy = 1
-        adjoints[self.index] = 1.0;
-
-        // Traverse the graph backwards and update the adjoints for the parent vertices.
-        for (index, vertex) in vertices.iter().enumerate().rev() {
-            let deriv = adjoints[index];
-            adjoints[vertex.parents[0]] += vertex.partials[0] * deriv;
-            adjoints[vertex.parents[1]] += vertex.partials[1] * deriv;
-        }
-        adjoints
     }
 
     /// Check if variable is finite.
@@ -146,8 +134,8 @@ impl<'v> Variable<'v> {
 
     /// Round variable to nearest integer.
     #[inline]
-    pub fn round(&self) -> f64 {
-        self.value.round()
+    pub fn round(&mut self) {
+        self.value = self.value.round();
     }
 
     /// Returns the sign of the variable.
@@ -157,7 +145,16 @@ impl<'v> Variable<'v> {
     }
 }
 
+/// Implement formatting for the `Variable` struct.
+impl<'v> Display for Variable<'v> {
+    #[inline]
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{:?}", self.value)
+    }
+}
+
 impl<'v> PartialEq for Variable<'v> {
+    #[inline]
     fn eq(&self, other: &Self) -> bool {
         std::ptr::eq(self.graph, other.graph)
             && self.index == other.index
@@ -168,12 +165,14 @@ impl<'v> PartialEq for Variable<'v> {
 impl<'v> Eq for Variable<'v> {}
 
 impl<'v> PartialOrd for Variable<'v> {
+    #[inline]
     fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
         Some(self.cmp(other))
     }
 }
 
 impl<'v> Ord for Variable<'v> {
+    #[inline]
     fn cmp(&self, other: &Self) -> std::cmp::Ordering {
         self.value
             .partial_cmp(&other.value)
