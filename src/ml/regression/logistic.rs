@@ -5,11 +5,6 @@
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 //! Module for logistic regression (classification) algorithms.
-//!
-//! BROKEN: This module is currently broken and does not work.
-//! The problem is that the diagonal weights matrix W becomes singular
-//! as the diagonal elements approach 0.
-//! If you know how to fix this, submit a pull request!
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // IMPORTS
@@ -27,6 +22,8 @@ use nalgebra::{DMatrix, DVector};
 #[derive(Clone, Debug)]
 pub struct LogisticRegressionInput<T> {
     /// The input data matrix, also known as the design matrix.
+    /// You do not need to add a column of ones to the design matrix,
+    /// as this is done automatically.
     pub x: DMatrix<T>,
     /// The output data vector, also known as the response vector.
     /// The values of the response vector should be either 0 or 1.
@@ -107,16 +104,14 @@ impl LogisticRegressionInput<f64> {
         // Initial guess for the coefficients.
         // hyperplane orthogonal to line between  means of class 0 and 1; plane goes through the location of (weighted) mean of both clusters
 
-        //<let guess: f64 = (self.y.mean() / (1. - self.y.mean())).ln();
-
         let (_n_sample, n_feat) = self.x.shape();
-
         let ones = DVector::from_element(n_feat, 1.).transpose();
-        //calculate mean of features of samples of class 0
+
+        // Calculate mean of features of samples of class 0
         let mask0 = &self.y * &ones;
-        //println!("{:?},{:?}", mask0.shape(), self.x.shape());
         let x0_mean = self.x.component_mul(&mask0).row_mean();
-        //calculate mean of features of samples of class 1
+
+        // Calculate mean of features of samples of class 1
         let mask1 = (-&mask0).add_scalar(1.);
         let x1_mean = self.x.component_mul(&mask1).row_mean();
 
@@ -132,7 +127,7 @@ impl LogisticRegressionInput<f64> {
         let dir = delta * scaler;
 
         // <dir,x>=|dir|^2 is the plane orthogonal to dir with distance |dir| from the origin
-        let bias = -(&dir).magnitude_squared();
+        let bias = -dir.magnitude_squared();
         let coef = dir.insert_column(0, bias);
 
         // Return the output struct, with the initial guess for the coefficients.
@@ -148,22 +143,20 @@ impl LogisticRegressionInput<f64> {
         method: LogisticRegressionAlgorithm,
         tolerance: f64,
     ) -> Result<LogisticRegressionOutput<f64>, &'static str> {
-        // Validate and prepare the input data.
+        // Validate and prepare the input and output data.
         let (X, X_T, y) = self.prepare_input()?;
-
-        // Prepare the output data.
         let mut output = self.prepare_output()?;
 
         // Number of rows and columns in the design matrix.
         let (n_rows, n_cols) = X.shape();
 
         // Vector of ones.
-        let ones_samples: DVector<f64> = DVector::from_element(n_rows, 1.);
+        let ones_samples = DVector::from_element(n_rows, 1.);
+        let ones_features = DVector::from_element(n_cols, 1.);
 
         // Vector of coefficients that we update each iteration.
-        let mut coefs: DVector<f64> = DVector::zeros(n_cols);
-        // Vector of ones.
-        let ones_features = DVector::from_element(n_cols, 1.);
+        let mut coefs = DVector::zeros(n_cols);
+
         match method {
             // MAXIMUM LIKELIHOOD ESTIMATION
             // Using Algorithmic Adjoint Differentiation (AAD)
@@ -177,6 +170,7 @@ impl LogisticRegressionInput<f64> {
             LogisticRegressionAlgorithm::IRLS => {
                 let mut eta: DVector<f64>;
                 let mut mu: DVector<f64>;
+
                 // While not converged.
                 // Convergence is defined as the norm of the change in
                 // the weights being less than the tolerance.
@@ -188,53 +182,26 @@ impl LogisticRegressionInput<f64> {
                     //
                     let diag_entries = &mu.component_mul(&(&ones_samples - &mu));
 
-                    // break if data turns out to be linearly separable
+                    // Break if data turns out to be linearly separable.
                     if (&y - &mu).max() < tolerance {
                         break;
                     }
 
-                    // for diag-matrix product as elementwise
+                    // For diag-matrix product as elementwise.
                     let diag_repeated = &ones_features * diag_entries.transpose();
                     let X_T_W = X_T.component_mul(&diag_repeated);
                     let hessian = &X_T_W * &X;
-
-                    // println!("W = {:.4}", W.norm());
-
                     let z = &X_T * (&y - &mu);
-                    //let hessian_LU = hessian.lu();
                     let delta_coefs = hessian
                         .lu()
                         .solve(&z)
-                        .expect(&format!("IRLS[{}]:", output.iterations));
+                        .unwrap_or_else(|| panic!("IRLS[{}]:", output.iterations));
 
                     coefs = &output.coefficients + delta_coefs;
 
                     output.iterations += 1;
 
                     std::mem::swap(&mut output.coefficients, &mut coefs);
-
-                    /*  println!(
-                                           "IRLS[{}]:w_curr = {:.4}",
-                                           output.iterations,
-                                           (&output.coefficients).transpose(),
-                                       );
-                    */
-                    println!(
-                        "IRLS[{}]:misclassif = {:.8}",
-                        output.iterations,
-                        output.score_misclassification(&y, &output.predict(&self.x))
-                    );
-                    println!(
-                        "IRLS[{}]:crossentropy = {:.8}",
-                        output.iterations,
-                        output.score_crossentropy(&y, &output.predict_proba(&self.x))
-                    );
-                    /* println!(
-                        "IRLS[{}]:det(hessian) = {:.4}",
-                        output.iterations,
-                        hessian.determinant()
-
-                    ); */
                 }
             }
         }
@@ -247,17 +214,20 @@ impl LogisticRegressionOutput<f64> {
     /// Predicts the output for the given input data.
     pub fn predict(&self, input: &DMatrix<f64>) -> DVector<f64> {
         let probabilities = self.predict_proba(input);
-        let y_hat = probabilities.map(|p| if p > 0.5 { 1. } else { 0. });
-        y_hat
+
+        // Predictions (y_hat)
+        probabilities.map(|p| if p > 0.5 { 1. } else { 0. })
     }
+
     /// Compute the probabilities Pr(output_i=1|input_i,coefficients) for the given input data.
     pub fn predict_proba(&self, input: &DMatrix<f64>) -> DVector<f64> {
         let coef = self.coefficients.clone();
         let bias = coef[0];
         let n = coef.remove_row(0);
         let eta = (input * n).add_scalar(bias);
-        let probabilities = ActivationFunction::logistic(&eta);
-        probabilities
+
+        // Probabilities
+        ActivationFunction::logistic(&eta)
     }
 
     /// Compute the misclassification rate for given y and y_hat.
@@ -267,8 +237,8 @@ impl LogisticRegressionOutput<f64> {
         (y - y_hat).abs().sum() / N_samples as f64
     }
 
-    /// Compute average crossentropy for given y and p_hat.
-    pub fn score_crossentropy(&self, y: &DVector<f64>, p_hat: &DVector<f64>) -> f64 {
+    /// Compute average cross-entropy for given y and p_hat.
+    pub fn score_cross_entropy(&self, y: &DVector<f64>, p_hat: &DVector<f64>) -> f64 {
         //could be done with only one param input:&LogisticRegressionInput
         assert_eq!(y.shape(), p_hat.shape());
 
@@ -276,9 +246,9 @@ impl LogisticRegressionOutput<f64> {
         let p_complement = (-p_hat).add_scalar(1.);
         let log_p = p_hat.map(|x| x.ln());
         let log_p_complement = p_complement.map(|x| x.ln());
-        let crossentropy =
-            (y.component_mul(&log_p) + y_complement.component_mul(&log_p_complement)).mean();
-        crossentropy
+
+        // Cross-entropy
+        (y.component_mul(&log_p) + y_complement.component_mul(&log_p_complement)).mean()
     }
 }
 
@@ -446,7 +416,7 @@ mod tests_logistic_regression {
                 let y_hat = output.predict(&x_test);
                 let misclassification_rate = output.score_misclassification(&y_test, &y_hat);
                 let p_hat = output.predict_proba(&x_test);
-                let crossentropy = output.score_crossentropy(&y_test, &p_hat);
+                let crossentropy = output.score_cross_entropy(&y_test, &p_hat);
                 println!(
                     "Number of samples N_train={}, N_test={}, number of Features K={}",
                     N_train, N_test, K
