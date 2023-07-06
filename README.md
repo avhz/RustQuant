@@ -297,7 +297,7 @@ fn main() {
 ### Regression
 
 - [x] Linear (using QR or SVD decomposition)
-- [ ] Logistic (using MLE or IRLS). Work in progress.
+- [x] Logistic (via IRLS, adding MLE in the future). 
 
 ## :moneybag: Money <a name="money"></a>
 
