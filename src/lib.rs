@@ -254,8 +254,8 @@ pub mod utilities {
 pub mod math {
     pub use crate::math::{
         integration::constants::*, integration::midpoint::*, integration::simpsons::*,
-        integration::tanhsinh::*, integration::trapezoid::*, interpolation::*, newton_raphson::*,
-        risk_reward::*,
+        integration::tanhsinh::*, integration::trapezoid::*,  fft::*, interpolation::*, 
+        newton_raphson::*, risk_reward::*,
     };
 
     /// Submodule of `math`: implements numerical integration prodecures.
@@ -284,6 +284,8 @@ pub mod math {
         // pub mod newton_raphson;
         // pub mod secant;
     }
+    /// Submodule of `math`: implements a fast fourier transform function
+    pub mod fft;
     /// Submodule of `math`: implements interpolation solvers.
     pub mod interpolation;
     /// Submodule of `math`: implements Newton-Raphson method.
