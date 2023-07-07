@@ -142,7 +142,7 @@ mod test {
         assert_eq!(x.len(), y.len());
 
         for (x_value, y_value) in x.iter().zip(y.iter()) {
-            assert!((x_value - y_value).norm() <= 1e10);
+            assert!((x_value - y_value).norm() <= 1e-10);
         }
     }
 
@@ -150,7 +150,7 @@ mod test {
         assert_eq!(x.len(), y.len());
 
         for (x_value, y_value) in x.iter().zip(y.iter()) {
-            assert!(x_value - y_value <= 1e10);
+            assert!(x_value - y_value <= 1e-10);
         }
     }
 
