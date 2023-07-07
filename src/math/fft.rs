@@ -66,16 +66,7 @@ fn fft_real_calculation(x: &mut Vec<f64>) {
         return;
     }
 
-    let mut even = Vec::with_capacity(n / 2);
-    let mut odd = Vec::with_capacity(n / 2);
-
-    for (i, x_value) in x.iter().enumerate() {
-        if i % 2 == 0 {
-            even.push(*x_value);
-        } else {
-            odd.push(*x_value);
-        }
-    }
+    let (mut even, mut odd) = split_array(x);
 
     fft_real_calculation(&mut even);
     fft_real_calculation(&mut odd);
@@ -97,6 +88,21 @@ fn fft_complex_calculation(x: &mut Vec<Complex<f64>>) {
         return;
     }
 
+    let (mut even, mut odd) = split_array(x);
+
+    fft_complex_calculation(&mut even);
+    fft_complex_calculation(&mut odd);
+
+    for k in 0..(n / 2) {
+        let t = Complex::new(0.0, -2.0 * PI * (k as f64) / (n as f64)).exp() * odd[k];
+        x[k] = even[k] + t;
+        x[n / 2 + k] = even[k] - t;
+    }
+}
+
+
+fn split_array<T: Copy>(x: &Vec<T>) -> (Vec<T>, Vec<T>) {
+    let n = x.len();
     let mut even = Vec::with_capacity(n / 2);
     let mut odd = Vec::with_capacity(n / 2);
 
@@ -108,14 +114,7 @@ fn fft_complex_calculation(x: &mut Vec<Complex<f64>>) {
         }
     }
 
-    fft_complex_calculation(&mut even);
-    fft_complex_calculation(&mut odd);
-
-    for k in 0..(n / 2) {
-        let t = Complex::new(0.0, -2.0 * PI * (k as f64) / (n as f64)).exp() * odd[k];
-        x[k] = even[k] + t;
-        x[n / 2 + k] = even[k] - t;
-    }
+    (even, odd)
 }
 
 #[cfg(test)]
