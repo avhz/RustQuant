@@ -69,11 +69,11 @@ fn fft_real_calculation(x: &mut Vec<f64>) {
     let mut even = Vec::with_capacity(n / 2);
     let mut odd = Vec::with_capacity(n / 2);
 
-    for i in 0..n {
+    for (i, x_value) in x.iter().enumerate() {
         if i % 2 == 0 {
-            even.push(x[i]);
+            even.push(*x_value);
         } else {
-            odd.push(x[i]);
+            odd.push(*x_value);
         }
     }
 
@@ -100,11 +100,11 @@ fn fft_complex_calculation(x: &mut Vec<Complex<f64>>) {
     let mut even = Vec::with_capacity(n / 2);
     let mut odd = Vec::with_capacity(n / 2);
 
-    for i in 0..n {
+    for (i, x_value) in x.iter().enumerate() {
         if i % 2 == 0 {
-            even.push(x[i]);
+            even.push(*x_value);
         } else {
-            odd.push(x[i]);
+            odd.push(*x_value);
         }
     }
 
@@ -142,16 +142,16 @@ mod test {
     fn assert_complex_vecs_almost_equal(x: Vec<Complex<f64>>, y: Vec<Complex<f64>>) {
         assert_eq!(x.len(), y.len());
 
-        for i in 0..x.len() {
-            assert!((x[i] - y[i]).norm() <= 1e10);
+        for (x_value, y_value) in x.iter().zip(y.iter()) {
+            assert!((x_value - y_value).norm() <= 1e10);
         }
     }
 
     fn assert_real_vecs_almost_equal(x: Vec<f64>, y: Vec<f64>) {
         assert_eq!(x.len(), y.len());
 
-        for i in 0..x.len() {
-            assert!(x[i] - y[i] <= 1e10);
+        for (x_value, y_value) in x.iter().zip(y.iter()) {
+            assert!(x_value - y_value <= 1e10);
         }
     }
 
