@@ -26,7 +26,7 @@ pub struct Vertex {
 ///     - A binary operation has two parents.
 ///     - A unary operation has one parent.
 ///     - A nullary operation has no parents.
-pub enum OperationArity {
+pub enum Arity {
     /// Nullary operation (e.g. a constant).
     /// This has no parents.
     Nullary,

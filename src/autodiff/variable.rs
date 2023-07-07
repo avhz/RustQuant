@@ -58,6 +58,7 @@ impl<'v> Variable<'v> {
         adjoints[self.index] = 1.0; // SEED
 
         // Traverse the graph backwards and update the adjoints for the parent vertices.
+        // This is simply the generalised chain rule.
         for (index, vertex) in self.graph.vertices.borrow().iter().enumerate().rev() {
             let deriv = adjoints[index];
             adjoints[vertex.parents[0]] += vertex.partials[0] * deriv;

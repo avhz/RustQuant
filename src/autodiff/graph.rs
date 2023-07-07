@@ -58,7 +58,7 @@ impl Graph {
         Variable {
             graph: self,
             value,
-            index: self.push_nullary(),
+            index: self.push(Arity::Nullary, &[], &[]),
         }
     }
 
@@ -102,12 +102,21 @@ impl Graph {
 
     /// Pushes a vertex to the graph.
     #[inline]
-    pub fn push(&self, operation: OperationArity, parents: &[usize], partials: &[f64]) -> usize {
+    pub fn push(&self, operation: Arity, parents: &[usize], partials: &[f64]) -> usize {
         let mut vertices = self.vertices.borrow_mut();
         let len = vertices.len();
 
         let vertex = match operation {
-            OperationArity::Nullary => {
+            // Nullary operator pushback.
+            //
+            // The vertex pushed to the graph is the result of a **nullary** operation.
+            // e.g. `x.neg()` ($-x$)
+            // Thus no partials and only the current index are added to the new vertex.
+            //
+            // 1. Constructs the vertex,
+            // 2. Pushes the new vertex onto the graph,
+            // 3. Returns the index of the new vertex.
+            Arity::Nullary => {
                 assert!(parents.is_empty());
 
                 Vertex {
@@ -115,7 +124,16 @@ impl Graph {
                     parents: [len, len],
                 }
             }
-            OperationArity::Unary => {
+            // Unary operator pushback.
+            //
+            // The vertex pushed to the graph is the result of a **unary** operation.
+            // e.g. `x.sin()` ($sin(x)$)
+            // Thus one partial and one parent are added to the new vertex.
+            //
+            // 1. Constructs the vertex,
+            // 2. Pushes the new vertex onto the graph,
+            // 3. Returns the index of the new vertex.
+            Arity::Unary => {
                 assert!(parents.len() == 1);
 
                 Vertex {
@@ -123,7 +141,16 @@ impl Graph {
                     parents: [parents[0], len],
                 }
             }
-            OperationArity::Binary => {
+            // Binary operator pushback.
+            //
+            // The vertex pushed to the graph is the result of a **binary** operation.
+            // e.g. `x + y`
+            // Thus two partials and two parents are added to the new vertex.
+            //
+            // 1. Constructs the vertex,
+            // 2. Pushes the new vertex onto the graph,
+            // 3. Returns the index of the new vertex.
+            Arity::Binary => {
                 assert!(parents.len() == 2);
 
                 Vertex {
@@ -138,69 +165,69 @@ impl Graph {
         len
     }
 
-    /// Nullary operator pushback.
-    ///
-    /// The vertex pushed to the graph is the result of a **nullary** operation.
-    /// e.g. `x.neg()` ($-x$)
-    /// Thus no partials and only the current index are added to the new vertex.
-    ///
-    /// 1. Constructs the vertex,
-    /// 2. Pushes the new vertex onto the graph,
-    /// 3. Returns the index of the new vertex.
-    #[inline]
-    pub fn push_nullary(&self) -> usize {
-        let mut vertices = self.vertices.borrow_mut();
-        let len = vertices.len();
-        vertices.push(Vertex {
-            partials: [0.0, 0.0],
-            parents: [len, len],
-        });
-        len
-    }
+    // /// Nullary operator pushback.
+    // ///
+    // /// The vertex pushed to the graph is the result of a **nullary** operation.
+    // /// e.g. `x.neg()` ($-x$)
+    // /// Thus no partials and only the current index are added to the new vertex.
+    // ///
+    // /// 1. Constructs the vertex,
+    // /// 2. Pushes the new vertex onto the graph,
+    // /// 3. Returns the index of the new vertex.
+    // #[inline]
+    // pub fn push_nullary(&self) -> usize {
+    //     let mut vertices = self.vertices.borrow_mut();
+    //     let len = vertices.len();
+    //     vertices.push(Vertex {
+    //         partials: [0.0, 0.0],
+    //         parents: [len, len],
+    //     });
+    //     len
+    // }
 
-    /// Unary operator pushback.
-    ///
-    /// The vertex pushed to the graph is the result of a **unary** operation.
-    /// e.g. `x.sin()` ($sin(x)$)
-    /// Thus one partial and one parent are added to the new vertex.
-    ///
-    /// 1. Constructs the vertex,
-    /// 2. Pushes the new vertex onto the graph,
-    /// 3. Returns the index of the new vertex.
-    #[inline]
-    pub fn push_unary(&self, parent0: usize, partial0: f64) -> usize {
-        let mut vertices = self.vertices.borrow_mut();
-        let len = vertices.len();
-        vertices.push(Vertex {
-            partials: [partial0, 0.0],
-            parents: [parent0, len],
-        });
-        len
-    }
+    // /// Unary operator pushback.
+    // ///
+    // /// The vertex pushed to the graph is the result of a **unary** operation.
+    // /// e.g. `x.sin()` ($sin(x)$)
+    // /// Thus one partial and one parent are added to the new vertex.
+    // ///
+    // /// 1. Constructs the vertex,
+    // /// 2. Pushes the new vertex onto the graph,
+    // /// 3. Returns the index of the new vertex.
+    // #[inline]
+    // pub fn push_unary(&self, parent0: usize, partial0: f64) -> usize {
+    //     let mut vertices = self.vertices.borrow_mut();
+    //     let len = vertices.len();
+    //     vertices.push(Vertex {
+    //         partials: [partial0, 0.0],
+    //         parents: [parent0, len],
+    //     });
+    //     len
+    // }
 
-    /// Binary operator pushback.
-    ///
-    /// The vertex pushed to the graph is the result of a **binary** operation.
-    /// e.g. `x + y`
-    /// Thus two partials and two parents are added to the new vertex.
-    ///
-    /// 1. Constructs the vertex,
-    /// 2. Pushes the new vertex onto the graph,
-    /// 3. Returns the index of the new vertex.
-    #[inline]
-    pub fn push_binary(
-        &self,
-        parent0: usize,
-        partial0: f64,
-        parent1: usize,
-        partial1: f64,
-    ) -> usize {
-        let mut vertices = self.vertices.borrow_mut();
-        let len = vertices.len();
-        vertices.push(Vertex {
-            partials: [partial0, partial1],
-            parents: [parent0, parent1],
-        });
-        len
-    }
+    // /// Binary operator pushback.
+    // ///
+    // /// The vertex pushed to the graph is the result of a **binary** operation.
+    // /// e.g. `x + y`
+    // /// Thus two partials and two parents are added to the new vertex.
+    // ///
+    // /// 1. Constructs the vertex,
+    // /// 2. Pushes the new vertex onto the graph,
+    // /// 3. Returns the index of the new vertex.
+    // #[inline]
+    // pub fn push_binary(
+    //     &self,
+    //     parent0: usize,
+    //     partial0: f64,
+    //     parent1: usize,
+    //     partial1: f64,
+    // ) -> usize {
+    //     let mut vertices = self.vertices.borrow_mut();
+    //     let len = vertices.len();
+    //     vertices.push(Vertex {
+    //         partials: [partial0, partial1],
+    //         parents: [parent0, parent1],
+    //     });
+    //     len
+    // }
 }

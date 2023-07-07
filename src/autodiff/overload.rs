@@ -65,11 +65,9 @@ impl<'v> Add<Variable<'v>> for Variable<'v> {
         Variable {
             graph: self.graph,
             value: self.value + other.value,
-            index: self.graph.push(
-                OperationArity::Binary,
-                &[self.index, other.index],
-                &[1.0, 1.0],
-            ),
+            index: self
+                .graph
+                .push(Arity::Binary, &[self.index, other.index], &[1.0, 1.0]),
         }
     }
 }
@@ -97,11 +95,9 @@ impl<'v> Add<f64> for Variable<'v> {
         Variable {
             graph: self.graph,
             value: self.value + other,
-            index: self.graph.push(
-                OperationArity::Binary,
-                &[self.index, self.index],
-                &[1.0, 0.0],
-            ),
+            index: self
+                .graph
+                .push(Arity::Binary, &[self.index, self.index], &[1.0, 0.0]),
         }
     }
 }
@@ -209,11 +205,9 @@ impl<'v> Sub<Variable<'v>> for f64 {
         Variable {
             graph: other.graph,
             value: self - other.value,
-            index: other.graph.push(
-                OperationArity::Binary,
-                &[other.index, other.index],
-                &[0.0, -1.0],
-            ),
+            index: other
+                .graph
+                .push(Arity::Binary, &[other.index, other.index], &[0.0, -1.0]),
         }
     }
 }
@@ -250,7 +244,7 @@ impl<'v> Mul<Variable<'v>> for Variable<'v> {
             graph: self.graph,
             value: self.value * other.value,
             index: self.graph.push(
-                OperationArity::Binary,
+                Arity::Binary,
                 &[self.index, other.index],
                 &[other.value, self.value],
             ),
@@ -281,11 +275,9 @@ impl<'v> Mul<f64> for Variable<'v> {
         Variable {
             graph: self.graph,
             value: self.value * other,
-            index: self.graph.push(
-                OperationArity::Binary,
-                &[self.index, self.index],
-                &[other, 0.0],
-            ),
+            index: self
+                .graph
+                .push(Arity::Binary, &[self.index, self.index], &[other, 0.0]),
         }
     }
 }
@@ -395,7 +387,7 @@ impl<'v> Div<Variable<'v>> for f64 {
             graph: other.graph,
             value: self / other.value,
             index: other.graph.push(
-                OperationArity::Binary,
+                Arity::Binary,
                 &[other.index, other.index],
                 &[0.0, -self / (other.value * other.value)],
             ),
@@ -482,7 +474,7 @@ impl<'v> Powf<Variable<'v>> for Variable<'v> {
             graph: self.graph,
             value: self.value.powf(other.value),
             index: self.graph.push(
-                OperationArity::Binary,
+                Arity::Binary,
                 &[self.index, other.index],
                 &[
                     other.value * f64::powf(self.value, other.value - 1.),
@@ -503,7 +495,7 @@ impl<'v> Powf<f64> for Variable<'v> {
             graph: self.graph,
             value: f64::powf(self.value, n),
             index: self.graph.push(
-                OperationArity::Binary,
+                Arity::Binary,
                 &[self.index, self.index],
                 &[n * f64::powf(self.value, n - 1.0), 0.0],
             ),
@@ -521,7 +513,7 @@ impl<'v> Powf<Variable<'v>> for f64 {
             graph: other.graph,
             value: f64::powf(*self, other.value),
             index: other.graph.push(
-                OperationArity::Binary,
+                Arity::Binary,
                 &[other.index, other.index],
                 &[0.0, other.value * f64::powf(*self, other.value - 1.0)],
             ),
@@ -550,7 +542,7 @@ impl<'v> Powi<Variable<'v>> for Variable<'v> {
             graph: self.graph,
             value: self.value.powf(other.value),
             index: self.graph.push(
-                OperationArity::Binary,
+                Arity::Binary,
                 &[self.index, other.index],
                 &[
                     other.value * f64::powf(self.value, other.value - 1.),
@@ -571,7 +563,7 @@ impl<'v> Powi<i32> for Variable<'v> {
             graph: self.graph,
             value: f64::powi(self.value, n),
             index: self.graph.push(
-                OperationArity::Binary,
+                Arity::Binary,
                 &[self.index, self.index],
                 &[n as f64 * f64::powi(self.value, n - 1), 0.0],
             ),
@@ -589,7 +581,7 @@ impl<'v> Powi<Variable<'v>> for f64 {
             graph: other.graph,
             value: f64::powf(*self, other.value),
             index: other.graph.push(
-                OperationArity::Binary,
+                Arity::Binary,
                 &[other.index, other.index],
                 &[0.0, other.value * f64::powf(*self, other.value - 1.0)],
             ),
@@ -629,7 +621,7 @@ impl<'v> Variable<'v> {
             value: self.value.abs(),
             index: self
                 .graph
-                .push(OperationArity::Unary, &[self.index], &[self.value.signum()]),
+                .push(Arity::Unary, &[self.index], &[self.value.signum()]),
         }
     }
 
@@ -653,7 +645,7 @@ impl<'v> Variable<'v> {
             graph: self.graph,
             value: self.value.acos(),
             index: self.graph.push(
-                OperationArity::Unary,
+                Arity::Unary,
                 &[self.index],
                 &[((1.0 - self.value.powi(2)).sqrt()).recip().neg()],
             ),
@@ -680,7 +672,7 @@ impl<'v> Variable<'v> {
             graph: self.graph,
             value: self.value.acosh(),
             index: self.graph.push(
-                OperationArity::Unary,
+                Arity::Unary,
                 &[self.index],
                 &[((self.value - 1.0).sqrt() * (self.value + 1.0).sqrt()).recip()],
             ),
@@ -708,13 +700,22 @@ impl<'v> Variable<'v> {
         Variable {
             graph: self.graph,
             value: self.value.asin(),
-            index: self.graph.push_unary(
-                self.index,
-                if (self.value > -1.0) && (self.value < 1.0) {
+            // index: self.graph.push_unary(
+            //     self.index,
+            //     if (self.value > -1.0) && (self.value < 1.0) {
+            //         ((1.0 - self.value.powi(2)).sqrt()).recip()
+            //     } else {
+            //         f64::NAN
+            //     },
+            // ),
+            index: self.graph.push(
+                Arity::Unary,
+                &[self.index],
+                &[if (self.value > -1.0) && (self.value < 1.0) {
                     ((1.0 - self.value.powi(2)).sqrt()).recip()
                 } else {
                     f64::NAN
-                },
+                }],
             ),
         }
     }
@@ -739,9 +740,14 @@ impl<'v> Variable<'v> {
         Variable {
             graph: self.graph,
             value: self.value.asinh(),
-            index: self
-                .graph
-                .push_unary(self.index, ((1.0 + self.value.powi(2)).sqrt()).recip()),
+            // index: self
+            //     .graph
+            //     .push_unary(self.index, ((1.0 + self.value.powi(2)).sqrt()).recip()),
+            index: self.graph.push(
+                Arity::Unary,
+                &[self.index],
+                &[((1.0 + self.value.powi(2)).sqrt()).recip()],
+            ),
         }
     }
 
@@ -765,9 +771,14 @@ impl<'v> Variable<'v> {
         Variable {
             graph: self.graph,
             value: self.value.atan(),
-            index: self
-                .graph
-                .push_unary(self.index, (1.0 + self.value.powi(2)).recip()),
+            // index: self
+            //     .graph
+            //     .push_unary(self.index, (1.0 + self.value.powi(2)).recip()),
+            index: self.graph.push(
+                Arity::Unary,
+                &[self.index],
+                &[((1.0 + self.value.powi(2)).recip())],
+            ),
         }
     }
 
@@ -778,9 +789,14 @@ impl<'v> Variable<'v> {
         Variable {
             graph: self.graph,
             value: self.value.atanh(),
-            index: self
-                .graph
-                .push_unary(self.index, (1.0 - self.value.powi(2)).recip()),
+            // index: self
+            //     .graph
+            //     .push_unary(self.index, (1.0 - self.value.powi(2)).recip()),
+            index: self.graph.push(
+                Arity::Unary,
+                &[self.index],
+                &[((1.0 - self.value.powi(2)).recip())],
+            ),
         }
     }
 
@@ -791,9 +807,14 @@ impl<'v> Variable<'v> {
         Variable {
             graph: self.graph,
             value: self.value.cbrt(),
-            index: self
-                .graph
-                .push_unary(self.index, (3.0 * self.value.powf(2.0 / 3.0)).recip()),
+            // index: self
+            //     .graph
+            //     .push_unary(self.index, (3.0 * self.value.powf(2.0 / 3.0)).recip()),
+            index: self.graph.push(
+                Arity::Unary,
+                &[self.index],
+                &[((3.0 * self.value.powf(2.0 / 3.0)).recip())],
+            ),
         }
     }
 
@@ -804,7 +825,10 @@ impl<'v> Variable<'v> {
         Variable {
             graph: self.graph,
             value: self.value.cos(),
-            index: self.graph.push_unary(self.index, self.value.sin().neg()),
+            // index: self.graph.push_unary(self.index, self.value.sin().neg()),
+            index: self
+                .graph
+                .push(Arity::Unary, &[self.index], &[self.value.sin().neg()]),
         }
     }
 
@@ -815,7 +839,10 @@ impl<'v> Variable<'v> {
         Variable {
             graph: self.graph,
             value: self.value.cosh(),
-            index: self.graph.push_unary(self.index, self.value.sinh()),
+            // index: self.graph.push_unary(self.index, self.value.sinh()),
+            index: self
+                .graph
+                .push(Arity::Unary, &[self.index], &[self.value.sinh()]),
         }
     }
 
@@ -828,9 +855,14 @@ impl<'v> Variable<'v> {
         Variable {
             graph: self.graph,
             value: erf(self.value),
-            index: self
-                .graph
-                .push_unary(self.index, 2.0 * self.value.powi(2).neg().exp() / PI.sqrt()),
+            // index: self
+            //     .graph
+            //     .push_unary(self.index, 2.0 * self.value.powi(2).neg().exp() / PI.sqrt()),
+            index: self.graph.push(
+                Arity::Unary,
+                &[self.index],
+                &[2.0 * self.value.powi(2).neg().exp() / PI.sqrt()],
+            ),
         }
     }
 
@@ -843,9 +875,14 @@ impl<'v> Variable<'v> {
         Variable {
             graph: self.graph,
             value: erfc(self.value),
-            index: self.graph.push_unary(
-                self.index,
-                (2.0 * self.value.powi(2).neg().exp()).neg() / PI.sqrt(),
+            // index: self.graph.push_unary(
+            //     self.index,
+            //     (2.0 * self.value.powi(2).neg().exp()).neg() / PI.sqrt(),
+            // ),
+            index: self.graph.push(
+                Arity::Unary,
+                &[self.index],
+                &[((2.0 * self.value.powi(2).neg().exp()).neg() / PI.sqrt())],
             ),
         }
     }
@@ -870,7 +907,10 @@ impl<'v> Variable<'v> {
         Variable {
             graph: self.graph,
             value: self.value.exp(),
-            index: self.graph.push_unary(self.index, self.value.exp()),
+            // index: self.graph.push_unary(self.index, self.value.exp()),
+            index: self
+                .graph
+                .push(Arity::Unary, &[self.index], &[self.value.exp()]),
         }
     }
 
@@ -881,9 +921,14 @@ impl<'v> Variable<'v> {
         Variable {
             graph: self.graph,
             value: self.value.exp2(),
-            index: self
-                .graph
-                .push_unary(self.index, 2_f64.powf(self.value) * 2_f64.ln()),
+            // index: self
+            //     .graph
+            //     .push_unary(self.index, 2_f64.powf(self.value) * 2_f64.ln()),
+            index: self.graph.push(
+                Arity::Unary,
+                &[self.index],
+                &[2_f64.powf(self.value) * 2_f64.ln()],
+            ),
         }
     }
 
@@ -894,7 +939,10 @@ impl<'v> Variable<'v> {
         Variable {
             graph: self.graph,
             value: self.value.exp_m1(),
-            index: self.graph.push_unary(self.index, self.value.exp()),
+            // index: self.graph.push_unary(self.index, self.value.exp()),
+            index: self
+                .graph
+                .push(Arity::Unary, &[self.index], &[self.value.exp()]),
         }
     }
 
@@ -918,7 +966,10 @@ impl<'v> Variable<'v> {
         Variable {
             graph: self.graph,
             value: self.value.ln(),
-            index: self.graph.push_unary(self.index, self.value.recip()),
+            // index: self.graph.push_unary(self.index, self.value.recip()),
+            index: self
+                .graph
+                .push(Arity::Unary, &[self.index], &[self.value.recip()]),
         }
     }
 
@@ -929,9 +980,12 @@ impl<'v> Variable<'v> {
         Variable {
             graph: self.graph,
             value: self.value.ln_1p(),
+            // index: self
+            //     .graph
+            //     .push_unary(self.index, (1.0 + self.value).recip()),
             index: self
                 .graph
-                .push_unary(self.index, (1.0 + self.value).recip()),
+                .push(Arity::Unary, &[self.index], &[(1.0 + self.value).recip()]),
         }
     }
 
@@ -942,7 +996,10 @@ impl<'v> Variable<'v> {
         Variable {
             graph: self.graph,
             value: self.value.log10(),
-            index: self.graph.push_unary(self.index, self.value.recip()),
+            // index: self.graph.push_unary(self.index, self.value.recip()),
+            index: self
+                .graph
+                .push(Arity::Unary, &[self.index], &[self.value.recip()]),
         }
     }
 
@@ -953,7 +1010,10 @@ impl<'v> Variable<'v> {
         Variable {
             graph: self.graph,
             value: self.value.log2(),
-            index: self.graph.push_unary(self.index, self.value.recip()),
+            // index: self.graph.push_unary(self.index, self.value.recip()),
+            index: self
+                .graph
+                .push(Arity::Unary, &[self.index], &[self.value.recip()]),
         }
     }
 
@@ -989,9 +1049,14 @@ impl<'v> Variable<'v> {
         Variable {
             graph: self.graph,
             value: self.value.recip(),
-            index: self
-                .graph
-                .push_unary(self.index, self.value.powi(2).recip().neg()),
+            // index: self
+            //     .graph
+            //     .push_unary(self.index, self.value.powi(2).recip().neg()),
+            index: self.graph.push(
+                Arity::Unary,
+                &[self.index],
+                &[self.value.powi(2).recip().neg()],
+            ),
         }
     }
 
@@ -1002,7 +1067,10 @@ impl<'v> Variable<'v> {
         Variable {
             graph: self.graph,
             value: self.value.sin(),
-            index: self.graph.push_unary(self.index, self.value.cos()),
+            // index: self.graph.push_unary(self.index, self.value.cos()),
+            index: self
+                .graph
+                .push(Arity::Unary, &[self.index], &[self.value.cos()]),
         }
     }
 
@@ -1013,7 +1081,10 @@ impl<'v> Variable<'v> {
         Variable {
             graph: self.graph,
             value: self.value.sinh(),
-            index: self.graph.push_unary(self.index, self.value.cosh()),
+            // index: self.graph.push_unary(self.index, self.value.cosh()),
+            index: self
+                .graph
+                .push(Arity::Unary, &[self.index], &[self.value.cosh()]),
         }
     }
 
@@ -1037,9 +1108,14 @@ impl<'v> Variable<'v> {
         Variable {
             graph: self.graph,
             value: self.value.sqrt(),
-            index: self
-                .graph
-                .push_unary(self.index, (2.0 * self.value.sqrt()).recip()),
+            // index: self
+            //     .graph
+            //     .push_unary(self.index, (2.0 * self.value.sqrt()).recip()),
+            index: self.graph.push(
+                Arity::Unary,
+                &[self.index],
+                &[(2.0 * self.value.sqrt()).recip()],
+            ),
         }
     }
 
@@ -1050,9 +1126,14 @@ impl<'v> Variable<'v> {
         Variable {
             graph: self.graph,
             value: self.value.tan(),
-            index: self
-                .graph
-                .push_unary(self.index, (self.value.cos().powi(2)).recip()),
+            // index: self
+            //     .graph
+            //     .push_unary(self.index, (self.value.cos().powi(2)).recip()),
+            index: self.graph.push(
+                Arity::Unary,
+                &[self.index],
+                &[(self.value.cos().powi(2)).recip()],
+            ),
         }
     }
 
@@ -1063,9 +1144,14 @@ impl<'v> Variable<'v> {
         Variable {
             graph: self.graph,
             value: self.value.tanh(),
-            index: self
-                .graph
-                .push_unary(self.index, (self.value.cosh().powi(2)).recip()),
+            // index: self
+            //     .graph
+            //     .push_unary(self.index, (self.value.cosh().powi(2)).recip()),
+            index: self.graph.push(
+                Arity::Unary,
+                &[self.index],
+                &[(self.value.cosh().powi(2)).recip()],
+            ),
         }
     }
 }
