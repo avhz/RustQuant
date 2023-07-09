@@ -20,6 +20,8 @@
 use crate::autodiff::graph::Graph;
 use std::fmt::Display;
 
+use super::Arity;
+
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // STRUCT AND IMPLEMENTATION
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -35,16 +37,16 @@ pub struct Variable<'v> {
     pub value: f64, // Value,
 }
 
-/// Value of the Variable.
-#[derive(Clone, Debug, PartialEq, PartialOrd)]
-pub enum Value {
-    /// Scalar valued Variable.
-    Scalar(f64),
-    /// Vector valued Variable.
-    Vector(nalgebra::DVector<f64>),
-    /// Matrix valued Variable.
-    Matrix(nalgebra::DMatrix<f64>),
-}
+// /// Value of the Variable.
+// #[derive(Clone, Debug, PartialEq, PartialOrd)]
+// pub enum Value {
+//     /// Scalar valued Variable.
+//     Scalar(f64),
+//     /// Vector valued Variable.
+//     Vector(nalgebra::DVector<f64>),
+//     /// Matrix valued Variable.
+//     Matrix(nalgebra::DMatrix<f64>),
+// }
 
 impl<'v> Variable<'v> {
     /// Instantiate a new variable.
@@ -78,6 +80,16 @@ impl<'v> Variable<'v> {
         }
         adjoints
     }
+
+    // /// Function to return a zero variable.
+    // #[inline]
+    // pub fn zero(graph: &'v Graph) -> Self {
+    //     Variable {
+    //         graph,
+    //         index: graph.push(Arity::Nullary, &[], &[]),
+    //         value: 0.0,
+    //     }
+    // }
 
     /// Function to return the value contained in a vertex.
     #[inline]

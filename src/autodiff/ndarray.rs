@@ -4,46 +4,9 @@
 // See LICENSE or <https://www.gnu.org/licenses/>.
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use std::ops::Mul;
-
 use super::{Graph, Variable};
 use ndarray::{linalg::Dot, Array, Array2};
-
-// type VariableMatrix<'v> = Array2<Variable<'v>>;
-
-// type VariableMatrix<'a> = Array<Variable<'a>, ndarray::IxDyn>;
-// type VariableVector<'a> = Array<Variable<'a>, ndarray::IxDyn>;
-
-// /// Trait to implement the `Matrix` struct using `ndarray`.
-// trait Matrix<'v> {
-//     // fn new(graph: &'v Graph, rows: usize, cols: usize) -> Self;
-//     // fn get(&self, row: usize, col: usize) -> Variable<'v>;
-//     // fn set(&mut self, row: usize, col: usize, value: Variable<'v>);
-
-//     /// Component-wise multiplication.
-//     fn component_mul(&self, other: &VariableMatrix<'v>) -> VariableMatrix<'v>;
-
-//     // /// Matrix multiplication.
-//     // fn matrix_mul(&self, other: &VariableMatrix<'v>) -> VariableMatrix<'v>;
-// }
-
-// impl<'v> Matrix<'v> for VariableMatrix<'v> {
-//     fn component_mul(&self, other: &VariableMatrix<'v>) -> VariableMatrix<'v> {
-//         self * other
-//     }
-
-//     // fn matrix_mul(&self, other: &VariableMatrix<'v>) -> VariableMatrix<'v> {
-//     //     self.dot(other)
-//     // }
-// }
-
-// impl Dot<Array<Variable, ndarray::IxDyn>> for Array<Variable, ndarray::IxDyn> {
-//     type Output = Array<Variable, ndarray::IxDyn>;
-
-//     fn dot(&self, rhs: &Array<Variable, ndarray::IxDyn>) -> Self::Output {
-//         self.dot(rhs)
-//     }
-// }
+use std::{cell::RefCell, ops::Mul};
 
 /// A matrix of `Variable`s.
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -104,50 +67,73 @@ impl<'v> std::ops::Div<VariableMatrix<'v>> for VariableMatrix<'v> {
 // - `num::One`
 // - `num::Zero`
 
-// impl<'v> num::One for Variable<'v> {
-//     fn one() -> Self {
-//         let graph = Graph::new();
+static mut GRAPH: Graph = Graph {
+    vertices: RefCell::new(Vec::new()),
+};
 
-//         Variable::new(graph, 0, 1.)
-//         // Self::new(&Graph::new(), 0, 1.)
-//     }
-// }
+impl<'v> num::One for Variable<'v> {
+    fn one() -> Self {
+        Variable::new(unsafe { &GRAPH }, 0, 1.)
+        // unsafe { Variable::new(&GRAPH, 0, 1.) }
+    }
+}
 
-// impl<'v> num::One for VariableMatrix<'v> {
-//     fn one() -> Self {
-//         Self {
-//             data: ndarray::Array2::ones((0, 0)),
-//         }
-//     }
-// }
+impl<'v> num::One for VariableMatrix<'v> {
+    fn one() -> Self {
+        Self {
+            data: ndarray::Array2::ones((0, 0)),
+        }
+    }
+}
 
-// impl num::One for VariableMatrix<'v> {
-//     fn one() -> Self {
-//         Self {
-//             data: ndarray::Array2::ones((0, 0)),
-//         }
-//     }
-// }
+impl<'v> num::Zero for Variable<'v> {
+    fn zero() -> Self {
+        Variable::new(unsafe { &GRAPH }, 0, 0.)
+        // unsafe { Variable::new(&GRAPH, 0, 0.) }
+    }
 
-// impl num::Zero for VariableMatrix<'v> {
-//     fn zero() -> Self {
-//         Self {
-//             data: ndarray::Array2::zeros((0, 0)),
-//         }
-//     }
+    fn is_zero(&self) -> bool {
+        self.is_zero()
+    }
+}
 
-//     fn is_zero(&self) -> bool {
-//         self.data.is_zero()
-//     }
-// }
+impl<'v> num::Zero for VariableMatrix<'v> {
+    fn zero() -> Self {
+        Self {
+            data: ndarray::Array2::zeros((0, 0)),
+        }
+    }
 
-// impl<'v> Dot<VariableMatrix<'v>> for VariableMatrix<'_> {
-//     type Output = VariableMatrix<'v>;
+    fn is_zero(&self) -> bool {
+        self.data.iter().all(|x| x.is_zero())
+    }
+}
 
-//     fn dot(&self, rhs: &VariableMatrix<'v>) -> Self::Output {
-//         self.data.dot(rhs.data)
-//     }
-// }
+impl<'v> Dot<VariableMatrix<'v>> for VariableMatrix<'v> {
+    type Output = VariableMatrix<'v>;
+
+    fn dot(&self, rhs: &VariableMatrix<'v>) -> Self::Output {
+        use num::Zero;
+
+        assert!(self.data.ncols() == rhs.data.nrows());
+
+        let mut data = Array::zeros((self.data.nrows(), rhs.data.ncols()));
+
+        for i in 0..self.data.nrows() {
+            for j in 0..rhs.data.ncols() {
+                let mut sum = Variable::zero();
+
+                for k in 0..self.data.ncols() {
+                    sum += self.data[(i, k)] * rhs.data[(k, j)];
+                }
+
+                data[(i, j)] = sum;
+            }
+        }
+
+        VariableMatrix { data }
+    }
+}
 
 // impl<'a> VariableMatrix<'a> {
 //     fn new(graph: &'a crate::autodiff::Graph, rows: usize, cols: usize) -> Self {
@@ -185,12 +171,12 @@ mod test_ndarray {
         // COMPONENT-WISE MULTIPLICATION
         // c = [[5 , 12],
         //      [21, 32]]
-        let c = x * y; // <--- This works fine.
+        let c = &x * &y; // <--- This works fine.
         let c_values = c.map(|x_i| x_i.value);
         let c_expected = ndarray::array![[5., 12.], [21., 32.]];
 
         // MATRIX MULTIPLICATION
-        // let dot = a.dot(&b);                                 // <--- This does not work.
+        // let dot = x.dot(&y); // <--- This does not work.
 
         assert_eq!(c, c_expected);
 

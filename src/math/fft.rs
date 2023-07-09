@@ -3,11 +3,14 @@
 // Copyright (C) 2023 https://github.com/avhz
 // See LICENSE or <https://www.gnu.org/licenses/>.
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 use num_complex::Complex;
 use std::f64::consts::PI;
 
+// pub const i: Complex<f64> = Complex { re: 0.0, im: 1.0 };
+
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// FUNCTIONS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// FUNCTIONS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 /// Real FFT inplace,
@@ -24,6 +27,7 @@ pub fn fft_real(x: &Vec<f64>) -> Vec<f64> {
     check_vec_length(x);
 
     let mut result = x.clone();
+
     fft_real_calculation(&mut result);
 
     result
@@ -43,6 +47,7 @@ pub fn fft_complex(x: &Vec<Complex<f64>>) -> Vec<Complex<f64>> {
     check_vec_length(x);
 
     let mut result = x.clone();
+
     fft_complex_calculation(&mut result);
 
     result
@@ -100,9 +105,9 @@ fn fft_complex_calculation(x: &mut Vec<Complex<f64>>) {
     }
 }
 
-
 fn split_array<T: Copy>(x: &Vec<T>) -> (Vec<T>, Vec<T>) {
     let n = x.len();
+
     let mut even = Vec::with_capacity(n / 2);
     let mut odd = Vec::with_capacity(n / 2);
 
@@ -116,6 +121,10 @@ fn split_array<T: Copy>(x: &Vec<T>) -> (Vec<T>, Vec<T>) {
 
     (even, odd)
 }
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// UNIT TESTS
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 #[cfg(test)]
 mod test {

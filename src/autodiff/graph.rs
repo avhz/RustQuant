@@ -33,10 +33,7 @@ pub struct Graph {
 impl Default for Graph {
     #[inline]
     fn default() -> Self {
-        Graph {
-            vertices: RefCell::new(Vec::new()),
-            // vertices: RefCell::new(Rc::new([])),
-        }
+        Self::new()
     }
 }
 
