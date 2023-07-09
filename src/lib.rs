@@ -38,7 +38,8 @@ pub use error::*;
 /// Parent module containing: automatic differentation modules.
 pub mod autodiff {
     pub use crate::autodiff::{
-        gradient::*, graph::*, graphviz::*, overload::*, variable::*, vertex::*,
+        gradient::*, graph::*, graphviz::*, nalgebra::*, ndarray::*, overload::*, variable::*,
+        vertex::*,
     };
 
     /// Submodule of `autodiff`: implements the gradient computation.
@@ -47,6 +48,10 @@ pub mod autodiff {
     pub mod graph;
     /// Submodule of `autodiff`: visualisation of the `Graph`.
     pub mod graphviz;
+    /// Submodule of `autodiff`: implements `Variable`s for `nalgebra`.
+    pub mod nalgebra;
+    /// Submodule of `autodiff`: implements `Variable`s for `ndarray`.
+    pub mod ndarray;
     /// Submodule of `autodiff`: implements operator/function overloading.
     pub mod overload;
     /// Submodule of `autodiff`: implements `Variable`s for `autodiff`.
@@ -253,9 +258,9 @@ pub mod utilities {
 /// Parent module containing: mathematical and statistical tools.
 pub mod math {
     pub use crate::math::{
-        integration::constants::*, integration::midpoint::*, integration::simpsons::*,
-        integration::tanhsinh::*, integration::trapezoid::*,  fft::*, interpolation::*, 
-        newton_raphson::*, risk_reward::*,
+        fft::*, integration::constants::*, integration::midpoint::*, integration::simpsons::*,
+        integration::tanhsinh::*, integration::trapezoid::*, interpolation::*, newton_raphson::*,
+        risk_reward::*,
     };
 
     /// Submodule of `math`: implements numerical integration prodecures.

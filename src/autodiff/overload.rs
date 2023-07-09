@@ -10,6 +10,8 @@
 //!
 //! Each overload has an associated test to ensure functionality.
 
+// impl<'v> Op<RHS> for LHS
+
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // IMPORTS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -18,7 +20,7 @@ use crate::autodiff::*;
 use std::{
     f64::consts::PI,
     iter::{Product, Sum},
-    ops::{Add, Div, Mul, Neg, Sub},
+    ops::{Add, AddAssign, Div, DivAssign, Mul, MulAssign, Neg, Sub, SubAssign},
 };
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -38,6 +40,32 @@ impl<'v> Neg for Variable<'v> {
 /// Overload the standard addition operator (`+`).
 /// d/dx x + y = 1
 /// d/dy x + y = 1
+
+/// AddAssign: Variable<'v> += Variable<'v>
+impl<'v> AddAssign<Variable<'v>> for Variable<'v> {
+    #[inline]
+    fn add_assign(&mut self, other: Variable<'v>) {
+        assert!(std::ptr::eq(self.graph, other.graph));
+
+        *self = *self + other;
+    }
+}
+
+/// AddAssign: Variable<'v> += f64
+impl<'v> AddAssign<f64> for Variable<'v> {
+    #[inline]
+    fn add_assign(&mut self, other: f64) {
+        *self = *self + other;
+    }
+}
+
+/// AddAsign: f64 += Variable<'v>
+impl<'v> AddAssign<Variable<'v>> for f64 {
+    #[inline]
+    fn add_assign(&mut self, other: Variable<'v>) {
+        *self = *self + other.value;
+    }
+}
 
 /// Variable<'v> + Variable<'v>
 impl<'v> Add<Variable<'v>> for Variable<'v> {
@@ -131,6 +159,32 @@ impl<'v> Add<Variable<'v>> for f64 {
 /// d/dx x - y = 1
 /// d/dy x - y = -1
 
+/// SubAssign: Variable<'v> -= Variable<'v>
+impl<'v> SubAssign<Variable<'v>> for Variable<'v> {
+    #[inline]
+    fn sub_assign(&mut self, other: Variable<'v>) {
+        assert!(std::ptr::eq(self.graph, other.graph));
+
+        *self = *self - other;
+    }
+}
+
+/// SubAssign: Variable<'v> -= f64
+impl<'v> SubAssign<f64> for Variable<'v> {
+    #[inline]
+    fn sub_assign(&mut self, other: f64) {
+        *self = *self - other;
+    }
+}
+
+/// SubAssign: f64 -= Variable<'v>
+impl<'v> SubAssign<Variable<'v>> for f64 {
+    #[inline]
+    fn sub_assign(&mut self, other: Variable<'v>) {
+        *self = *self - other.value;
+    }
+}
+
 /// Variable<'v> - Variable<'v>
 impl<'v> Sub<Variable<'v>> for Variable<'v> {
     type Output = Variable<'v>;
@@ -216,6 +270,32 @@ impl<'v> Sub<Variable<'v>> for f64 {
 /// Overload the standard multiplication operator (`*`).
 /// d/dx x * y = y
 /// d/dy x * y = x
+
+/// MulAssign: Variable<'v> *= Variable<'v>
+impl<'v> MulAssign<Variable<'v>> for Variable<'v> {
+    #[inline]
+    fn mul_assign(&mut self, other: Variable<'v>) {
+        assert!(std::ptr::eq(self.graph, other.graph));
+
+        *self = *self * other;
+    }
+}
+
+/// MulAssign: Variable<'v> *= f64
+impl<'v> MulAssign<f64> for Variable<'v> {
+    #[inline]
+    fn mul_assign(&mut self, other: f64) {
+        *self = *self * other;
+    }
+}
+
+/// MulAssign: f64 *= Variable<'v>
+impl<'v> MulAssign<Variable<'v>> for f64 {
+    #[inline]
+    fn mul_assign(&mut self, other: Variable<'v>) {
+        *self = *self * other.value;
+    }
+}
 
 /// Variable<'v> * Variable<'v>
 impl<'v> Mul<Variable<'v>> for Variable<'v> {
@@ -310,6 +390,32 @@ impl<'v> Mul<Variable<'v>> for f64 {
 /// Overload the standard division operator (`/`).
 /// d/dx x/y = 1/y
 /// d/dy x/y = -x/y^2
+
+/// DivAssign: Variable<'v> /= Variable<'v>
+impl<'v> DivAssign<Variable<'v>> for Variable<'v> {
+    #[inline]
+    fn div_assign(&mut self, other: Variable<'v>) {
+        assert!(std::ptr::eq(self.graph, other.graph));
+
+        *self = *self / other;
+    }
+}
+
+/// DivAssign: Variable<'v> /= f64
+impl<'v> DivAssign<f64> for Variable<'v> {
+    #[inline]
+    fn div_assign(&mut self, other: f64) {
+        *self = *self / other;
+    }
+}
+
+/// DivAssign: f64 /= Variable<'v>
+impl<'v> DivAssign<Variable<'v>> for f64 {
+    #[inline]
+    fn div_assign(&mut self, other: Variable<'v>) {
+        *self = *self / other.value;
+    }
+}
 
 /// Variable<'v> / Variable<'v>
 impl<'v> Div<Variable<'v>> for Variable<'v> {

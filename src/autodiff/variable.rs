@@ -15,7 +15,9 @@
 // IMPORTS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use crate::autodiff::*;
+// use nalgebra::{DMatrix, DVector};
+// use crate::autodiff::*;
+use crate::autodiff::graph::Graph;
 use std::fmt::Display;
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -45,6 +47,16 @@ pub enum Value {
 }
 
 impl<'v> Variable<'v> {
+    /// Instantiate a new variable.
+    #[inline]
+    pub fn new(graph: &'v Graph, index: usize, value: f64) -> Self {
+        Variable {
+            graph,
+            index,
+            value,
+        }
+    }
+
     /// Function to reverse accumulate the gradient.
     /// 1. Allocate the array of adjoints.
     /// 2. Set the seed (dx/dx = 1).
@@ -151,6 +163,13 @@ impl<'v> Display for Variable<'v> {
     #[inline]
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "{:?}", self.value)
+    }
+}
+
+impl<'v> PartialEq<f64> for Variable<'v> {
+    #[inline]
+    fn eq(&self, other: &f64) -> bool {
+        self.value == *other
     }
 }
 

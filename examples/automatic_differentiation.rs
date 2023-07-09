@@ -80,14 +80,14 @@ fn main() {
     // finite-difference quotients is significantly faster and has no error.
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    // Function to differentiate.
-    // f = x^y + sin(1) - asinh(z) / 2
+    // Function to differentiate:
+    // f = x^(y + cos(1)) - atanh(z) / 2 + 1
     // at x = 3, y = 2, z = 1.
     #[rustfmt::skip]
     fn function<'v>(variables: &[Variable<'v>], constants: &[f64]) -> Variable<'v> {
-        variables[0].powf(variables[1]) + 
-        constants[0].sin() - 
-        variables[2].asinh() / constants[1]
+        variables[0].powf(variables[1] + constants[0].cos()) - 
+        variables[2].atanh() / constants[1] +
+        constants[0]
     }
 
     // New graph.
