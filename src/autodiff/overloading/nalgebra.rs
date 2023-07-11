@@ -4,7 +4,7 @@
 // See LICENSE or <https://www.gnu.org/licenses/>.
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use crate::autodiff::Variable;
+use crate::autodiff::variable::Variable;
 use nalgebra::{DMatrix, DVector};
 
 /// A matrix of `Variable`s.

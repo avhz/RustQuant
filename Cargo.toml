@@ -29,11 +29,13 @@ debug = true
 ## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 [dependencies]
+# num = "0.4.0"               # https://docs.rs/num/latest/num/
+# once_cell = "1.18.0"        # https://docs.rs/once_cell/latest/once_cell/
+# csv = "1.1.6"               # https://docs.rs/csv/latest/csv/
+# tempfile = "3.5.0"          # https://docs.rs/tempfile/latest/tempfile/
 nalgebra = "0.32.2"         # https://docs.rs/nalgebra/latest/nalgebra/
 ndarray = "0.15.6"          # https://docs.rs/ndarray/latest/ndarray/
-num = "0.4.0"               # https://docs.rs/num/latest/num/
 num-complex = "0.4.2"       # https://docs.rs/num-complex/latest/num_complex/
-once_cell = "1.18.0"
 plotters = "0.3.4"          # https://docs.rs/plotters/latest/plotters/
 rand = "0.8.5"              # https://docs.rs/rand/latest/rand/
 rand_distr = "0.4.3"        # https://docs.rs/rand_distr/latest/rand_distr/
@@ -41,7 +43,6 @@ rayon = "1.6.0"             # https://docs.rs/rayon/latest/rayon/
 serde = "1.0.163"           # https://docs.rs/serde/latest/serde
 serde_json = "1.0.96"       # https://docs.rs/serde_json/latest/serde_json
 statrs = "0.16.0"           # https://docs.rs/statrs/latest/statrs/
-tempfile = "3.5.0"          # https://docs.rs/tempfile/latest/tempfile/
 time = "0.3.20"             # https://docs.rs/time/latest/time/
 yahoo_finance_api = "2.0.0" # https://docs.rs/yahoo-finance-api/latest/yahoo_finance_api/
 
@@ -90,7 +91,14 @@ optional = true
 ## increases the compilation time substantially.
 data = ["dep:polars", "dep:tokio", "dep:tokio-test"]
 ## This feature is used to enable the use of the `interactive` module.
-interactive = ["dep:tui", "dep:tokio", "dep:tui-logger", "dep:crossterm", "dep:eyre", "dep:log"]
+interactive = [
+    "dep:tui",
+    "dep:tokio",
+    "dep:tui-logger",
+    "dep:crossterm",
+    "dep:eyre",
+    "dep:log",
+]
 
 
 ## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

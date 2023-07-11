@@ -4,13 +4,54 @@
 // See LICENSE or <https://www.gnu.org/licenses/>.
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use super::Variable;
-use ndarray::Array2;
+use crate::autodiff::{graph::Graph, variable::Variable, vertex::Arity};
+use nalgebra::DMatrix;
+use ndarray::{Array, Ix2};
 
 /// A matrix of `Variable`s.
 #[derive(Debug, Clone, PartialEq, Eq)]
 struct VariableArray<'v> {
-    data: Array2<Variable<'v>>,
+    data: Array<Variable<'v>, Ix2>,
+}
+
+struct ARRAY<'v> {
+    graph: &'v Graph,
+    index: usize,
+    value: Array<f64, Ix2>,
+}
+
+struct MATRIX<'v> {
+    graph: &'v Graph,
+    index: usize,
+    value: DMatrix<f64>,
+}
+
+impl<'v> std::ops::Mul<MATRIX<'v>> for MATRIX<'v> {
+    type Output = MATRIX<'v>;
+
+    fn mul(self, rhs: MATRIX<'v>) -> Self::Output {
+        MATRIX {
+            graph: self.graph,
+            value: self.value * rhs.value,
+            index: self
+                .graph
+                .push(Arity::Binary, &[self.index, rhs.index], &[1.0, 1.0]),
+        }
+    }
+}
+
+impl<'v> std::ops::Mul<ARRAY<'v>> for ARRAY<'v> {
+    type Output = ARRAY<'v>;
+
+    fn mul(self, rhs: ARRAY<'v>) -> Self::Output {
+        ARRAY {
+            graph: self.graph,
+            value: self.value * rhs.value,
+            index: self
+                .graph
+                .push(Arity::Binary, &[self.index, rhs.index], &[1.0, 1.0]),
+        }
+    }
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -184,7 +225,7 @@ impl<'v> std::ops::Div<VariableArray<'v>> for VariableArray<'v> {
 
 #[cfg(test)]
 mod test_ndarray {
-    use crate::autodiff::Gradient;
+    use crate::autodiff::gradient::Gradient;
 
     #[test]
     fn test_component_mul() {

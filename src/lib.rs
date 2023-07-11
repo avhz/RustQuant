@@ -38,7 +38,17 @@ pub use error::*;
 /// Parent module containing: automatic differentation modules.
 pub mod autodiff {
     pub use crate::autodiff::{
-        gradient::*, graph::*, graphviz::*, nalgebra::*, ndarray::*, overload::*, variable::*,
+        gradient::*,
+        graph::*,
+        graphviz::*,
+        nalgebra::*,
+        ndarray::*,
+        overloading::*,
+        overloading::{
+            add::*, div::*, f64::*, iter::*, mul::*, nalgebra::*, ndarray::*, pow::*, statrs::*,
+            sub::*,
+        },
+        variable::*,
         vertex::*,
     };
 
@@ -48,12 +58,34 @@ pub mod autodiff {
     pub mod graph;
     /// Submodule of `autodiff`: visualisation of the `Graph`.
     pub mod graphviz;
-    /// Submodule of `autodiff`: implements `Variable`s for `nalgebra`.
-    pub mod nalgebra;
-    /// Submodule of `autodiff`: implements `Variable`s for `ndarray`.
-    pub mod ndarray;
+
     /// Submodule of `autodiff`: implements operator/function overloading.
-    pub mod overload;
+    /// This module contains the overloaded operators and primitive functions.
+    /// Operations such as `+` and `*` are redefined, along with primitive
+    /// functions such as `sin`, `exp`, and `log`.
+    /// Each overload has an associated test to ensure functionality.
+    pub mod overloading {
+        /// Overload the standard addition operator (`+`).
+        pub mod add;
+        /// Overload the standard division operator (`/`).
+        pub mod div;
+        /// Overload the standard f64 type methods.
+        pub mod f64;
+        /// Overload the iterator traits.
+        pub mod iter;
+        /// Overload the standard multiplication operator (`*`).
+        pub mod mul;
+        /// Implements `Variable`s for `nalgebra`.
+        pub mod nalgebra;
+        /// Implements `Variable`s for `ndarray`.
+        pub mod ndarray;
+        /// Overload the power functions.
+        pub mod pow;
+        /// Overloading functions from `statrs`.
+        pub mod statrs;
+        /// Overload the standard subtraction operator (`-`).
+        pub mod sub;
+    }
     /// Submodule of `autodiff`: implements `Variable`s for `autodiff`.
     pub mod variable;
     /// Submodule of `autodiff`: implements `Vertex` for `autodiff`.
