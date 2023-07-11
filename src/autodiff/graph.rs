@@ -16,7 +16,6 @@
 
 use crate::autodiff::*;
 use std::cell::RefCell;
-// use std::{rc::Rc, sync::Arc};
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // GRAPH STRUCTS AND IMPLEMENTATIONS
@@ -99,11 +98,11 @@ impl Graph {
 
     /// Pushes a vertex to the graph.
     #[inline]
-    pub fn push(&self, operation: Arity, parents: &[usize], partials: &[f64]) -> usize {
+    pub fn push(&self, arity: Arity, parents: &[usize], partials: &[f64]) -> usize {
         let mut vertices = self.vertices.borrow_mut();
         let len = vertices.len();
 
-        let vertex = match operation {
+        let vertex = match arity {
             // Nullary operator pushback.
             //
             // The vertex pushed to the graph is the result of a **nullary** operation.
