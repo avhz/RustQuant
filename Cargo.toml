@@ -33,6 +33,7 @@ nalgebra = "0.32.2"         # https://docs.rs/nalgebra/latest/nalgebra/
 ndarray = "0.15.6"          # https://docs.rs/ndarray/latest/ndarray/
 num = "0.4.0"               # https://docs.rs/num/latest/num/
 num-complex = "0.4.2"       # https://docs.rs/num-complex/latest/num_complex/
+once_cell = "1.18.0"
 plotters = "0.3.4"          # https://docs.rs/plotters/latest/plotters/
 rand = "0.8.5"              # https://docs.rs/rand/latest/rand/
 rand_distr = "0.4.3"        # https://docs.rs/rand_distr/latest/rand_distr/
@@ -89,14 +90,7 @@ optional = true
 ## increases the compilation time substantially.
 data = ["dep:polars", "dep:tokio", "dep:tokio-test"]
 ## This feature is used to enable the use of the `interactive` module.
-interactive = [
-    "dep:tui",
-    "dep:tokio",
-    "dep:tui-logger",
-    "dep:crossterm",
-    "dep:eyre",
-    "dep:log",
-]
+interactive = ["dep:tui", "dep:tokio", "dep:tui-logger", "dep:crossterm", "dep:eyre", "dep:log"]
 
 
 ## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

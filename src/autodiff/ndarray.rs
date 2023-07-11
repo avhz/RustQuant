@@ -5,8 +5,8 @@
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 use super::{Graph, Variable};
-use ndarray::{linalg::Dot, Array, Array2};
-use std::{cell::RefCell, ops::Mul};
+use ndarray::{linalg::Dot, Array};
+use std::cell::RefCell;
 
 /// A matrix of `Variable`s.
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -67,12 +67,44 @@ impl<'v> std::ops::Div<VariableMatrix<'v>> for VariableMatrix<'v> {
 // - `num::One`
 // - `num::Zero`
 
+// static GRAPH: Lazy<Mutex<Graph>> = Lazy::new(|| {
+//     Mutex::new(Graph {
+//         vertices: RefCell::new(Vec::new()),
+//     })
+// });
+
+// static ONE: Lazy<Variable> = Lazy::new(|| Variable::new(&*GRAPH.lock().unwrap(), 0, 1.));
+// static ZERO: Lazy<Variable> = Lazy::new(|| Variable::new(&*GRAPH.lock().unwrap(), 0, 0.));
+
+// static GRAPH: Lazy<Arc<Mutex<Graph>>> = Lazy::new(|| {
+//     Arc::new(Mutex::new(Graph {
+//         vertices: Vec::new(),
+//     }))
+// });
+
+// static ONE: Lazy<Variable> = Lazy::new(|| Variable::new(Arc::clone(&GRAPH).lock().unwrap(), 0, 1.));
+// static ZERO: Lazy<Variable> =
+//     Lazy::new(|| Variable::new(Arc::clone(&GRAPH).lock().unwrap(), 0, 0.));
+
 static mut GRAPH: Graph = Graph {
     vertices: RefCell::new(Vec::new()),
 };
 
+// static ONE: Variable = Variable {
+//     graph: unsafe { &GRAPH },
+//     index: 0,
+//     value: 1.,
+// };
+
+// static ZERO: Variable = Variable {
+//     graph: unsafe { &GRAPH },
+//     index: 0,
+//     value: 0.,
+// };
+
 impl<'v> num::One for Variable<'v> {
     fn one() -> Self {
+        // Variable::new(&*GRAPH.lock().unwrap(), 0, 1.)
         Variable::new(unsafe { &GRAPH }, 0, 1.)
         // unsafe { Variable::new(&GRAPH, 0, 1.) }
     }
@@ -88,6 +120,7 @@ impl<'v> num::One for VariableMatrix<'v> {
 
 impl<'v> num::Zero for Variable<'v> {
     fn zero() -> Self {
+        // Variable::new(&*GRAPH.lock().unwrap(), 0, 1.)
         Variable::new(unsafe { &GRAPH }, 0, 0.)
         // unsafe { Variable::new(&GRAPH, 0, 0.) }
     }

@@ -15,12 +15,8 @@
 // IMPORTS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-// use nalgebra::{DMatrix, DVector};
-// use crate::autodiff::*;
 use crate::autodiff::graph::Graph;
 use std::fmt::Display;
-
-use super::Arity;
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // STRUCT AND IMPLEMENTATION
