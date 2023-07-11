@@ -71,13 +71,15 @@ impl<'v> Variable<'v> {
         // This is simply the generalised chain rule.
         for (index, vertex) in self.graph.vertices.borrow().iter().enumerate().rev() {
             let deriv = adjoints[index];
+
             adjoints[vertex.parents[0]] += vertex.partials[0] * deriv;
             adjoints[vertex.parents[1]] += vertex.partials[1] * deriv;
         }
+
         adjoints
     }
 
-    // /// Function to return a zero variable.
+    // /// Returns a zero variable.
     // #[inline]
     // pub fn zero(graph: &'v Graph) -> Self {
     //     Variable {

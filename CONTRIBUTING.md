@@ -76,6 +76,6 @@ mod tests {
 }
 ```
 
-One last thing, add an entry to the `CHANGELOG.md` file so that people can see what you've done.
+One last thing, add an entry to the `CHANGELOG.md` file so that people can see what you'variablee done.
 
 Thank you for your interest in contributing to RustQuant!

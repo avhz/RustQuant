@@ -27,8 +27,8 @@ use std::cell::RefCell;
 pub struct Graph {
     /// Vector containing the vertices in the Wengert List.
     pub vertices: RefCell<Vec<Vertex>>,
-    // pub vertices: RefCell<Rc<[Vertex]>>,
 }
+// pub struct Graph(RefCell<Rc<[Vertex]>>);
 
 impl Default for Graph {
     #[inline]
@@ -59,7 +59,7 @@ impl Graph {
         }
     }
 
-    /// Add a multiple variables (a slice) to the graph.
+    /// Add multiple variables (a slice) to the graph.
     /// Useful for larger functions with many inputs.
     #[inline]
     pub fn vars<'v>(&'v self, values: &[f64]) -> Vec<Variable<'v>> {
