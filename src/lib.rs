@@ -45,8 +45,8 @@ pub mod autodiff {
         ndarray::*,
         overloading::*,
         overloading::{
-            add::*, div::*, f64::*, iter::*, mul::*, nalgebra::*, ndarray::*, pow::*, statrs::*,
-            sub::*,
+            add::*, div::*, f64::*, iter::*, log::*, minmax::*, mul::*, nalgebra::*, ndarray::*,
+            pow::*, statrs::*, sub::*,
         },
         variable::*,
         vertex::*,
@@ -73,6 +73,10 @@ pub mod autodiff {
         pub mod f64;
         /// Overload the iterator traits.
         pub mod iter;
+        /// Overload the standard logarithm function (`log`).
+        pub mod log;
+        /// Overload the standard min/max functions (`min` and `max`).
+        pub mod minmax;
         /// Overload the standard multiplication operator (`*`).
         pub mod mul;
         /// Implements `Variable`s for `nalgebra`.
