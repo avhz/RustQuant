@@ -68,7 +68,7 @@ impl<'v> Product<Variable<'v>> for Variable<'v> {
 
 #[cfg(test)]
 mod test_overload {
-    use crate::autodiff::{Gradient, Graph, Variable};
+    use crate::autodiff::{Accumulate, Gradient, Graph, Variable};
 
     #[test]
     fn test_sum() {

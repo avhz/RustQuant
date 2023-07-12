@@ -131,7 +131,7 @@ impl<'v> Add<Variable<'v>> for f64 {
 
 #[cfg(test)]
 mod test_overload {
-    use crate::autodiff::{Gradient, Graph};
+    use crate::autodiff::{Accumulate, Gradient, Graph};
 
     #[test]
     fn test_add() {

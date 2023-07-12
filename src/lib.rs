@@ -38,6 +38,7 @@ pub use error::*;
 /// Parent module containing: automatic differentation modules.
 pub mod autodiff {
     pub use crate::autodiff::{
+        accumulate::*,
         gradient::*,
         graph::*,
         graphviz::*,
@@ -52,6 +53,8 @@ pub mod autodiff {
         vertex::*,
     };
 
+    /// Submodule of `autodiff`: `Accumulate` trait.
+    pub mod accumulate;
     /// Submodule of `autodiff`: implements the gradient computation.
     pub mod gradient;
     /// Submodule of `autodiff`: implements the Graph (aka. tape or Wengert List).

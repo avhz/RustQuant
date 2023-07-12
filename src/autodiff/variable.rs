@@ -55,30 +55,6 @@ impl<'v> Variable<'v> {
         }
     }
 
-    /// Function to reverse accumulate the gradient.
-    /// 1. Allocate the array of adjoints.
-    /// 2. Set the seed (dx/dx = 1).
-    /// 3. Traverse the graph backwards, updating the adjoints for the parent vertices.
-    #[inline]
-    pub fn accumulate(&self) -> Vec<f64> {
-        // Set the seed.
-        // The seed is the derivative of the output with respect to itself.
-        // dy/dy = 1
-        let mut adjoints = vec![0.0; self.graph.len()];
-        adjoints[self.index] = 1.0; // SEED
-
-        // Traverse the graph backwards and update the adjoints for the parent vertices.
-        // This is simply the generalised chain rule.
-        for (index, vertex) in self.graph.vertices.borrow().iter().enumerate().rev() {
-            let deriv = adjoints[index];
-
-            adjoints[vertex.parents[0]] += vertex.partials[0] * deriv;
-            adjoints[vertex.parents[1]] += vertex.partials[1] * deriv;
-        }
-
-        adjoints
-    }
-
     // /// Returns a zero variable.
     // #[inline]
     // pub fn zero(graph: &'v Graph) -> Self {

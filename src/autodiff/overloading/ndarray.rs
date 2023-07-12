@@ -4,103 +4,244 @@
 // See LICENSE or <https://www.gnu.org/licenses/>.
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use crate::autodiff::{graph::Graph, variable::Variable, vertex::Arity};
-use nalgebra::DMatrix;
-use ndarray::{Array, Ix2};
+use crate::autodiff::variable::Variable;
+use ndarray::{Array, Ix1, Ix2};
 
 /// A matrix of `Variable`s.
 #[derive(Debug, Clone, PartialEq, Eq)]
-struct VariableArray<'v> {
-    data: Array<Variable<'v>, Ix2>,
+pub struct VariableArray<'v> {
+    /// The data of the array.
+    pub data: Array<Variable<'v>, Ix2>,
 }
 
-struct ARRAY<'v> {
-    graph: &'v Graph,
-    index: usize,
-    value: Array<f64, Ix2>,
+/// A vector of `Variable`s.
+pub struct VariableVector<'v> {
+    /// The data of the vector.
+    pub data: Array<Variable<'v>, Ix1>,
 }
 
-struct MATRIX<'v> {
-    graph: &'v Graph,
-    index: usize,
-    value: DMatrix<f64>,
-}
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// IMPLEMENTATIONS
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-impl<'v> std::ops::Mul<MATRIX<'v>> for MATRIX<'v> {
-    type Output = MATRIX<'v>;
+// NEED TO IMPLEMENT:
+// - Dot
 
-    fn mul(self, rhs: MATRIX<'v>) -> Self::Output {
-        MATRIX {
-            graph: self.graph,
-            value: self.value * rhs.value,
-            index: self
-                .graph
-                .push(Arity::Binary, &[self.index, rhs.index], &[1.0, 1.0]),
-        }
+impl<'v> ndarray::linalg::Dot<Variable<'v>> for Variable<'v> {
+    type Output = Variable<'v>;
+
+    fn dot(&self, rhs: &Variable<'v>) -> Self::Output {
+        (*self) * (*rhs)
     }
 }
 
-impl<'v> std::ops::Mul<ARRAY<'v>> for ARRAY<'v> {
-    type Output = ARRAY<'v>;
+// impl<'v> ndarray::linalg::Dot<VariableVector<'v>> for VariableVector<'v> {
+//     type Output = VariableVector<'v>;
 
-    fn mul(self, rhs: ARRAY<'v>) -> Self::Output {
-        ARRAY {
-            graph: self.graph,
-            value: self.value * rhs.value,
-            index: self
-                .graph
-                .push(Arity::Binary, &[self.index, rhs.index], &[1.0, 1.0]),
-        }
+//     fn dot(&self, rhs: &VariableVector<'v>) -> Self::Output {
+//         VariableVector {
+//             data: self.data.dot(&rhs.data),
+//         }
+//     }
+// }
+
+// impl<'v> ndarray::linalg::Dot<VariableArray<'v>> for VariableArray<'v> {
+//     type Output = VariableArray<'v>;
+
+//     fn dot(&self, rhs: &VariableArray<'v>) -> Self::Output {
+//         VariableArray {
+//             data: self.data.dot(&rhs.data),
+//         }
+//     }
+// }
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// UNIT TESTS
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+#[cfg(test)]
+mod test_ndarray {
+    use crate::autodiff::{gradient::Gradient, Accumulate};
+
+    #[test]
+    fn test_vector_dot_product() {
+        let g = crate::autodiff::Graph::new();
+
+        let (a, b, c, d) = (g.var(1.), g.var(2.), g.var(3.), g.var(4.));
+        let (e, f, g, h) = (g.var(5.), g.var(6.), g.var(7.), g.var(8.));
+
+        // a = [1, 2, 3, 4]
+        // b = [5, 6, 7, 8]
+        let _x = ndarray::array![a, b, c, d];
+        let _y = ndarray::array![e, f, g, h];
+
+        // DOT PRODUCT
+        // c = 1*5 + 2*6 + 3*7 + 4*8 = 70
+        // let c = x.dot(&y);
+        // let c_value = c.value;
+        // let c_expected = 70.;
+
+        // assert_eq!(c_value, c_expected);
+
+        // println!("c: {:?}", c);
+        // println!("c_value: {:?}", c_value);
+        // println!("c_expected: {:?}", c_expected);
+        // println!("gradient: {:?}", c.accumulate().wrt(&a));
+    }
+
+    #[test]
+    fn test_component_add() {
+        let g = crate::autodiff::Graph::new();
+
+        let (a, b, c, d) = (g.var(1.), g.var(2.), g.var(3.), g.var(4.));
+        let (e, f, g, h) = (g.var(5.), g.var(6.), g.var(7.), g.var(8.));
+
+        // a = [[1, 2],
+        //      [3, 4]]
+        // b = [[5, 6],
+        //      [7, 8]]
+        let x = ndarray::array![[a, b], [c, d]];
+        let y = ndarray::array![[e, f], [g, h]];
+
+        // COMPONENT-WISE ADDITION
+        // c = [[6 , 8],
+        //      [10, 12]]
+        let c = &x + &y;
+        let c_values = c.map(|x_i| x_i.value);
+        let c_expected = ndarray::array![[6., 8.], [10., 12.]];
+
+        assert_eq!(c, c_expected);
+
+        println!("c: {:?}", c);
+        println!("c_values: {:?}", c_values);
+        println!("c_expected: {:?}", c_expected);
+        println!("gradient: {:?}", c[[0, 0]].accumulate().wrt(&a));
+    }
+
+    #[test]
+    fn test_component_mul() {
+        let g = crate::autodiff::Graph::new();
+
+        let (a, b, c, d) = (g.var(1.), g.var(2.), g.var(3.), g.var(4.));
+        let (e, f, g, h) = (g.var(5.), g.var(6.), g.var(7.), g.var(8.));
+
+        // a = [[1, 2],
+        //      [3, 4]]
+        // b = [[5, 6],
+        //      [7, 8]]
+        let x = ndarray::array![[a, b], [c, d]];
+        let y = ndarray::array![[e, f], [g, h]];
+
+        // COMPONENT-WISE MULTIPLICATION
+        // c = [[5 , 12],
+        //      [21, 32]]
+        let c = &x * &y; // <--- This works fine.
+        let c_values = c.map(|x_i| x_i.value);
+        let c_expected = ndarray::array![[5., 12.], [21., 32.]];
+
+        // MATRIX MULTIPLICATION
+        // let dot = x.dot(&y); // <--- This does not work.
+
+        assert_eq!(c, c_expected);
+
+        println!("c: {:?}", c);
+        println!("c_values: {:?}", c_values);
+        println!("c_expected: {:?}", c_expected);
+        println!("gradient: {:?}", c[[0, 0]].accumulate().wrt(&a));
     }
 }
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// GRAVEYARD
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+// struct ARRAY<'v> {
+//     graph: &'v Graph,
+//     index: usize,
+//     value: Array<f64, Ix2>,
+// }
+
+// struct MATRIX<'v> {
+//     graph: &'v Graph,
+//     index: usize,
+//     value: DMatrix<f64>,
+// }
+
+// impl<'v> std::ops::Mul<MATRIX<'v>> for MATRIX<'v> {
+//     type Output = MATRIX<'v>;
+
+//     fn mul(self, rhs: MATRIX<'v>) -> Self::Output {
+//         MATRIX {
+//             graph: self.graph,
+//             value: self.value * rhs.value,
+//             index: self
+//                 .graph
+//                 .push(Arity::Binary, &[self.index, rhs.index], &[1.0, 1.0]),
+//         }
+//     }
+// }
+
+// impl<'v> std::ops::Mul<ARRAY<'v>> for ARRAY<'v> {
+//     type Output = ARRAY<'v>;
+
+//     fn mul(self, rhs: ARRAY<'v>) -> Self::Output {
+//         ARRAY {
+//             graph: self.graph,
+//             value: self.value * rhs.value,
+//             index: self
+//                 .graph
+//                 .push(Arity::Binary, &[self.index, rhs.index], &[1.0, 1.0]),
+//         }
+//     }
+// }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // `ndarray` ops implementations
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-// Component-wise multiplication.
-impl<'v> std::ops::Mul<VariableArray<'v>> for VariableArray<'v> {
-    type Output = VariableArray<'v>;
+// // Component-wise multiplication.
+// impl<'v> std::ops::Mul<VariableArray<'v>> for VariableArray<'v> {
+//     type Output = VariableArray<'v>;
 
-    fn mul(self, rhs: VariableArray<'v>) -> Self::Output {
-        VariableArray {
-            data: self.data * rhs.data,
-        }
-    }
-}
+//     fn mul(self, rhs: VariableArray<'v>) -> Self::Output {
+//         VariableArray {
+//             data: self.data * rhs.data,
+//         }
+//     }
+// }
 
-// Component-wise addition.
-impl<'v> std::ops::Add<VariableArray<'v>> for VariableArray<'v> {
-    type Output = VariableArray<'v>;
+// // Component-wise addition.
+// impl<'v> std::ops::Add<VariableArray<'v>> for VariableArray<'v> {
+//     type Output = VariableArray<'v>;
 
-    fn add(self, rhs: VariableArray<'v>) -> Self::Output {
-        VariableArray {
-            data: self.data + rhs.data,
-        }
-    }
-}
+//     fn add(self, rhs: VariableArray<'v>) -> Self::Output {
+//         VariableArray {
+//             data: self.data + rhs.data,
+//         }
+//     }
+// }
 
-// Component-wise subtraction.
-impl<'v> std::ops::Sub<VariableArray<'v>> for VariableArray<'v> {
-    type Output = VariableArray<'v>;
+// // Component-wise subtraction.
+// impl<'v> std::ops::Sub<VariableArray<'v>> for VariableArray<'v> {
+//     type Output = VariableArray<'v>;
 
-    fn sub(self, rhs: VariableArray<'v>) -> Self::Output {
-        VariableArray {
-            data: self.data - rhs.data,
-        }
-    }
-}
+//     fn sub(self, rhs: VariableArray<'v>) -> Self::Output {
+//         VariableArray {
+//             data: self.data - rhs.data,
+//         }
+//     }
+// }
 
-// Component-wise division.
-impl<'v> std::ops::Div<VariableArray<'v>> for VariableArray<'v> {
-    type Output = VariableArray<'v>;
+// // Component-wise division.
+// impl<'v> std::ops::Div<VariableArray<'v>> for VariableArray<'v> {
+//     type Output = VariableArray<'v>;
 
-    fn div(self, rhs: VariableArray<'v>) -> Self::Output {
-        VariableArray {
-            data: self.data / rhs.data,
-        }
-    }
-}
+//     fn div(self, rhs: VariableArray<'v>) -> Self::Output {
+//         VariableArray {
+//             data: self.data / rhs.data,
+//         }
+//     }
+// }
 
 // Implementing `num-traits` traits for `Variable`.
 // We need:
@@ -222,40 +363,3 @@ impl<'v> std::ops::Div<VariableArray<'v>> for VariableArray<'v> {
 //         self.data[(row, col)] = value;
 //     }
 // }
-
-#[cfg(test)]
-mod test_ndarray {
-    use crate::autodiff::gradient::Gradient;
-
-    #[test]
-    fn test_component_mul() {
-        let g = crate::autodiff::Graph::new();
-
-        let (a, b, c, d) = (g.var(1.), g.var(2.), g.var(3.), g.var(4.));
-        let (e, f, g, h) = (g.var(5.), g.var(6.), g.var(7.), g.var(8.));
-
-        // a = [[1, 2],
-        //      [3, 4]]
-        // b = [[5, 6],
-        //      [7, 8]]
-        let x = ndarray::array![[a, b], [c, d]];
-        let y = ndarray::array![[e, f], [g, h]];
-
-        // COMPONENT-WISE MULTIPLICATION
-        // c = [[5 , 12],
-        //      [21, 32]]
-        let c = &x * &y; // <--- This works fine.
-        let c_values = c.map(|x_i| x_i.value);
-        let c_expected = ndarray::array![[5., 12.], [21., 32.]];
-
-        // MATRIX MULTIPLICATION
-        // let dot = x.dot(&y); // <--- This does not work.
-
-        assert_eq!(c, c_expected);
-
-        println!("c: {:?}", c);
-        println!("c_values: {:?}", c_values);
-        println!("c_expected: {:?}", c_expected);
-        println!("gradient: {:?}", c[[0, 0]].accumulate().wrt(&a));
-    }
-}

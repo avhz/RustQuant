@@ -4,117 +4,155 @@
 // See LICENSE or <https://www.gnu.org/licenses/>.
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use crate::autodiff::variable::Variable;
-use nalgebra::{DMatrix, DVector};
+// use crate::autodiff::variable::Variable;
+// use nalgebra::{DMatrix, DVector};
 
-/// A matrix of `Variable`s.
-pub struct VariableMatrix<'v> {
-    _data: DMatrix<Variable<'v>>,
-}
+// /// A matrix of `Variable`s.
+// pub struct VariableMatrix<'v> {
+//     data: DMatrix<Variable<'v>>,
+// }
 
-/// A vector of `Variable`s.
-pub struct VariableVector<'v> {
-    _data: DVector<Variable<'v>>,
-}
+// /// A vector of `Variable`s.
+// pub struct VariableVector<'v> {
+//     data: DVector<Variable<'v>>,
+// }
 
-impl<'v> VariableMatrix<'v> {
-    // pub fn new(rows: usize, cols: usize) -> Self {
-    //     VariableMatrix {
-    //         data: DMatrix::zeros(rows, cols),
-    //     }
-    // }
+// impl std::ops::Add<VariableMatrix<'static>> for VariableMatrix<'static> {
+//     type Output = VariableMatrix<'static>;
 
-    // pub fn from_row_slice(rows: usize, cols: usize, elements: &[Variable]) -> Self {
-    //     VariableMatrix {
-    //         data: DMatrix::from_row_slice(rows, cols, elements),
-    //     }
-    // }
+//     fn add(self, rhs: VariableMatrix<'static>) -> Self::Output {
+//         VariableMatrix {
+//             data: self.data + rhs.data,
+//         }
+//     }
+// }
 
-    // pub fn from_column_slice(rows: usize, cols: usize, data: &[Variable]) -> Self {
-    //     VariableMatrix {
-    //         data: DMatrix::from_column_slice(rows, cols, data),
-    //     }
-    // }
+// #[cfg(test)]
+// mod tests_nalgebra_variable {
+//     use crate::autodiff::Graph;
 
-    // pub fn from_fn<F>(rows: usize, cols: usize, f: F) -> Self
-    // where
-    //     F: Fn(usize, usize) -> Variable<'v>,
-    // {
-    //     VariableMatrix {
-    //         data: DMatrix::from_fn(rows, cols, f),
-    //     }
-    // }
+//     use super::*;
 
-    // pub fn map<F>(&self, f: F) -> Self
-    // where
-    //     F: Fn(Variable<'v>) -> Variable<'v>,
-    // {
-    //     VariableMatrix {
-    //         data: self.data.map(f),
-    //     }
-    // }
+//     #[test]
+//     fn test_matrix() {
+//         let graph = Graph::new();
 
-    // pub fn map_mut<F>(&mut self, f: F)
-    // where
-    //     F: FnMut(Variable<'v>) -> Variable<'v>,
-    // {
-    //     self.data.map_mut(f);
-    // }
+//         let a = VariableMatrix {
+//             data: DMatrix::from_row_slice(2, 2, &graph.vars(&[1.0, 2.0, 3.0, 4.0])),
+//         };
+//         let b = VariableMatrix {
+//             data: DMatrix::from_row_slice(2, 2, &graph.vars(&[5.0, 6.0, 7.0, 8.0])),
+//         };
 
-    // pub fn rows(&self) -> usize {
-    //     self.data.nrows()
-    // }
+//         let c = a + b;
 
-    // pub fn cols(&self) -> usize {
-    //     self.data.ncols()
-    // }
+//         println!("{:?}", c.data);
 
-    // pub fn get(&self, row: usize, col: usize) -> Variable<'v> {
-    //     self.data[(row, col)]
-    // }
+//         // assert_eq!(
+//         //     c.data,
+//         //     DMatrix::from_row_slice(2, 2, &[5.0, 12.0, 21.0, 32.0])
+//         // );
+//     }
+// }
 
-    // pub fn set(&mut self, row: usize, col: usize, value: Variable<'v>) {
-    //     self.data[(row, col)] = value;
-    // }
+// impl<'v> VariableMatrix<'v> {
+// pub fn new(rows: usize, cols: usize) -> Self {
+//     VariableMatrix {
+//         data: DMatrix::zeros(rows, cols),
+//     }
+// }
 
-    // pub fn component_mul(&self, other: &VariableMatrix<'v>) -> VariableMatrix<'v> {
-    //     VariableMatrix {
-    //         data: self.data.component_mul(&other.data),
-    //     }
-    // }
+// pub fn from_row_slice(rows: usize, cols: usize, elements: &[Variable]) -> Self {
+//     VariableMatrix {
+//         data: DMatrix::from_row_slice(rows, cols, elements),
+//     }
+// }
 
-    // pub fn matrix_mul(&self, other: &VariableMatrix<'v>) -> VariableMatrix<'v> {
-    //     VariableMatrix {
-    //         data: self.data * &other.data,
-    //     }
-    // }
+// pub fn from_column_slice(rows: usize, cols: usize, data: &[Variable]) -> Self {
+//     VariableMatrix {
+//         data: DMatrix::from_column_slice(rows, cols, data),
+//     }
+// }
 
-    // pub fn transpose(&self) -> VariableMatrix<'v> {
-    //     VariableMatrix {
-    //         data: self.data.transpose(),
-    //     }
-    // }
+// pub fn from_fn<F>(rows: usize, cols: usize, f: F) -> Self
+// where
+//     F: Fn(usize, usize) -> Variable<'v>,
+// {
+//     VariableMatrix {
+//         data: DMatrix::from_fn(rows, cols, f),
+//     }
+// }
 
-    // pub fn trace(&self) -> Variable<'v> {
-    //     self.data.trace()
-    // }
+// pub fn map<F>(&self, f: F) -> Self
+// where
+//     F: Fn(Variable<'v>) -> Variable<'v>,
+// {
+//     VariableMatrix {
+//         data: self.data.map(f),
+//     }
+// }
 
-    // pub fn determinant(&self) -> Variable<'v> {
-    //     self.data.determinant()
-    // }
+// pub fn map_mut<F>(&mut self, f: F)
+// where
+//     F: FnMut(Variable<'v>) -> Variable<'v>,
+// {
+//     self.data.map_mut(f);
+// }
 
-    // pub fn inverse(&self) -> VariableMatrix<'v> {
-    //     VariableMatrix {
-    //         data: self.data.try_inverse().unwrap(),
-    //     }
-    // }
+// pub fn rows(&self) -> usize {
+//     self.data.nrows()
+// }
 
-    // pub fn solve(&self, rhs: &VariableVector<'v>) -> VariableVector<'v> {
-    //     VariableVector {
-    //         data: self.data.solve(&rhs.data).unwrap(),
-    //     }
-    // }
-}
+// pub fn cols(&self) -> usize {
+//     self.data.ncols()
+// }
+
+// pub fn get(&self, row: usize, col: usize) -> Variable<'v> {
+//     self.data[(row, col)]
+// }
+
+// pub fn set(&mut self, row: usize, col: usize, value: Variable<'v>) {
+//     self.data[(row, col)] = value;
+// }
+
+// pub fn component_mul(&self, other: &VariableMatrix<'v>) -> VariableMatrix<'v> {
+//     VariableMatrix {
+//         data: self.data.component_mul(&other.data),
+//     }
+// }
+
+// pub fn matrix_mul(&self, other: &VariableMatrix<'v>) -> VariableMatrix<'v> {
+//     VariableMatrix {
+//         data: self.data * &other.data,
+//     }
+// }
+
+// pub fn transpose(&self) -> VariableMatrix<'v> {
+//     VariableMatrix {
+//         data: self.data.transpose(),
+//     }
+// }
+
+// pub fn trace(&self) -> Variable<'v> {
+//     self.data.trace()
+// }
+
+// pub fn determinant(&self) -> Variable<'v> {
+//     self.data.determinant()
+// }
+
+// pub fn inverse(&self) -> VariableMatrix<'v> {
+//     VariableMatrix {
+//         data: self.data.try_inverse().unwrap(),
+//     }
+// }
+
+// pub fn solve(&self, rhs: &VariableVector<'v>) -> VariableVector<'v> {
+//     VariableVector {
+//         data: self.data.solve(&rhs.data).unwrap(),
+//     }
+// }
+// }
 
 // // pub type VariableMatrix<'a> = nalgebra::DMatrix<Variable<'a>>;
 // // pub type VariableVector<'a> = nalgebra::DVector<Variable<'a>>;
