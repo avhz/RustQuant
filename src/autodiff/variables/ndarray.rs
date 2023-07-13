@@ -4,7 +4,7 @@
 // See LICENSE or <https://www.gnu.org/licenses/>.
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use crate::autodiff::variable::Variable;
+use crate::autodiff::{variables::variable::Variable, Graph};
 use ndarray::{Array, Ix1, Ix2};
 
 /// A matrix of `Variable`s.
@@ -18,6 +18,17 @@ pub struct VariableArray<'v> {
 pub struct VariableVector<'v> {
     /// The data of the vector.
     pub data: Array<Variable<'v>, Ix1>,
+}
+
+/// Struct to contain the initial variables.
+#[derive(Clone, Debug)]
+pub struct ARRAY<'v> {
+    /// Pointer to the graph.
+    pub graph: &'v Graph,
+    /// Index to the vertex.
+    pub index: usize,
+    /// Value associated to the vertex.
+    pub value: Array<f64, Ix2>, // Value,
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

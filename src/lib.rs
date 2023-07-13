@@ -42,14 +42,11 @@ pub mod autodiff {
         gradient::*,
         graph::*,
         graphviz::*,
-        nalgebra::*,
-        ndarray::*,
         overloading::*,
         overloading::{
-            add::*, div::*, f64::*, iter::*, log::*, minmax::*, mul::*, nalgebra::*, ndarray::*,
-            pow::*, statrs::*, sub::*,
+            add::*, div::*, f64::*, iter::*, log::*, minmax::*, mul::*, pow::*, statrs::*, sub::*,
         },
-        variable::*,
+        variables::{nalgebra::*, ndarray::*, variable::*},
         vertex::*,
     };
 
@@ -61,6 +58,8 @@ pub mod autodiff {
     pub mod graph;
     /// Submodule of `autodiff`: visualisation of the `Graph`.
     pub mod graphviz;
+    /// Submodule of `autodiff`: implements `Vertex` for `autodiff`.
+    pub mod vertex;
 
     /// Submodule of `autodiff`: implements operator/function overloading.
     /// This module contains the overloaded operators and primitive functions.
@@ -82,10 +81,6 @@ pub mod autodiff {
         pub mod minmax;
         /// Overload the standard multiplication operator (`*`).
         pub mod mul;
-        /// Implements `Variable`s for `nalgebra`.
-        pub mod nalgebra;
-        /// Implements `Variable`s for `ndarray`.
-        pub mod ndarray;
         /// Overload the power functions.
         pub mod pow;
         /// Overloading functions from `statrs`.
@@ -93,10 +88,16 @@ pub mod autodiff {
         /// Overload the standard subtraction operator (`-`).
         pub mod sub;
     }
+
     /// Submodule of `autodiff`: implements `Variable`s for `autodiff`.
-    pub mod variable;
-    /// Submodule of `autodiff`: implements `Vertex` for `autodiff`.
-    pub mod vertex;
+    pub mod variables {
+        /// Implements `Variable`s for `nalgebra`.
+        pub mod nalgebra;
+        /// Implements `Variable`s for `ndarray`.
+        pub mod ndarray;
+        /// Submodule of `autodiff`: base trait for all `Variable`s.
+        pub mod variable;
+    }
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

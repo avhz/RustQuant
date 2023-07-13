@@ -6,7 +6,7 @@
 
 //! Overloading functions from `statrs` crate.
 
-use crate::autodiff::{variable::Variable, vertex::Arity};
+use crate::autodiff::{variables::variable::Variable, vertex::Arity};
 use std::f64::consts::PI;
 use std::ops::Neg;
 
