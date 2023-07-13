@@ -47,6 +47,15 @@ impl Graph {
         }
     }
 
+    /// Join two graphs together.
+    #[inline]
+    pub fn join(&self, other: &Self) -> Self {
+        let graph = self.clone();
+        let other = other.vertices.borrow_mut().clone();
+        graph.vertices.borrow_mut().extend(other.into_iter());
+        graph
+    }
+
     /// Add a new variable to to the graph.
     /// Returns a new `Variable` instance (the contents of a vertex).
     #[inline]
