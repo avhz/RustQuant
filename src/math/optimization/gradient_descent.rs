@@ -5,6 +5,8 @@
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 use crate::autodiff::*;
+// use ::log::{info, max_level, warn, Level};
+use time::{Duration, Instant};
 
 /// Gradient descent optimizer.
 /// NOTE: Only for functions f: R^n -> R for now.
@@ -31,6 +33,8 @@ pub struct GradientDescentResult {
     pub minimum: f64,
     /// Number of iterations.
     pub iterations: usize,
+    /// Time elapsed during optimization.
+    pub elapsed: Duration,
 }
 
 impl GradientDescent {
@@ -69,10 +73,13 @@ impl GradientDescent {
     where
         F: for<'v> Fn(&[Variable<'v>]) -> Variable<'v>,
     {
+        let start = Instant::now();
+
         let mut result = GradientDescentResult {
             minimum: 0.0,
             minimizer: x0.to_vec(),
             iterations: 0,
+            elapsed: start.elapsed(),
         };
 
         for k in 0..self.max_iterations {
@@ -88,10 +95,16 @@ impl GradientDescent {
                 break;
             }
 
-            for (xi, gi) in result.minimizer.iter_mut().zip(&gradient) {
-                // Cannot use -= since it is not implemented for `Variable`.
-                *xi = (*xi) - self.learning_rate * (*gi);
-            }
+            // for (xi, gi) in result.minimizer.iter_mut().zip(&gradient) {
+            //     // Cannot use -= since it is not implemented for `Variable`.
+            //     *xi = (*xi) - self.learning_rate * (*gi);
+            // }
+
+            result
+                .minimizer
+                .iter_mut()
+                .zip(&gradient)
+                .for_each(|(xi, gi)| *xi = *xi - self.learning_rate * gi);
 
             result.minimum = f(&location).value;
 
@@ -104,8 +117,19 @@ impl GradientDescent {
                     location.iter().map(|x| x.value).collect::<Vec<f64>>()
                 );
             }
+
+            // if max_level() == Level::Info {
+            //     info!(
+            //         "Iter: {:?}, Norm: {}, Func: {:.4?}, X: {:.4?}",
+            //         k + 1,
+            //         Self::norm(&gradient),
+            //         function.value,
+            //         location.iter().map(|x| x.value),
+            //     );
+            // }
         }
 
+        result.elapsed = start.elapsed();
         result
     }
 }
@@ -127,10 +151,7 @@ mod test_gradient_descent {
     // Test the is_stationary function.
     #[test]
     fn test_is_stationary() {
-        assert!(GradientDescent::is_stationary(
-            &[0.00001, 0.00001],
-            0.0001
-        ));
+        assert!(GradientDescent::is_stationary(&[0.00001, 0.00001], 0.0001));
         assert!(!GradientDescent::is_stationary(&[0.01, 0.01], 0.0001));
     }
 
@@ -159,6 +180,7 @@ mod test_gradient_descent {
         println!("Minimum: {:?}", result.minimum);
         println!("Minimizer: {:?}", result.minimizer);
         println!("Iterations: {:?}", result.iterations);
+        println!("Elapsed: {:?}", result.elapsed);
     }
 
     // Test the optimize function on Booth function.
