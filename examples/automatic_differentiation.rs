@@ -107,5 +107,5 @@ fn main() {
 
     // Print the graphviz output.
     // You can copy and paste this into your Graphviz viewer of choice.
-    // println!("{}", graphviz(&graph, &variables));
+    println!("{}", graphviz(&graph, &variables));
 }
