@@ -3,14 +3,22 @@
 // Speelpenning helped develop AD in the 1980s, hence the name of the
 // function f(x) = x_1 * x_2 * ... * x_n.
 
+// /usr/bin/time cargo run --release --example speelpenning 100
+
 use finitediff::*;
 use std::time::Instant;
 use RustQuant::autodiff::*;
 
 fn main() {
+    let n = std::env::args()
+        .nth(1)
+        .unwrap_or_else(|| "170".to_string())
+        .parse::<usize>()
+        .unwrap();
+
     // 170 is the largest number of variables that can be used since
     // we'll overflow otherwise (we end up with elements > f64::MAX).
-    for i in 1..=170 {
+    for i in 1..=n {
         // std::env::set_var("RUST_BACKTRACE", "full");
 
         // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

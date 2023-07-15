@@ -49,6 +49,7 @@ yahoo_finance_api = "2.0.0" # https://docs.rs/yahoo-finance-api/latest/yahoo_fin
 
 [dev-dependencies]
 finitediff = "0.1.4" # https://docs.rs/finitediff/latest/finitediff/
+memuse = "0.2.1"     # https://docs.rs/memuse/latest/memuse/
 
 [dependencies.crossterm] # https://docs.rs/crossterm/latest/crossterm/
 version = "0.26.1"
