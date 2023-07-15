@@ -87,6 +87,20 @@ fn main() {
 }
 ```
 
+You can also generate Graphviz (dot) code to visualize the computation graphs:
+
+```rust
+println!("{}", graphviz(&graph, &variables));
+```  
+
+The computation graph from computing Black-Scholes Greeks is:
+
+![Black-Scholes Greeks tape.](./images/black_scholes_tape.png)
+
+It is clearly a work in progress, but gives a general idea of how the computation graph is structured.
+
+If you want to improve the visualization, please feel free to submit a PR!
+
 ## :bar_chart: Data <a name="data"></a>
 
 You can:
@@ -327,7 +341,7 @@ fn main() {
 ### Regression
 
 - [x] Linear (using QR or SVD decomposition)
-- [x] Logistic (via IRLS, adding MLE in the future). 
+- [x] Logistic (via IRLS, adding MLE in the future).
 
 ## :moneybag: Money <a name="money"></a>
 

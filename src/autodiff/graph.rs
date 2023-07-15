@@ -47,6 +47,15 @@ impl Graph {
         }
     }
 
+    /// Instantiate a new graph with a capacity.
+    #[inline]
+    pub fn with_capacity(capacity: usize) -> Self {
+        Graph {
+            vertices: RefCell::new(Vec::with_capacity(capacity)),
+            // vertices: RefCell::new(Rc::new([])),
+        }
+    }
+
     /// Join two graphs together.
     #[inline]
     pub fn join(&self, other: &Self) -> Self {

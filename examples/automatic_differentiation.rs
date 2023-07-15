@@ -101,5 +101,11 @@ fn main() {
     let result = function(&variables, &constants);
     let gradient = result.accumulate();
 
+    // Print the graph length.
+    println!("Graph length: {}", graph.len());
     println!("{:?}", gradient.wrt(&variables));
+
+    // Print the graphviz output.
+    // You can copy and paste this into your Graphviz viewer of choice.
+    // println!("{}", graphviz(&graph, &variables));
 }

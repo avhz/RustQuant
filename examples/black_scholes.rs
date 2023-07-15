@@ -155,13 +155,13 @@ fn test_black_scholes() {
     test_black_scholes_price(&mat);
     let duration_price = start_price.elapsed();
 
-    let start_autodiff = Instant::now();
-    test_black_scholes_autodiff(&mat);
-    let duration_autodiff = start_autodiff.elapsed();
-
     let start_finitediff = Instant::now();
     test_black_scholes_finitediff(&mat);
     let duration_finitediff = start_finitediff.elapsed();
+
+    let start_autodiff = Instant::now();
+    test_black_scholes_autodiff(&mat);
+    let duration_autodiff = start_autodiff.elapsed();
 
     println!("TIME (prices only) \t {:?}", duration_price);
     println!("TIME (auto-diff) \t {:?}", duration_autodiff);
