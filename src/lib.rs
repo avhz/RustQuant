@@ -381,6 +381,8 @@ pub mod stochastics {
 pub mod trading {
     // pub use crate::trading::order_book::*;
 
+    /// Submodule of `trading`: contains limit order book implementation
+    pub mod limit_order_book;
     /// Submodule of `trading`: order definition.
     pub mod order;
     /// Submodule of `trading`: contains a limit orderbook (LOB) implementation.
