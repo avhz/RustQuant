@@ -272,7 +272,7 @@ pub mod data {
 #[macro_use]
 pub mod utilities {
     pub use crate::utilities::{
-        cumsum::*, linspace::*, macros::*, mean::*, minmax::*, plotting::*, variance::*,
+        cumsum::*, linspace::*, macros::*, mean::*, plotting::*, sequence::*, variance::*,
     };
 
     /// Submodule of `utilities`: implements the cumulative sum of a vector.
@@ -283,10 +283,10 @@ pub mod utilities {
     pub mod macros;
     /// Submodule of `utilities`: mean of a vector.
     pub mod mean;
-    /// Submodule of `utilities`: min and max of a vector.
-    pub mod minmax;
     /// Submodule of `utilities`: implements plotting/writing vectors to files.
     pub mod plotting;
+    /// Submodule of `utilities`: sequences of numbers.
+    pub mod sequence;
     /// Submodule of `utilities`: variance of a vector.
     pub mod variance;
 }

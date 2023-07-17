@@ -1,94 +1,107 @@
-use RustQuant::autodiff::*;
-use RustQuant::stochastics::*;
+// A simple pathwise derivative example.
+// We compute the Black-Scholes Greeks for a call option,
+// using the pathwise method.
+//
+// Basically, we compute the derivative of the payoff function
+// with respect to the parameters of the model many times via
+// Monte Carlo simulation, and then average the results.
+
+use rand_distr::{Distribution, Normal};
+use RustQuant::{autodiff::*, instruments::options::TypeFlag};
 
 fn main() {
+    let mut greeks = Greeks {
+        delta: 0.,
+        vega: 0.,
+        theta: 0.,
+        rho: 0.,
+    };
+
+    // Allocate a new graph.
     let g = Graph::new();
-
-    let drift = 0.05;
-    let diffusion = 0.9;
-
-    // Differentiate the payoff function with respect to the spot price.
+    // Allocate variables.
     let spot = g.var(150.);
-    let strike = 100.;
-    let payoff = payoff(spot, strike);
-    let gradient = payoff.accumulate();
+    let time = g.var(1.);
+    let drift = g.var(0.1);
+    let diffusion = g.var(0.2);
 
-    println!("payoff = {}", payoff.value);
-    println!("d(payoff)/d(spot) = {}", gradient.wrt(&spot));
-    println!("grad = {:?}", gradient.wrt(&[spot]));
+    let n = 100;
 
-    // Generate a random path of spot prices.
-    let gbm = GeometricBrownianMotion::new(drift, diffusion);
-    let path = gbm.euler_maruyama(150., 0., 1., 1000, 1, false).paths[0].clone();
+    // Allocate a vector for the basket option.
+    let mut basket: Vec<Variable> = Vec::with_capacity(100);
 
-    println!("spot = {}", path.last().unwrap());
-
-    // Generate multiple paths of spot prices.
-    let gbm = GeometricBrownianMotion::new(drift, diffusion);
-    let paths = gbm.euler_maruyama(150., 0., 1., 1000, 10, false).paths;
-
-    // Compute pathwise derivatives.
-    // let spot = g.var(150.);
-    // let strike = 100.;
-    // let payoff = payoff(spot, strike);
-    // let gradient = payoff.accumulate();
-}
-
-// Discount factor.
-fn df<'v>(rate: Variable<'v>, time: Variable<'v>) -> Variable<'v> {
-    (-rate * time).exp()
-}
-
-fn payoff<'v>(spot: Variable<'v>, strike: f64) -> Variable<'v> {
-    RustQuant::autodiff::Max::max(&(spot - strike), 0.)
-}
-
-// type Matrix<'v> = Vec<Vec<Variable<'v>>>;
-// type Vector<'v> = Vec<Variable<'v>>;
-
-struct VariableMatrix<'v> {
-    data: Vec<Vec<Variable<'v>>>,
-}
-
-struct VariableVector<'v> {
-    data: Vec<Variable<'v>>,
-}
-
-impl<'v> std::ops::Add<VariableMatrix<'v>> for VariableMatrix<'v> {
-    type Output = VariableMatrix<'v>;
-
-    fn add(self, rhs: VariableMatrix<'v>) -> Self::Output {
-        assert_eq!(self.data.len(), rhs.data.len());
-        assert_eq!(self.data[0].len(), rhs.data[0].len());
-
-        let mut data = Vec::with_capacity(self.data.len());
-
-        for i in 0..self.data.len() {
-            let mut row = Vec::with_capacity(self.data[0].len());
-
-            for j in 0..self.data[0].len() {
-                row.push(self.data[i][j] + rhs.data[i][j]);
-            }
-
-            data.push(row);
+    let start = std::time::Instant::now();
+    for _ in 0..n {
+        // Generate paths of the underlying assets.
+        for _ in 0..100 {
+            let path = Pathwise::gbm(spot, time, drift, diffusion);
+            basket.push(path);
         }
 
-        Self::Output { data }
+        // Compute the basket sum.
+        let s = basket.iter().copied().sum::<Variable>();
+
+        // let s = Pathwise::gbm(spot, time, drift, diffusion);
+
+        // Compute the payoff and discount it.
+        let discount = Pathwise::df(drift, time);
+        let payoff = discount * Pathwise::payoff(s, 120., TypeFlag::Call);
+
+        // Accumulate the gradient.
+        let gradient = payoff.accumulate();
+
+        // Differentiate with respect to the parameters.
+        greeks.delta += gradient.wrt(&spot);
+        greeks.vega += gradient.wrt(&diffusion);
+        greeks.theta += gradient.wrt(&time);
+        greeks.rho += gradient.wrt(&drift);
     }
+    let end = start.elapsed();
+
+    println!("Delta \t= {}", greeks.delta / n as f64);
+    println!("Vega \t= {}", greeks.vega / n as f64);
+    println!("Theta \t= {}", greeks.theta / n as f64);
+    println!("Rho \t= {}", greeks.rho / n as f64);
+
+    println!("Computation time: {:?}", end);
 }
 
-impl<'v> std::ops::Add<VariableVector<'v>> for VariableVector<'v> {
-    type Output = VariableVector<'v>;
+struct Pathwise {}
 
-    fn add(self, rhs: VariableVector<'v>) -> Self::Output {
-        assert_eq!(self.data.len(), rhs.data.len());
+struct Greeks {
+    delta: f64,
+    vega: f64,
+    theta: f64,
+    rho: f64,
+}
 
-        let mut data = Vec::with_capacity(self.data.len());
+impl Pathwise {
+    // Discount factor.
+    fn df<'v>(rate: Variable<'v>, time: Variable<'v>) -> Variable<'v> {
+        (-rate * time).exp()
+    }
 
-        for i in 0..self.data.len() {
-            data.push(self.data[i] + rhs.data[i]);
+    // Payoff function.
+    fn payoff<'v>(spot: Variable<'v>, strike: f64, flag: TypeFlag) -> Variable<'v> {
+        match flag {
+            TypeFlag::Call => RustQuant::autodiff::Max::max(&(spot - strike), 0.),
+            TypeFlag::Put => RustQuant::autodiff::Max::max(&(strike - spot), 0.),
         }
+    }
 
-        Self::Output { data }
+    // Closed-form solution for Geometric Brownian Motion.
+    fn gbm<'v>(
+        spot: Variable<'v>,
+        time: Variable<'v>,
+        drift: Variable<'v>,
+        diffusion: Variable<'v>,
+    ) -> Variable<'v> {
+        let mut rng = rand::thread_rng();
+        let normal = Normal::new(0., 1.).unwrap();
+        let z = normal.sample(&mut rng);
+        let w = z * time.sqrt();
+
+        // ST = S0 * exp((mu - sigma^2 / 2) * t + sigma * Wt)
+        spot * ((drift - diffusion.powi(2) / 2.) * time + diffusion * w).exp()
     }
 }
