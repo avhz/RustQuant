@@ -10,7 +10,8 @@ use rand_distr::{Distribution, Normal};
 use RustQuant::{autodiff::*, instruments::options::TypeFlag};
 
 fn main() {
-    let mut greeks = Greeks {
+    let mut basket_option = BasketOption {
+        price: 0.,
         delta: 0.,
         vega: 0.,
         theta: 0.,
@@ -20,76 +21,84 @@ fn main() {
     // Allocate a new graph.
     let g = Graph::new();
     // Allocate variables.
-    let spot = g.var(150.);
+    let strike = 10.; // We don't differentiate with respect to the strike.
+    let spot = g.var(10.);
     let time = g.var(1.);
     let drift = g.var(0.1);
-    let diffusion = g.var(0.2);
+    let diffusion = g.var(0.5);
 
-    let n = 100;
+    let n_sims = 100;
+    let n_assets = 50;
 
     // Allocate a vector for the basket option.
-    let mut basket: Vec<Variable> = Vec::with_capacity(100);
+    let mut basket: Vec<Variable> = Vec::with_capacity(2 * n_assets);
 
     let start = std::time::Instant::now();
-    for _ in 0..n {
+    for _ in 0..n_sims {
         // Generate paths of the underlying assets.
-        for _ in 0..100 {
+        for _ in 0..n_assets {
             let path = Pathwise::gbm(spot, time, drift, diffusion);
             basket.push(path);
         }
 
-        // Compute the basket sum.
-        let s = basket.iter().copied().sum::<Variable>();
+        // Compute the basket (equally) weighted sum.
+        let s = basket.iter().copied().sum::<Variable>() / 100.;
 
         // let s = Pathwise::gbm(spot, time, drift, diffusion);
 
         // Compute the payoff and discount it.
         let discount = Pathwise::df(drift, time);
-        let payoff = discount * Pathwise::payoff(s, 120., TypeFlag::Call);
+        let payoff = discount * Pathwise::payoff(s, strike, TypeFlag::Call);
+
+        basket_option.price += payoff.value();
 
         // Accumulate the gradient.
         let gradient = payoff.accumulate();
 
         // Differentiate with respect to the parameters.
-        greeks.delta += gradient.wrt(&spot);
-        greeks.vega += gradient.wrt(&diffusion);
-        greeks.theta += gradient.wrt(&time);
-        greeks.rho += gradient.wrt(&drift);
+        basket_option.delta += gradient.wrt(&spot);
+        basket_option.vega += gradient.wrt(&diffusion);
+        basket_option.theta += gradient.wrt(&time);
+        basket_option.rho += gradient.wrt(&drift);
     }
     let end = start.elapsed();
 
-    println!("Delta \t= {}", greeks.delta / n as f64);
-    println!("Vega \t= {}", greeks.vega / n as f64);
-    println!("Theta \t= {}", greeks.theta / n as f64);
-    println!("Rho \t= {}", greeks.rho / n as f64);
+    println!("Price \t= {}", basket_option.price / n_sims as f64);
+    println!("Delta \t= {}", basket_option.delta / n_sims as f64);
+    println!("Vega \t= {}", basket_option.vega / n_sims as f64);
+    println!("Theta \t= {}", basket_option.theta / n_sims as f64);
+    println!("Rho \t= {}", basket_option.rho / n_sims as f64);
 
     println!("Computation time: {:?}", end);
 }
 
-struct Pathwise {}
-
-struct Greeks {
+struct BasketOption {
+    price: f64,
     delta: f64,
     vega: f64,
     theta: f64,
     rho: f64,
 }
 
+struct Pathwise {}
+
 impl Pathwise {
     // Discount factor.
+    #[inline]
     fn df<'v>(rate: Variable<'v>, time: Variable<'v>) -> Variable<'v> {
         (-rate * time).exp()
     }
 
     // Payoff function.
+    #[inline]
     fn payoff<'v>(spot: Variable<'v>, strike: f64, flag: TypeFlag) -> Variable<'v> {
         match flag {
-            TypeFlag::Call => RustQuant::autodiff::Max::max(&(spot - strike), 0.),
-            TypeFlag::Put => RustQuant::autodiff::Max::max(&(strike - spot), 0.),
+            TypeFlag::Call => Max::max(&(spot - strike), 0.),
+            TypeFlag::Put => Max::max(&(strike - spot), 0.),
         }
     }
 
-    // Closed-form solution for Geometric Brownian Motion.
+    // Closed-form solution for Geometric Brownian Motion (one step).
     fn gbm<'v>(
         spot: Variable<'v>,
         time: Variable<'v>,
