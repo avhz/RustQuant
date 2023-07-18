@@ -48,14 +48,14 @@ impl Limit {
 
         while &executed_shares < shares && !self.orders.is_empty() {
             let order_id = self.orders.front().unwrap();
-            let order_shares = order_map.get(&order_id).unwrap().shares;
+            let order_shares = order_map.get(order_id).unwrap().shares;
 
             if order_shares > shares - executed_shares {
-                let order = order_map.get_mut(&order_id).unwrap();
+                let order = order_map.get_mut(order_id).unwrap();
                 order.shares -= shares - executed_shares;
                 executed_shares += shares - executed_shares;
             } else {
-                order_map.remove(&order_id);
+                order_map.remove(order_id);
                 self.orders.pop_front();
                 executed_shares += order_shares;
             }
