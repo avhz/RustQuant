@@ -13,23 +13,25 @@ fn main() {
     let n_sims = 200;
     let n_assets = 200;
 
+    // Just increase the number of simulations.
     for i in (10..=n_sims).step_by(10) {
-        for j in (10..=n_assets).step_by(10) {
-            test_basket_option(i, j);
-        }
+        test_basket_option(i, 100);
     }
+
+    // Just increase the number of assets.
+    for j in (10..=n_assets).step_by(10) {
+        test_basket_option(100, j);
+    }
+
+    // Increase both the number of simulations and the number of assets.
+    // for i in (10..=n_sims).step_by(10) {
+    //     for j in (10..=n_assets).step_by(10) {
+    //         test_basket_option(i, j);
+    //     }
+    // }
 }
 
-fn test_basket_option(i: usize, j: usize) {
-    let n_sims = i;
-    let n_assets = j;
-
-    // let n = std::env::args()
-    //     .nth(1)
-    //     .unwrap_or_else(|| "100".to_string())
-    //     .parse::<usize>()
-    //     .unwrap();
-
+fn test_basket_option(n_sims: usize, n_assets: usize) {
     let mut basket_option = BasketOption {
         price: 0.,
         delta: 0.,
@@ -40,6 +42,7 @@ fn test_basket_option(i: usize, j: usize) {
 
     // Allocate a new graph.
     let g = Graph::new();
+
     // Allocate variables.
     let strike = 10.; // We don't differentiate with respect to the strike.
     let spot = g.var(10.);
@@ -87,7 +90,8 @@ fn test_basket_option(i: usize, j: usize) {
     // println!("Rho \t= {}", basket_option.rho / n_sims as f64);
 
     // println!("Wall time: i={}, j={}, time = {:?}", i, j, end.as_millis());
-    println!("{i},{j},{:?}", end.as_millis());
+    // println!("{n_sims},{n_assets},{:?}", end.as_millis());
+    print!("{:?},", end.as_millis());
 }
 
 struct BasketOption {
