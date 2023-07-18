@@ -10,6 +10,26 @@ use rand_distr::{Distribution, Normal};
 use RustQuant::{autodiff::*, instruments::options::TypeFlag};
 
 fn main() {
+    let n_sims = 200;
+    let n_assets = 200;
+
+    for i in (10..=n_sims).step_by(10) {
+        for j in (10..=n_assets).step_by(10) {
+            test_basket_option(i, j);
+        }
+    }
+}
+
+fn test_basket_option(i: usize, j: usize) {
+    let n_sims = i;
+    let n_assets = j;
+
+    // let n = std::env::args()
+    //     .nth(1)
+    //     .unwrap_or_else(|| "100".to_string())
+    //     .parse::<usize>()
+    //     .unwrap();
+
     let mut basket_option = BasketOption {
         price: 0.,
         delta: 0.,
@@ -26,9 +46,6 @@ fn main() {
     let time = g.var(1.);
     let drift = g.var(0.1);
     let diffusion = g.var(0.5);
-
-    let n_sims = 100;
-    let n_assets = 50;
 
     // Allocate a vector for the basket option.
     let mut basket: Vec<Variable> = Vec::with_capacity(2 * n_assets);
@@ -63,13 +80,14 @@ fn main() {
     }
     let end = start.elapsed();
 
-    println!("Price \t= {}", basket_option.price / n_sims as f64);
-    println!("Delta \t= {}", basket_option.delta / n_sims as f64);
-    println!("Vega \t= {}", basket_option.vega / n_sims as f64);
-    println!("Theta \t= {}", basket_option.theta / n_sims as f64);
-    println!("Rho \t= {}", basket_option.rho / n_sims as f64);
+    // println!("Price \t= {}", basket_option.price / n_sims as f64);
+    // println!("Delta \t= {}", basket_option.delta / n_sims as f64);
+    // println!("Vega \t= {}", basket_option.vega / n_sims as f64);
+    // println!("Theta \t= {}", basket_option.theta / n_sims as f64);
+    // println!("Rho \t= {}", basket_option.rho / n_sims as f64);
 
-    println!("Computation time: {:?}", end);
+    // println!("Wall time: i={}, j={}, time = {:?}", i, j, end.as_millis());
+    println!("{i},{j},{:?}", end.as_millis());
 }
 
 struct BasketOption {
