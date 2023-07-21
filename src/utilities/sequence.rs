@@ -36,7 +36,7 @@ impl Seq<f32> for f32 {
 
 impl Seq<i32> for i32 {
     fn seq(start: i32, end: i32, step: i32) -> Vec<i32> {
-        let mut seq = Vec::with_capacity(((end - start) / step).abs() as usize);
+        let mut seq = Vec::with_capacity(((end - start) / step).unsigned_abs() as usize);
         let mut x = start;
         while x <= end {
             seq.push(x);
@@ -48,7 +48,7 @@ impl Seq<i32> for i32 {
 
 impl Seq<i64> for i64 {
     fn seq(start: i64, end: i64, step: i64) -> Vec<i64> {
-        let mut seq = Vec::with_capacity(((end - start) / step).abs() as usize);
+        let mut seq = Vec::with_capacity(((end - start) / step).unsigned_abs() as usize);
         let mut x = start;
         while x <= end {
             seq.push(x);
@@ -84,7 +84,7 @@ impl Seq<u64> for u64 {
 
 impl Seq<usize> for usize {
     fn seq(start: usize, end: usize, step: usize) -> Vec<usize> {
-        let mut seq = Vec::with_capacity(((end - start) / step) as usize);
+        let mut seq = Vec::with_capacity((end - start) / step);
         let mut x = start;
         while x <= end {
             seq.push(x);
