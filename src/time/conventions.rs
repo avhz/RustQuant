@@ -6,7 +6,7 @@
 
 /// Date rolling business day conventions.
 ///
-/// From Wikipedia (https://en.wikipedia.org/wiki/Date_rolling):
+/// From Wikipedia (<https://en.wikipedia.org/wiki/Date_rolling>):
 /// """
 /// In finance, date rolling occurs when a payment day or date used to
 /// calculate accrued interest falls on a holiday, according to a given
@@ -41,14 +41,14 @@ pub enum BusinessDayConvention {
 
 /// Day count conventions.
 ///
-/// From Wikipedia (https://en.wikipedia.org/wiki/Day_count_convention):
+/// From Wikipedia (<https://en.wikipedia.org/wiki/Day_count_convention>):
 /// """
 /// In finance, a day count convention determines how interest accrues
 /// over time for a variety of investments, including bonds, notes,
 /// loans, mortgages, medium-term notes, swaps, and forward rate agreements (FRAs).
 /// This determines the number of days between two coupon payments,
 /// thus calculating the amount transferred on payment dates and also the
-/// accrued interest for dates between payments.[1] The day count is also
+/// accrued interest for dates between payments. The day count is also
 /// used to quantify periods of time when discounting a cash-flow to its
 /// present value. When a security such as a bond is sold between interest
 /// payment dates, the seller is eligible to some fraction of the coupon amount.

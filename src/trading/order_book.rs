@@ -13,7 +13,7 @@ use std::collections::VecDeque;
 /// The half-books are double-ended queues,
 /// one for the bids (buy orders) and one for the asks (sell orders).
 ///
-/// VecDeque<T> is not the most efficient choice, but it is convenient
+/// VecDeque\<T\> is not the most efficient choice, but it is convenient
 /// since we can push/pop from both the front and back easily.
 #[derive(Debug, Clone)]
 pub struct OrderBook {
