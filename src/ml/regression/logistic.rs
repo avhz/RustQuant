@@ -44,10 +44,10 @@ pub struct LogisticRegressionOutput<T> {
 /// Algorithm to use for logistic regression.
 pub enum LogisticRegressionAlgorithm {
     /// Maximum Likelihood Estimation using Algorithmic Adjoint Differentiation
-    /// See: https://en.wikipedia.org/wiki/Logistic_regression#Maximum_likelihood_estimation_(MLE)
+    /// See: <https://en.wikipedia.org/wiki/Logistic_regression#Maximum_likelihood_estimation_(MLE)>
     MLE,
     /// Iterative Reweighted Least Squares
-    /// From Wikipedia (https://en.wikipedia.org/wiki/Logistic_regression#Iteratively_reweighted_least_squares_(IRLS)):
+    /// From Wikipedia (<https://en.wikipedia.org/wiki/Logistic_regression#Iteratively_reweighted_least_squares_(IRLS)>):
     /// """
     /// Binary logistic regression can, be calculated using
     /// iteratively reweighted least squares (IRLS), which is equivalent to

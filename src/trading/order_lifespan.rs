@@ -8,7 +8,7 @@ use std::fmt;
 
 /// Enum to indicate the lifespan of an order.
 ///
-/// See here: https://www.interactivebrokers.com/en/trading/ordertypes.php
+/// See here: <https://www.interactivebrokers.com/en/trading/ordertypes.php>
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum OrderTimeInForce {
     /// """

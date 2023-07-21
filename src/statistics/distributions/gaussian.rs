@@ -16,7 +16,7 @@ use {
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 /// Gaussian (normal) distribution: X ~ N(mu, sigma^2)
-/// https://en.wikipedia.org/wiki/Normal_distribution
+/// <https://en.wikipedia.org/wiki/Normal_distribution>
 pub struct Gaussian {
     /// Mean (location).
     mean: f64,
@@ -228,11 +228,7 @@ mod tests_gaussian {
         assert_approx_equal!(normal.variance(), 1.0, 1e-8);
         assert_approx_equal!(normal.skewness(), 0.0, 1e-8);
         assert_approx_equal!(normal.kurtosis(), 0.0, 1e-8);
-        assert_approx_equal!(
-            normal.entropy(),
-            1.418_938_533_204_672_7,
-            1e-8
-        );
+        assert_approx_equal!(normal.entropy(), 1.418_938_533_204_672_7, 1e-8);
     }
 
     #[test]
@@ -248,10 +244,6 @@ mod tests_gaussian {
     fn test_gaussian_entropy() {
         let normal = Gaussian::default();
 
-        assert_approx_equal!(
-            normal.entropy(),
-            1.418_938_533_204_672_7,
-            1e-8
-        );
+        assert_approx_equal!(normal.entropy(), 1.418_938_533_204_672_7, 1e-8);
     }
 }

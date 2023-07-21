@@ -8,8 +8,8 @@ use std::fmt;
 
 /// Order type enum.
 /// Definitions from:   
-///     - https://www.interactivebrokers.com/en/trading/ordertypes.php
-///     - https://www.nasdaqtrader.com/content/productsservices/trading/ordertypesg.pdf
+///     - <https://www.interactivebrokers.com/en/trading/ordertypes.php>
+///     - <https://www.nasdaqtrader.com/content/productsservices/trading/ordertypesg.pdf>
 #[derive(Debug, Clone, Copy)]
 pub enum OrderType {
     /// """
