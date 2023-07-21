@@ -33,7 +33,7 @@ pub struct DayCounter {
     pub convention: DayCountConvention,
 }
 
-/// Trait for converting a month to a usize.
+/// Trait for converting a month to a isize.
 /// Needed so that we can perform arithmetic on months.
 trait MonthNumeric {
     fn as_isize(&self) -> isize;
@@ -187,5 +187,68 @@ mod test_daycount {
 
         assert_eq!(dc.day_count_business, 370);
         assert_eq!(dc.day_count_calendar, 517);
+    }
+    #[test]
+    fn test_thirty360_convention_same_day_same_month_different_years() {
+        let start_date = datetime!(2022-02-15 0:00 UTC);
+        let end_date = datetime!(2023-02-15 0:00 UTC);
+        let result = DayCounter::new(start_date, end_date, DayCountConvention::Thirty360);
+        assert_approx_equal!(result.day_count_factor, 1.0, 1e-6);
+    }
+
+    #[test]
+    fn test_thirty360_convention_same_day_different_month_same_year() {
+        let start_date = datetime!(2023-05-15 0:00 UTC);
+        let end_date = datetime!(2023-11-15 0:00 UTC);
+        let result = DayCounter::new(start_date, end_date, DayCountConvention::Thirty360);
+        assert_approx_equal!(result.day_count_factor, 0.5, 1e-6);
+    }
+
+    #[test]
+    fn test_thirty360_convention_different_day_same_month_same_year() {
+        let start_date = datetime!(2023-09-15 0:00 UTC);
+        let end_date = datetime!(2023-09-30 0:00 UTC);
+        let result = DayCounter::new(start_date, end_date, DayCountConvention::Thirty360);
+        assert_approx_equal!(result.day_count_factor, 0.041667, 1e-6);
+    }
+
+    #[test]
+    fn test_thirty360_convention_31_day_same_month_same_year() {
+        let start_date = datetime!(2023-10-15 0:00 UTC);
+        let end_date = datetime!(2023-10-31 0:00 UTC);
+        let result = DayCounter::new(start_date, end_date, DayCountConvention::Thirty360);
+        assert_approx_equal!(result.day_count_factor, 0.041667, 1e-6);
+    }
+
+    #[test]
+    fn test_thirty360_convention_different_day_different_month_same_year() {
+        let start_date = datetime!(2023-03-15 0:00 UTC);
+        let end_date = datetime!(2023-08-31 0:00 UTC);
+        let result = DayCounter::new(start_date, end_date, DayCountConvention::Thirty360);
+        assert_approx_equal!(result.day_count_factor, 0.458333, 1e-6);
+    }
+
+    #[test]
+    fn test_thirty360_convention_end_day_less_than_start_day_same_month() {
+        let start_date = datetime!(2023-07-30 0:00 UTC);
+        let end_date = datetime!(2023-07-15 0:00 UTC);
+        let result = DayCounter::new(start_date, end_date, DayCountConvention::Thirty360);
+        assert_approx_equal!(result.day_count_factor, -0.041667, 1e-6);
+    }
+
+    #[test]
+    fn test_thirty360_convention_end_day_less_than_start_day_different_month() {
+        let start_date = datetime!(2023-07-30 0:00 UTC);
+        let end_date = datetime!(2023-12-15 0:00 UTC);
+        let result = DayCounter::new(start_date, end_date, DayCountConvention::Thirty360);
+        assert_approx_equal!(result.day_count_factor, 0.375, 1e-6);
+    }
+
+    #[test]
+    fn test_thirty360_convention_end_month_less_than_start_month() {
+        let start_date = datetime!(2023-06-30 0:00 UTC);
+        let end_date = datetime!(2023-04-15 0:00 UTC);
+        let result = DayCounter::new(start_date, end_date, DayCountConvention::Thirty360);
+        assert_approx_equal!(result.day_count_factor, -0.208333, 1e-6);
     }
 }
