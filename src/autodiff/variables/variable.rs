@@ -200,9 +200,9 @@ mod tests_variable {
         let var = Variable {
             graph: &graph,
             index: 5,
-            value: 3.14,
+            value: std::f64::consts::PI,
         };
-        assert_eq!(var.value(), 3.14);
+        assert_eq!(var.value(), std::f64::consts::PI);
     }
 
     #[test]
@@ -211,7 +211,7 @@ mod tests_variable {
         let var = Variable {
             graph: &graph,
             index: 5,
-            value: 3.14,
+            value: std::f64::consts::PI,
         };
         assert_eq!(var.index(), 5);
     }
@@ -222,7 +222,7 @@ mod tests_variable {
         let var = Variable {
             graph: &graph,
             index: 5,
-            value: 3.14,
+            value: std::f64::consts::PI,
         };
         assert_eq!(var.graph() as *const _, &graph as *const _);
     }
@@ -233,7 +233,7 @@ mod tests_variable {
         let var1 = Variable {
             graph: &graph,
             index: 5,
-            value: 3.14,
+            value: std::f64::consts::PI,
         };
         let var2 = Variable {
             graph: &graph,

@@ -102,7 +102,7 @@ mod tests_sequences {
     #[test]
     fn test_seq_f64() {
         let seq = f64::seq(0., 1., 0.1);
-        let expected = vec![0., 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.];
+        let expected = [0., 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.];
 
         for (i, x) in seq.iter().enumerate() {
             assert_approx_equal!(x, &expected[i], 1e-6);
@@ -112,7 +112,7 @@ mod tests_sequences {
     #[test]
     fn test_seq_f32() {
         let seq = f32::seq(0., 1., 0.1);
-        let expected = vec![0., 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9];
+        let expected = [0., 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9];
 
         for (i, x) in seq.iter().enumerate() {
             assert_approx_equal!(x, &expected[i], 1e-6);

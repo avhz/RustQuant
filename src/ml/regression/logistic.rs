@@ -64,6 +64,7 @@ pub enum LogisticRegressionAlgorithm {
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // IMPLEMENTATIONS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+type PrepareInputResult = Result<(DMatrix<f64>, DMatrix<f64>, DVector<f64>), &'static str>;
 
 impl LogisticRegressionInput<f64> {
     /// Create a new `LogisticRegressionInput` struct.
@@ -74,7 +75,7 @@ impl LogisticRegressionInput<f64> {
     }
 
     /// Function to validate and prepare the input data.
-    fn prepare_input(&self) -> Result<(DMatrix<f64>, DMatrix<f64>, DVector<f64>), &'static str> {
+    fn prepare_input(&self) -> PrepareInputResult {
         // Check that the response vector is either 0 or 1.
         if self.y.iter().any(|&x| x != 0. && x != 1.) {
             return Err("The elements of the response vector should be either 0 or 1.");

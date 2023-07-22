@@ -91,14 +91,15 @@ mod test_overload {
         let prod = params.iter().copied().product::<Variable>();
 
         let derivs = prod.accumulate();
-        let true_gradient = vec![120.0, 60.0, 40.0, 30.0, 24.0];
+        let true_gradient = [120.0, 60.0, 40.0, 30.0, 24.0];
 
-        let n = derivs.wrt(&params).len();
+        let expects = derivs.wrt(&params);
+        let n = expects.len();
         let m = true_gradient.len();
         assert_eq!(n, m);
 
-        for i in 0..n {
-            assert_eq!(derivs.wrt(&params)[i], true_gradient[i]);
+        for (&expect, &gradient) in expects.iter().zip(true_gradient.iter()) {
+            assert_eq!(expect, gradient);
         }
     }
 }
