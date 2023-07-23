@@ -3,92 +3,24 @@
 // Copyright (C) 2023 https://github.com/avhz
 // See LICENSE or <https://www.gnu.org/licenses/>.
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+use num::{FromPrimitive, Num, ToPrimitive};
 
 /// Trait for generating sequences of numbers.
-pub trait Seq<T> {
+pub trait Seq<T: Num + PartialOrd + Copy + FromPrimitive + ToPrimitive> {
     /// Generate a sequence of numbers from `start` to `end` with a step size of `step`.
     fn seq(start: T, end: T, step: T) -> Vec<T>;
 }
 
-impl Seq<f64> for f64 {
-    fn seq(start: f64, end: f64, step: f64) -> Vec<f64> {
-        let mut seq = Vec::with_capacity(((end - start) / step).abs() as usize);
+impl<T> Seq<T> for T
+where
+    T: Num + PartialOrd + Copy + FromPrimitive + ToPrimitive,
+{
+    fn seq(start: T, end: T, step: T) -> Vec<T> {
+        let mut seq = Vec::new();
         let mut x = start;
         while x <= end {
             seq.push(x);
-            x += step;
-        }
-        seq
-    }
-}
-
-impl Seq<f32> for f32 {
-    fn seq(start: f32, end: f32, step: f32) -> Vec<f32> {
-        let mut seq = Vec::with_capacity(((end - start) / step).abs() as usize);
-        let mut x = start;
-        while x <= end {
-            seq.push(x);
-            x += step;
-        }
-        seq
-    }
-}
-
-impl Seq<i32> for i32 {
-    fn seq(start: i32, end: i32, step: i32) -> Vec<i32> {
-        let mut seq = Vec::with_capacity(((end - start) / step).unsigned_abs() as usize);
-        let mut x = start;
-        while x <= end {
-            seq.push(x);
-            x += step;
-        }
-        seq
-    }
-}
-
-impl Seq<i64> for i64 {
-    fn seq(start: i64, end: i64, step: i64) -> Vec<i64> {
-        let mut seq = Vec::with_capacity(((end - start) / step).unsigned_abs() as usize);
-        let mut x = start;
-        while x <= end {
-            seq.push(x);
-            x += step;
-        }
-        seq
-    }
-}
-
-impl Seq<u32> for u32 {
-    fn seq(start: u32, end: u32, step: u32) -> Vec<u32> {
-        let mut seq = Vec::with_capacity(((end - start) / step) as usize);
-        let mut x = start;
-        while x <= end {
-            seq.push(x);
-            x += step;
-        }
-        seq
-    }
-}
-
-impl Seq<u64> for u64 {
-    fn seq(start: u64, end: u64, step: u64) -> Vec<u64> {
-        let mut seq = Vec::with_capacity(((end - start) / step) as usize);
-        let mut x = start;
-        while x <= end {
-            seq.push(x);
-            x += step;
-        }
-        seq
-    }
-}
-
-impl Seq<usize> for usize {
-    fn seq(start: usize, end: usize, step: usize) -> Vec<usize> {
-        let mut seq = Vec::with_capacity((end - start) / step);
-        let mut x = start;
-        while x <= end {
-            seq.push(x);
-            x += step;
+            x = x + step;
         }
         seq
     }
