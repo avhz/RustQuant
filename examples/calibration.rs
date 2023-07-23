@@ -21,7 +21,7 @@ pub(crate) fn calibrate() {
     let gd = GradientDescent::new(0.001, 1000, std::f64::EPSILON.sqrt());
 
     let start = Instant::now();
-    let result = gd.optimize(mse, &[], true);
+    let result = gd.optimize(mse, &[0.1], true);
     let duration = start.elapsed();
 
     println!("MSE  = \t {}", mse(&graph.vars(&[0.1])));
