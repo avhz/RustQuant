@@ -15,7 +15,7 @@ pub enum MeanType {
 }
 
 /// Mean of a vector.
-pub fn mean(v: &Vec<f64>, mean_type: MeanType) -> f64 {
+pub fn mean(v: &[f64], mean_type: MeanType) -> f64 {
     assert!(!v.is_empty(), "Vector must have at least one element.");
 
     match mean_type {
