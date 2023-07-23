@@ -55,9 +55,11 @@ fn main() {
         // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
         println!(
-            "TIMINGS {{ FDM = {} \u{03BC}s, AAD = {} \u{03BC}s }}",
-            duration_fdm.as_micros(),
-            duration_aad.as_micros()
+            // "TIMINGS {{ FDM = {} \u{03BC}s, AAD = {} \u{03BC}s }}",
+            // "TIMINGS {{ FDM = {} ns, AAD = {} ns }}",
+            "{},{}",
+            duration_fdm.as_nanos(),
+            duration_aad.as_nanos()
         )
     }
 }

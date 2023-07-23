@@ -43,7 +43,9 @@ jobs:
       - name: Run rust-clippy
         run:
           cargo clippy
+          --release
           --all-features
+          --all-targets
           --message-format=json | clippy-sarif | tee rust-clippy-results.sarif | sarif-fmt
         continue-on-error: true
 
