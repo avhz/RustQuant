@@ -95,15 +95,14 @@ mod test_gradient {
     fn test_borrowed_slice() {
         let g = Graph::new();
 
-        let x = g.var(1.0);
-        let y = g.var(2.0);
+        let v: Vec<_> = vec![g.var(1.0), g.var(2.0)];
 
-        let z = x * y;
+        let z = v[0] * v[1];
 
         let grad = z.accumulate();
 
         assert_approx_equal!(z.value, 2.0, 1e-15);
-        assert_eq!(grad.wrt(&[x, y]), vec![2.0, 1.0]);
+        assert_eq!(grad.wrt(&v[..]), vec![2.0, 1.0]);
     }
 
     #[test]
