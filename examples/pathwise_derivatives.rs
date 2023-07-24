@@ -151,7 +151,7 @@ impl Pathwise {
 
     // Payoff function.
     #[inline]
-    fn payoff(spot: Variable, strike: f64, flag: TypeFlag) -> Variable {
+    fn payoff(spot: Variable<'_>, strike: f64, flag: TypeFlag) -> Variable<'_> {
         match flag {
             TypeFlag::Call => Max::max(&(spot - strike), 0.),
             TypeFlag::Put => Max::max(&(strike - spot), 0.),

@@ -59,7 +59,7 @@ fn mse<'v>(v: &[Variable<'v>]) -> Variable<'v> {
 
 #[allow(non_snake_case)]
 #[inline]
-fn N(x: Variable) -> Variable {
+fn N(x: Variable<'_>) -> Variable<'_> {
     0.5 * (-x / core::f64::consts::SQRT_2).erfc()
 }
 
@@ -70,10 +70,10 @@ fn black_scholes(
     K: f64,
     T: f64,
     r: f64,
-    v: Variable,
+    v: Variable<'_>,
     d: f64,
     type_flag: TypeFlag,
-) -> Variable {
+) -> Variable<'_> {
     let d1 = ((S / K).ln() + (r - d + v * v / 2.0) * T) / (v * T.sqrt());
     let d2 = d1 - v * T.sqrt();
 
