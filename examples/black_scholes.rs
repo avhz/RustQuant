@@ -25,7 +25,7 @@ fn test_black_scholes() {
     #[inline]
     fn test_black_scholes_price(maturity: &usize) {
         #[inline]
-        fn normcdf<'v>(x: Variable<'v>) -> Variable<'v> {
+        fn normcdf(x: Variable) -> Variable {
             0.5 * (-x / core::f64::consts::SQRT_2).erfc()
         }
 
@@ -69,7 +69,7 @@ fn test_black_scholes() {
         //let maturity = 365 * 10;
 
         #[inline]
-        fn normcdf<'v>(x: Variable<'v>) -> Variable<'v> {
+        fn normcdf(x: Variable<'_>) -> Variable<'_> {
             0.5 * (-x / core::f64::consts::SQRT_2).erfc()
         }
 

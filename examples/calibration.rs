@@ -21,7 +21,7 @@ pub(crate) fn calibrate() {
     let gd = GradientDescent::new(0.001, 1000, std::f64::EPSILON.sqrt());
 
     let start = Instant::now();
-    let result = gd.optimize(&mse, &vec![0.1], true);
+    let result = gd.optimize(mse, &[0.1], true);
     let duration = start.elapsed();
 
     println!("MSE  = \t {}", mse(&graph.vars(&[0.1])));
@@ -59,21 +59,21 @@ fn mse<'v>(v: &[Variable<'v>]) -> Variable<'v> {
 
 #[allow(non_snake_case)]
 #[inline]
-fn N<'v>(x: Variable<'v>) -> Variable<'v> {
+fn N(x: Variable<'_>) -> Variable<'_> {
     0.5 * (-x / core::f64::consts::SQRT_2).erfc()
 }
 
 #[allow(non_snake_case)]
 #[inline]
-fn black_scholes<'v>(
+fn black_scholes(
     S: f64,
     K: f64,
     T: f64,
     r: f64,
-    v: Variable<'v>,
+    v: Variable<'_>,
     d: f64,
     type_flag: TypeFlag,
-) -> Variable<'v> {
+) -> Variable<'_> {
     let d1 = ((S / K).ln() + (r - d + v * v / 2.0) * T) / (v * T.sqrt());
     let d2 = d1 - v * T.sqrt();
 
@@ -84,6 +84,7 @@ fn black_scholes<'v>(
 }
 
 #[allow(dead_code)]
+#[allow(clippy::upper_case_acronyms)]
 enum TypeFlag {
     CALL,
     PUT,

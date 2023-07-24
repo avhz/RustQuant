@@ -98,9 +98,8 @@ impl YahooFinanceData {
 
     /// Computes the returns from the price history.
     pub fn compute_returns(&mut self, returns_type: ReturnsType) {
-        match self.price_history {
-            None => self.get_price_history(),
-            _ => (),
+        if self.price_history.is_none() {
+            self.get_price_history()
         }
 
         // Closure to select all columns except for the date and volume columns.
