@@ -39,6 +39,16 @@ impl Default for Gaussian {
 
 impl Gaussian {
     /// New instance of a Gaussian distribution.
+    /// # Examples
+    /// ```
+    /// # use RustQuant::assert_approx_equal;
+    /// # use RustQuant::statistics::distributions::*;
+    ///
+    /// let gaussian = Gaussian::new(0.0, 1.0);
+    ///
+    /// assert_approx_equal!(gaussian.cf(5.0).re, 3.7266532e-6, 1e-7);
+    /// assert_eq!(gaussian.cf(5.0).im, 0.0);
+    /// ```
     pub fn new(mean: f64, variance: f64) -> Self {
         assert!(variance > 0.0);
 
@@ -48,6 +58,16 @@ impl Gaussian {
 
 impl Distribution for Gaussian {
     /// Characteristic function of the Gaussian distribution.
+    /// # Examples
+    /// ```
+    /// # use RustQuant::assert_approx_equal;
+    /// # use RustQuant::statistics::distributions::*;
+    ///
+    /// let gaussian = Gaussian::new(0.0, 1.0);
+    ///
+    /// assert_approx_equal!(gaussian.cf(5.0).re, 3.7266532e-6, 1e-7);
+    /// assert_eq!(gaussian.cf(5.0).im, 0.0);
+    /// ```
     fn cf(&self, t: f64) -> Complex<f64> {
         assert!(self.variance > 0.0);
 
@@ -57,29 +77,66 @@ impl Distribution for Gaussian {
     }
 
     /// Probability density function of the Gaussian distribution.
+    /// # Examples
+    /// ```
+    /// # use RustQuant::assert_approx_equal;
+    /// # use RustQuant::statistics::distributions::*;
+    ///
+    /// let gaussian = Gaussian::new(0.0, 1.0);
+    ///
+    /// assert_approx_equal!(gaussian.pdf(1.0), 0.2419707, 1e-7);
+    /// ```
     fn pdf(&self, x: f64) -> f64 {
         assert!(self.variance > 0.0);
 
         (-0.5 * ((x - self.mean) / self.variance).powi(2)).exp() / (2.0 * PI * self.variance).sqrt()
     }
 
-    /// Gaussian distribution is continuous, thus it has no
-    /// probability mass function.
+    /// Probability mass function for the Gaussian distribution (continous) is not defined
     /// Using this method will call `pdf()` instead.
+    /// # Examples
+    /// ```
+    /// # use RustQuant::assert_approx_equal;
+    /// # use RustQuant::statistics::distributions::*;
+    ///
+    /// let gaussian = Gaussian::new(0.0, 1.0);
+    ///
+    /// assert_approx_equal!(gaussian.pmf(1.0), gaussian.pdf(1.0), 1e-7);
+    /// ```
     fn pmf(&self, x: f64) -> f64 {
         self.pdf(x)
     }
 
     /// Distribution function of the Gaussian distribution.
-    /// I used `erfc` (complementary error function) instead of `erf` to avoid
-    /// subtractive cancellation that leads to inaccuracy in the tails.
+    /// # Examples
+    /// ```
+    /// # use RustQuant::assert_approx_equal;
+    /// # use RustQuant::statistics::distributions::*;
+    ///
+    /// let gaussian = Gaussian::new(0.0, 1.0);
+    ///
+    /// assert_approx_equal!(gaussian.cdf(1.0), 0.8413447, 1e-7);
+    /// assert_approx_equal!(gaussian.cdf(-1.0), 0.1586553, 1e-7);
+    /// ```
     fn cdf(&self, x: f64) -> f64 {
         assert!(self.variance > 0.0);
-
+        // `erfc` (complementary error function) is used instead of `erf` to avoid
+        // subtractive cancellation that leads to inaccuracy in the tails.
         0.5 * erf::erfc(-(x - self.mean) / (SQRT_2 * self.variance.sqrt()))
     }
 
     /// Inverse distribution (quantile) function of the Gaussian distribution.
+    /// # Examples
+    /// ```
+    /// # use RustQuant::assert_approx_equal;
+    /// # use RustQuant::statistics::distributions::*;
+    /// # use std::f64::INFINITY;
+    ///
+    /// let gaussian = Gaussian::new(0.0, 1.0);
+    ///
+    /// assert_eq!(gaussian.inv_cdf(0.5), INFINITY);
+    /// assert_approx_equal!(gaussian.inv_cdf(0.8413447), 0.4087960, 1e-7);
+    /// ```
     fn inv_cdf(&self, p: f64) -> f64 {
         assert!(self.variance > 0.0);
 
@@ -87,49 +144,134 @@ impl Distribution for Gaussian {
     }
 
     /// Returns the mean of the Gaussian distribution.
+    /// The mean of the Gaussian distribution is equal to its median.
+    /// # Examples
+    /// ```
+    /// # use RustQuant::statistics::distributions::*;
+    ///
+    /// let gaussian = Gaussian::new(0.0, 1.0);
+    ///
+    /// assert_eq!(gaussian.mean(), 0.0);
+    /// ```
     fn mean(&self) -> f64 {
         self.mean
     }
 
     /// Returns the median of the Gaussian distribution.
+    /// The median of the Gaussian distribution is equal to its mean.
+    /// # Examples
+    /// ```
+    /// # use RustQuant::statistics::distributions::*;
+    ///
+    /// let gaussian = Gaussian::new(0.0, 1.0);
+    ///
+    /// assert_eq!(gaussian.median(), gaussian.mean());
+    /// ```
     fn median(&self) -> f64 {
         self.mean
     }
 
     /// Returns the mode of the Gaussian distribution.
+    /// The mode of the Gaussian distribution is equal to its mean.
+    /// # Examples
+    /// ```
+    /// # use RustQuant::statistics::distributions::*;
+    ///
+    /// let gaussian = Gaussian::new(0.0, 1.0);
+    ///
+    /// assert_eq!(gaussian.mode(), gaussian.mean());
+    /// ```
     fn mode(&self) -> f64 {
         self.mean
     }
 
     /// Returns the variance of the Gaussian distribution.
+    /// # Examples
+    /// ```
+    /// # use RustQuant::statistics::distributions::*;
+    ///
+    /// let gaussian = Gaussian::new(0.0, 1.0);
+    ///
+    /// assert_eq!(gaussian.variance(), 1.0);
+    /// ```
     fn variance(&self) -> f64 {
         self.variance
     }
 
     /// Returns the skewness of the Gaussian distribution.
+    /// The skewness of the Gaussian distribution is equal to 0.
+    /// # Examples
+    /// ```
+    /// # use RustQuant::statistics::distributions::*;
+    ///
+    /// let gaussian = Gaussian::new(0.0, 1.0);
+    ///
+    /// assert_eq!(gaussian.skewness(), 0.0);
+    /// ```
     fn skewness(&self) -> f64 {
         0.0
     }
 
     /// Returns the kurtosis of the Gaussian distribution.
+    /// The kurtosis of the Gaussian distribution is equal to 0.
+    /// # Examples
+    /// ```
+    /// # use RustQuant::assert_approx_equal;
+    /// # use RustQuant::statistics::distributions::*;
+    ///
+    /// let gaussian = Gaussian::new(0.0, 1.0);
+    ///
+    /// assert_eq!(gaussian.kurtosis(), 0.0);
+    /// ```
     fn kurtosis(&self) -> f64 {
         0.0
     }
 
     /// Returns the entropy of the Gaussian distribution.
+    /// # Examples
+    /// ```
+    /// # use RustQuant::assert_approx_equal;
+    /// # use RustQuant::statistics::distributions::*;
+    ///
+    /// let gaussian = Gaussian::new(0.0, 1.0);
+    ///
+    /// assert_approx_equal!(gaussian.entropy(), 1.4189385, 1e-7);
+    /// ```
     fn entropy(&self) -> f64 {
         0.5 * (1.0 + (2.0 * PI * self.variance).ln())
     }
 
     /// Returns the moment generating function of the Gaussian distribution.
-    /// M(t) = E(e^tX)
+    /// # Examples
+    /// ```
+    /// # use RustQuant::assert_approx_equal;
+    /// # use RustQuant::statistics::distributions::*;
+    ///
+    /// let gaussian = Gaussian::new(0.0, 1.0);
+    ///
+    /// assert_approx_equal!(gaussian.mgf(1.0), 1.6487213, 1e-7);
+    /// ```
     fn mgf(&self, t: f64) -> f64 {
         assert!(self.variance > 0.0);
-
+        // M(t) = E(e^tX)
         (self.mean * t + self.variance * t * t / 2.0).exp()
     }
 
-    /// Standard Normal Random Variates Generator
+    /// Generates a random sample from the Gaussian distribution using the
+    /// Standard Normal Random Variates Generator.
+    /// # Examples
+    /// ```
+    /// # use RustQuant::assert_approx_equal;
+    /// # use RustQuant::statistics::distributions::*;
+    ///
+    /// let gaussian = Gaussian::new(0.0, 1.0);
+    ///
+    /// let sample = gaussian.sample(1000);
+    /// let mean = sample.iter().sum::<f64>() / sample.len() as f64;
+    ///
+    /// assert_approx_equal!(mean, gaussian.mean(), 0.1);
+    /// ```
+    ///
     fn sample(&self, n: usize) -> Vec<f64> {
         // IMPORT HERE TO AVOID CLASH WITH
         // `RustQuant::distributions::Distribution`
