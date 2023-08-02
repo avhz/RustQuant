@@ -45,7 +45,8 @@ See [CHANGELOG.md](./CHANGELOG.md) for a full list of changes.
 11. [How-tos](#howto) - How to do various things with RustQuant.
 12. [References](#references) - References and resources used for this project.
 
-## :link: Automatic Differentiation <a name="autodiff"></a>
+<details>
+<summary><h2> :link: Automatic Differentiation <a name="autodiff"></a></h1></summary>
 
 Currently only gradients can be computed. Suggestions on how to extend the functionality to Hessian matrices are definitely welcome.
 
@@ -101,7 +102,12 @@ It is clearly a work in progress, but gives a general idea of how the computatio
 
 If you want to improve the visualization, please feel free to submit a PR!
 
-## :bar_chart: Data <a name="data"></a>
+</details>
+
+
+
+<details>
+<summary><h2> :bar_chart: Data <a name="data"></a></h2></summary>
 
 You can:
 
@@ -174,6 +180,7 @@ Apple's returns: Some(shape: (252, 7)
 └────────────┴────────────┴───────────────┴───────────────┴───────────────┴──────────────┴──────────────┘)
 ```
 
+
 ### Read/write data
 
 ```rust
@@ -197,7 +204,10 @@ fn main() {
 }
 ```
 
-## :bar_chart: Distributions <a name="distributions"></a>
+</details>
+
+<details>
+<summary><h2> :bar_chart: Distributions <a name="distributions"></a></h2></summary>
 
 Probability density/mass functions, distribution functions, characteristic functions, etc.
 
@@ -210,7 +220,10 @@ Probability density/mass functions, distribution functions, characteristic funct
 - [x] Gamma
 - [x] Exponential
 
-## :chart_with_upwards_trend: Instruments <a name="instruments"></a>
+</details>
+
+<details>
+<summary><h2> :chart_with_upwards_trend: Instruments <a name="instruments"></a></h2></summary>
 
 ### :chart_with_downwards_trend: Bonds <a name="bonds"></a>
 
@@ -270,7 +283,11 @@ fn main() {
 }
 ```
 
-## :triangular_ruler: Mathematics <a name="maths"></a>
+</details>
+
+
+
+<details><summary><h2> :triangular_ruler: Mathematics <a name="maths"></a></h2></summary>
 
 ## Optimization and Root Finding
 
@@ -336,20 +353,27 @@ fn main() {
 
 - [x] Risk-Reward Measures (Sharpe, Treynor, Sortino, etc)
 
-## :crystal_ball: Machine Learning <a name="ml"></a>
+</details>
+
+
+<details><summary><h2>:crystal_ball: Machine Learning <a name="ml"></a></h2></summary>
 
 ### Regression
 
 - [x] Linear (using QR or SVD decomposition)
 - [x] Logistic (via IRLS, adding MLE in the future).
 
-## :moneybag: Money <a name="money"></a>
+</details>
+
+<details><summary><h2> :moneybag: Money <a name="money"></a></h2></summary>
 
 - `Cashflows`
 - `Currencies`
 - `Quotes`
 
-## :chart_with_upwards_trend: Stochastic Processes and Short Rate Models <a name="stochastics"></a>
+</details>
+
+<details><summary><h2> :chart_with_upwards_trend: Stochastic Processes and Short Rate Models <a name="stochastics"></a></h2></summary>
 
 The following is a list of stochastic processes that can be generated.
 
@@ -389,7 +413,10 @@ fn main() {
 }
 ```
 
-## :handshake: Helper Functions and Macros <a name="helpers"></a>
+</details>
+
+
+<details><summary><h2> :handshake: Helper Functions and Macros <a name="helpers"></a></h2></summary>
 
 A collection of utility functions and macros.
 
@@ -399,7 +426,10 @@ A collection of utility functions and macros.
 - [x] Linearly spaced sequence.
 - [x] `assert_approx_equal!`
 
-## :heavy_check_mark: How-tos <a name="howto"></a>
+</details>
+
+
+<details><summary><h2> :heavy_check_mark: How-tos <a name="howto"></a></h2></summary>
 
 See [/examples](./examples) for more details. Run them with:
 
@@ -411,7 +441,9 @@ I would not recommend using RustQuant within any other libraries for some time, 
 
 :pray: I would greatly appreciate contributions so it can get to the `v1.0.0` mark ASAP.
 
-## :book: References: <a name="references"></a>
+</details>
+
+<details><summary><h2> :book: References: <a name="references"></a></h2></summary>
 
 - John C. Hull - *Options, Futures, and Other Derivatives*
 - Damiano Brigo & Fabio Mercurio - *Interest Rate Models - Theory and Practice (With Smile, Inflation and Credit)*
@@ -421,10 +453,4 @@ I would not recommend using RustQuant within any other libraries for some time, 
 - Espen Gaarder Haug - *Option Pricing Formulas*
 - Antoine Savine - *Modern Computational Finance: AAD and Parallel Simulations*
 
-## :star: Star History
-
-![Star History](./images/star-history-202371.png)
-
-<!-- <iframe style="width:100%;height:auto;min-width:600px;min-height:400px;" src="https://star-history.com/embed?secret=Z2hwXzJ2d3c2cFE0dG5VR0UwTVFiTXRSdmdKU3Nvd1h6aDRmR0lHVg==#avhz/RustQuant&Date" frameBorder="0"></iframe> -->
-
-<!-- [![Star History Chart](https://api.star-history.com/svg?repos=avhz/RustQuant&type=Date)](https://star-history.com/#avhz/RustQuant&Date) -->
+</details>
