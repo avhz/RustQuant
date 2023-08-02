@@ -33,7 +33,7 @@ See [CHANGELOG.md](./CHANGELOG.md) for a full list of changes.
 
 <details>
 <summary>
-<h2>:link: Automatic Differentiation <a name="autodiff"></a></h2>
+<h3>:link: Automatic Differentiation <a name="autodiff"></a></h3>
 <br>Reverse (Adjoint) Mode Automatic Differentiation.<br>
 </summary>
 
@@ -97,7 +97,7 @@ If you want to improve the visualization, please feel free to submit a PR!
 
 <details>
 <summary>
-<h2>:bar_chart: Data <a name="data"></a></h2>
+<h3>:bar_chart: Data <a name="data"></a></h3>
 <br>Methods for reading and writing data from/to various sources (CSV, JSON, Parquet). Can also download data from Yahoo! Finance.<br>
 </summary>
 
@@ -200,7 +200,7 @@ fn main() {
 
 <details>
 <summary>
-<h2>:bar_chart: Distributions <a name="distributions"></a></h2>
+<h3>:bar_chart: Distributions <a name="distributions"></a></h3>
 <br>PDFs, CDFs, MGFs, CFs, and other ditrubution related functions for common distributions.<br>
 </summary>
 
@@ -220,7 +220,7 @@ Probability density/mass functions, distribution functions, characteristic funct
 
 <details>
 <summary>
-<h2> :chart_with_upwards_trend: Instruments <a name="instruments"></a></h2>
+<h3> :chart_with_upwards_trend: Instruments <a name="instruments"></a></h3>
 <br>Various implementations for instruments like `Bonds` and `Options`, and the pricing of them. Others coming in the future (swaps, futures, CDSs, etc).<br>
 </summary>
 
@@ -288,7 +288,7 @@ fn main() {
 
 <details>
 <summary>
-<h2> :triangular_ruler: Mathematics <a name="maths"></a></h2>
+<h3> :triangular_ruler: Mathematics <a name="maths"></a></h3>
 <br>Numerical integration (double-exponential quadrature), optimisation/root-finding (gradient descent, Newton-Raphson), and risk-reward metrics. <br>
 </summary>
 
@@ -361,7 +361,7 @@ fn main() {
 
 <details>
 <summary>
-<h2>:crystal_ball: Machine Learning <a name="ml"></a></h2>
+<h3>:crystal_ball: Machine Learning <a name="ml"></a></h3>
 <br>Currently only linear regression is implemented (and working on logistic regression). More to come in the future.<br>
 </summary>
 
@@ -374,7 +374,7 @@ fn main() {
 
 <details>
 <summary>
-<h2> :moneybag: Money <a name="money"></a></h2>
+<h3> :moneybag: Money <a name="money"></a></h3>
 <br>Implementations for `Cashflows`, `Currencies`, and `Quotes`, and similar objects.<br>
 </summary>
 
@@ -386,7 +386,7 @@ fn main() {
 
 <details>
 <summary>
-<h2>:chart_with_upwards_trend: Stochastic Processes and Short Rate Models <a name="stochastics"></a></h2>
+<h3>:chart_with_upwards_trend: Stochastic Processes and Short Rate Models <a name="stochastics"></a></h3>
 <br> Can generate Brownian Motion (standard, arithmetric and geometric) and various short-rate models (CIR, OU, Vasicek, Hull-White, etc). <br>
 </summary>
 
@@ -433,7 +433,7 @@ fn main() {
 
 <details>
 <summary>
-<h2>:calendar: Time and Date <a name="time"></a></h2>
+<h3>:calendar: Time and Date <a name="time"></a></h3>
 <br>Time and date functionality. Mostly the `DayCounter` for pricing options and bonds. <br>
 </summary>
 
@@ -444,7 +444,7 @@ fn main() {
 
 <details>
 <summary>
-<h2>:handshake: Helper Functions and Macros <a name="helpers"></a></h2>
+<h3>:handshake: Helper Functions and Macros <a name="helpers"></a></h3>
 <br>Various helper functions and macros.<br>
 </summary>
 
@@ -461,7 +461,7 @@ A collection of utility functions and macros.
 
 <details>
 <summary>
-<h2>:heavy_check_mark: How-tos <a name="howto"></a></h2>
+<h3>:heavy_check_mark: How-tos <a name="howto"></a></h3>
 <br>Guides for using RustQuant.<br>
 </summary>
 
@@ -479,7 +479,7 @@ I would not recommend using RustQuant within any other libraries for some time, 
 
 <details>
 <summary>
-<h2>:book: References <a name="references"></a></h2>
+<h3>:book: References <a name="references"></a></h3>
 <br>References and resources used for this project.<br>
 </summary>
 
