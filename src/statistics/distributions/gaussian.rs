@@ -92,8 +92,8 @@ impl Distribution for Gaussian {
         (-0.5 * ((x - self.mean) / self.variance).powi(2)).exp() / (2.0 * PI * self.variance).sqrt()
     }
 
-    /// Probability mass function for the Gaussian distribution (continous) is not defined
-    /// Using this method will call `pdf()` instead.
+    /// Probability mass function for the Gaussian distribution (continous) is not defined.
+    /// Using this method will call `self.pdf()` instead.
     /// # Examples
     /// ```
     /// # use RustQuant::assert_approx_equal;
@@ -107,7 +107,7 @@ impl Distribution for Gaussian {
         self.pdf(x)
     }
 
-    /// Distribution function of the Gaussian distribution.
+    /// Cumulative distribution function of the Gaussian distribution.
     /// # Examples
     /// ```
     /// # use RustQuant::assert_approx_equal;
