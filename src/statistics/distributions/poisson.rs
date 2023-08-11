@@ -59,6 +59,7 @@ impl Distribution for Poisson {
     }
 
     /// Probability density function of the Poisson distribution.
+    /// Using this method will call `self.pmf()` instead.
     /// # Examples
     /// ```
     /// # use RustQuant::assert_approx_equal;
@@ -72,8 +73,7 @@ impl Distribution for Poisson {
         self.pmf(x)
     }
 
-    /// Probability mass function of the Poisson distribution (conitnous) is not defined.
-    /// Using this method will call `self.pdf()` instead.
+    /// Probability mass function of the Poisson distribution.
     /// # Examples
     /// ```
     /// # use RustQuant::assert_approx_equal;
@@ -137,9 +137,9 @@ impl Distribution for Poisson {
     /// # Examples
     /// ```
     /// # use RustQuant::statistics::distributions::*;
-    /// 
+    ///
     /// let poisson = Poisson::new(1.0);
-    /// 
+    ///
     /// assert_eq!(poisson.mean(), 1.0);
     /// ```
     fn mean(&self) -> f64 {
@@ -150,9 +150,9 @@ impl Distribution for Poisson {
     /// # Examples
     /// ```
     /// # use RustQuant::statistics::distributions::*;
-    /// 
+    ///
     /// let poisson = Poisson::new(1.0);
-    /// 
+    ///
     /// assert_eq!(poisson.median(), 1.0);
     /// ```
     fn median(&self) -> f64 {
@@ -163,9 +163,9 @@ impl Distribution for Poisson {
     /// # Examples
     /// ```
     /// # use RustQuant::statistics::distributions::*;
-    /// 
+    ///
     /// let poisson = Poisson::new(1.0);
-    /// 
+    ///
     /// assert_eq!(poisson.mode(), 1.0);
     /// ```
     fn mode(&self) -> f64 {
@@ -176,9 +176,9 @@ impl Distribution for Poisson {
     /// # Examples
     /// ```
     /// # use RustQuant::statistics::distributions::*;
-    /// 
+    ///
     /// let poisson = Poisson::new(1.0);
-    /// 
+    ///
     /// assert_eq!(poisson.variance(), 1.0);
     /// ```
     fn variance(&self) -> f64 {
@@ -190,9 +190,9 @@ impl Distribution for Poisson {
     /// ```
     /// # use RustQuant::assert_approx_equal;
     /// # use RustQuant::statistics::distributions::*;
-    /// 
+    ///
     /// let poisson = Poisson::new(2.0);
-    /// 
+    ///
     /// assert_approx_equal!(poisson.skewness(), 0.7071068, 1e-7);
     fn skewness(&self) -> f64 {
         self.lambda.sqrt().recip()
@@ -203,9 +203,9 @@ impl Distribution for Poisson {
     /// ```
     /// # use RustQuant::assert_approx_equal;
     /// # use RustQuant::statistics::distributions::*;
-    /// 
+    ///
     /// let poisson = Poisson::new(2.0);
-    /// 
+    ///
     /// assert_approx_equal!(poisson.kurtosis(), 0.5, 1e-7);
     /// ```
     fn kurtosis(&self) -> f64 {
@@ -221,9 +221,9 @@ impl Distribution for Poisson {
     /// ```
     /// # use RustQuant::assert_approx_equal;
     /// # use RustQuant::statistics::distributions::*;
-    /// 
+    ///
     /// let poisson = Poisson::new(1.0);
-    /// 
+    ///
     /// assert_approx_equal!(poisson.mgf(1.0), 5.5749415, 1e-7);
     /// ```
     fn mgf(&self, t: f64) -> f64 {
@@ -235,12 +235,12 @@ impl Distribution for Poisson {
     /// ```
     /// # use RustQuant::assert_approx_equal;
     /// # use RustQuant::statistics::distributions::*;
-    /// 
+    ///
     /// let poisson = Poisson::new(1.0);
-    /// 
+    ///
     /// let sample = poisson.sample(1000);
     /// let mean = sample.iter().sum::<f64>() / sample.len() as f64;
-    /// 
+    ///
     /// assert_approx_equal!(mean, poisson.mean(), 0.1);
     /// ```
     fn sample(&self, n: usize) -> Vec<f64> {
@@ -286,9 +286,47 @@ mod tests {
         // Probability mass function
         let pmf = dist.pmf(1.);
         assert_approx_equal!(pmf, 0.367879441171, 1e-10);
+        // Probability density function is same as pmf
+        assert_eq!(dist.pdf(1.), pmf);
 
         // Distribution function
         let cdf = dist.cdf(1.);
         assert_approx_equal!(cdf, 0.640859085770, 1e-10);
+
+        // Inverse distribution function
+        let icdf = dist.inv_cdf(0.5);
+        assert_approx_equal!(icdf, 1.0, 1e-10);
+        // p needs to be in [0, 1]
+        assert!(dist.inv_cdf(1.1).is_nan());
+        assert!(dist.inv_cdf(-0.1).is_nan());
+        // p =1 => x = inf
+        assert_eq!(dist.inv_cdf(1.0), f64::INFINITY);
+
+        // Mean
+        assert_approx_equal!(dist.mean(), 1.0, 1e-10);
+
+        // Median
+        assert_approx_equal!(dist.median(), 1.0, 1e-10);
+
+        // Mode
+        assert_approx_equal!(dist.mode(), 1.0, 1e-10);
+
+        // Variance
+        assert_approx_equal!(dist.variance(), 1.0, 1e-10);
+
+        // Skewness
+        assert_approx_equal!(dist.skewness(), 1.0, 1e-10);
+
+        // Kurtosis
+        assert_approx_equal!(dist.kurtosis(), 1.0, 1e-10);
+
+        // Moment generating function
+        let mgf = dist.mgf(1.0);
+        assert_approx_equal!(mgf, 5.5749415, 1e-7);
+
+        // Sample
+        let sample = dist.sample(1000);
+        let mean = sample.iter().sum::<f64>() / sample.len() as f64;
+        assert_approx_equal!(mean, dist.mean(), 0.1);
     }
 }
