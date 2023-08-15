@@ -15,7 +15,7 @@ use rand::prelude::Distribution;
 use rayon::prelude::*;
 use statrs::distribution::Normal;
 
-#[cfg(seedable)]
+#[cfg(feature = "seedable")]
 use rand::{rngs::StdRng, SeedableRng};
 
 /// Struct to contain the time points and path values of the process.
@@ -99,7 +99,7 @@ pub trait StochasticProcess: Sync {
     /// * `m_paths` - How many process trajectories to simulate.
     /// * `parallel` - Run in parallel or not (recommended for > 1000 paths).
     /// * `seed` - The seed for the random number generator.
-    #[cfg(seedable)]
+    #[cfg(feature = "seedable")]
     fn seedable_euler_maruyama(
         &self,
         x_0: f64,
@@ -172,7 +172,7 @@ mod test_process {
         // cargo test test_process -- --nocapture
     }
 
-    #[cfg(seedable)]
+    #[cfg(feature = "seedable")]
     #[test]
     fn test_seedable_maruyama() {
         let gbm = GeometricBrownianMotion::new(0.05, 0.9);
