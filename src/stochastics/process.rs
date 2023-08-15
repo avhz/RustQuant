@@ -16,7 +16,7 @@ use rayon::prelude::*;
 use statrs::distribution::Normal;
 
 #[cfg(seedable)]
-use rand::{SeedableRng, rngs::StdRng};
+use rand::{rngs::StdRng, SeedableRng};
 
 /// Struct to contain the time points and path values of the process.
 pub struct Trajectories {
@@ -143,7 +143,6 @@ pub trait StochasticProcess: Sync {
 
         Trajectories { times, paths }
     }
-
 }
 
 #[cfg(test)]
@@ -178,25 +177,25 @@ mod test_process {
     fn test_seedable_maruyama() {
         let gbm = GeometricBrownianMotion::new(0.05, 0.9);
 
-        let output_first_seed = gbm.seedable_euler_maruyama(10.0, 0.0, 1.0, 125, 10000, true, 123456789);
+        let output_first_seed =
+            gbm.seedable_euler_maruyama(10.0, 0.0, 1.0, 125, 10000, true, 123456789);
         println!("First seed: \t {:?}", output_first_seed.paths[0][125]);
-        
-        let output_same_seed = gbm.seedable_euler_maruyama(10.0, 0.0, 1.0, 125, 10000, true, 123456789);
+
+        let output_same_seed =
+            gbm.seedable_euler_maruyama(10.0, 0.0, 1.0, 125, 10000, true, 123456789);
         println!("Same seed: \t {:?}", output_same_seed.paths[0][125]);
 
         // Check that using the same seed gives the same output.
         assert_eq!(output_first_seed.paths, output_same_seed.paths);
 
-        let output_different_seed = gbm.seedable_euler_maruyama(10.0, 0.0, 1.0, 125, 10000, true, 987654321);
+        let output_different_seed =
+            gbm.seedable_euler_maruyama(10.0, 0.0, 1.0, 125, 10000, true, 987654321);
         println!("Different seed: {:?}", output_different_seed.paths[0][125]);
 
         // Check that using a different seed gives a different output.
         assert_ne!(output_first_seed.paths, output_different_seed.paths);
 
-
-        // Just checking that `parallel = true` actually works.
         // To see the output of this "test", run:
         // cargo test test_process -- --nocapture
     }
-
 }

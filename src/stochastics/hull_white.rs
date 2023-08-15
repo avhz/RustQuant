@@ -74,8 +74,7 @@ mod tests_hull_white {
         // E[X_T] = X_0*exp(-alpha T) X_0 + (theta_t/alpha)(1- exp(-alpha * T))
         assert_approx_equal!(
             E_XT,
-            (-alpha * 1.0_f64).exp() * 10.0
-                + (theta / alpha) * (1.0 - (-alpha * 1.0_f64).exp()),
+            (-alpha * 1.0_f64).exp() * 10.0 + (theta / alpha) * (1.0 - (-alpha * 1.0_f64).exp()),
             0.25
         );
 
