@@ -66,7 +66,7 @@ version = "0.4.19"
 optional = true
 
 [dependencies.polars] # https://docs.rs/polars/latest/polars/  
-version = "0.30.0"
+version = "0.32.0"
 optional = true
 features = ["serde", "json", "parquet", "dtype-struct", "dtype-date", "lazy"]
 
@@ -98,7 +98,14 @@ optional = true
 ## increases the compilation time substantially.
 data = ["dep:polars", "dep:tokio", "dep:tokio-test"]
 ## This feature is used to enable the use of the `interactive` module.
-interactive = ["dep:tui", "dep:tokio", "dep:tui-logger", "dep:crossterm", "dep:eyre", "dep:log"]
+interactive = [
+    "dep:tui",
+    "dep:tokio",
+    "dep:tui-logger",
+    "dep:crossterm",
+    "dep:eyre",
+    "dep:log",
+]
 ## This feature is used to allow the end user to seed their stochastic processes.
 seedable = []
 
