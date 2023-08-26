@@ -347,8 +347,8 @@ pub mod math {
 pub mod stochastics {
     pub use crate::stochastics::{
         arithmetic_brownian_motion::*, black_derman_toy::*, brownian_motion::*,
-        cox_ingersoll_ross::*, extended_vasicek::*, fractional_brownian_motion::*,
-        geometric_brownian_motion::*, ho_lee::*, hull_white::*, ornstein_uhlenbeck::*, process::*,
+        cox_ingersoll_ross::*, extended_vasicek::*, geometric_brownian_motion::*, ho_lee::*,
+        hull_white::*, ornstein_uhlenbeck::*, process::*,
     };
 
     /// Submodule of `stochastics`: implements Arithmetic Brownian Motion.
@@ -361,8 +361,6 @@ pub mod stochastics {
     pub mod cox_ingersoll_ross;
     /// Submodule of `stochastics`: implements the extended Vasicek process.
     pub mod extended_vasicek;
-    /// Submodule of `stochastics`: implements the Fractional Brownian Motion process.
-    pub mod fractional_brownian_motion;
     /// Submodule of `stochastics`: implements Geometric Brownian Motion.
     pub mod geometric_brownian_motion;
     /// Submodule of `stochastics`: implements Ho-Lee process.
