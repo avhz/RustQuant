@@ -201,7 +201,7 @@ impl LookbackOption {
         let cost_of_carry = r - q;
         let gbm = GeometricBrownianMotion::new(cost_of_carry, sigma);
 
-        let paths = gbm.euler_maruyama(x_0, 0.0, t_n, n_steps, n_sims, parallel, None);
+        let paths = gbm.euler_maruyama(x_0, 0.0, t_n, n_steps, n_sims, parallel);
 
         let mut call_payoffs = Vec::with_capacity(n_sims);
         let mut put_payoffs = Vec::with_capacity(n_sims);

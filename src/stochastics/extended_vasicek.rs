@@ -64,7 +64,7 @@ mod tests_extended_vasicek {
 
         let ev = ExtendedVasicek::new(alpha_t, sig, theta_t);
 
-        let output = ev.euler_maruyama(10.0, 0.0, 1.0, 150, 1000, false, None);
+        let output = ev.euler_maruyama(10.0, 0.0, 1.0, 150, 1000, false);
 
         // Test the distribution of the final values.
         let X_T: Vec<f64> = output

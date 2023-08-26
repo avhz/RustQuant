@@ -52,7 +52,7 @@ mod tests_abm {
     fn test_arithmetic_brownian_motion() -> Result<(), Box<dyn std::error::Error>> {
         let abm = ArithmeticBrownianMotion::new(0.05, 0.9);
 
-        let output = abm.euler_maruyama(10.0, 0.0, 0.5, 125, 1000, false, None);
+        let output = abm.euler_maruyama(10.0, 0.0, 0.5, 125, 1000, false);
 
         // let file1 = "./images/ABM1.png";
         // plot_vector((&output.trajectories[0]).clone(), file1).unwrap();

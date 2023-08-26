@@ -57,7 +57,7 @@ mod tests_ho_lee {
 
         // X_0 = 10.0
         // T = 1.0
-        let output = hl.euler_maruyama(10.0, 0.0, 1.0, 125, 1000, false, None);
+        let output = hl.euler_maruyama(10.0, 0.0, 1.0, 125, 1000, false);
 
         // Test the distribution of the final values.
         let X_T: Vec<f64> = output
