@@ -85,6 +85,21 @@ pub trait FractionalStochasticProcess: Sync {
         (acf_sqrt * noise).transpose() * (n as f64).powf(-hurst)
     }
 
+    /// Fractional Gaussian noise.
+    #[cfg(feature = "seedable")]
+    fn seedable_fgn(&self, n: usize, hurst: f64, seed: u64) -> RowDVector<f64> {
+        use rand::rngs::StdRng;
+
+        let acf_sqrt = self.afc_matrix_sqrt(n, hurst);
+        let noise = StdRng::seed_from_u64(seed)
+            .sample_iter::<f64, StandardNormal>(StandardNormal)
+            .take(n)
+            .collect();
+        let noise = DVector::<f64>::from_vec(noise);
+
+        (acf_sqrt * noise).transpose() * (n as f64).powf(-hurst)
+    }
+
     /// Euler-Maruyama discretisation scheme.
     ///
     /// # Arguments:
@@ -153,6 +168,7 @@ pub trait FractionalStochasticProcess: Sync {
         m_paths: usize,
         parallel: bool,
         seed: u64,
+        hurst: f64,
     ) -> Trajectories {
         assert!(t_0 < t_n);
 
@@ -163,19 +179,13 @@ pub trait FractionalStochasticProcess: Sync {
         let times: Vec<f64> = (0..=n_steps).map(|t| t_0 + dt * (t as f64)).collect();
 
         let path_generator = |path: &mut Vec<f64>| {
-            let mut rng = StdRng::seed_from_u64(seed);
-            let scale = dt.sqrt();
-            let dW: Vec<f64> = Normal::new(0.0, 1.0)
-                .unwrap()
-                .sample_iter(&mut rng)
-                .take(n_steps)
-                .map(|z| z * scale)
-                .collect();
+            let fgn = self.seedable_fgn(n_steps, hurst, seed);
+            path[0] = 0.0;
 
-            for t in 0..n_steps {
-                path[t + 1] = path[t]
-                    + self.drift(path[t], times[t]) * dt
-                    + self.diffusion(path[t], times[t]) * dW[t];
+            for t in 1..n_steps {
+                path[t] = path[t - 1]
+                    + self.drift(path[t - 1], times[t - 1]) * dt
+                    + self.diffusion(path[t - 1], times[t]) * fgn[t - 1] * t_n.powf(hurst);
             }
         };
 
@@ -200,13 +210,13 @@ mod test_process {
         let fbm = FractionalBrownianMotion::new(0.7);
 
         let start = Instant::now();
-        fbm.euler_maruyama(10.0, 0.0, 1.0, 125, 10000, false, fbm.hurst);
+        fbm.euler_maruyama(10.0, 0.0, 1.0, 2000, 1, false, fbm.hurst);
         let serial = start.elapsed();
 
         println!("Serial: \t {:?}", serial);
 
         let start = Instant::now();
-        fbm.euler_maruyama(10.0, 0.0, 1.0, 125, 10000, true, fbm.hurst);
+        fbm.euler_maruyama(10.0, 0.0, 1.0, 125, 1, true, fbm.hurst);
         let parallel = start.elapsed();
 
         println!("Parallel: \t {:?}", parallel);
@@ -219,21 +229,21 @@ mod test_process {
     #[cfg(feature = "seedable")]
     #[test]
     fn test_seedable_maruyama() {
-        let gbm = GeometricBrownianMotion::new(0.05, 0.9);
+        let fbm = FractionalBrownianMotion::new(0.7);
 
         let output_first_seed =
-            gbm.seedable_euler_maruyama(10.0, 0.0, 1.0, 125, 10000, true, 123456789);
+            fbm.seedable_euler_maruyama(10.0, 0.0, 1.0, 125, 10000, true, 123456789, 0.7);
         println!("First seed: \t {:?}", output_first_seed.paths[0][125]);
 
         let output_same_seed =
-            gbm.seedable_euler_maruyama(10.0, 0.0, 1.0, 125, 10000, true, 123456789);
+            fbm.seedable_euler_maruyama(10.0, 0.0, 1.0, 125, 10000, true, 123456789, 0.7);
         println!("Same seed: \t {:?}", output_same_seed.paths[0][125]);
 
         // Check that using the same seed gives the same output.
         assert_eq!(output_first_seed.paths, output_same_seed.paths);
 
         let output_different_seed =
-            gbm.seedable_euler_maruyama(10.0, 0.0, 1.0, 125, 10000, true, 987654321);
+            fbm.seedable_euler_maruyama(10.0, 0.0, 1.0, 125, 10000, true, 987654321, 0.7);
         println!("Different seed: {:?}", output_different_seed.paths[0][125]);
 
         // Check that using a different seed gives a different output.
