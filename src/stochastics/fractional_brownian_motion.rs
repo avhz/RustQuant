@@ -49,6 +49,8 @@ impl FractionalStochasticProcess for FractionalBrownianMotion {
 mod sde_tests {
     // use std::time::Instant;
 
+    use std::time::Instant;
+
     use super::*;
     use crate::{assert_approx_equal, utilities::*};
 
@@ -57,26 +59,26 @@ mod sde_tests {
         let fbm = FractionalBrownianMotion::new(0.7);
 
         // AT LEAST 100 PATHS BEFORE PARALLEL IS WORTH IT.
-        // for _steps in [1, 10, 100, 1000] {
-        //     for paths in [1, 10, 100, 1000] {
-        //         let start_serial = Instant::now();
-        //         (&bm).euler_maruyama(10.0, 0.0, 0.5, 1000, paths, false);
-        //         let duration_serial = start_serial.elapsed();
+        for _steps in [1, 10, 100, 1000] {
+            for paths in [1, 10, 100, 1000] {
+                let start_serial = Instant::now();
+                (&fbm).euler_maruyama(10.0, 0.0, 0.5, 1000, paths, false, fbm.hurst);
+                let duration_serial = start_serial.elapsed();
 
-        //         let start_parallel = Instant::now();
-        //         (&bm).euler_maruyama(10.0, 0.0, 0.5, 1000, paths, true);
-        //         let duration_parallel = start_parallel.elapsed();
+                let start_parallel = Instant::now();
+                (&fbm).euler_maruyama(10.0, 0.0, 0.5, 1000, paths, true, fbm.hurst);
+                let duration_parallel = start_parallel.elapsed();
 
-        //         println!(
-        //             "{},{},{:?},{:?}",
-        //             1000,
-        //             paths,
-        //             duration_serial.as_micros(),
-        //             duration_parallel.as_micros()
-        //         );
-        //     }
-        // }
-        // assert!(1 == 2);
+                println!(
+                    "{},{},{:?},{:?}",
+                    1000,
+                    paths,
+                    duration_serial.as_micros(),
+                    duration_parallel.as_micros()
+                );
+            }
+        }
+        assert!(1 == 2);
 
         let output_serial = fbm.euler_maruyama(0.0, 0.0, 0.5, 100, 1000, false, fbm.hurst);
         // let output_parallel = (&bm).euler_maruyama(10.0, 0.0, 0.5, 100, 10, true);
