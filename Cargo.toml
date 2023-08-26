@@ -54,7 +54,7 @@ memuse = "0.2.1"     # https://docs.rs/memuse/latest/memuse/
 autodiff = "0.7.0"   # https://docs.rs/autodiff/latest/autodiff/
 
 [dependencies.crossterm] # https://docs.rs/crossterm/latest/crossterm/
-version = "0.26.1"
+version = "0.27.0"
 optional = true
 
 [dependencies.eyre] # https://docs.rs/eyre/latest/eyre/
