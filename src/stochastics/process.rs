@@ -11,9 +11,11 @@
 //! Autonomous refers to processes where the drift and diffusion
 //! do not explicitly depend on the time `t`.
 
-use rand::prelude::Distribution;
+use nalgebra::{DMatrix, DVector, Dim, Dyn, RowDVector};
+use rand::Rng;
+use rand_distr::StandardNormal;
 use rayon::prelude::*;
-use statrs::distribution::Normal;
+use std::cmp::Ordering::{Equal, Greater, Less};
 
 #[cfg(feature = "seedable")]
 use rand::{rngs::StdRng, SeedableRng};
@@ -37,6 +39,64 @@ pub trait StochasticProcess: Sync {
     /// Base method for the process' jump term (if applicable).
     fn jump(&self, x: f64, t: f64) -> f64;
 
+    /// Autocovariance function.
+    fn afc_vector(&self, n: usize, hurst: f64) -> RowDVector<f64> {
+        let mut v = RowDVector::<f64>::zeros(n);
+        v[0] = 1.0;
+
+        for i in 1..n {
+            let idx = i as f64;
+
+            v[i] = 0.5
+                * ((idx + 1.0).powf(2.0 * hurst) - 2.0 * idx.powf(2.0 * hurst)
+                    + (idx - 1.0).powf(2.0 * hurst))
+        }
+
+        v
+    }
+
+    /// Autocovariance matrix.
+    fn afc_matrix_sqrt(&self, n: usize, hurst: f64) -> DMatrix<f64> {
+        let acf_v = self.afc_vector(n, hurst);
+        let mut m = DMatrix::<f64>::zeros_generic(Dyn::from_usize(n), Dyn::from_usize(n));
+
+        for i in 0..n {
+            for j in 0..n {
+                match i.cmp(&j) {
+                    Equal => m[(i, j)] = acf_v[0],
+                    Greater => m[(i, j)] = acf_v[i - j],
+                    Less => continue,
+                }
+            }
+        }
+
+        m.cholesky().unwrap().l()
+    }
+
+    /// Gaussian noise.
+    fn gn(&self, n: usize, scale: f64) -> RowDVector<f64> {
+        let noise = rand::thread_rng()
+            .sample_iter::<f64, StandardNormal>(StandardNormal)
+            .take(n)
+            .map(|z| z * scale)
+            .collect();
+        let noise = DVector::<f64>::from_vec(noise);
+
+        noise.transpose()
+    }
+
+    /// Fractional Gaussian noise.
+    fn fgn(&self, n: usize, hurst: f64) -> RowDVector<f64> {
+        let acf_sqrt = self.afc_matrix_sqrt(n, hurst);
+        let noise = rand::thread_rng()
+            .sample_iter::<f64, StandardNormal>(StandardNormal)
+            .take(n)
+            .collect();
+        let noise = DVector::<f64>::from_vec(noise);
+
+        (acf_sqrt * noise).transpose() * (n as f64).powf(-hurst)
+    }
+
     /// Euler-Maruyama discretisation scheme.
     ///
     /// # Arguments:
@@ -46,6 +106,8 @@ pub trait StochasticProcess: Sync {
     /// * `n_steps` - The number of time steps between `t_0` and `t_n`.
     /// * `m_paths` - How many process trajectories to simulate.
     /// * `parallel` - Run in parallel or not (recommended for > 1000 paths).
+    /// * `is_fractional` - Whether the process is fractional or not.
+    /// * `hurst` - The Hurst parameter of the process.
     fn euler_maruyama(
         &self,
         x_0: f64,
@@ -54,6 +116,8 @@ pub trait StochasticProcess: Sync {
         n_steps: usize,
         m_paths: usize,
         parallel: bool,
+        is_fractional: Option<bool>,
+        hurst: Option<f64>,
     ) -> Trajectories {
         assert!(t_0 < t_n);
 
@@ -64,19 +128,24 @@ pub trait StochasticProcess: Sync {
         let times: Vec<f64> = (0..=n_steps).map(|t| t_0 + dt * (t as f64)).collect();
 
         let path_generator = |path: &mut Vec<f64>| {
-            let mut rng = rand::thread_rng();
-            let scale = dt.sqrt();
-            let dW: Vec<f64> = Normal::new(0.0, 1.0)
-                .unwrap()
-                .sample_iter(&mut rng)
-                .take(n_steps)
-                .map(|z| z * scale)
-                .collect();
+            if is_fractional == Some(true) {
+                let fgn = self.fgn(n_steps, hurst.unwrap());
 
-            for t in 0..n_steps {
-                path[t + 1] = path[t]
-                    + self.drift(path[t], times[t]) * dt
-                    + self.diffusion(path[t], times[t]) * dW[t];
+                for t in 0..n_steps {
+                    path[t + 1] = path[t]
+                        + self.drift(path[t], times[t]) * dt
+                        + self.diffusion(path[t], times[t]) * fgn[t] * t_n.powf(hurst.unwrap());
+                }
+
+                println!("Path: {:?}", path);
+            } else {
+                let gn = self.gn(n_steps, dt.sqrt());
+
+                for t in 0..n_steps {
+                    path[t + 1] = path[t]
+                        + self.drift(path[t], times[t]) * dt
+                        + self.diffusion(path[t], times[t]) * gn[t];
+                }
             }
         };
 
@@ -156,13 +225,13 @@ mod test_process {
         let gbm = GeometricBrownianMotion::new(0.05, 0.9);
 
         let start = Instant::now();
-        gbm.euler_maruyama(10.0, 0.0, 1.0, 125, 10000, false);
+        gbm.euler_maruyama(10.0, 0.0, 1.0, 125, 10000, false, None, None);
         let serial = start.elapsed();
 
         println!("Serial: \t {:?}", serial);
 
         let start = Instant::now();
-        gbm.euler_maruyama(10.0, 0.0, 1.0, 125, 10000, true);
+        gbm.euler_maruyama(10.0, 0.0, 1.0, 125, 10000, true, None, None);
         let parallel = start.elapsed();
 
         println!("Parallel: \t {:?}", parallel);

@@ -61,7 +61,7 @@ mod tests_hull_white {
 
         let hw = HullWhite::new(alpha, sig, theta_t);
 
-        let output = hw.euler_maruyama(10.0, 0.0, 1.0, 150, 1000, false);
+        let output = hw.euler_maruyama(10.0, 0.0, 1.0, 150, 1000, false, None, None);
 
         // Test the distribution of the final values.
         let X_T: Vec<f64> = output

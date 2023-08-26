@@ -55,7 +55,7 @@ mod tests_cir {
     fn test_cox_ingersoll_ross() -> Result<(), Box<dyn std::error::Error>> {
         let cir = CoxIngersollRoss::new(0.15, 0.45, 0.01);
 
-        let output = cir.euler_maruyama(10.0, 0.0, 0.5, 100, 100, false);
+        let output = cir.euler_maruyama(10.0, 0.0, 0.5, 100, 100, false, None, None);
 
         // Test the distribution of the final values.
         let X_T: Vec<f64> = output

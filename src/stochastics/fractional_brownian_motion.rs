@@ -27,7 +27,7 @@ impl FractionalBrownianMotion {
     }
 }
 
-impl FractionalStochasticProcess for FractionalBrownianMotion {
+impl StochasticProcess for FractionalBrownianMotion {
     fn drift(&self, _x: f64, _t: f64) -> f64 {
         0.0
     }
@@ -62,11 +62,29 @@ mod sde_tests {
         for _steps in [1, 10, 100, 1000] {
             for paths in [1, 10, 100, 1000] {
                 let start_serial = Instant::now();
-                (&fbm).euler_maruyama(10.0, 0.0, 0.5, 1000, paths, false, fbm.hurst);
+                (&fbm).euler_maruyama(
+                    10.0,
+                    0.0,
+                    0.5,
+                    1000,
+                    paths,
+                    false,
+                    Some(true),
+                    Some(fbm.hurst),
+                );
                 let duration_serial = start_serial.elapsed();
 
                 let start_parallel = Instant::now();
-                (&fbm).euler_maruyama(10.0, 0.0, 0.5, 1000, paths, true, fbm.hurst);
+                (&fbm).euler_maruyama(
+                    10.0,
+                    0.0,
+                    0.5,
+                    1000,
+                    paths,
+                    true,
+                    Some(true),
+                    Some(fbm.hurst),
+                );
                 let duration_parallel = start_parallel.elapsed();
 
                 println!(
@@ -80,7 +98,8 @@ mod sde_tests {
         }
         assert!(1 == 2);
 
-        let output_serial = fbm.euler_maruyama(0.0, 0.0, 0.5, 100, 1000, false, fbm.hurst);
+        let output_serial =
+            fbm.euler_maruyama(0.0, 0.0, 0.5, 100, 1000, false, Some(true), Some(fbm.hurst));
         // let output_parallel = (&bm).euler_maruyama(10.0, 0.0, 0.5, 100, 10, true);
 
         // let file1 = "./images/BM1.png";
