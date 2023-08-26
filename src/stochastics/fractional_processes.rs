@@ -40,11 +40,11 @@ pub trait FractionalStochasticProcess: Sync {
     fn jump(&self, x: f64, t: f64) -> f64;
 
     /// Autocovariance function.
-    fn afc_vector(&self, x: usize, hurst: f64) -> RowDVector<f64> {
-        let mut v = RowDVector::<f64>::zeros(x);
+    fn afc_vector(&self, n: usize, hurst: f64) -> RowDVector<f64> {
+        let mut v = RowDVector::<f64>::zeros(n);
         v[0] = 1.0;
 
-        for i in 1..x {
+        for i in 1..n {
             let idx = i as f64;
 
             v[i] = 0.5
@@ -56,12 +56,12 @@ pub trait FractionalStochasticProcess: Sync {
     }
 
     /// Autocovariance matrix.
-    fn afc_matrix_sqrt(&self, x: usize, hurst: f64) -> DMatrix<f64> {
-        let acf_v = self.afc_vector(x, hurst);
-        let mut m = DMatrix::<f64>::zeros_generic(Dyn::from_usize(x), Dyn::from_usize(x));
+    fn afc_matrix_sqrt(&self, n: usize, hurst: f64) -> DMatrix<f64> {
+        let acf_v = self.afc_vector(n, hurst);
+        let mut m = DMatrix::<f64>::zeros_generic(Dyn::from_usize(n), Dyn::from_usize(n));
 
-        for i in 0..x {
-            for j in 0..x {
+        for i in 0..n {
+            for j in 0..n {
                 match i.cmp(&j) {
                     Equal => m[(i, j)] = acf_v[0],
                     Greater => m[(i, j)] = acf_v[i - j],
@@ -74,15 +74,15 @@ pub trait FractionalStochasticProcess: Sync {
     }
 
     /// Fractional Gaussian noise.
-    fn fgn(&self, x: usize, hurst: f64) -> RowDVector<f64> {
-        let acf_sqrt = self.afc_matrix_sqrt(x, hurst);
+    fn fgn(&self, n: usize, hurst: f64) -> RowDVector<f64> {
+        let acf_sqrt = self.afc_matrix_sqrt(n, hurst);
         let noise = rand::thread_rng()
             .sample_iter::<f64, StandardNormal>(StandardNormal)
-            .take(x)
+            .take(n)
             .collect();
         let noise = DVector::<f64>::from_vec(noise);
 
-        (acf_sqrt * noise).transpose() * (x as f64).powf(-hurst)
+        (acf_sqrt * noise).transpose() * (n as f64).powf(-hurst)
     }
 
     /// Euler-Maruyama discretisation scheme.
@@ -115,15 +115,13 @@ pub trait FractionalStochasticProcess: Sync {
 
         let path_generator = |path: &mut Vec<f64>| {
             let fgn = self.fgn(n_steps, hurst);
-            let mut fbm = RowDVector::<f64>::zeros(n_steps);
-            fbm[0] = 0.0;
+            path[0] = 0.0;
 
-            for i in 1..n_steps {
-                fbm[i] = fbm[i - 1] + fgn[i - 1];
+            for t in 1..n_steps {
+                path[t] = path[t - 1]
+                    + self.drift(path[t - 1], times[t - 1]) * dt
+                    + self.diffusion(path[t - 1], times[t]) * fgn[t - 1] * t_n.powf(hurst);
             }
-
-            let fbm = fbm * t_n.powf(hurst);
-            *path = fbm.data.as_vec().to_vec();
         };
 
         if parallel {
