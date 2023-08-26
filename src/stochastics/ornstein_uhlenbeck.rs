@@ -54,7 +54,7 @@ mod tests_ornstein_uhlenbeck {
     fn test_ornstein_uhlenbeck() -> Result<(), Box<dyn std::error::Error>> {
         let ou = OrnsteinUhlenbeck::new(0.15, 0.45, 0.01);
 
-        let output = ou.euler_maruyama(10.0, 0.0, 0.5, 100, 100, false, None, None);
+        let output = ou.euler_maruyama(10.0, 0.0, 0.5, 100, 100, false, None);
 
         // Test the distribution of the final values.
         let X_T: Vec<f64> = output

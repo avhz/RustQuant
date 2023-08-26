@@ -52,7 +52,7 @@ mod tests_gbm {
     fn test_geometric_brownian_motion() -> Result<(), Box<dyn std::error::Error>> {
         let gbm = GeometricBrownianMotion::new(0.05, 0.9);
 
-        let output = gbm.euler_maruyama(10.0, 0.0, 0.5, 125, 10000, false, None, None);
+        let output = gbm.euler_maruyama(10.0, 0.0, 0.5, 125, 10000, false, None);
 
         // Test the distribution of the final values.
         let X_T: Vec<f64> = output

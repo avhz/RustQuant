@@ -74,7 +74,7 @@ mod sde_tests {
         // }
         // assert!(1 == 2);
 
-        let output_serial = bm.euler_maruyama(0.0, 0.0, 0.5, 100, 1000, false, None, None);
+        let output_serial = bm.euler_maruyama(0.0, 0.0, 0.5, 100, 1000, false, None);
         // let output_parallel = (&bm).euler_maruyama(10.0, 0.0, 0.5, 100, 10, true);
 
         // let file1 = "./images/BM1.png";

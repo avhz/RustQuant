@@ -101,7 +101,7 @@ mod tests_black_derman_toy {
 
         let hw = BlackDermanToy::new(sig, theta_t);
 
-        let output = hw.euler_maruyama(0.13, 0.0, 1.0, 100, 100, false, None, None);
+        let output = hw.euler_maruyama(0.13, 0.0, 1.0, 100, 100, false, None);
 
         // Test the distribution of the final values.
         let X_T: Vec<f64> = output
@@ -123,7 +123,7 @@ mod tests_black_derman_toy {
 
         let hw = BlackDermanToy::new(sig, theta_t);
 
-        let output = hw.euler_maruyama(0.13, 0.0, 1.0, 100, 1000, false, None, None);
+        let output = hw.euler_maruyama(0.13, 0.0, 1.0, 100, 1000, false, None);
 
         // Test the distribution of the final values.
         let X_T: Vec<f64> = output

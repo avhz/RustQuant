@@ -116,7 +116,6 @@ pub trait StochasticProcess: Sync {
         n_steps: usize,
         m_paths: usize,
         parallel: bool,
-        is_fractional: Option<bool>,
         hurst: Option<f64>,
     ) -> Trajectories {
         assert!(t_0 < t_n);
@@ -128,7 +127,7 @@ pub trait StochasticProcess: Sync {
         let times: Vec<f64> = (0..=n_steps).map(|t| t_0 + dt * (t as f64)).collect();
 
         let path_generator = |path: &mut Vec<f64>| {
-            if is_fractional == Some(true) {
+            if hurst.is_some() {
                 let fgn = self.fgn(n_steps, hurst.unwrap());
 
                 for t in 0..n_steps {
@@ -225,13 +224,13 @@ mod test_process {
         let gbm = GeometricBrownianMotion::new(0.05, 0.9);
 
         let start = Instant::now();
-        gbm.euler_maruyama(10.0, 0.0, 1.0, 125, 10000, false, None, None);
+        gbm.euler_maruyama(10.0, 0.0, 1.0, 125, 10000, false, None);
         let serial = start.elapsed();
 
         println!("Serial: \t {:?}", serial);
 
         let start = Instant::now();
-        gbm.euler_maruyama(10.0, 0.0, 1.0, 125, 10000, true, None, None);
+        gbm.euler_maruyama(10.0, 0.0, 1.0, 125, 10000, true, None);
         let parallel = start.elapsed();
 
         println!("Parallel: \t {:?}", parallel);
