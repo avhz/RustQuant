@@ -20,15 +20,9 @@ use std::cmp::Ordering::{Equal, Greater, Less};
 #[cfg(feature = "seedable")]
 use rand::{rngs::StdRng, SeedableRng};
 
-/// Struct to contain the time points and path values of the process.
-pub struct Trajectories {
-    /// Vector of time points.
-    pub times: Vec<f64>,
-    /// Vector of process trajectories.
-    pub paths: Vec<Vec<f64>>,
-}
+use super::Trajectories;
 
-/// Trait to implement stochastic processes.
+/// Trait to implement fractional stochastic processes.
 pub trait FractionalStochasticProcess: Sync {
     /// Base method for the process' drift.
     fn drift(&self, x: f64, t: f64) -> f64;
