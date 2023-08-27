@@ -174,6 +174,14 @@ pub mod instruments {
 /// This includes currencies, cashflows, exchange rates, and money types,
 /// among other things.
 pub mod money {
+    pub use crate::money::{cashflows::*, currencies::*, quotes::*};
+
+    /// Submodule of `money`: cashflow definitions.
+    pub mod cashflows;
+    // /// Submodule of `money`: legs definitions.
+    // pub mod legs;
+    /// Submodule of `money`: quotes definitions.
+    pub mod quotes;
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // CURRENCIES MODULE

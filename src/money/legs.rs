@@ -7,13 +7,17 @@
 //! Submodule of cashflows for defining legs.
 //! A leg is a sequence of cashflows.
 
+use super::Cashflow;
 use time::OffsetDateTime;
 
-pub struct Leg {
-    cashflows: Vec<Box<dyn Cashflow>>,
+pub struct Leg<CF>
+where
+    CF: Cashflow,
+{
+    cashflows: Vec<CF>,
 }
 
-impl Leg {
+impl<CF> Leg<CF> {
     pub fn new(cashflows: Vec<Box<dyn Cashflow>>) -> Self {
         Leg { cashflows }
     }

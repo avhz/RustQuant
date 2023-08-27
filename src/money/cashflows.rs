@@ -4,14 +4,17 @@
 // See LICENSE or <https://www.gnu.org/licenses/>.
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-//! Cashflows module.
+//! Cashflows module.s
 
 use time::OffsetDateTime;
 
 /// Cashflow trait.
 pub trait Cashflow {
+    /// Amount of the cashflow.
     fn amount(&self) -> f64;
+    /// Date of the cashflow.
     fn date(&self) -> OffsetDateTime;
+    /// Net present value (NPV) of the cashflow.
     fn npv<F>(&self, df: F) -> f64
     where
         F: Fn(OffsetDateTime) -> f64;
@@ -24,6 +27,7 @@ pub struct SimpleCashflow {
 }
 
 impl SimpleCashflow {
+    /// Create a new simple cashflow.
     pub fn new(amount: f64, date: OffsetDateTime) -> Self {
         SimpleCashflow { amount, date }
     }
@@ -43,23 +47,5 @@ impl Cashflow for SimpleCashflow {
         F: Fn(OffsetDateTime) -> f64,
     {
         self.amount * df(self.date)
-    }
-}
-
-/// Cashflows type.
-pub struct Cashflows {
-    cashflows: Vec<Box<dyn Cashflow>>,
-}
-
-impl Cashflows {
-    pub fn new(cashflows: Vec<Box<dyn Cashflow>>) -> Self {
-        Cashflows { cashflows }
-    }
-
-    pub fn npv<F>(&self, df: F) -> f64
-    where
-        F: Fn(OffsetDateTime) -> f64,
-    {
-        self.cashflows.iter().map(|x| x.npv(&df)).sum()
     }
 }
