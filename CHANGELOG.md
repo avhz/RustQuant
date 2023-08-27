@@ -1,5 +1,11 @@
 # Change Log
 
+## 27 August 2023
+
+- 150+ currencies added (definitions according to [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217)).
+- Basic arithmetic operations (addition, subtraction, multiplication, division) on `Money` objects.
+- Fractional Brownian Motion generator.
+
 ## 6 July 2023
 
 - Compute returns (simple, arithmetic, absolute) on Yahoo! Finance timeseries downloaded into Polars `DataFrame`s.

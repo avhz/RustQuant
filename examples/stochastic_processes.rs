@@ -21,6 +21,7 @@ fn main() {
     let hl = HoLee::new(0.2, theta_t);
     let hw = HullWhite::new(0.1, 0.2, theta_t);
     let ou = OrnsteinUhlenbeck::new(0.05, 0.9, 0.1);
+    let fbm = FractionalBrownianMotion::new(0.7);
 
     // Generate path using Euler-Maruyama scheme.
     // Parameters: x_0, t_0, t_n, n, sims, parallel.
@@ -33,6 +34,7 @@ fn main() {
     let hl_out  = hl.euler_maruyama(10.0, 0.0, 0.5, 1000, 1, false);
     let hw_out  = hw.euler_maruyama(10.0, 0.0, 0.5, 1000, 1, false);
     let ou_out  = ou.euler_maruyama(10.0, 0.0, 0.5, 1000, 1, false);
+    let fbm_out = fbm.euler_maruyama(0.0, 0.0, 0.5, 1000, 1, false);
 
     // Plot the paths.
     plot_vector(abm_out.paths[0].clone(), "./images/arithmetic_brownian_motion.png").unwrap();
@@ -44,6 +46,7 @@ fn main() {
     plot_vector(hl_out.paths[0].clone(),  "./images/ho_lee.png").unwrap();
     plot_vector(hw_out.paths[0].clone(),  "./images/hull_white.png").unwrap();
     plot_vector(ou_out.paths[0].clone(),  "./images/ornstein_uhlenbeck.png").unwrap();
+    plot_vector(fbm_out.paths[0].clone(), "./images/fractional_brownian_motion.png").unwrap();
 }
 
 fn theta_t(_t: f64) -> f64 {

@@ -34,7 +34,7 @@ pub struct Currency {
 /// Money struct.
 #[derive(Debug, Clone, Copy)]
 pub struct Money {
-    /// The currency.
+    /// The underlying currency.
     pub currency: Currency,
     /// The amount.
     pub amount: f64,

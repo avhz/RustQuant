@@ -182,8 +182,6 @@ pub mod money {
     pub mod currencies {
         pub use crate::money::currencies::{currency::*, iso_currencies::*};
 
-        /// Submodule of `currencies`: Antarctic currency.
-        pub mod antarctica;
         /// Submodule of `currencies`: currency data struct.
         pub mod currency;
         /// Submodule of `currencies`: currency exchange rates.

@@ -4,18 +4,15 @@
 // See LICENSE or <https://www.gnu.org/licenses/>.
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+use crate::stochastics::*;
 use nalgebra::{DMatrix, DVector, Dim, Dyn, RowDVector};
 use rand::Rng;
-use rand_distr::StandardNormal;
-use rayon::prelude::*;
-use std::cmp::Ordering::{Equal, Greater, Less};
-
 #[cfg(feature = "seedable")]
 use rand::{rngs::StdRng, SeedableRng};
+use rand_distr::StandardNormal;
+use rayon::prelude::*;
 
-use crate::stochastics::*;
-
-/// Struct containin the Geometric Brownian Motion parameters.
+/// Struct containin the Fractional Brownian Motion parameters.
 #[derive(Debug)]
 pub struct FractionalBrownianMotion {
     /// Hurst parameter of the process.
@@ -24,19 +21,22 @@ pub struct FractionalBrownianMotion {
 
 impl Default for FractionalBrownianMotion {
     fn default() -> Self {
-        Self::new(0.7)
+        Self::new(0.5)
     }
 }
 
 impl FractionalBrownianMotion {
-    /// Create a new Geometric Brownian Motion process.
+    /// Create a new Fractional Brownian Motion process.
     pub fn new(hurst: f64) -> Self {
         assert!((0.0..=1.0).contains(&hurst));
+
         Self { hurst }
     }
 
-    /// Autocovariance function.
-    fn afc_vector(&self, n: usize, hurst: f64) -> RowDVector<f64> {
+    /// Autocovariance function (ACF).
+    fn acf_vector(&self, n: usize) -> RowDVector<f64> {
+        let h = self.hurst;
+
         let mut v = RowDVector::<f64>::zeros(n);
         v[0] = 1.0;
 
@@ -44,25 +44,25 @@ impl FractionalBrownianMotion {
             let idx = i as f64;
 
             v[i] = 0.5
-                * ((idx + 1.0).powf(2.0 * hurst) - 2.0 * idx.powf(2.0 * hurst)
-                    + (idx - 1.0).powf(2.0 * hurst))
+                * ((idx + 1.0).powf(2.0 * h) - 2.0 * idx.powf(2.0 * h) + (idx - 1.0).powf(2.0 * h))
         }
 
         v
     }
 
     /// Autocovariance matrix.
-    fn afc_matrix_sqrt(&self, n: usize, hurst: f64) -> DMatrix<f64> {
-        let acf_v = self.afc_vector(n, hurst);
-        let mut m = DMatrix::<f64>::zeros_generic(Dyn::from_usize(n), Dyn::from_usize(n));
+    fn acf_matrix_sqrt(&self, n: usize) -> DMatrix<f64> {
+        let acf_vector = self.acf_vector(n);
 
-        for i in 0..n {
-            for j in 0..n {
-                match i.cmp(&j) {
-                    Equal => m[(i, j)] = acf_v[0],
-                    Greater => m[(i, j)] = acf_v[i - j],
-                    Less => continue,
-                }
+        let mut m = DMatrix::<f64>::from_diagonal_element_generic(
+            Dyn::from_usize(n),
+            Dyn::from_usize(n),
+            acf_vector[0],
+        );
+
+        for i in 1..n {
+            for j in 0..i {
+                m[(i, j)] = acf_vector[i - j];
             }
         }
 
@@ -70,20 +70,20 @@ impl FractionalBrownianMotion {
     }
 
     /// Fractional Gaussian noise.
-    fn fgn_cholesky(&self, n: usize, hurst: f64) -> RowDVector<f64> {
-        let acf_sqrt = self.afc_matrix_sqrt(n, hurst);
+    fn fgn_cholesky(&self, n: usize) -> RowDVector<f64> {
+        let acf_sqrt = self.acf_matrix_sqrt(n);
         let noise = rand::thread_rng()
             .sample_iter::<f64, StandardNormal>(StandardNormal)
             .take(n)
             .collect();
         let noise = DVector::<f64>::from_vec(noise);
 
-        (acf_sqrt * noise).transpose() * (n as f64).powf(-hurst)
+        (acf_sqrt * noise).transpose() * (n as f64).powf(-self.hurst)
     }
 
     #[cfg(feature = "seedable")]
-    fn seedable_fgn_cholesky(&self, n: usize, hurst: f64, seed: u64) -> RowDVector<f64> {
-        let acf_sqrt = self.afc_matrix_sqrt(n, hurst);
+    fn seedable_fgn_cholesky(&self, n: usize, seed: u64) -> RowDVector<f64> {
+        let acf_sqrt = self.acf_matrix_sqrt(n);
         let rng = StdRng::seed_from_u64(seed);
         let noise = rng
             .sample_iter::<f64, StandardNormal>(StandardNormal)
@@ -91,7 +91,7 @@ impl FractionalBrownianMotion {
             .collect();
         let noise = DVector::<f64>::from_vec(noise);
 
-        (acf_sqrt * noise).transpose() * (n as f64).powf(-hurst)
+        (acf_sqrt * noise).transpose() * (n as f64).powf(-self.hurst)
     }
 }
 
@@ -126,7 +126,7 @@ impl StochasticProcess for FractionalBrownianMotion {
         let times: Vec<f64> = (0..=n_steps).map(|t| t_0 + dt * (t as f64)).collect();
 
         let path_generator = |path: &mut Vec<f64>| {
-            let fgn = self.fgn_cholesky(n_steps, self.hurst);
+            let fgn = self.fgn_cholesky(n_steps);
 
             for t in 0..n_steps {
                 path[t + 1] = path[t]
@@ -164,7 +164,7 @@ impl StochasticProcess for FractionalBrownianMotion {
         let times: Vec<f64> = (0..=n_steps).map(|t| t_0 + dt * (t as f64)).collect();
 
         let path_generator = |path: &mut Vec<f64>| {
-            let fgn = self.seedable_fgn_cholesky(n_steps, self.hurst, seed);
+            let fgn = self.seedable_fgn_cholesky(n_steps, seed);
 
             for t in 0..n_steps {
                 path[t + 1] = path[t]
@@ -188,47 +188,40 @@ impl StochasticProcess for FractionalBrownianMotion {
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 #[cfg(test)]
-mod sde_tests {
+mod test_fractional_brownian_motion {
     // use std::time::Instant;
 
     use super::*;
     use crate::{assert_approx_equal, utilities::*};
 
     #[test]
+    fn test_chol() {
+        let fbm = FractionalBrownianMotion::new(0.7);
+        let n = 3;
+        let hurst = 0.7;
+
+        let acf_vector = fbm.acf_vector(n);
+        let acf_matrix = fbm.acf_matrix_sqrt(n);
+
+        println!("ACF vector = {:?}", acf_vector);
+        println!("ACF matrix = {:?}", acf_matrix);
+
+        let noise = rand::thread_rng()
+            .sample_iter::<f64, StandardNormal>(StandardNormal)
+            .take(n)
+            .collect();
+        let noise = DVector::<f64>::from_vec(noise);
+
+        let fgn = (acf_matrix * noise).transpose() * (n as f64).powf(-hurst);
+
+        println!("{:?}", fgn);
+    }
+
+    #[test]
     fn test_brownian_motion() -> Result<(), Box<dyn std::error::Error>> {
         let fbm = FractionalBrownianMotion::new(0.7);
-
-        // AT LEAST 100 PATHS BEFORE PARALLEL IS WORTH IT.
-        // for _steps in [1, 10, 100, 1000] {
-        //     for paths in [1, 10, 100, 1000] {
-        //         let start_serial = Instant::now();
-        //         (&bm).euler_maruyama(10.0, 0.0, 0.5, 1000, paths, false);
-        //         let duration_serial = start_serial.elapsed();
-
-        //         let start_parallel = Instant::now();
-        //         (&bm).euler_maruyama(10.0, 0.0, 0.5, 1000, paths, true);
-        //         let duration_parallel = start_parallel.elapsed();
-
-        //         println!(
-        //             "{},{},{:?},{:?}",
-        //             1000,
-        //             paths,
-        //             duration_serial.as_micros(),
-        //             duration_parallel.as_micros()
-        //         );
-        //     }
-        // }
-        // assert!(1 == 2);
-
         let output_serial = fbm.euler_maruyama(0.0, 0.0, 0.5, 100, 1000, false);
         // let output_parallel = (&bm).euler_maruyama(10.0, 0.0, 0.5, 100, 10, true);
-
-        // let file1 = "./images/BM1.png";
-        // plot_vector((&output_serial.trajectories[0]).clone(), file1).unwrap();
-        // let file2 = "./images/BM2.png";
-        // plot_vector((&output_serial.trajectories[1]).clone(), file2).unwrap();
-        // let file2 = "./images/BM3_parallel.png";
-        // plot_vector((&output_parallel.trajectories[0]).clone(), file2)
 
         // Test the distribution of the final values.
         let X_T: Vec<f64> = output_serial
@@ -237,12 +230,10 @@ mod sde_tests {
             .filter_map(|v| v.last().cloned())
             .collect();
 
-        let E_XT = mean(&X_T, MeanType::Arithmetic);
-        let V_XT = variance(&X_T, VarianceType::Sample);
         // E[X_T] = 0
-        assert_approx_equal!(E_XT, 0.0, 0.5);
+        assert_approx_equal!(mean(&X_T, MeanType::Arithmetic), 0.0, 0.5);
         // V[X_T] = T
-        assert_approx_equal!(V_XT, 0.5, 0.5);
+        assert_approx_equal!(variance(&X_T, VarianceType::Sample), 0.5, 0.5);
 
         std::result::Result::Ok(())
     }

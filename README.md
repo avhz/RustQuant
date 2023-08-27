@@ -384,26 +384,26 @@ fn main() {
 
 The following is a list of stochastic processes that can be generated.
 
-- [x] Brownian Motion
-- [x] Arithmetic Brownian Motion
-  - $dX(t) = \mu dt + \sigma dW(t)$
-- [x] Geometric Brownian Motion
-  - $dX(t) = \mu X(t) dt + \sigma X(t) dW(t)$
-  - Models: Black-Scholes (1973), Rendleman-Bartter (1980)
-- [x] Cox-Ingersoll-Ross (1985)
+- Brownian Motions:
+  - Standard Brownian Motion
+    - $dX(t) = dW(t)$
+  - Arithmetic Brownian Motion
+    - $dX(t) = \mu dt + \sigma dW(t)$
+  - Geometric Brownian Motion
+    - $dX(t) = \mu X(t) dt + \sigma X(t) dW(t)$
+  - Fractional Brownian Motion
+- Cox-Ingersoll-Ross (1985)
   - $dX(t) = \left[ \theta - \alpha X(t) \right] dt + \sigma \sqrt{r_t} dW(t)$
-- [x] Ornstein-Uhlenbeck process
+- Ornstein-Uhlenbeck process
   - $dX(t) = \theta \left[ \mu - X(t) \right] dt + \sigma dW(t)$
-  - Models: Vasicek (1977)
-- [x] Ho-Lee (1986)
+- Ho-Lee (1986)
   - $dX(t) = \theta(t) dt + \sigma dW(t)$
-- [x] Hull-White (1990)
+- Hull-White (1990)
   - $dX(t) = \left[ \theta(t) - \alpha X(t) \right]dt + \sigma dW(t)$
-- [x] Extended Vasicek (1990)
+- Extended Vasicek (1990)
   - $dX(t) = \left[ \theta(t) - \alpha(t) X(t) \right] dt + \sigma dW(t)$
-- [x] Black-Derman-Toy (1990)
+- Black-Derman-Toy (1990)
   - $d\ln[X(t)] = \left[ \theta(t) + \frac{\sigma'(t)}{\sigma(t)}\ln[X(t)] \right]dt + \sigma_t dW(t)$
-  - $d\ln[X(t)] = \theta(t) dt + \sigma dW(t)$
 
 ```rust
 use RustQuant::stochastics::*;
