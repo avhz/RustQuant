@@ -31,7 +31,7 @@ impl Default for FractionalBrownianMotion {
 impl FractionalBrownianMotion {
     /// Create a new Geometric Brownian Motion process.
     pub fn new(hurst: f64) -> Self {
-        assert!(hurst >= 0.0 && hurst <= 1.0);
+        assert!((0.0..=1.0).contains(&hurst));
         Self { hurst }
     }
 
@@ -84,7 +84,7 @@ impl FractionalBrownianMotion {
     #[cfg(feature = "seedable")]
     fn seedable_fgn_cholesky(&self, n: usize, hurst: f64, seed: u64) -> RowDVector<f64> {
         let acf_sqrt = self.afc_matrix_sqrt(n, hurst);
-        let mut rng = StdRng::seed_from_u64(seed);
+        let rng = StdRng::seed_from_u64(seed);
         let noise = rng
             .sample_iter::<f64, StandardNormal>(StandardNormal)
             .take(n)
