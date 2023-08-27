@@ -12,7 +12,7 @@ use super::Currency;
 use super::ISO_4217;
 
 /// United Arab Emirates dirham (AED)
-pub const AED: &'static Currency = &Currency {
+pub const AED: Currency = Currency {
     name: "United Arab Emirates Dirham",
     symbol: "د.إ",
     code: ISO_4217 {
@@ -24,7 +24,7 @@ pub const AED: &'static Currency = &Currency {
 };
 
 /// Afghan afghani (AFN)
-pub const AFN: &'static Currency = &Currency {
+pub const AFN: Currency = Currency {
     name: "Afghan Afghani",
     symbol: "؋",
     code: ISO_4217 {
@@ -36,7 +36,7 @@ pub const AFN: &'static Currency = &Currency {
 };
 
 /// Albanian lek (ALL)
-pub const ALL: &'static Currency = &Currency {
+pub const ALL: Currency = Currency {
     name: "Albanian Lek",
     symbol: "L",
     code: ISO_4217 {
@@ -48,7 +48,7 @@ pub const ALL: &'static Currency = &Currency {
 };
 
 /// Armenian dram (AMD)
-pub const AMD: &'static Currency = &Currency {
+pub const AMD: Currency = Currency {
     name: "Armenian Dram",
     symbol: "֏",
     code: ISO_4217 {
@@ -60,7 +60,7 @@ pub const AMD: &'static Currency = &Currency {
 };
 
 /// Netherlands Antillean guilder (ANG)
-pub const ANG: &'static Currency = &Currency {
+pub const ANG: Currency = Currency {
     name: "Netherlands Antillean Guilder",
     symbol: "ƒ",
     code: ISO_4217 {
@@ -72,7 +72,7 @@ pub const ANG: &'static Currency = &Currency {
 };
 
 /// Angolan kwanza (AOA)
-pub const AOA: &'static Currency = &Currency {
+pub const AOA: Currency = Currency {
     name: "Angolan Kwanza",
     symbol: "Kz",
     code: ISO_4217 {
@@ -84,7 +84,7 @@ pub const AOA: &'static Currency = &Currency {
 };
 
 /// Argentine peso (ARS)
-pub const ARS: &'static Currency = &Currency {
+pub const ARS: Currency = Currency {
     name: "Argentine Peso",
     symbol: "AR$",
     code: ISO_4217 {
@@ -96,7 +96,7 @@ pub const ARS: &'static Currency = &Currency {
 };
 
 /// Australian dollar (AUD)
-pub const AUD: &'static Currency = &Currency {
+pub const AUD: Currency = Currency {
     name: "Australian Dollar",
     symbol: "AU$",
     code: ISO_4217 {
@@ -108,7 +108,7 @@ pub const AUD: &'static Currency = &Currency {
 };
 
 /// Aruban florin (AWG)
-pub const AWG: &'static Currency = &Currency {
+pub const AWG: Currency = Currency {
     name: "Aruban Florin",
     symbol: "ƒ",
     code: ISO_4217 {
@@ -120,7 +120,7 @@ pub const AWG: &'static Currency = &Currency {
 };
 
 /// Azerbbaijani manat (AZN)
-pub const AZN: &'static Currency = &Currency {
+pub const AZN: Currency = Currency {
     name: "Azerbaijani Manat",
     symbol: "₼",
     code: ISO_4217 {
@@ -132,7 +132,7 @@ pub const AZN: &'static Currency = &Currency {
 };
 
 /// Bosnia and Herzegovina convertible mark (BAM)
-pub const BAM: &'static Currency = &Currency {
+pub const BAM: Currency = Currency {
     name: "Bosnia and Herzegovina Convertible Mark",
     symbol: "KM",
     code: ISO_4217 {
@@ -144,7 +144,7 @@ pub const BAM: &'static Currency = &Currency {
 };
 
 /// Barbados dollar (BBD)
-pub const BBD: &'static Currency = &Currency {
+pub const BBD: Currency = Currency {
     name: "Barbados Dollar",
     symbol: "Bds$",
     code: ISO_4217 {
@@ -156,7 +156,7 @@ pub const BBD: &'static Currency = &Currency {
 };
 
 /// Bangladeshi taka (BDT)
-pub const BDT: &'static Currency = &Currency {
+pub const BDT: Currency = Currency {
     name: "Bangladeshi Taka",
     symbol: "৳",
     code: ISO_4217 {
@@ -168,7 +168,7 @@ pub const BDT: &'static Currency = &Currency {
 };
 
 /// Bulgarian lev (BGN)
-pub const BGN: &'static Currency = &Currency {
+pub const BGN: Currency = Currency {
     name: "Bulgarian Lev",
     symbol: "лв",
     code: ISO_4217 {
@@ -180,7 +180,7 @@ pub const BGN: &'static Currency = &Currency {
 };
 
 /// Bahraini dinar (BHD)
-pub const BHD: &'static Currency = &Currency {
+pub const BHD: Currency = Currency {
     name: "Bahraini Dinar",
     symbol: "BD",
     code: ISO_4217 {
@@ -192,7 +192,7 @@ pub const BHD: &'static Currency = &Currency {
 };
 
 /// Burundian franc (BIF)
-pub const BIF: &'static Currency = &Currency {
+pub const BIF: Currency = Currency {
     name: "Burundian Franc",
     symbol: "FBu",
     code: ISO_4217 {
@@ -204,7 +204,7 @@ pub const BIF: &'static Currency = &Currency {
 };
 
 /// Bermudian dollar (BMD)
-pub const BMD: &'static Currency = &Currency {
+pub const BMD: Currency = Currency {
     name: "Bermudian Dollar",
     symbol: "BD$",
     code: ISO_4217 {
@@ -216,7 +216,7 @@ pub const BMD: &'static Currency = &Currency {
 };
 
 /// Brunei dollar (BND)
-pub const BND: &'static Currency = &Currency {
+pub const BND: Currency = Currency {
     name: "Brunei Dollar",
     symbol: "BN$",
     code: ISO_4217 {
@@ -228,7 +228,7 @@ pub const BND: &'static Currency = &Currency {
 };
 
 /// Boliviano (BOB)
-pub const BOB: &'static Currency = &Currency {
+pub const BOB: Currency = Currency {
     name: "Boliviano",
     symbol: "Bs",
     code: ISO_4217 {
@@ -240,7 +240,7 @@ pub const BOB: &'static Currency = &Currency {
 };
 
 /// Brazilian real (BRL)
-pub const BRL: &'static Currency = &Currency {
+pub const BRL: Currency = Currency {
     name: "Brazilian Real",
     symbol: "R$",
     code: ISO_4217 {
@@ -252,7 +252,7 @@ pub const BRL: &'static Currency = &Currency {
 };
 
 /// Bahamian dollar (BSD)
-pub const BSD: &'static Currency = &Currency {
+pub const BSD: Currency = Currency {
     name: "Bahamian Dollar",
     symbol: "B$",
     code: ISO_4217 {
@@ -264,7 +264,7 @@ pub const BSD: &'static Currency = &Currency {
 };
 
 /// Bhutanese ngultrum (BTN)
-pub const BTN: &'static Currency = &Currency {
+pub const BTN: Currency = Currency {
     name: "Bhutanese Ngultrum",
     symbol: "Nu.",
     code: ISO_4217 {
@@ -276,7 +276,7 @@ pub const BTN: &'static Currency = &Currency {
 };
 
 /// Botswana pula (BWP)
-pub const BWP: &'static Currency = &Currency {
+pub const BWP: Currency = Currency {
     name: "Botswana Pula",
     symbol: "P",
     code: ISO_4217 {
@@ -288,7 +288,7 @@ pub const BWP: &'static Currency = &Currency {
 };
 
 /// Belarusian ruble (BYN)
-pub const BYN: &'static Currency = &Currency {
+pub const BYN: Currency = Currency {
     name: "Belarusian Ruble",
     symbol: "Br",
     code: ISO_4217 {
@@ -300,7 +300,7 @@ pub const BYN: &'static Currency = &Currency {
 };
 
 /// Belize dollar (BZD)
-pub const BZD: &'static Currency = &Currency {
+pub const BZD: Currency = Currency {
     name: "Belize Dollar",
     symbol: "BZ$",
     code: ISO_4217 {
@@ -312,7 +312,7 @@ pub const BZD: &'static Currency = &Currency {
 };
 
 /// Canadian dollar (CAD)
-pub const CAD: &'static Currency = &Currency {
+pub const CAD: Currency = Currency {
     name: "Canadian Dollar",
     symbol: "CA$",
     code: ISO_4217 {
@@ -324,7 +324,7 @@ pub const CAD: &'static Currency = &Currency {
 };
 
 /// Congolese franc (CDF)
-pub const CDF: &'static Currency = &Currency {
+pub const CDF: Currency = Currency {
     name: "Congolese Franc",
     symbol: "FC",
     code: ISO_4217 {
@@ -336,7 +336,7 @@ pub const CDF: &'static Currency = &Currency {
 };
 
 /// Swiss franc (CHF)
-pub const CHF: &'static Currency = &Currency {
+pub const CHF: Currency = Currency {
     name: "Swiss Franc",
     symbol: "CHF",
     code: ISO_4217 {
@@ -348,7 +348,7 @@ pub const CHF: &'static Currency = &Currency {
 };
 
 /// Chilean peso (CLP)
-pub const CLP: &'static Currency = &Currency {
+pub const CLP: Currency = Currency {
     name: "Chilean Peso",
     symbol: "CL$",
     code: ISO_4217 {
@@ -360,7 +360,7 @@ pub const CLP: &'static Currency = &Currency {
 };
 
 /// Colombian peso (COP)
-pub const COP: &'static Currency = &Currency {
+pub const COP: Currency = Currency {
     name: "Colombian Peso",
     symbol: "CO$",
     code: ISO_4217 {
@@ -372,7 +372,7 @@ pub const COP: &'static Currency = &Currency {
 };
 
 /// Costa Rican colon (CRC)
-pub const CRC: &'static Currency = &Currency {
+pub const CRC: Currency = Currency {
     name: "Costa Rican Colon",
     symbol: "₡",
     code: ISO_4217 {
@@ -384,7 +384,7 @@ pub const CRC: &'static Currency = &Currency {
 };
 
 /// Cuban convertible peso (CUC)
-pub const CUC: &'static Currency = &Currency {
+pub const CUC: Currency = Currency {
     name: "Cuban Convertible Peso",
     symbol: "$",
     code: ISO_4217 {
@@ -396,7 +396,7 @@ pub const CUC: &'static Currency = &Currency {
 };
 
 /// Cuban peso (CUP)
-pub const CUP: &'static Currency = &Currency {
+pub const CUP: Currency = Currency {
     name: "Cuban Peso",
     symbol: "$MN",
     code: ISO_4217 {
@@ -408,7 +408,7 @@ pub const CUP: &'static Currency = &Currency {
 };
 
 /// Cape Verdean escudo (CVE)
-pub const CVE: &'static Currency = &Currency {
+pub const CVE: Currency = Currency {
     name: "Cape Verdean Escudo",
     symbol: "Esc",
     code: ISO_4217 {
@@ -420,7 +420,7 @@ pub const CVE: &'static Currency = &Currency {
 };
 
 /// Czech koruna (CZK)
-pub const CZK: &'static Currency = &Currency {
+pub const CZK: Currency = Currency {
     name: "Czech Koruna",
     symbol: "Kč",
     code: ISO_4217 {
@@ -432,7 +432,7 @@ pub const CZK: &'static Currency = &Currency {
 };
 
 /// Djiboutian franc (DJF)
-pub const DJF: &'static Currency = &Currency {
+pub const DJF: Currency = Currency {
     name: "Djiboutian Franc",
     symbol: "Fdj",
     code: ISO_4217 {
@@ -444,7 +444,7 @@ pub const DJF: &'static Currency = &Currency {
 };
 
 /// Danish krone (DKK)
-pub const DKK: &'static Currency = &Currency {
+pub const DKK: Currency = Currency {
     name: "Danish Krone",
     symbol: "kr",
     code: ISO_4217 {
@@ -456,7 +456,7 @@ pub const DKK: &'static Currency = &Currency {
 };
 
 /// Dominican peso (DOP)
-pub const DOP: &'static Currency = &Currency {
+pub const DOP: Currency = Currency {
     name: "Dominican Peso",
     symbol: "RD$",
     code: ISO_4217 {
@@ -468,7 +468,7 @@ pub const DOP: &'static Currency = &Currency {
 };
 
 /// Algerian dinar (DZD)
-pub const DZD: &'static Currency = &Currency {
+pub const DZD: Currency = Currency {
     name: "Algerian Dinar",
     symbol: "دج",
     code: ISO_4217 {
@@ -480,7 +480,7 @@ pub const DZD: &'static Currency = &Currency {
 };
 
 /// Egyptian pound (EGP)
-pub const EGP: &'static Currency = &Currency {
+pub const EGP: Currency = Currency {
     name: "Egyptian Pound",
     symbol: "E£",
     code: ISO_4217 {
@@ -492,7 +492,7 @@ pub const EGP: &'static Currency = &Currency {
 };
 
 /// Eritrean nakfa (ERN)
-pub const ERN: &'static Currency = &Currency {
+pub const ERN: Currency = Currency {
     name: "Eritrean Nakfa",
     symbol: "Nfk",
     code: ISO_4217 {
@@ -504,7 +504,7 @@ pub const ERN: &'static Currency = &Currency {
 };
 
 /// Ethiopian birr (ETB)
-pub const ETB: &'static Currency = &Currency {
+pub const ETB: Currency = Currency {
     name: "Ethiopian Birr",
     symbol: "Br",
     code: ISO_4217 {
@@ -516,7 +516,7 @@ pub const ETB: &'static Currency = &Currency {
 };
 
 /// Euro (EUR)
-pub const EUR: &'static Currency = &Currency {
+pub const EUR: Currency = Currency {
     name: "Euro",
     symbol: "€",
     code: ISO_4217 {
@@ -528,7 +528,7 @@ pub const EUR: &'static Currency = &Currency {
 };
 
 /// Fijian dollar (FJD)
-pub const FJD: &'static Currency = &Currency {
+pub const FJD: Currency = Currency {
     name: "Fijian Dollar",
     symbol: "FJ$",
     code: ISO_4217 {
@@ -540,7 +540,7 @@ pub const FJD: &'static Currency = &Currency {
 };
 
 /// Falkland Islands pound (FKP)
-pub const FKP: &'static Currency = &Currency {
+pub const FKP: Currency = Currency {
     name: "Falkland Islands Pound",
     symbol: "FK£",
     code: ISO_4217 {
@@ -552,7 +552,7 @@ pub const FKP: &'static Currency = &Currency {
 };
 
 /// Pound sterling (GBP)
-pub const GBP: &'static Currency = &Currency {
+pub const GBP: Currency = Currency {
     name: "Pound Sterling",
     symbol: "£",
     code: ISO_4217 {
@@ -564,7 +564,7 @@ pub const GBP: &'static Currency = &Currency {
 };
 
 /// Georgian lari (GEL)
-pub const GEL: &'static Currency = &Currency {
+pub const GEL: Currency = Currency {
     name: "Georgian Lari",
     symbol: "₾",
     code: ISO_4217 {
@@ -576,7 +576,7 @@ pub const GEL: &'static Currency = &Currency {
 };
 
 /// Ghanaian cedi (GHS)
-pub const GHS: &'static Currency = &Currency {
+pub const GHS: Currency = Currency {
     name: "Ghanaian Cedi",
     symbol: "GH₵",
     code: ISO_4217 {
@@ -588,7 +588,7 @@ pub const GHS: &'static Currency = &Currency {
 };
 
 /// Gibraltar pound (GIP)
-pub const GIP: &'static Currency = &Currency {
+pub const GIP: Currency = Currency {
     name: "Gibraltar Pound",
     symbol: "£",
     code: ISO_4217 {
@@ -600,7 +600,7 @@ pub const GIP: &'static Currency = &Currency {
 };
 
 /// Gambian dalasi (GMD)
-pub const GMD: &'static Currency = &Currency {
+pub const GMD: Currency = Currency {
     name: "Gambian Dalasi",
     symbol: "D",
     code: ISO_4217 {
@@ -612,7 +612,7 @@ pub const GMD: &'static Currency = &Currency {
 };
 
 /// Guinean franc (GNF)
-pub const GNF: &'static Currency = &Currency {
+pub const GNF: Currency = Currency {
     name: "Guinean Franc",
     symbol: "FG",
     code: ISO_4217 {
@@ -624,7 +624,7 @@ pub const GNF: &'static Currency = &Currency {
 };
 
 /// Guatemalan quetzal (GTQ)
-pub const GTQ: &'static Currency = &Currency {
+pub const GTQ: Currency = Currency {
     name: "Guatemalan Quetzal",
     symbol: "Q",
     code: ISO_4217 {
@@ -636,7 +636,7 @@ pub const GTQ: &'static Currency = &Currency {
 };
 
 /// Guyanese dollar (GYD)
-pub const GYD: &'static Currency = &Currency {
+pub const GYD: Currency = Currency {
     name: "Guyanese Dollar",
     symbol: "GY$",
     code: ISO_4217 {
@@ -648,7 +648,7 @@ pub const GYD: &'static Currency = &Currency {
 };
 
 /// Hong Kong dollar (HKD)
-pub const HKD: &'static Currency = &Currency {
+pub const HKD: Currency = Currency {
     name: "Hong Kong Dollar",
     symbol: "HK$",
     code: ISO_4217 {
@@ -660,7 +660,7 @@ pub const HKD: &'static Currency = &Currency {
 };
 
 /// Honduran lempira (HNL)
-pub const HNL: &'static Currency = &Currency {
+pub const HNL: Currency = Currency {
     name: "Honduran Lempira",
     symbol: "L",
     code: ISO_4217 {
@@ -672,7 +672,7 @@ pub const HNL: &'static Currency = &Currency {
 };
 
 /// Croatian kuna (HRK)
-pub const HRK: &'static Currency = &Currency {
+pub const HRK: Currency = Currency {
     name: "Croatian Kuna",
     symbol: "kn",
     code: ISO_4217 {
@@ -684,7 +684,7 @@ pub const HRK: &'static Currency = &Currency {
 };
 
 /// Haitian gourde (HTG)
-pub const HTG: &'static Currency = &Currency {
+pub const HTG: Currency = Currency {
     name: "Haitian Gourde",
     symbol: "G",
     code: ISO_4217 {
@@ -696,7 +696,7 @@ pub const HTG: &'static Currency = &Currency {
 };
 
 /// Hungarian forint (HUF)
-pub const HUF: &'static Currency = &Currency {
+pub const HUF: Currency = Currency {
     name: "Hungarian Forint",
     symbol: "Ft",
     code: ISO_4217 {
@@ -708,7 +708,7 @@ pub const HUF: &'static Currency = &Currency {
 };
 
 /// Indonesian rupiah (IDR)
-pub const IDR: &'static Currency = &Currency {
+pub const IDR: Currency = Currency {
     name: "Indonesian Rupiah",
     symbol: "Rp",
     code: ISO_4217 {
@@ -720,7 +720,7 @@ pub const IDR: &'static Currency = &Currency {
 };
 
 /// Israeli new shekel (ILS)
-pub const ILS: &'static Currency = &Currency {
+pub const ILS: Currency = Currency {
     name: "Israeli New Shekel",
     symbol: "₪",
     code: ISO_4217 {
@@ -732,7 +732,7 @@ pub const ILS: &'static Currency = &Currency {
 };
 
 /// Indian rupee (INR)
-pub const INR: &'static Currency = &Currency {
+pub const INR: Currency = Currency {
     name: "Indian Rupee",
     symbol: "₹",
     code: ISO_4217 {
@@ -744,7 +744,7 @@ pub const INR: &'static Currency = &Currency {
 };
 
 /// Iraqi dinar (IQD)
-pub const IQD: &'static Currency = &Currency {
+pub const IQD: Currency = Currency {
     name: "Iraqi Dinar",
     symbol: "ع.د",
     code: ISO_4217 {
@@ -756,7 +756,7 @@ pub const IQD: &'static Currency = &Currency {
 };
 
 /// Iranian rial (IRR)
-pub const IRR: &'static Currency = &Currency {
+pub const IRR: Currency = Currency {
     name: "Iranian Rial",
     symbol: "﷼",
     code: ISO_4217 {
@@ -768,7 +768,7 @@ pub const IRR: &'static Currency = &Currency {
 };
 
 /// Icelandic króna (ISK)
-pub const ISK: &'static Currency = &Currency {
+pub const ISK: Currency = Currency {
     name: "Icelandic Króna",
     symbol: "kr",
     code: ISO_4217 {
@@ -780,7 +780,7 @@ pub const ISK: &'static Currency = &Currency {
 };
 
 /// Jamaican dollar (JMD)
-pub const JMD: &'static Currency = &Currency {
+pub const JMD: Currency = Currency {
     name: "Jamaican Dollar",
     symbol: "J$",
     code: ISO_4217 {
@@ -792,7 +792,7 @@ pub const JMD: &'static Currency = &Currency {
 };
 
 /// Jordanian dinar (JOD)
-pub const JOD: &'static Currency = &Currency {
+pub const JOD: Currency = Currency {
     name: "Jordanian Dinar",
     symbol: "JD",
     code: ISO_4217 {
@@ -804,7 +804,7 @@ pub const JOD: &'static Currency = &Currency {
 };
 
 /// Japanese yen (JPY)
-pub const JPY: &'static Currency = &Currency {
+pub const JPY: Currency = Currency {
     name: "Japanese Yen",
     symbol: "¥",
     code: ISO_4217 {
@@ -816,7 +816,7 @@ pub const JPY: &'static Currency = &Currency {
 };
 
 /// Kenyan shilling (KES)
-pub const KES: &'static Currency = &Currency {
+pub const KES: Currency = Currency {
     name: "Kenyan Shilling",
     symbol: "KSh",
     code: ISO_4217 {
@@ -828,7 +828,7 @@ pub const KES: &'static Currency = &Currency {
 };
 
 /// Kyrgyzstani som (KGS)
-pub const KGS: &'static Currency = &Currency {
+pub const KGS: Currency = Currency {
     name: "Kyrgyzstani Som",
     symbol: "лв",
     code: ISO_4217 {
@@ -840,7 +840,7 @@ pub const KGS: &'static Currency = &Currency {
 };
 
 /// Cambodian riel (KHR)
-pub const KHR: &'static Currency = &Currency {
+pub const KHR: Currency = Currency {
     name: "Cambodian Riel",
     symbol: "៛",
     code: ISO_4217 {
@@ -852,7 +852,7 @@ pub const KHR: &'static Currency = &Currency {
 };
 
 /// Comoro franc (KMF)
-pub const KMF: &'static Currency = &Currency {
+pub const KMF: Currency = Currency {
     name: "Comoro Franc",
     symbol: "CF",
     code: ISO_4217 {
@@ -864,7 +864,7 @@ pub const KMF: &'static Currency = &Currency {
 };
 
 /// North Korean won (KPW)
-pub const KPW: &'static Currency = &Currency {
+pub const KPW: Currency = Currency {
     name: "North Korean Won",
     symbol: "₩",
     code: ISO_4217 {
@@ -876,7 +876,7 @@ pub const KPW: &'static Currency = &Currency {
 };
 
 /// South Korean won (KRW)
-pub const KRW: &'static Currency = &Currency {
+pub const KRW: Currency = Currency {
     name: "South Korean Won",
     symbol: "₩",
     code: ISO_4217 {
@@ -888,7 +888,7 @@ pub const KRW: &'static Currency = &Currency {
 };
 
 /// Kuwaiti dinar (KWD)
-pub const KWD: &'static Currency = &Currency {
+pub const KWD: Currency = Currency {
     name: "Kuwaiti Dinar",
     symbol: "KD",
     code: ISO_4217 {
@@ -900,7 +900,7 @@ pub const KWD: &'static Currency = &Currency {
 };
 
 /// Cayman Islands dollar (KYD)
-pub const KYD: &'static Currency = &Currency {
+pub const KYD: Currency = Currency {
     name: "Cayman Islands Dollar",
     symbol: "KY$",
     code: ISO_4217 {
@@ -912,7 +912,7 @@ pub const KYD: &'static Currency = &Currency {
 };
 
 /// Kazakhstani tenge (KZT)
-pub const KZT: &'static Currency = &Currency {
+pub const KZT: Currency = Currency {
     name: "Kazakhstani Tenge",
     symbol: "₸",
     code: ISO_4217 {
@@ -924,7 +924,7 @@ pub const KZT: &'static Currency = &Currency {
 };
 
 /// Lao kip (LAK)
-pub const LAK: &'static Currency = &Currency {
+pub const LAK: Currency = Currency {
     name: "Lao Kip",
     symbol: "₭",
     code: ISO_4217 {
@@ -936,7 +936,7 @@ pub const LAK: &'static Currency = &Currency {
 };
 
 /// Lebanese pound (LBP)
-pub const LBP: &'static Currency = &Currency {
+pub const LBP: Currency = Currency {
     name: "Lebanese Pound",
     symbol: "L£",
     code: ISO_4217 {
@@ -948,7 +948,7 @@ pub const LBP: &'static Currency = &Currency {
 };
 
 /// Sri Lankan rupee (LKR)
-pub const LKR: &'static Currency = &Currency {
+pub const LKR: Currency = Currency {
     name: "Sri Lankan Rupee",
     symbol: "Rs",
     code: ISO_4217 {
@@ -960,7 +960,7 @@ pub const LKR: &'static Currency = &Currency {
 };
 
 /// Liberian dollar (LRD)
-pub const LRD: &'static Currency = &Currency {
+pub const LRD: Currency = Currency {
     name: "Liberian Dollar",
     symbol: "L$",
     code: ISO_4217 {
@@ -972,7 +972,7 @@ pub const LRD: &'static Currency = &Currency {
 };
 
 /// Lesotho loti (LSL)
-pub const LSL: &'static Currency = &Currency {
+pub const LSL: Currency = Currency {
     name: "Lesotho Loti",
     symbol: "M",
     code: ISO_4217 {
@@ -984,7 +984,7 @@ pub const LSL: &'static Currency = &Currency {
 };
 
 /// Libyan dinar (LYD)
-pub const LYD: &'static Currency = &Currency {
+pub const LYD: Currency = Currency {
     name: "Libyan Dinar",
     symbol: "LD",
     code: ISO_4217 {
@@ -996,7 +996,7 @@ pub const LYD: &'static Currency = &Currency {
 };
 
 /// Moroccan dirham (MAD)
-pub const MAD: &'static Currency = &Currency {
+pub const MAD: Currency = Currency {
     name: "Moroccan Dirham",
     symbol: "MAD",
     code: ISO_4217 {
@@ -1008,7 +1008,7 @@ pub const MAD: &'static Currency = &Currency {
 };
 
 /// Moldovan leu (MDL)
-pub const MDL: &'static Currency = &Currency {
+pub const MDL: Currency = Currency {
     name: "Moldovan Leu",
     symbol: "MDL",
     code: ISO_4217 {
@@ -1020,7 +1020,7 @@ pub const MDL: &'static Currency = &Currency {
 };
 
 /// Malagasy ariary (MGA)
-pub const MGA: &'static Currency = &Currency {
+pub const MGA: Currency = Currency {
     name: "Malagasy Ariary",
     symbol: "Ar",
     code: ISO_4217 {
@@ -1032,7 +1032,7 @@ pub const MGA: &'static Currency = &Currency {
 };
 
 /// Macedonian denar (MKD)
-pub const MKD: &'static Currency = &Currency {
+pub const MKD: Currency = Currency {
     name: "Macedonian Denar",
     symbol: "ден",
     code: ISO_4217 {
@@ -1044,7 +1044,7 @@ pub const MKD: &'static Currency = &Currency {
 };
 
 /// Myanmar kyat (MMK)
-pub const MMK: &'static Currency = &Currency {
+pub const MMK: Currency = Currency {
     name: "Myanmar Kyat",
     symbol: "K",
     code: ISO_4217 {
@@ -1056,7 +1056,7 @@ pub const MMK: &'static Currency = &Currency {
 };
 
 /// Mongolian tögrög (MNT)
-pub const MNT: &'static Currency = &Currency {
+pub const MNT: Currency = Currency {
     name: "Mongolian Tögrög",
     symbol: "₮",
     code: ISO_4217 {
@@ -1068,7 +1068,7 @@ pub const MNT: &'static Currency = &Currency {
 };
 
 /// Macanese pataca (MOP)
-pub const MOP: &'static Currency = &Currency {
+pub const MOP: Currency = Currency {
     name: "Macanese Pataca",
     symbol: "MOP$",
     code: ISO_4217 {
@@ -1080,7 +1080,7 @@ pub const MOP: &'static Currency = &Currency {
 };
 
 /// Mauritanian ouguiya (MRO)
-pub const MRO: &'static Currency = &Currency {
+pub const MRO: Currency = Currency {
     name: "Mauritanian Ouguiya",
     symbol: "UM",
     code: ISO_4217 {
@@ -1092,7 +1092,7 @@ pub const MRO: &'static Currency = &Currency {
 };
 
 /// Mauritian rupee (MUR)
-pub const MUR: &'static Currency = &Currency {
+pub const MUR: Currency = Currency {
     name: "Mauritian Rupee",
     symbol: "Rs",
     code: ISO_4217 {
@@ -1104,7 +1104,7 @@ pub const MUR: &'static Currency = &Currency {
 };
 
 /// Maldivian rufiyaa (MVR)
-pub const MVR: &'static Currency = &Currency {
+pub const MVR: Currency = Currency {
     name: "Maldivian Rufiyaa",
     symbol: "Rf",
     code: ISO_4217 {
@@ -1116,7 +1116,7 @@ pub const MVR: &'static Currency = &Currency {
 };
 
 /// Malawian kwacha (MWK)
-pub const MWK: &'static Currency = &Currency {
+pub const MWK: Currency = Currency {
     name: "Malawian Kwacha",
     symbol: "MK",
     code: ISO_4217 {
@@ -1128,7 +1128,7 @@ pub const MWK: &'static Currency = &Currency {
 };
 
 /// Mexican peso (MXN)
-pub const MXN: &'static Currency = &Currency {
+pub const MXN: Currency = Currency {
     name: "Mexican Peso",
     symbol: "MX$",
     code: ISO_4217 {
@@ -1140,7 +1140,7 @@ pub const MXN: &'static Currency = &Currency {
 };
 
 /// Malaysian ringgit (MYR)
-pub const MYR: &'static Currency = &Currency {
+pub const MYR: Currency = Currency {
     name: "Malaysian Ringgit",
     symbol: "RM",
     code: ISO_4217 {
@@ -1154,7 +1154,7 @@ pub const MYR: &'static Currency = &Currency {
 // FINISH ALL THE CURRENCIES
 
 /// Mozambican metical (MZN)
-pub const MZN: &'static Currency = &Currency {
+pub const MZN: Currency = Currency {
     name: "Mozambican Metical",
     symbol: "MT",
     code: ISO_4217 {
@@ -1166,7 +1166,7 @@ pub const MZN: &'static Currency = &Currency {
 };
 
 /// Namibian dollar (NAD)
-pub const NAD: &'static Currency = &Currency {
+pub const NAD: Currency = Currency {
     name: "Namibian Dollar",
     symbol: "N$",
     code: ISO_4217 {
@@ -1178,7 +1178,7 @@ pub const NAD: &'static Currency = &Currency {
 };
 
 /// Nigerian naira (NGN)
-pub const NGN: &'static Currency = &Currency {
+pub const NGN: Currency = Currency {
     name: "Nigerian Naira",
     symbol: "₦",
     code: ISO_4217 {
@@ -1190,7 +1190,7 @@ pub const NGN: &'static Currency = &Currency {
 };
 
 /// Nicaraguan córdoba (NIO)
-pub const NIO: &'static Currency = &Currency {
+pub const NIO: Currency = Currency {
     name: "Nicaraguan Córdoba",
     symbol: "C$",
     code: ISO_4217 {
@@ -1202,7 +1202,7 @@ pub const NIO: &'static Currency = &Currency {
 };
 
 /// Norwegian krone (NOK)
-pub const NOK: &'static Currency = &Currency {
+pub const NOK: Currency = Currency {
     name: "Norwegian Krone",
     symbol: "kr",
     code: ISO_4217 {
@@ -1214,7 +1214,7 @@ pub const NOK: &'static Currency = &Currency {
 };
 
 /// Nepalese rupee (NPR)
-pub const NPR: &'static Currency = &Currency {
+pub const NPR: Currency = Currency {
     name: "Nepalese Rupee",
     symbol: "Rs",
     code: ISO_4217 {
@@ -1226,7 +1226,7 @@ pub const NPR: &'static Currency = &Currency {
 };
 
 /// New Zealand dollar (NZD)
-pub const NZD: &'static Currency = &Currency {
+pub const NZD: Currency = Currency {
     name: "New Zealand Dollar",
     symbol: "NZ$",
     code: ISO_4217 {
@@ -1238,7 +1238,7 @@ pub const NZD: &'static Currency = &Currency {
 };
 
 /// Omani rial (OMR)
-pub const OMR: &'static Currency = &Currency {
+pub const OMR: Currency = Currency {
     name: "Omani Rial",
     symbol: "OMR",
     code: ISO_4217 {
@@ -1250,7 +1250,7 @@ pub const OMR: &'static Currency = &Currency {
 };
 
 /// Panamanian balboa (PAB)
-pub const PAB: &'static Currency = &Currency {
+pub const PAB: Currency = Currency {
     name: "Panamanian Balboa",
     symbol: "B/.",
     code: ISO_4217 {
@@ -1262,7 +1262,7 @@ pub const PAB: &'static Currency = &Currency {
 };
 
 /// Peruvian sol (PEN)
-pub const PEN: &'static Currency = &Currency {
+pub const PEN: Currency = Currency {
     name: "Peruvian Sol",
     symbol: "S/.",
     code: ISO_4217 {
@@ -1274,7 +1274,7 @@ pub const PEN: &'static Currency = &Currency {
 };
 
 /// Papua New Guinean kina (PGK)
-pub const PGK: &'static Currency = &Currency {
+pub const PGK: Currency = Currency {
     name: "Papua New Guinean Kina",
     symbol: "K",
     code: ISO_4217 {
@@ -1286,7 +1286,7 @@ pub const PGK: &'static Currency = &Currency {
 };
 
 /// Philippine peso (PHP)
-pub const PHP: &'static Currency = &Currency {
+pub const PHP: Currency = Currency {
     name: "Philippine Peso",
     symbol: "₱",
     code: ISO_4217 {
@@ -1298,7 +1298,7 @@ pub const PHP: &'static Currency = &Currency {
 };
 
 /// Pakistani rupee (PKR)
-pub const PKR: &'static Currency = &Currency {
+pub const PKR: Currency = Currency {
     name: "Pakistani Rupee",
     symbol: "Rs",
     code: ISO_4217 {
@@ -1310,7 +1310,7 @@ pub const PKR: &'static Currency = &Currency {
 };
 
 /// Polish złoty (PLN)
-pub const PLN: &'static Currency = &Currency {
+pub const PLN: Currency = Currency {
     name: "Polish Złoty",
     symbol: "zł",
     code: ISO_4217 {
@@ -1322,7 +1322,7 @@ pub const PLN: &'static Currency = &Currency {
 };
 
 /// Paraguayan guaraní (PYG)
-pub const PYG: &'static Currency = &Currency {
+pub const PYG: Currency = Currency {
     name: "Paraguayan Guarani",
     symbol: "₲",
     code: ISO_4217 {
@@ -1334,7 +1334,7 @@ pub const PYG: &'static Currency = &Currency {
 };
 
 /// Qatari riyal (QAR)
-pub const QAR: &'static Currency = &Currency {
+pub const QAR: Currency = Currency {
     name: "Qatari Riyal",
     symbol: "QR",
     code: ISO_4217 {
@@ -1346,7 +1346,7 @@ pub const QAR: &'static Currency = &Currency {
 };
 
 /// Romanian leu (RON)
-pub const RON: &'static Currency = &Currency {
+pub const RON: Currency = Currency {
     name: "Romanian Leu",
     symbol: "lei",
     code: ISO_4217 {
@@ -1358,7 +1358,7 @@ pub const RON: &'static Currency = &Currency {
 };
 
 /// Serbian dinar (RSD)
-pub const RSD: &'static Currency = &Currency {
+pub const RSD: Currency = Currency {
     name: "Serbian Dinar",
     symbol: "din",
     code: ISO_4217 {
@@ -1370,7 +1370,7 @@ pub const RSD: &'static Currency = &Currency {
 };
 
 /// Renminbi (Chinese) yuan (CNY)
-pub const CNY: &'static Currency = &Currency {
+pub const CNY: Currency = Currency {
     name: "Renminbi (Chinese) Yuan",
     symbol: "¥",
     code: ISO_4217 {
@@ -1382,7 +1382,7 @@ pub const CNY: &'static Currency = &Currency {
 };
 
 /// Russian ruble (RUB)
-pub const RUB: &'static Currency = &Currency {
+pub const RUB: Currency = Currency {
     name: "Russian Ruble",
     symbol: "₽",
     code: ISO_4217 {
@@ -1394,7 +1394,7 @@ pub const RUB: &'static Currency = &Currency {
 };
 
 /// Rwandan franc (RWF)
-pub const RWF: &'static Currency = &Currency {
+pub const RWF: Currency = Currency {
     name: "Rwandan Franc",
     symbol: "RF",
     code: ISO_4217 {
@@ -1406,7 +1406,7 @@ pub const RWF: &'static Currency = &Currency {
 };
 
 /// Saudi riyal (SAR)
-pub const SAR: &'static Currency = &Currency {
+pub const SAR: Currency = Currency {
     name: "Saudi Riyal",
     symbol: "SR",
     code: ISO_4217 {
@@ -1418,7 +1418,7 @@ pub const SAR: &'static Currency = &Currency {
 };
 
 /// Solomon Islands dollar (SBD)
-pub const SBD: &'static Currency = &Currency {
+pub const SBD: Currency = Currency {
     name: "Solomon Islands Dollar",
     symbol: "SI$",
     code: ISO_4217 {
@@ -1430,7 +1430,7 @@ pub const SBD: &'static Currency = &Currency {
 };
 
 /// Seychelles rupee (SCR)
-pub const SCR: &'static Currency = &Currency {
+pub const SCR: Currency = Currency {
     name: "Seychelles Rupee",
     symbol: "SR",
     code: ISO_4217 {
@@ -1442,7 +1442,7 @@ pub const SCR: &'static Currency = &Currency {
 };
 
 /// Sudanese pound (SDG)
-pub const SDG: &'static Currency = &Currency {
+pub const SDG: Currency = Currency {
     name: "Sudanese Pound",
     symbol: "SDG",
     code: ISO_4217 {
@@ -1454,7 +1454,7 @@ pub const SDG: &'static Currency = &Currency {
 };
 
 /// Swedish krona/kronor (SEK)
-pub const SEK: &'static Currency = &Currency {
+pub const SEK: Currency = Currency {
     name: "Swedish Krona/Kronor",
     symbol: "kr",
     code: ISO_4217 {
@@ -1466,7 +1466,7 @@ pub const SEK: &'static Currency = &Currency {
 };
 
 /// Singapore dollar (SGD)
-pub const SGD: &'static Currency = &Currency {
+pub const SGD: Currency = Currency {
     name: "Singapore Dollar",
     symbol: "S$",
     code: ISO_4217 {
@@ -1478,7 +1478,7 @@ pub const SGD: &'static Currency = &Currency {
 };
 
 /// Saint Helena pound (SHP)
-pub const SHP: &'static Currency = &Currency {
+pub const SHP: Currency = Currency {
     name: "Saint Helena Pound",
     symbol: "£",
     code: ISO_4217 {
@@ -1490,7 +1490,7 @@ pub const SHP: &'static Currency = &Currency {
 };
 
 /// Sierra Leonean (new) leone (SLE)
-pub const SLE: &'static Currency = &Currency {
+pub const SLE: Currency = Currency {
     name: "Sierra Leonean (new) Leone",
     symbol: "Le",
     code: ISO_4217 {
@@ -1502,7 +1502,7 @@ pub const SLE: &'static Currency = &Currency {
 };
 
 /// Sierra Leonean (old) leone (SLL)
-pub const SLL: &'static Currency = &Currency {
+pub const SLL: Currency = Currency {
     name: "Sierra Leonean (old) Leone",
     symbol: "Le",
     code: ISO_4217 {
@@ -1514,7 +1514,7 @@ pub const SLL: &'static Currency = &Currency {
 };
 
 /// Somali shilling (SOS)
-pub const SOS: &'static Currency = &Currency {
+pub const SOS: Currency = Currency {
     name: "Somali Shilling",
     symbol: "Sh",
     code: ISO_4217 {
@@ -1526,7 +1526,7 @@ pub const SOS: &'static Currency = &Currency {
 };
 
 /// Surinamese dollar (SRD)
-pub const SRD: &'static Currency = &Currency {
+pub const SRD: Currency = Currency {
     name: "Surinamese Dollar",
     symbol: "SR$",
     code: ISO_4217 {
@@ -1538,7 +1538,7 @@ pub const SRD: &'static Currency = &Currency {
 };
 
 /// South Sudanese pound (SSP)
-pub const SSP: &'static Currency = &Currency {
+pub const SSP: Currency = Currency {
     name: "South Sudanese Pound",
     symbol: "SSP",
     code: ISO_4217 {
@@ -1550,7 +1550,7 @@ pub const SSP: &'static Currency = &Currency {
 };
 
 /// São Tomé and Príncipe dobra (STN)
-pub const STN: &'static Currency = &Currency {
+pub const STN: Currency = Currency {
     name: "São Tomé and Príncipe Dobra",
     symbol: "Db",
     code: ISO_4217 {
@@ -1562,7 +1562,7 @@ pub const STN: &'static Currency = &Currency {
 };
 
 /// Salvadoran colón (SVC)
-pub const SVC: &'static Currency = &Currency {
+pub const SVC: Currency = Currency {
     name: "Salvadoran Colón",
     symbol: "₡",
     code: ISO_4217 {
@@ -1574,7 +1574,7 @@ pub const SVC: &'static Currency = &Currency {
 };
 
 /// Syrian pound (SYP)
-pub const SYP: &'static Currency = &Currency {
+pub const SYP: Currency = Currency {
     name: "Syrian Pound",
     symbol: "LS",
     code: ISO_4217 {
@@ -1586,7 +1586,7 @@ pub const SYP: &'static Currency = &Currency {
 };
 
 /// Swazi lilangeni (SZL)
-pub const SZL: &'static Currency = &Currency {
+pub const SZL: Currency = Currency {
     name: "Swazi Lilangeni",
     symbol: "E",
     code: ISO_4217 {
@@ -1598,7 +1598,7 @@ pub const SZL: &'static Currency = &Currency {
 };
 
 /// Thai baht (THB)
-pub const THB: &'static Currency = &Currency {
+pub const THB: Currency = Currency {
     name: "Thai Baht",
     symbol: "฿",
     code: ISO_4217 {
@@ -1610,7 +1610,7 @@ pub const THB: &'static Currency = &Currency {
 };
 
 /// Tajikistani somoni (TJS)
-pub const TJS: &'static Currency = &Currency {
+pub const TJS: Currency = Currency {
     name: "Tajikistani Somoni",
     symbol: "SM",
     code: ISO_4217 {
@@ -1622,7 +1622,7 @@ pub const TJS: &'static Currency = &Currency {
 };
 
 /// Turkmenistan manat (TMT)
-pub const TMT: &'static Currency = &Currency {
+pub const TMT: Currency = Currency {
     name: "Turkmenistan Manat",
     symbol: "T",
     code: ISO_4217 {
@@ -1634,7 +1634,7 @@ pub const TMT: &'static Currency = &Currency {
 };
 
 /// Tunisian dinar (TND)
-pub const TND: &'static Currency = &Currency {
+pub const TND: Currency = Currency {
     name: "Tunisian Dinar",
     symbol: "DT",
     code: ISO_4217 {
@@ -1646,7 +1646,7 @@ pub const TND: &'static Currency = &Currency {
 };
 
 /// Tongan paʻanga (TOP)
-pub const TOP: &'static Currency = &Currency {
+pub const TOP: Currency = Currency {
     name: "Tongan Paʻanga",
     symbol: "T$",
     code: ISO_4217 {
@@ -1658,7 +1658,7 @@ pub const TOP: &'static Currency = &Currency {
 };
 
 /// Turkish lira (TRY)
-pub const TRY: &'static Currency = &Currency {
+pub const TRY: Currency = Currency {
     name: "Turkish Lira",
     symbol: "₺",
     code: ISO_4217 {
@@ -1670,7 +1670,7 @@ pub const TRY: &'static Currency = &Currency {
 };
 
 /// Trinidad and Tobago dollar (TTD)
-pub const TTD: &'static Currency = &Currency {
+pub const TTD: Currency = Currency {
     name: "Trinidad and Tobago Dollar",
     symbol: "TT$",
     code: ISO_4217 {
@@ -1682,7 +1682,7 @@ pub const TTD: &'static Currency = &Currency {
 };
 
 /// New Taiwan dollar (TWD)
-pub const TWD: &'static Currency = &Currency {
+pub const TWD: Currency = Currency {
     name: "New Taiwan Dollar",
     symbol: "NT$",
     code: ISO_4217 {
@@ -1694,7 +1694,7 @@ pub const TWD: &'static Currency = &Currency {
 };
 
 /// Tanzanian shilling (TZS)
-pub const TZS: &'static Currency = &Currency {
+pub const TZS: Currency = Currency {
     name: "Tanzanian Shilling",
     symbol: "TSh",
     code: ISO_4217 {
@@ -1706,7 +1706,7 @@ pub const TZS: &'static Currency = &Currency {
 };
 
 /// Ukrainian hryvnia (UAH)
-pub const UAH: &'static Currency = &Currency {
+pub const UAH: Currency = Currency {
     name: "Ukrainian Hryvnia",
     symbol: "₴",
     code: ISO_4217 {
@@ -1718,7 +1718,7 @@ pub const UAH: &'static Currency = &Currency {
 };
 
 /// Ugandan shilling (UGX)
-pub const UGX: &'static Currency = &Currency {
+pub const UGX: Currency = Currency {
     name: "Ugandan Shilling",
     symbol: "USh",
     code: ISO_4217 {
@@ -1730,7 +1730,7 @@ pub const UGX: &'static Currency = &Currency {
 };
 
 /// United States dollar (USD)
-pub const USD: &'static Currency = &Currency {
+pub const USD: Currency = Currency {
     name: "United States Dollar",
     symbol: "$",
     code: ISO_4217 {
@@ -1742,7 +1742,7 @@ pub const USD: &'static Currency = &Currency {
 };
 
 /// Uruguayan peso (UYU)
-pub const UYU: &'static Currency = &Currency {
+pub const UYU: Currency = Currency {
     name: "Uruguayan Peso",
     symbol: "$U",
     code: ISO_4217 {
@@ -1754,7 +1754,7 @@ pub const UYU: &'static Currency = &Currency {
 };
 
 /// Uzbekistan som (UZS)
-pub const UZS: &'static Currency = &Currency {
+pub const UZS: Currency = Currency {
     name: "Uzbekistan Som",
     symbol: "лв",
     code: ISO_4217 {
@@ -1766,7 +1766,7 @@ pub const UZS: &'static Currency = &Currency {
 };
 
 /// Venezuelan bolívar soberano (VES)
-pub const VES: &'static Currency = &Currency {
+pub const VES: Currency = Currency {
     name: "Venezuelan Bolívar Soberano",
     symbol: "Bs",
     code: ISO_4217 {
@@ -1778,7 +1778,7 @@ pub const VES: &'static Currency = &Currency {
 };
 
 /// Vietnamese đồng (VND)
-pub const VND: &'static Currency = &Currency {
+pub const VND: Currency = Currency {
     name: "Vietnamese Đồng",
     symbol: "₫",
     code: ISO_4217 {
@@ -1790,7 +1790,7 @@ pub const VND: &'static Currency = &Currency {
 };
 
 /// Vanuatu vatu (VUV)
-pub const VUV: &'static Currency = &Currency {
+pub const VUV: Currency = Currency {
     name: "Vanuatu Vatu",
     symbol: "VT",
     code: ISO_4217 {
@@ -1802,7 +1802,7 @@ pub const VUV: &'static Currency = &Currency {
 };
 
 /// Samoan tālā (WST)
-pub const WST: &'static Currency = &Currency {
+pub const WST: Currency = Currency {
     name: "Samoan Tālā",
     symbol: "WS$",
     code: ISO_4217 {
@@ -1814,7 +1814,7 @@ pub const WST: &'static Currency = &Currency {
 };
 
 /// CFA franc BEAC (XAF)
-pub const XAF: &'static Currency = &Currency {
+pub const XAF: Currency = Currency {
     name: "CFA Franc BEAC",
     symbol: "FCFA",
     code: ISO_4217 {
@@ -1826,7 +1826,7 @@ pub const XAF: &'static Currency = &Currency {
 };
 
 /// East Caribbean dollar (XCD)
-pub const XCD: &'static Currency = &Currency {
+pub const XCD: Currency = Currency {
     name: "East Caribbean Dollar",
     symbol: "EC$",
     code: ISO_4217 {
@@ -1838,7 +1838,7 @@ pub const XCD: &'static Currency = &Currency {
 };
 
 /// CFA franc BCEAO (XOF)
-pub const XOF: &'static Currency = &Currency {
+pub const XOF: Currency = Currency {
     name: "CFA Franc BCEAO",
     symbol: "CFA",
     code: ISO_4217 {
@@ -1850,7 +1850,7 @@ pub const XOF: &'static Currency = &Currency {
 };
 
 /// CFP franc (XPF)
-pub const XPF: &'static Currency = &Currency {
+pub const XPF: Currency = Currency {
     name: "CFP Franc",
     symbol: "₣",
     code: ISO_4217 {
@@ -1862,7 +1862,7 @@ pub const XPF: &'static Currency = &Currency {
 };
 
 /// Yemeni rial (YER)
-pub const YER: &'static Currency = &Currency {
+pub const YER: Currency = Currency {
     name: "Yemeni Rial",
     symbol: "YR",
     code: ISO_4217 {
@@ -1874,7 +1874,7 @@ pub const YER: &'static Currency = &Currency {
 };
 
 /// South African rand (ZAR)
-pub const ZAR: &'static Currency = &Currency {
+pub const ZAR: Currency = Currency {
     name: "South African Rand",
     symbol: "R",
     code: ISO_4217 {
@@ -1886,7 +1886,7 @@ pub const ZAR: &'static Currency = &Currency {
 };
 
 /// Zambian kwacha (ZMW)
-pub const ZMW: &'static Currency = &Currency {
+pub const ZMW: Currency = Currency {
     name: "Zambian Kwacha",
     symbol: "ZK",
     code: ISO_4217 {
@@ -1898,7 +1898,7 @@ pub const ZMW: &'static Currency = &Currency {
 };
 
 /// Zimbabwean dollar (ZWL)
-pub const ZWL: &'static Currency = &Currency {
+pub const ZWL: Currency = Currency {
     name: "Zimbabwean Dollar",
     symbol: "Z$",
     code: ISO_4217 {

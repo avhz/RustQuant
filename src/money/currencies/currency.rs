@@ -136,12 +136,12 @@ impl Currency {
 
     /// Get the currency name.
     pub fn name(&self) -> &str {
-        &self.name
+        self.name
     }
 
     /// Get the currency symbol.
     pub fn symbol(&self) -> &str {
-        &self.symbol
+        self.symbol
     }
 
     /// Get the currency code.
@@ -188,12 +188,12 @@ impl ISO_4217 {
 
     /// Get the ISO 4217 alphabetic code.
     pub fn alphabetic(&self) -> &str {
-        &self.alphabetic
+        self.alphabetic
     }
 
     /// Get the ISO 4217 numeric code.
     pub fn numeric(&self) -> &str {
-        &self.numeric
+        self.numeric
     }
 }
 
