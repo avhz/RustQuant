@@ -180,26 +180,16 @@ pub mod money {
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     /// Parent module containing: global currencies.
     pub mod currencies {
-        pub use crate::money::currencies::{
-            africa::*, america::*, asia::*, currency::*, europe::*, oceania::*,
-        };
+        pub use crate::money::currencies::{currency::*, iso_currencies::*};
 
-        /// Submodule of `currencies`: African currencies.
-        pub mod africa;
-        /// Submodule of `currencies`: American currencies.
-        pub mod america;
         /// Submodule of `currencies`: Antarctic currency.
         pub mod antarctica;
-        /// Submodule of `currencies`: Asian currencies.
-        pub mod asia;
         /// Submodule of `currencies`: currency data struct.
         pub mod currency;
-        /// Submodule of `currencies`: European currencies.
-        pub mod europe;
         /// Submodule of `currencies`: currency exchange rates.
         pub mod exchange;
-        /// Submodule of `currencies`: Oceanian currencies.
-        pub mod oceania;
+        /// Submodule of `currencies`: global currencies defined by ISO 4217.
+        pub mod iso_currencies;
     }
 }
 

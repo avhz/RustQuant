@@ -30,7 +30,6 @@ Contact: <rustquantcontact@gmail.com>
 
 See [CHANGELOG.md](./CHANGELOG.md) for a full list of changes.
 
-
 <details>
 <summary>
 <h3>:link: Automatic Differentiation <a name="autodiff"></a></h3>
@@ -92,8 +91,6 @@ It is clearly a work in progress, but gives a general idea of how the computatio
 If you want to improve the visualization, please feel free to submit a PR!
 
 </details>
-
-
 
 <details>
 <summary>
@@ -172,7 +169,6 @@ Apple's returns: Some(shape: (252, 7)
 └────────────┴────────────┴───────────────┴───────────────┴───────────────┴──────────────┴──────────────┘)
 ```
 
-
 ### Read/write data
 
 ```rust
@@ -216,7 +212,6 @@ Probability density/mass functions, distribution functions, characteristic funct
 - [x] Exponential
 
 </details>
-
 
 <details>
 <summary>
@@ -284,12 +279,10 @@ fn main() {
 
 </details>
 
-
-
 <details>
 <summary>
 <h3> :triangular_ruler: Mathematics <a name="maths"></a></h3>
-<br>Numerical integration (double-exponential quadrature), optimisation/root-finding (gradient descent, Newton-Raphson), and risk-reward metrics. <br>
+<br>Fast Fourier Transform (FFT), numerical integration (double-exponential quadrature), optimisation/root-finding (gradient descent, Newton-Raphson), and risk-reward metrics. <br>
 </summary>
 
 ### Optimization and Root Finding
@@ -357,7 +350,6 @@ fn main() {
 - [x] Risk-Reward Measures (Sharpe, Treynor, Sortino, etc)
 
 </details>
-
 
 <details>
 <summary>
@@ -430,7 +422,6 @@ fn main() {
 
 </details>
 
-
 <details>
 <summary>
 <h3>:calendar: Time and Date <a name="time"></a></h3>
@@ -440,7 +431,6 @@ fn main() {
 - `DayCounter`
 
 </details>
-
 
 <details>
 <summary>
@@ -457,7 +447,6 @@ A collection of utility functions and macros.
 - [x] `assert_approx_equal!`
 
 </details>
-
 
 <details>
 <summary>
