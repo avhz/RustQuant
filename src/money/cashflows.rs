@@ -4,9 +4,13 @@
 // See LICENSE or <https://www.gnu.org/licenses/>.
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-//! Cashflows module.s
+//! Cashflows module.
 
 use time::OffsetDateTime;
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// STRUCTS, ENUMS, AND TRAITS
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 /// Cashflow trait.
 pub trait Cashflow {
@@ -21,10 +25,15 @@ pub trait Cashflow {
 }
 
 /// Simple cashflow type.
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct SimpleCashflow {
     amount: f64,
     date: OffsetDateTime,
 }
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// IMPLEMENTATIONS
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 impl SimpleCashflow {
     /// Create a new simple cashflow.
@@ -47,5 +56,175 @@ impl Cashflow for SimpleCashflow {
         F: Fn(OffsetDateTime) -> f64,
     {
         self.amount * df(self.date)
+    }
+}
+
+impl std::ops::Add for SimpleCashflow {
+    type Output = Self;
+
+    fn add(self, rhs: Self) -> Self::Output {
+        assert_eq!(self.date, rhs.date);
+        Self {
+            amount: self.amount + rhs.amount,
+            date: self.date,
+        }
+    }
+}
+
+impl std::ops::AddAssign for SimpleCashflow {
+    fn add_assign(&mut self, rhs: Self) {
+        assert_eq!(self.date, rhs.date);
+        self.amount += rhs.amount;
+    }
+}
+
+impl std::ops::Sub for SimpleCashflow {
+    type Output = Self;
+
+    fn sub(self, rhs: Self) -> Self::Output {
+        assert_eq!(self.date, rhs.date);
+        Self {
+            amount: self.amount - rhs.amount,
+            date: self.date,
+        }
+    }
+}
+
+impl std::ops::SubAssign for SimpleCashflow {
+    fn sub_assign(&mut self, rhs: Self) {
+        assert_eq!(self.date, rhs.date);
+        self.amount -= rhs.amount;
+    }
+}
+
+impl std::ops::Mul<f64> for SimpleCashflow {
+    type Output = Self;
+
+    fn mul(self, rhs: f64) -> Self::Output {
+        Self {
+            amount: self.amount * rhs,
+            date: self.date,
+        }
+    }
+}
+
+impl std::ops::MulAssign<f64> for SimpleCashflow {
+    fn mul_assign(&mut self, rhs: f64) {
+        self.amount *= rhs;
+    }
+}
+
+impl std::ops::Div<f64> for SimpleCashflow {
+    type Output = Self;
+
+    fn div(self, rhs: f64) -> Self::Output {
+        Self {
+            amount: self.amount / rhs,
+            date: self.date,
+        }
+    }
+}
+
+impl std::ops::DivAssign<f64> for SimpleCashflow {
+    fn div_assign(&mut self, rhs: f64) {
+        self.amount /= rhs;
+    }
+}
+
+impl std::ops::Neg for SimpleCashflow {
+    type Output = Self;
+
+    fn neg(self) -> Self::Output {
+        Self {
+            amount: -self.amount,
+            date: self.date,
+        }
+    }
+}
+
+impl std::ops::Neg for &SimpleCashflow {
+    type Output = SimpleCashflow;
+
+    fn neg(self) -> Self::Output {
+        SimpleCashflow {
+            amount: -self.amount,
+            date: self.date,
+        }
+    }
+}
+
+impl std::ops::Neg for &mut SimpleCashflow {
+    type Output = SimpleCashflow;
+
+    fn neg(self) -> Self::Output {
+        SimpleCashflow {
+            amount: -self.amount,
+            date: self.date,
+        }
+    }
+}
+
+impl std::fmt::Display for SimpleCashflow {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        write!(f, "SimpleCashflow({}, {})", self.amount, self.date)
+    }
+}
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// UNIT TESTS
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+#[cfg(test)]
+mod tests_cashflows {
+    use super::*;
+    use time::Duration;
+
+    // Test to verify the `amount` method.
+    #[test]
+    fn test_amount() {
+        let cf = SimpleCashflow::new(100.0, OffsetDateTime::now_utc());
+        assert_eq!(cf.amount(), 100.0);
+    }
+
+    // Test to verify the `date` method.
+    #[test]
+    fn test_date() {
+        let now = OffsetDateTime::now_utc();
+        let cf = SimpleCashflow::new(100.0, now);
+        assert_eq!(cf.date(), now);
+    }
+
+    // Test to verify the `npv` method.
+    #[test]
+    fn test_npv() {
+        let now = OffsetDateTime::now_utc();
+        let cf = SimpleCashflow::new(100.0, now);
+
+        // Discount function that reduces value by 10%.
+        let df = |date: OffsetDateTime| if date == now { 0.9 } else { 1.0 };
+        assert_eq!(cf.npv(df), 90.0);
+    }
+
+    // Test to verify the `npv` method with a zero discount rate.
+    #[test]
+    fn test_npv_zero_discount() {
+        let now = OffsetDateTime::now_utc();
+        let cf = SimpleCashflow::new(100.0, now);
+
+        // Discount function that keeps value the same.
+        let df = |_: OffsetDateTime| 1.0;
+        assert_eq!(cf.npv(df), 100.0);
+    }
+
+    // Test to verify the `npv` method with future date
+    #[test]
+    fn test_npv_future_date() {
+        let now = OffsetDateTime::now_utc();
+        let future_date = now + Duration::days(30);
+        let cf = SimpleCashflow::new(100.0, future_date);
+
+        // Discount function that reduces value by 10% for future_date.
+        let df = |date: OffsetDateTime| if date == future_date { 0.9 } else { 1.0 };
+        assert_eq!(cf.npv(df), 90.0);
     }
 }

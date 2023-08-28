@@ -263,7 +263,7 @@ impl std::ops::Div for Money {
 
 #[cfg(test)]
 mod test_currencies {
-    use crate::money::currencies::*;
+    use crate::money::*;
 
     #[test]
     fn test_fmt() {

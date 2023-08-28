@@ -1,5 +1,10 @@
 # Change Log
 
+## 28 August 2023
+
+- `Cashflow`s can now be added, subtracted, multiplied, and divided.
+- `Leg`s are now available, which are collections of `Cashflow`s.
+
 ## 27 August 2023
 
 - 150+ currencies added (definitions according to [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217)).

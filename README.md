@@ -370,9 +370,11 @@ fn main() {
 <br>Implementations for `Cashflows`, `Currencies`, and `Quotes`, and similar objects.<br>
 </summary>
 
-- `Cashflows`
-- `Currencies`
-- `Quotes`
+- `Cashflow`
+- `Currency`
+- `Money`
+- `Quote`
+- `Leg`
 
 </details>
 

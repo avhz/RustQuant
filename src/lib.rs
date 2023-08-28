@@ -174,29 +174,20 @@ pub mod instruments {
 /// This includes currencies, cashflows, exchange rates, and money types,
 /// among other things.
 pub mod money {
-    pub use crate::money::{cashflows::*, currencies::*, quotes::*};
+    pub use crate::money::{cashflows::*, currency::*, exchange::*, iso_currencies::*, quotes::*};
 
     /// Submodule of `money`: cashflow definitions.
     pub mod cashflows;
-    // /// Submodule of `money`: legs definitions.
-    // pub mod legs;
+    /// Submodule of `currencies`: currency data struct.
+    pub mod currency;
+    /// Submodule of `currencies`: currency exchange rates.
+    pub mod exchange;
+    /// Submodule of `currencies`: global currencies defined by ISO 4217.
+    pub mod iso_currencies;
+    /// Submodule of `money`: legs definitions.
+    pub mod legs;
     /// Submodule of `money`: quotes definitions.
     pub mod quotes;
-
-    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    // CURRENCIES MODULE
-    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    /// Parent module containing: global currencies.
-    pub mod currencies {
-        pub use crate::money::currencies::{currency::*, iso_currencies::*};
-
-        /// Submodule of `currencies`: currency data struct.
-        pub mod currency;
-        /// Submodule of `currencies`: currency exchange rates.
-        pub mod exchange;
-        /// Submodule of `currencies`: global currencies defined by ISO 4217.
-        pub mod iso_currencies;
-    }
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
