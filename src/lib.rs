@@ -23,18 +23,17 @@
 #![forbid(clippy::undocumented_unsafe_blocks)]
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// RUSTQUANT MISCELLANEOUS MODULE
+// RUSTQUANT MISCELLANEOUS MODULES
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-pub use {error::*, macros::*, plotting::*};
+pub use {error::*, macros::*};
 
 /// Submodule of `utilities`: implements useful macros, such as `assert_approx_equal`.
 #[macro_use]
 pub mod macros;
+
 /// Module containing the RustQuant `Error` type.
 pub mod error;
-/// Submodule of `utilities`: implements plotting/writing vectors to files.
-pub mod plotting;
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // AUTOMATIC DIFFERENTIATION MODULE

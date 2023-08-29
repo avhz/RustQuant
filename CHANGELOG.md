@@ -2,6 +2,7 @@
 
 ## 29 August 2023
 
+- `plotting` mod deprecated, `plot_vector` is now a macro.
 - `Statistic` trait for computing statistics on `Vec<f64>` objects.
 - Remove `utilities` module (macros and plotting are in root module now).
 
