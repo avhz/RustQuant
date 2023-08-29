@@ -22,6 +22,7 @@ macro_rules! assert_approx_equal {
 #[macro_export]
 macro_rules! plot_vector {
     ($v:expr, $file:expr) => {{
+        // Macros are hygienic, so we need to import the libraries we want to use.
         use plotters::prelude::*;
 
         let mut min = $v[0];

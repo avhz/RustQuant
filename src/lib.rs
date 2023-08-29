@@ -8,8 +8,7 @@
 //!
 //! Contact: rustquantcontact@gmail.com
 //!
-//! This library is a work in progress.
-//! Any contributions are greatly appreciated.
+//! This library is a work in progress. Any contributions are greatly appreciated.
 
 // Strictly enforce documentation.
 #![forbid(missing_docs)]
@@ -28,18 +27,18 @@
 
 pub use {error::*, macros::*};
 
-/// Submodule of `utilities`: implements useful macros, such as `assert_approx_equal`.
+/// Macros module.
 #[macro_use]
 pub mod macros;
 
-/// Module containing the RustQuant `Error` type.
+/// RustQuant error module.
 pub mod error;
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // AUTOMATIC DIFFERENTIATION MODULE
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-/// Parent module containing: automatic differentation modules.
+/// Reverse mode automatic differentation.
 pub mod autodiff {
     pub use crate::autodiff::{
         accumulate::*,
@@ -54,19 +53,21 @@ pub mod autodiff {
         vertex::*,
     };
 
-    /// Submodule of `autodiff`: `Accumulate` trait.
+    /// `Accumulate` trait.
     pub mod accumulate;
-    /// Submodule of `autodiff`: implements the gradient computation.
+    /// Implements the gradient computation.
     pub mod gradient;
-    /// Submodule of `autodiff`: implements the Graph (aka. tape or Wengert List).
+    /// The Graph (aka. tape or Wengert List).
     pub mod graph;
-    /// Submodule of `autodiff`: visualisation of the `Graph`.
+    /// Visualisation of the `Graph`.
     pub mod graphviz;
-    /// Submodule of `autodiff`: implements `Vertex` for `autodiff`.
+    /// Implements `Vertex` (nodes) for the `Graph`.
     pub mod vertex;
 
-    /// Submodule of `autodiff`: implements operator/function overloading.
+    /// Operator/function overloading.
     /// This module contains the overloaded operators and primitive functions.
+    /// In Griewank and Walther - Evaluating Derivatives, they refer to this
+    /// as the "elemental library".
     /// Operations such as `+` and `*` are redefined, along with primitive
     /// functions such as `sin`, `exp`, and `log`.
     /// Each overload has an associated test to ensure functionality.
@@ -93,13 +94,13 @@ pub mod autodiff {
         pub mod sub;
     }
 
-    /// Submodule of `autodiff`: implements `Variable`s for `autodiff`.
+    /// `Variable`s for `autodiff`.
     pub mod variables {
         /// Implements `Variable`s for `nalgebra`.
         pub mod nalgebra;
         /// Implements `Variable`s for `ndarray`.
         pub mod ndarray;
-        /// Submodule of `autodiff`: base trait for all `Variable`s.
+        /// Base trait for all `Variable`s.
         pub mod variable;
     }
 }
@@ -108,29 +109,28 @@ pub mod autodiff {
 // INSTRUMENTS MODULE
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-/// Parent module defining base traits for financial instruments.
-/// Also contains all instrument modules.
+/// Financial instrument types and modules (bonds, options, etc).
 pub mod instruments {
     pub use crate::instruments::instrument::*;
 
-    /// Submodule of `instruments`: base trait for all instruments.
+    /// Base trait for all instruments.
     pub mod instrument;
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // BONDS MODULE
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    /// Parent module containing: bond pricing models.
+    /// Bond pricing models.
     pub mod bonds {
         pub use crate::instruments::bonds::{bond::*, cox_ingersoll_ross::*, vasicek::*};
 
-        /// Submodule of `bonds`: contains the generic bond traits.
+        /// Base bond traits.
         pub mod bond;
-        /// Submodule of `bonds`: implements Cox-Ingersoll-Ross bond pricing model.
+        /// Cox-Ingersoll-Ross bond pricing model.
         pub mod cox_ingersoll_ross;
-        /// Submodule of `bonds`: implements one-factor Hull-White bond pricing model.
+        /// One-factor Hull-White bond pricing model.
         pub mod hull_white;
-        /// Submodule of `bonds`: implements Vasicek bond pricing model.
+        /// Vasicek bond pricing model.
         pub mod vasicek;
     }
 
@@ -138,34 +138,34 @@ pub mod instruments {
     // OPTION PRICING MODULE
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    /// Parent module containing: option pricers and sensitivity functions.
+    /// Option pricers and sensitivity functions.
     pub mod options {
         pub use crate::instruments::options::{
             american::*, asian::*, barrier::*, binary::*, binomial::*, european::*,
             forward_start::*, greeks::*, heston::*, lookback::*, option::*,
         };
 
-        /// Submodule of `options`: implements American option pricers.
+        /// American option pricers.
         pub mod american;
-        /// Submodule of `options`: implements Asian option pricers.
+        /// Asian option pricers.
         pub mod asian;
-        /// Submodule of `options`: implements Barrier option pricers.
+        /// Barrier option pricers.
         pub mod barrier;
-        /// Submodule of `options`: implements Binary option pricers.
+        /// Binary option pricers.
         pub mod binary;
-        /// Submodule of `options`: implements Binomial option pricers.
+        /// Binomial option pricers.
         pub mod binomial;
-        /// Submodule of `options`: implements European option pricers.
+        /// European option pricers.
         pub mod european;
-        /// Submodule of `options`: forward start options.
+        /// Forward start options pricers.
         pub mod forward_start;
-        /// Submodule of `options`: implements option Greeks/sensitivities.
+        /// European option Greeks/sensitivities.
         pub mod greeks;
-        /// Submodule of `options`: implements the Heston model.
+        /// Heston model option pricer.
         pub mod heston;
-        /// Submodule of `options`: implements Lookback options.
+        /// Lookback option pricers.
         pub mod lookback;
-        /// Submodule of `options`: base option traits.
+        /// Base option traits.
         pub mod option;
     }
 }
@@ -174,23 +174,23 @@ pub mod instruments {
 // MONEY RELATED ITEMS MODULE
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-/// Parent module containing all money related items.
+/// Module containing all money related items.
 /// This includes currencies, cashflows, exchange rates, and money types,
 /// among other things.
 pub mod money {
     pub use crate::money::{cashflows::*, currency::*, exchange::*, iso_currencies::*, quotes::*};
 
-    /// Submodule of `money`: cashflow definitions.
+    /// Cashflow definitions.
     pub mod cashflows;
-    /// Submodule of `currencies`: currency data struct.
+    /// Currency data struct.
     pub mod currency;
-    /// Submodule of `currencies`: currency exchange rates.
+    /// Currency exchange rate helpers.
     pub mod exchange;
-    /// Submodule of `currencies`: global currencies defined by ISO 4217.
+    /// Global currencies defined by ISO 4217.
     pub mod iso_currencies;
-    /// Submodule of `money`: legs definitions.
+    /// Legs (sequence of cashflows).
     pub mod legs;
-    /// Submodule of `money`: quotes definitions.
+    /// Quotes (price, yield, etc).
     pub mod quotes;
 }
 
@@ -198,48 +198,48 @@ pub mod money {
 // STATISTICS MODULE
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-/// Parent module containing: all statistics related items.
+/// Statistics related items.
 pub mod statistics {
     pub use crate::statistics::{copulas::*, distributions::*, statistic::*};
 
-    /// Submodule of `statistics`: base trait for statistics.
+    /// Base trait for statistics of a collection of data.
     pub mod statistic;
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // COPULAS MODULE
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    /// Parent module containing: copula implementations.
+    /// Copula implementations.
     pub mod copulas {}
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // DISTRIBUTIONS MODULE
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    /// Parent module containing: random variable distributions (PDFs, CDFs, CFs, etc).
+    /// Random variable distributions (PDFs, CDFs, CFs, etc).
     pub mod distributions {
         pub use crate::statistics::distributions::{
             bernoulli::*, binomial::*, chi_squared::*, distribution::*, exponential::*, gamma::*,
             gaussian::*, poisson::*, uniform::*,
         };
 
-        /// Submodule of `distributions`: the Bernoulli distribution.
+        /// Bernoulli distribution.
         pub mod bernoulli;
-        /// Submodule of `distributions`: the Binomial distribution.
+        /// Binomial distribution.
         pub mod binomial;
-        /// Submodule of `distributions`: the Chi-Squared distribution.
+        /// Chi-Squared distribution.
         pub mod chi_squared;
-        /// Submodule of `distributions`: base trait for all distributions.
+        /// Base trait for all distributions.
         pub mod distribution;
-        /// Submodule of `distributions`: the Exponential distribution.
+        /// Exponential distribution.
         pub mod exponential;
-        /// Submodule of `distributions`: the Gamma distribution.
+        /// Gamma distribution.
         pub mod gamma;
-        /// Submodule of `distributions`: the Gaussian (normal) distribution.
+        /// Gaussian (normal) distribution.
         pub mod gaussian;
-        /// Submodule of `distributions`: the Poisson distribution.
+        /// Poisson distribution.
         pub mod poisson;
-        /// Submodule of `distributions`: the Uniform distribution.
+        /// Uniform distribution.
         pub mod uniform;
     }
 }
@@ -248,15 +248,15 @@ pub mod statistics {
 // DATA MODULE
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-/// Parent module containing: data reading and writing utilities.
+/// Data reading and writing utilities.
 /// Disabled by default, due to Polars increasing compile times.
 #[cfg(feature = "data")]
 pub mod data {
     pub use crate::data::{io::*, yahoo::*};
 
-    /// Submodule of `data`: file reading and writing.
+    /// File reading and writing.
     pub mod io;
-    /// Submodule of `data`: Yahoo! Finance data reader.
+    /// Yahoo! Finance data reader.
     pub mod yahoo;
 }
 
@@ -264,17 +264,17 @@ pub mod data {
 // MATHEMATICS MODULE
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-/// Parent module containing: mathematical and statistical tools.
+/// Mathematics related items.
 pub mod math {
     pub use crate::math::{
         cumsum::*, fft::*, integration::constants::*, integration::midpoint::*,
         integration::simpsons::*, integration::tanhsinh::*, integration::trapezoid::*,
-        interpolation::*, linspace::*, newton_raphson::*, risk_reward::*, sequence::*,
+        interpolation::*, linspace::*, optimization::gradient_descent::*,
+        optimization::newton_raphson::*, risk_reward::*, sequence::*,
     };
 
-    /// Submodule of `math`: implements numerical integration prodecures.
-    /// The primary integrator is the Tanh-Sinh implementation.
-    /// The midpoint, trapezoid, and Simpson integrators are innacurate.
+    /// Numerical integration routines.
+    /// The primary (useful) integrator is the Tanh-Sinh (double exponential) implementation.
     pub mod integration {
         /// Constants used in numerical integration.
         pub mod constants;
@@ -287,10 +287,14 @@ pub mod math {
         /// Composite Trapezoidal rule.
         pub mod trapezoid;
     }
-    /// Submodule of `math`: implements numerical optimization procedures.
+
+    /// Numerical optimization and root-finding routines.
     pub mod optimization {
         /// Gradient descent optimization.
         pub mod gradient_descent;
+        /// Newton-Raphson method.
+        pub mod newton_raphson;
+
         // pub mod bisection;
         // pub mod brent;
         // pub mod golden_section;
@@ -298,19 +302,18 @@ pub mod math {
         // pub mod newton_raphson;
         // pub mod secant;
     }
-    /// Submodule of `utilities`: implements the cumulative sum of a vector.
+
+    /// Cumulative sum of a vector.
     pub mod cumsum;
-    /// Submodule of `math`: implements a fast fourier transform function
+    /// Fast fourier transform.
     pub mod fft;
-    /// Submodule of `math`: implements interpolation solvers.
+    /// Interpolation routines.
     pub mod interpolation;
-    /// Submodule of `utilities`: implements generating a linearly spaced sequence.
+    /// Generate a linearly spaced sequence.
     pub mod linspace;
-    /// Submodule of `math`: implements Newton-Raphson method.
-    pub mod newton_raphson;
-    /// Submodule of `math`: implements simple risk/reward functions.
+    /// Simple risk/reward measures.
     pub mod risk_reward;
-    /// Submodule of `utilities`: sequences of numbers.
+    /// Sequences of numbers.
     pub mod sequence;
 }
 
@@ -318,7 +321,7 @@ pub mod math {
 // MONTE CARLO SIMULATION AND STOCHASTIC PROCESSES
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-/// Parent module containing: Monte Carlo engines to simulate stochastic processes.
+/// Monte Carlo engines to simulate stochastic processes.
 pub mod stochastics {
     pub use crate::stochastics::{
         arithmetic_brownian_motion::*, black_derman_toy::*, brownian_motion::*,
@@ -326,27 +329,27 @@ pub mod stochastics {
         geometric_brownian_motion::*, ho_lee::*, hull_white::*, ornstein_uhlenbeck::*, process::*,
     };
 
-    /// Submodule of `stochastics`: implements Arithmetic Brownian Motion.
+    /// Arithmetic Brownian Motion.
     pub mod arithmetic_brownian_motion;
-    /// Submodule of `stochastics`: implements Black-Derman-Toy short rate model.
+    /// Black-Derman-Toy short rate model.
     pub mod black_derman_toy;
-    /// Submodule of `stochastics`: implements Standard Brownian Motion.
+    /// Standard Brownian Motion.
     pub mod brownian_motion;
-    /// Submodule of `stochastics`: implements the Cox-Ingersoll-Ross process.
+    /// Cox-Ingersoll-Ross process.
     pub mod cox_ingersoll_ross;
-    /// Submodule of `stochastics`: implements the extended Vasicek process.
+    /// Extended Vasicek process.
     pub mod extended_vasicek;
-    /// Submodule of `stochastics`: implements Fractional Brownian Motion.
+    /// Fractional Brownian Motion.
     pub mod fractional_brownian_motion;
-    /// Submodule of `stochastics`: implements Geometric Brownian Motion.
+    /// Geometric Brownian Motion.
     pub mod geometric_brownian_motion;
-    /// Submodule of `stochastics`: implements Ho-Lee process.
+    /// Ho-Lee process.
     pub mod ho_lee;
-    /// Submodule of `stochastics`: implements the Hull-White model process.
+    /// Hull-White model process.
     pub mod hull_white;
-    /// Submodule of `stochastics`: implements the Ornstein-Uhlenbeck process.
+    /// Ornstein-Uhlenbeck process.
     pub mod ornstein_uhlenbeck;
-    /// Submodule of `stochastics`: defines `Trajectories` and `StochasticProcess`.
+    /// Defines `Trajectories` and `StochasticProcess`.
     pub mod process;
 }
 
@@ -354,21 +357,19 @@ pub mod stochastics {
 // TRADING MODULE
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-/// Parent module containing: trading related items.
+/// Trading related items.
 pub mod trading {
-    // pub use crate::trading::order_book::*;
-
-    /// Submodule of `trading`: contains limit order book implementation
+    /// Contains limit order book implementation
     pub mod limit_order_book;
-    /// Submodule of `trading`: order definition.
+    /// Order definition.
     pub mod order;
-    /// Submodule of `trading`: contains a limit orderbook (LOB) implementation.
+    /// Contains a limit orderbook (LOB) implementation.
     pub mod order_book;
-    /// Submodule of `trading`: order lifespan definitions.
+    /// Order lifespan definitions.
     pub mod order_lifespan;
-    /// Submodule of `trading`: order side definitions.
+    /// Order side definitions.
     pub mod order_side;
-    /// Submodule of `trading`: order types definitions.
+    /// Order types definitions.
     pub mod order_type;
 }
 
@@ -376,7 +377,7 @@ pub mod trading {
 // TIME AND DATE MODULE
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-/// Parent module containing: time and date functionality.
+/// Time and date functionality.
 pub mod time {
     pub use crate::time::{
         calendar::*,
@@ -387,28 +388,28 @@ pub mod time {
         schedule::*,
     };
 
-    /// Submodule of `time`: calendar definitions.
+    /// Calendar definitions.
     pub mod calendar;
-    /// Submodule of `time`: date/time constants
+    /// Date/time constants
     pub mod constants;
-    /// Submodule of `time`: day count and business day conventions.
+    /// Day count and business day conventions.
     pub mod conventions;
-    /// Submodule of `time`: daycount definitions.
+    /// Daycount definitions.
     pub mod daycount;
-    /// Submodule of `time`: scheduling definitions.
+    /// Scheduling definitions.
     pub mod schedule;
 
-    /// Submodule of `time`: contains calendar definitions for settlement purposes.
+    /// Calendar definitions for settlement purposes.
     pub mod calendars {
-        /// Submodule of `calendars`: contains Australia calendar.
+        /// Australian settlement calendar.
         pub mod australia;
-        /// Submodule of `calendars`: contains Austria calendar.
+        /// Austrian settlement calendar.
         pub mod austria;
-        /// Submodule of `calendars`: contains Canadian settlement calendar.
+        /// Canadian settlement calendar.
         pub mod canada;
-        /// Submodule of `calendars`: contains UK calendar.
+        /// UK settlement calendar.
         pub mod united_kingdom;
-        /// Submodule of `calendars`: contains USA calendar.
+        /// USA settlement calendar.
         pub mod united_states;
     }
 }
@@ -417,13 +418,12 @@ pub mod time {
 // MACHINE LEARNING MODULE
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-/// Parent module containing: machine learning functionality.
-/// This module relies on the `nalgebra` crate.
+/// Machine learning algorithms. This module relies on the `nalgebra` crate.
 pub mod ml {
     pub use crate::ml::activations::*;
     pub use crate::ml::regression::{linear::*, logistic::*};
 
-    /// Submodule of `ml`: regression implentations.
+    /// Regression algorithms.
     pub mod regression {
         pub mod linear;
         pub mod logistic;
@@ -437,8 +437,10 @@ pub mod ml {
 // This is the parent module for the interactive TUI.
 // All boilerplate currently taken from:
 // https://www.monkeypatch.io/blog/2021-05-31-rust-tui
+//
+// This is a placeholder for now, but will be implemented in the future.
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-/// Parent module containing: RustQuant interactive TUI.
+/// RustQuant interactive TUI.
 #[cfg(feature = "interactive")]
 pub mod interactive {}
