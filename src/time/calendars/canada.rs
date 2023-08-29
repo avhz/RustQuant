@@ -26,7 +26,7 @@ impl Calendar for Canada {
 
         if is_weekend(date)
             || ((d == 1 || ((d == 2 || d == 3) && w == Weekday::Monday)) && m == Month::January)
-            || ((d >= 15 && d <= 21) && w == Weekday::Monday && m == Month::February && y >= 2008)
+            || ((15..=21).contains(&d) && w == Weekday::Monday && m == Month::February && y >= 2008)
             || (dd == em - 3)
             || (d > 17 && d <= 24 && w == Weekday::Monday && m == Month::May)
             || ((d == 1 || ((d == 2 || d == 3) && w == Weekday::Monday)) && m == Month::July)

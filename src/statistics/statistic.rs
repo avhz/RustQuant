@@ -81,7 +81,7 @@ impl Statistic<f64> for Vec<f64> {
     fn arithmetic_mean(&self) -> f64 {
         assert!(!self.is_empty(), "Vector must have at least one element.");
 
-        self.into_iter().sum::<f64>() / self.len() as f64
+        self.iter().sum::<f64>() / self.len() as f64
     }
 
     fn geometric_mean(&self) -> f64 {
@@ -229,7 +229,7 @@ impl Statistic<f64> for Vec<f64> {
     fn percentile(&self, percentile: f64) -> f64 {
         assert!(!self.is_empty(), "Vector must have at least one element.");
         assert!(
-            percentile >= 0.0 && percentile <= 1.0,
+            (0.0..=1.0).contains(&percentile),
             "Percentile must be between 0 and 1."
         );
 
@@ -246,7 +246,7 @@ impl Statistic<f64> for Vec<f64> {
     fn quantile(&self, quantile: f64) -> f64 {
         assert!(!self.is_empty(), "Vector must have at least one element.");
         assert!(
-            quantile >= 0.0 && quantile <= 1.0,
+            (0.0..=1.0).contains(&quantile),
             "Quantile must be between 0 and 1."
         );
 
@@ -415,7 +415,7 @@ mod tests_statistics {
     fn test_sample_standard_deviation_two_elements() {
         let v = vec![1.0, 2.0];
         let samp_stddev = v.sample_standard_deviation();
-        assert_approx_equal!(samp_stddev, 0.7071068, 1e-7);
+        assert_approx_equal!(samp_stddev, std::f64::consts::FRAC_1_SQRT_2, 1e-7);
     }
 
     #[test]

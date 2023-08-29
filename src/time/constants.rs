@@ -4,6 +4,8 @@
 // See LICENSE or <https://www.gnu.org/licenses/>.
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+#![allow(dead_code)]
+
 pub(crate) const DAYS_IN_YEAR: usize = 365; // Or should it be 365.25?
 pub(crate) const DAYS_IN_WEEK: usize = 7;
 pub(crate) const HOURS_IN_DAY: usize = 24;

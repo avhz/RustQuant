@@ -43,7 +43,7 @@ impl Calendar for Austria {
                 // National Holiday since 1967
                 || (d == 26 && m == Month::October && y >= 1967)
                 // National Holiday 1919-1934
-                || (d == 12 && m == Month::November && y >= 1919 && y <= 1934)
+                || (d == 12 && m == Month::November && (1919..=1934).contains(&y))
                 // All Saints' Day
                 || (d == 1 && m == Month::November)
                 // Immaculate Conception

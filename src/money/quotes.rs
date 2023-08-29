@@ -60,6 +60,6 @@ pub struct DerivedQuote<F>
 where
     F: Fn(f64) -> f64, // Box<dyn Fn() -> Option<f64>>,
 {
-    value: Option<f64>,
-    function: F,
+    _value: Option<f64>,
+    _function: F,
 }
