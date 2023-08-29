@@ -7,8 +7,8 @@
 use crate::{
     instruments::options::*,
     statistics::distributions::{Distribution, Gaussian},
+    statistics::*,
     stochastics::*,
-    utilities::*,
 };
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -243,8 +243,8 @@ impl LookbackOption {
 
         (
             // Discounted mean of the call and put payoffs.
-            (-r * t_n).exp() * mean(&call_payoffs, MeanType::Arithmetic),
-            (-r * t_n).exp() * mean(&put_payoffs, MeanType::Arithmetic),
+            (-r * t_n).exp() * call_payoffs.mean(),
+            (-r * t_n).exp() * put_payoffs.mean(),
         )
     }
 }

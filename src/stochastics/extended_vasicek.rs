@@ -48,7 +48,7 @@ impl StochasticProcess for ExtendedVasicek {
 #[cfg(test)]
 mod tests_extended_vasicek {
     use super::*;
-    use crate::{assert_approx_equal, utilities::*};
+    use crate::{assert_approx_equal, statistics::*};
 
     fn alpha_t(_t: f64) -> f64 {
         2.0
@@ -73,7 +73,7 @@ mod tests_extended_vasicek {
             .filter_map(|v| v.last().cloned())
             .collect();
 
-        let E_XT = mean(&X_T, MeanType::Arithmetic);
+        let E_XT = X_T.mean();
         // Note these tests are identical to the Hull-White
         // E[X_T] = X_0*exp(-alpha_t)(t) T) X_0 + (theta/alpha_t)(t))(1- exp(-alpha_t)(t) * T))
         // Expectation with constant reduces to Hull-White

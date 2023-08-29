@@ -436,7 +436,7 @@ fn main() {
 
 <details>
 <summary>
-<h3>:handshake: Helper Functions and Macros <a name="helpers"></a></h3>
+<h3>:handshake: Miscellaneous Functions and Macros <a name="helpers"></a></h3>
 <br>Various helper functions and macros.<br>
 </summary>
 

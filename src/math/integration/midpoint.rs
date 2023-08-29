@@ -4,7 +4,7 @@
 // See LICENSE or <https://www.gnu.org/licenses/>.
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use crate::utilities::linspace;
+use crate::math::linspace;
 
 /// Midpoint rule for numerical integration.
 pub fn midpoint<F>(f: F, a: f64, b: f64, n: usize) -> f64

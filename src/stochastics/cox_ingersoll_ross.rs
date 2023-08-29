@@ -49,7 +49,7 @@ impl StochasticProcess for CoxIngersollRoss {
 #[cfg(test)]
 mod tests_cir {
     use super::*;
-    use crate::{assert_approx_equal, utilities::*};
+    use crate::{assert_approx_equal, statistics::*};
 
     #[test]
     fn test_cox_ingersoll_ross() -> Result<(), Box<dyn std::error::Error>> {
@@ -64,8 +64,8 @@ mod tests_cir {
             .filter_map(|v| v.last().cloned())
             .collect();
 
-        let E_XT = mean(&X_T, MeanType::Arithmetic);
-        let V_XT = variance(&X_T, VarianceType::Sample);
+        let E_XT = X_T.mean();
+        let V_XT = X_T.variance();
         // E[X_T] = https://en.wikipedia.org/wiki/Cox%E2%80%93Ingersoll%E2%80%93Ross_model
         assert_approx_equal!(
             E_XT,

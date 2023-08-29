@@ -192,7 +192,7 @@ mod test_fractional_brownian_motion {
     // use std::time::Instant;
 
     use super::*;
-    use crate::{assert_approx_equal, utilities::*};
+    use crate::{assert_approx_equal, statistics::*};
 
     #[test]
     fn test_chol() {
@@ -231,9 +231,9 @@ mod test_fractional_brownian_motion {
             .collect();
 
         // E[X_T] = 0
-        assert_approx_equal!(mean(&X_T, MeanType::Arithmetic), 0.0, 0.5);
+        assert_approx_equal!(X_T.mean(), 0.0, 0.5);
         // V[X_T] = T
-        assert_approx_equal!(variance(&X_T, VarianceType::Sample), 0.5, 0.5);
+        assert_approx_equal!(X_T.variance(), 0.5, 0.5);
 
         std::result::Result::Ok(())
     }

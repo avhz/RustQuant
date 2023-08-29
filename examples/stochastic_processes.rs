@@ -6,8 +6,8 @@
 //
 // See the ./images/ directory for the output.
 
+use RustQuant::plot_vector;
 use RustQuant::stochastics::*;
-use RustQuant::utilities::plot_vector;
 
 #[rustfmt::skip]
 fn main() {

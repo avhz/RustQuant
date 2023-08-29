@@ -87,7 +87,7 @@ pub(crate) fn diff(f: fn(f64) -> f64, t: f64) -> f64 {
 #[cfg(test)]
 mod tests_black_derman_toy {
     use super::*;
-    use crate::utilities::*;
+    use crate::statistics::*;
 
     fn theta_t(_t: f64) -> f64 {
         1.5
@@ -110,7 +110,7 @@ mod tests_black_derman_toy {
             .filter_map(|v| v.last().cloned())
             .collect();
 
-        let E_XT = mean(&X_T, MeanType::Arithmetic);
+        let E_XT = X_T.mean();
         assert!(E_XT.exp() >= 0.);
         // println!("Final expected short rate: {}", E_XT);
 
@@ -132,7 +132,7 @@ mod tests_black_derman_toy {
             .filter_map(|v| v.last().cloned())
             .collect();
 
-        let E_XT = mean(&X_T, MeanType::Arithmetic);
+        let E_XT = X_T.mean();
         assert!(E_XT.exp() >= 0.);
         // println!("Final expected short rate: {}", E_XT);
 

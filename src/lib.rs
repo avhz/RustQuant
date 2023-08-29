@@ -23,13 +23,18 @@
 #![forbid(clippy::undocumented_unsafe_blocks)]
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// RUSTQUANT ERROR HANDLING MODULE
-// Need to finish this.
+// RUSTQUANT MISCELLANEOUS MODULE
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+pub use {error::*, macros::*, plotting::*};
+
+/// Submodule of `utilities`: implements useful macros, such as `assert_approx_equal`.
+#[macro_use]
+pub mod macros;
 /// Module containing the RustQuant `Error` type.
 pub mod error;
-pub use error::*;
+/// Submodule of `utilities`: implements plotting/writing vectors to files.
+pub mod plotting;
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // AUTOMATIC DIFFERENTIATION MODULE
@@ -196,6 +201,11 @@ pub mod money {
 
 /// Parent module containing: all statistics related items.
 pub mod statistics {
+    pub use crate::statistics::{copulas::*, distributions::*, statistic::*};
+
+    /// Submodule of `statistics`: base trait for statistics.
+    pub mod statistic;
+
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // COPULAS MODULE
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -252,42 +262,15 @@ pub mod data {
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// HELPERS AND UTILITIES
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-/// Parent module containing: helper functions used throughout the library.
-#[macro_use]
-pub mod utilities {
-    pub use crate::utilities::{
-        cumsum::*, linspace::*, macros::*, mean::*, plotting::*, sequence::*, variance::*,
-    };
-
-    /// Submodule of `utilities`: implements the cumulative sum of a vector.
-    pub mod cumsum;
-    /// Submodule of `utilities`: implements generating a linearly spaced sequence.
-    pub mod linspace;
-    /// Submodule of `utilities`: implements useful macros, such as `assert_approx_equal`.
-    pub mod macros;
-    /// Submodule of `utilities`: mean of a vector.
-    pub mod mean;
-    /// Submodule of `utilities`: implements plotting/writing vectors to files.
-    pub mod plotting;
-    /// Submodule of `utilities`: sequences of numbers.
-    pub mod sequence;
-    /// Submodule of `utilities`: variance of a vector.
-    pub mod variance;
-}
-
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // MATHEMATICS MODULE
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 /// Parent module containing: mathematical and statistical tools.
 pub mod math {
     pub use crate::math::{
-        fft::*, integration::constants::*, integration::midpoint::*, integration::simpsons::*,
-        integration::tanhsinh::*, integration::trapezoid::*, interpolation::*, newton_raphson::*,
-        risk_reward::*,
+        cumsum::*, fft::*, integration::constants::*, integration::midpoint::*,
+        integration::simpsons::*, integration::tanhsinh::*, integration::trapezoid::*,
+        interpolation::*, linspace::*, newton_raphson::*, risk_reward::*, sequence::*,
     };
 
     /// Submodule of `math`: implements numerical integration prodecures.
@@ -316,14 +299,20 @@ pub mod math {
         // pub mod newton_raphson;
         // pub mod secant;
     }
+    /// Submodule of `utilities`: implements the cumulative sum of a vector.
+    pub mod cumsum;
     /// Submodule of `math`: implements a fast fourier transform function
     pub mod fft;
     /// Submodule of `math`: implements interpolation solvers.
     pub mod interpolation;
+    /// Submodule of `utilities`: implements generating a linearly spaced sequence.
+    pub mod linspace;
     /// Submodule of `math`: implements Newton-Raphson method.
     pub mod newton_raphson;
     /// Submodule of `math`: implements simple risk/reward functions.
     pub mod risk_reward;
+    /// Submodule of `utilities`: sequences of numbers.
+    pub mod sequence;
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

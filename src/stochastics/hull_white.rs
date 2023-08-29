@@ -48,7 +48,7 @@ impl StochasticProcess for HullWhite {
 #[cfg(test)]
 mod tests_hull_white {
     use super::*;
-    use crate::{assert_approx_equal, utilities::*};
+    use crate::{assert_approx_equal, statistics::*};
 
     fn theta_t(_t: f64) -> f64 {
         0.5
@@ -70,7 +70,7 @@ mod tests_hull_white {
             .filter_map(|v| v.last().cloned())
             .collect();
 
-        let E_XT = mean(&X_T, MeanType::Arithmetic);
+        let E_XT = X_T.mean();
         // E[X_T] = X_0*exp(-alpha T) X_0 + (theta_t/alpha)(1- exp(-alpha * T))
         assert_approx_equal!(
             E_XT,

@@ -46,7 +46,7 @@ impl StochasticProcess for ArithmeticBrownianMotion {
 #[cfg(test)]
 mod tests_abm {
     use super::*;
-    use crate::{assert_approx_equal, utilities::*};
+    use crate::{assert_approx_equal, statistics::*};
 
     #[test]
     fn test_arithmetic_brownian_motion() -> Result<(), Box<dyn std::error::Error>> {
@@ -66,8 +66,8 @@ mod tests_abm {
             .filter_map(|v| v.last().cloned())
             .collect();
 
-        let E_XT = mean(&X_T, MeanType::Arithmetic);
-        let V_XT = variance(&X_T, VarianceType::Sample);
+        let E_XT = X_T.mean();
+        let V_XT = X_T.variance();
         // E[X_T] = X_0 + mu * T
         assert_approx_equal!(E_XT, 10.0 + 0.05 * 0.5, 0.1);
         // V[X_T] = sigma^2 * T
