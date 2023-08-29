@@ -1,5 +1,10 @@
 # Change Log
 
+## 29 August 2023
+
+- `Statistic` trait for computing statistics on `Vec<f64>` objects.
+- Remove `utilities` module (macros and plotting are in root module now).
+
 ## 28 August 2023
 
 - `Cashflow`s can now be added, subtracted, multiplied, and divided.
