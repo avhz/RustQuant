@@ -366,7 +366,7 @@ pub mod stochastics {
 // TRADING MODULE
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-/// Parent module containing: bond pricing models.
+/// Parent module containing: trading related items.
 pub mod trading {
     // pub use crate::trading::order_book::*;
 
@@ -391,7 +391,12 @@ pub mod trading {
 /// Parent module containing: time and date functionality.
 pub mod time {
     pub use crate::time::{
-        calendar::*, constants::*, conventions::*, datetime::*, daycount::*, schedule::*,
+        calendar::*,
+        calendars::{australia::*, austria::*, canada::*, united_kingdom::*, united_states::*},
+        constants::*,
+        conventions::*,
+        daycount::*,
+        schedule::*,
     };
 
     /// Submodule of `time`: calendar definitions.
@@ -400,12 +405,24 @@ pub mod time {
     pub mod constants;
     /// Submodule of `time`: day count and business day conventions.
     pub mod conventions;
-    /// Submodule of `time`: date and time definitions.
-    pub mod datetime;
     /// Submodule of `time`: daycount definitions.
     pub mod daycount;
     /// Submodule of `time`: scheduling definitions.
     pub mod schedule;
+
+    /// Submodule of `time`: contains calendar definitions for settlement purposes.
+    pub mod calendars {
+        /// Submodule of `calendars`: contains Australia calendar.
+        pub mod australia;
+        /// Submodule of `calendars`: contains Austria calendar.
+        pub mod austria;
+        /// Submodule of `calendars`: contains Canadian settlement calendar.
+        pub mod canada;
+        /// Submodule of `calendars`: contains UK calendar.
+        pub mod united_kingdom;
+        /// Submodule of `calendars`: contains USA calendar.
+        pub mod united_states;
+    }
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

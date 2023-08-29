@@ -75,3 +75,27 @@ pub enum DayCountConvention {
     // ActualActual_AFB,
     // OneOne,
 }
+
+/// Interest payment frequency/year enumeration.
+pub enum PaymentFrequency {
+    /// Daily.
+    Daily = 252,
+    /// Weekly.
+    Weekly = 52,
+    /// Bi-weekly.
+    BiWeekly = 26,
+    /// Semi-monthly.
+    SemiMonthly = 24,
+    /// Monthly.
+    Monthly = 12,
+    /// Semi-quarterly.
+    SemiQuarterly = 6,
+    /// Quarterly.
+    Quarterly = 4,
+    /// Tri-annually.
+    TriAnnually = 3,
+    /// Semi-annually.
+    SemiAnnually = 2,
+    /// Annually.
+    Annually = 1,
+}
