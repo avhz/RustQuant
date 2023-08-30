@@ -89,10 +89,10 @@ mod test_united_kingdom {
     #[test]
     fn test_is_weekend() {
         let calendar = UnitedKingdom;
-        let sat = datetime!(2023-08-05 12:00:00 UTC);
-        let sun = datetime!(2023-08-06 12:00:00 UTC);
-        assert!(calendar.is_business_day(sat));
-        assert!(calendar.is_business_day(sun));
+        let sat = datetime!(2023-08-26 12:00:00 UTC);
+        let sun = datetime!(2023-08-27 12:00:00 UTC);
+        assert!(!calendar.is_business_day(sat));
+        assert!(!calendar.is_business_day(sun));
     }
 
     // Test to verify if the is_business_day() method properly accounts for public holidays.
@@ -106,12 +106,12 @@ mod test_united_kingdom {
         let christmas = datetime!(2023-12-25 12:00:00 UTC);
         let boxing_day = datetime!(2023-12-26 12:00:00 UTC);
 
-        assert!(calendar.is_business_day(new_years_day));
-        assert!(calendar.is_business_day(good_friday));
-        assert!(calendar.is_business_day(bank_holiday_may));
-        assert!(calendar.is_business_day(coronation_day));
-        assert!(calendar.is_business_day(christmas));
-        assert!(calendar.is_business_day(boxing_day));
+        assert!(!calendar.is_business_day(new_years_day));
+        assert!(!calendar.is_business_day(good_friday));
+        assert!(!calendar.is_business_day(bank_holiday_may));
+        assert!(!calendar.is_business_day(coronation_day));
+        assert!(!calendar.is_business_day(christmas));
+        assert!(!calendar.is_business_day(boxing_day));
     }
 
     // Test to verify if the is_business_day() method properly accounts for regular business days.

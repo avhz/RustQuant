@@ -89,10 +89,10 @@ mod test_united_states {
     #[test]
     fn test_is_weekend() {
         let calendar = UnitedStates;
-        let sat = datetime!(2023-11-04 12:00:00 UTC);
-        let sun = datetime!(2023-11-05 12:00:00 UTC);
-        assert!(calendar.is_business_day(sat));
-        assert!(calendar.is_business_day(sun));
+        let sat = datetime!(2023-08-26 12:00:00 UTC);
+        let sun = datetime!(2023-08-27 12:00:00 UTC);
+        assert!(!calendar.is_business_day(sat));
+        assert!(!calendar.is_business_day(sun));
     }
 
     // Test to verify if the is_business_day() method properly accounts for public holidays.
@@ -108,14 +108,14 @@ mod test_united_states {
         let memorial_day = datetime!(2023-05-29 12:00:00 UTC); // This might need adjustment
         let juneteenth = datetime!(2023-06-19 12:00:00 UTC);
 
-        assert!(calendar.is_business_day(new_years_day));
-        assert!(calendar.is_business_day(independence_day));
-        assert!(calendar.is_business_day(labor_day));
-        assert!(calendar.is_business_day(thanksgiving));
-        assert!(calendar.is_business_day(christmas));
-        assert!(calendar.is_business_day(washington_birthday));
-        assert!(calendar.is_business_day(memorial_day));
-        assert!(calendar.is_business_day(juneteenth));
+        assert!(!calendar.is_business_day(new_years_day));
+        assert!(!calendar.is_business_day(independence_day));
+        assert!(!calendar.is_business_day(labor_day));
+        assert!(!calendar.is_business_day(thanksgiving));
+        assert!(!calendar.is_business_day(christmas));
+        assert!(!calendar.is_business_day(washington_birthday));
+        assert!(!calendar.is_business_day(memorial_day));
+        assert!(!calendar.is_business_day(juneteenth));
     }
 
     // Test to verify if the is_business_day() method properly accounts for regular business days.

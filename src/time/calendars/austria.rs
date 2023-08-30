@@ -80,10 +80,10 @@ mod test_austria {
     #[test]
     fn test_is_weekend() {
         let calendar = Austria;
-        let sat = datetime!(2023-08-05 12:00:00 UTC);
-        let sun = datetime!(2023-08-06 12:00:00 UTC);
-        assert!(calendar.is_business_day(sat));
-        assert!(calendar.is_business_day(sun));
+        let sat = datetime!(2023-08-26 12:00:00 UTC);
+        let sun = datetime!(2023-08-27 12:00:00 UTC);
+        assert!(!calendar.is_business_day(sat));
+        assert!(!calendar.is_business_day(sun));
     }
 
     // Test to verify if the is_business_day() method properly accounts for public holidays.
@@ -96,11 +96,11 @@ mod test_austria {
         let national_holiday = datetime!(2023-10-26 12:00:00 UTC);
         let christmas = datetime!(2023-12-25 12:00:00 UTC);
 
-        assert!(calendar.is_business_day(new_years_day));
-        assert!(calendar.is_business_day(epiphany));
-        assert!(calendar.is_business_day(labour_day));
-        assert!(calendar.is_business_day(national_holiday));
-        assert!(calendar.is_business_day(christmas));
+        assert!(!calendar.is_business_day(new_years_day));
+        assert!(!calendar.is_business_day(epiphany));
+        assert!(!calendar.is_business_day(labour_day));
+        assert!(!calendar.is_business_day(national_holiday));
+        assert!(!calendar.is_business_day(christmas));
     }
 
     // Test to verify if the is_business_day() method properly accounts for regular business days.
