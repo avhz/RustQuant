@@ -682,3 +682,79 @@ impl<'v> Variable<'v> {
         }
     }
 }
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// UNIT TESTS
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+#[cfg(test)]
+mod test_overloading_f64 {
+    use crate::assert_approx_equal;
+    use crate::autodiff::*;
+
+    #[test]
+    fn test_values() {
+        let g = Graph::new();
+
+        let x = g.var(1.0);
+
+        // VALUES
+        assert_approx_equal!((-x).value, -1.0, 1e-10);
+        assert_approx_equal!(x.log2().value, 0.0, 1e-10);
+        assert_approx_equal!(x.exp2().value, 2.0, 1e-10);
+        assert_approx_equal!(x.exp_m1().value, 1.718281828459045, 1e-10);
+        assert_approx_equal!(x.ln().value, 0.0, 1e-10);
+        assert_approx_equal!(x.ln_1p().value, std::f64::consts::LN_2, 1e-10);
+        assert_approx_equal!(x.log10().value, 0.0, 1e-10);
+        assert_approx_equal!(x.log2().value, 0.0, 1e-10);
+        assert_approx_equal!(x.recip().value, 1.0, 1e-10);
+        assert_approx_equal!(x.sqrt().value, 1.0, 1e-10);
+        assert_approx_equal!(x.cbrt().value, 1.0, 1e-10);
+        assert_approx_equal!(x.sin().value, 0.8414709848078965, 1e-10);
+        assert_approx_equal!(x.cos().value, 0.5403023058681398, 1e-10);
+        assert_approx_equal!(x.tan().value, 1.5574077246549023, 1e-10);
+        assert_approx_equal!(x.asin().value, std::f64::consts::FRAC_PI_2, 1e-10);
+        assert_approx_equal!(x.acos().value, 0.0, 1e-10);
+        assert_approx_equal!(x.atan().value, std::f64::consts::FRAC_PI_4, 1e-10);
+        assert_approx_equal!(x.sinh().value, 1.1752011936438014, 1e-10);
+        assert_approx_equal!(x.cosh().value, 1.5430806348152437, 1e-10);
+        assert_approx_equal!(x.tanh().value, 0.7615941559557649, 1e-10);
+        assert_approx_equal!(x.asinh().value, 0.881373587019543, 1e-10);
+        assert_approx_equal!(x.acosh().value, 0.0, 1e-10);
+        assert_eq!(x.atanh().value, std::f64::INFINITY);
+        assert_approx_equal!(x.abs().value, 1.0, 1e-10);
+    }
+
+    #[test]
+    fn test_gradients() {
+        let g = Graph::new();
+
+        let x = g.var(1.0);
+
+        // GRADIENTS
+        assert_approx_equal!((-x).accumulate().wrt(&x), -1.0, 1e-10);
+        assert_approx_equal!(x.log2().accumulate().wrt(&x), 1.0, 1e-10);
+        assert_approx_equal!(x.exp2().accumulate().wrt(&x), 1.3862943611198906, 1e-10);
+        assert_approx_equal!(x.exp_m1().accumulate().wrt(&x), std::f64::consts::E, 1e-10);
+        assert_approx_equal!(x.ln().accumulate().wrt(&x), 1.0, 1e-10);
+        assert_approx_equal!(x.ln_1p().accumulate().wrt(&x), 0.5, 1e-10);
+        assert_approx_equal!(x.log10().accumulate().wrt(&x), 1.0, 1e-10);
+        assert_approx_equal!(x.log2().accumulate().wrt(&x), 1.0, 1e-10);
+        assert_approx_equal!(x.recip().accumulate().wrt(&x), -1.0, 1e-10);
+        assert_approx_equal!(x.sqrt().accumulate().wrt(&x), 0.5, 1e-10);
+        assert_approx_equal!(x.cbrt().accumulate().wrt(&x), 0.3333333333333333, 1e-10);
+        assert_approx_equal!(x.sin().accumulate().wrt(&x), 0.5403023058681398, 1e-10);
+        assert_approx_equal!(x.cos().accumulate().wrt(&x), -0.8414709848078965, 1e-10);
+        assert_approx_equal!(x.tan().accumulate().wrt(&x), 3.4255188208149777, 1e-10);
+        assert_approx_equal!(x.sinh().accumulate().wrt(&x), 1.5430806348152437, 1e-10);
+        assert_approx_equal!(x.atan().accumulate().wrt(&x), 0.5, 1e-10);
+        assert_approx_equal!(x.cosh().accumulate().wrt(&x), 1.1752011936438014, 1e-10);
+        assert_approx_equal!(x.tanh().accumulate().wrt(&x), 0.41997434161402614, 1e-10);
+        assert_approx_equal!(x.asinh().accumulate().wrt(&x), 1.0 / 2_f64.sqrt(), 1e-10);
+        assert_approx_equal!(x.abs().accumulate().wrt(&x), 1.0, 1e-10);
+        assert!(x.atanh().accumulate().wrt(&x).is_nan());
+        assert!(x.acosh().accumulate().wrt(&x).is_nan());
+        assert!(x.asin().accumulate().wrt(&x).is_nan());
+        assert!(x.acos().accumulate().wrt(&x).is_nan());
+    }
+}

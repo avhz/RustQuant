@@ -55,3 +55,58 @@ impl Calendar for Australia {
         true
     }
 }
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// UNIT TESTS
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+#[cfg(test)]
+mod test_australia {
+    use super::*;
+    use time::macros::datetime;
+
+    // Test to verify the name() method.
+    #[test]
+    fn test_name() {
+        let calendar = Australia;
+        assert_eq!(calendar.name(), "Australia");
+    }
+
+    // Test to verify if weekends are not considered business days.
+    #[test]
+    fn test_is_weekend() {
+        let calendar = Australia;
+        let sat = datetime!(2023-08-05 12:00:00 UTC);
+        let sun = datetime!(2023-08-06 12:00:00 UTC);
+        assert!(calendar.is_business_day(sat));
+        assert!(calendar.is_business_day(sun));
+    }
+
+    // Test to verify if the is_business_day() method properly accounts for public holidays.
+    #[test]
+    fn test_is_public_holiday() {
+        let calendar = Australia;
+        let new_years_day = datetime!(2023 - 01 - 01 12:00:00 UTC);
+        let australia_day = datetime!(2023 - 01 - 26 12:00:00 UTC);
+        let anzac_day = datetime!(2023 - 04 - 25 12:00:00 UTC);
+        let christmas = datetime!(2023 - 12 - 25 12:00:00 UTC);
+
+        assert!(calendar.is_business_day(new_years_day));
+        assert!(calendar.is_business_day(australia_day));
+        assert!(calendar.is_business_day(anzac_day));
+        assert!(calendar.is_business_day(christmas));
+    }
+
+    // Test to verify if the is_business_day() method properly accounts for regular business days.
+    #[test]
+    fn test_is_regular_business_day() {
+        let calendar = Australia;
+        let regular_day1 = datetime!(2023-03-01 12:00:00 UTC);
+        let regular_day2 = datetime!(2023-07-12 12:00:00 UTC);
+        let regular_day3 = datetime!(2023-11-17 12:00:00 UTC);
+
+        assert!(calendar.is_business_day(regular_day1));
+        assert!(calendar.is_business_day(regular_day2));
+        assert!(calendar.is_business_day(regular_day3));
+    }
+}

@@ -13,7 +13,7 @@ use std::collections::HashMap;
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 /// Exchange struct to hold exchange rates.
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Default)]
 pub struct Exchange {
     /// Exchange rates hashmap.
     /// The key is a string of the form e.g. "USD_EUR",

@@ -149,3 +149,49 @@ impl<'v> Max<Variable<'v>> for f64 {
         }
     }
 }
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// UNIT TESTS
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+#[cfg(test)]
+mod test_overloading_minmax {
+    use crate::autodiff::*;
+
+    #[test]
+    fn test_values() {
+        let g = Graph::new();
+
+        let x = g.var(1.0);
+        let y = g.var(2.0);
+
+        // VALUES
+        assert!(Min::min(&x, y) == 1.0);
+        assert!(Max::max(&x, y) == 2.0);
+        assert!(Min::min(&x, 2_f64) == 1.0);
+        assert!(Max::max(&x, 2_f64) == 2.0);
+        assert!(Max::max(&x, 2_f64) == 2.0);
+        assert!(Min::min(&2_f64, x) == 1.0);
+        assert!(Max::max(&2_f64, x) == 2.0);
+    }
+
+    #[test]
+    fn test_gradients() {
+        let g = Graph::new();
+
+        let x = g.var(1.0);
+        let y = g.var(2.0);
+
+        // GRADIENTS
+        assert!(Min::min(&x, y).accumulate().wrt(&x) == 1.0);
+        assert!(Min::min(&x, y).accumulate().wrt(&y) == 0.0);
+        assert!(Max::max(&x, y).accumulate().wrt(&x) == 0.0);
+        assert!(Max::max(&x, y).accumulate().wrt(&y) == 1.0);
+
+        assert!(Min::min(&x, 2_f64).accumulate().wrt(&x) == 1.0);
+        assert!(Max::max(&x, 2_f64).accumulate().wrt(&x) == 0.0);
+
+        assert!(Min::min(&2_f64, x).accumulate().wrt(&x) == 0.0);
+        assert!(Max::max(&2_f64, x).accumulate().wrt(&x) == 1.0);
+    }
+}

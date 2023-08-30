@@ -175,7 +175,7 @@ impl std::fmt::Display for SimpleCashflow {
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 #[cfg(test)]
-mod tests_cashflows {
+mod test_cashflows {
     use super::*;
     use time::Duration;
 
@@ -226,5 +226,54 @@ mod tests_cashflows {
         // Discount function that reduces value by 10% for future_date.
         let df = |date: OffsetDateTime| if date == future_date { 0.9 } else { 1.0 };
         assert_eq!(cf.npv(df), 90.0);
+    }
+
+    // Test to verify addition of cashflows with the same date.
+    #[test]
+    fn test_add_cashflows() {
+        let date = OffsetDateTime::now_utc();
+        let cf1 = SimpleCashflow::new(100.0, date);
+        let cf2 = SimpleCashflow::new(50.0, date);
+        let result = cf1 + cf2;
+        assert_eq!(result.amount(), 150.0);
+        assert_eq!(result.date(), date);
+    }
+
+    // Test to verify subtraction of cashflows with the same date.
+    #[test]
+    fn test_sub_cashflows() {
+        let date = OffsetDateTime::now_utc();
+        let cf1 = SimpleCashflow::new(100.0, date);
+        let cf2 = SimpleCashflow::new(50.0, date);
+        let result = cf1 - cf2;
+        assert_eq!(result.amount(), 50.0);
+        assert_eq!(result.date(), date);
+    }
+
+    // Test for negative cashflows.
+    #[test]
+    fn test_negative_cashflow() {
+        let date = OffsetDateTime::now_utc();
+        let cf = SimpleCashflow::new(-100.0, date);
+        assert_eq!(cf.amount(), -100.0);
+    }
+
+    // Test for zero cashflows.
+    #[test]
+    fn test_zero_cashflow() {
+        let date = OffsetDateTime::now_utc();
+        let cf = SimpleCashflow::new(0.0, date);
+        assert_eq!(cf.amount(), 0.0);
+    }
+
+    // Test for non-matching dates during addition (should panic).
+    #[test]
+    #[should_panic(expected = "assertion failed")]
+    fn test_non_matching_dates_add() {
+        let date1 = OffsetDateTime::now_utc();
+        let date2 = date1 + Duration::days(1);
+        let cf1 = SimpleCashflow::new(100.0, date1);
+        let cf2 = SimpleCashflow::new(50.0, date2);
+        let _ = cf1 + cf2;
     }
 }

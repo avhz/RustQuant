@@ -263,10 +263,133 @@ impl std::ops::Div for Money {
 
 #[cfg(test)]
 mod test_currencies {
-    use crate::money::*;
+    use super::*;
+
+    // Setup some example currencies and money for testing
+    const USD: Currency = Currency {
+        name: "United States Dollar",
+        symbol: "$",
+        code: ISO_4217 {
+            alphabetic: "USD",
+            numeric: "840",
+        },
+        minor: 2,
+        fractions: 100,
+    };
+
+    const EUR: Currency = Currency {
+        name: "Euro",
+        symbol: "€",
+        code: ISO_4217 {
+            alphabetic: "EUR",
+            numeric: "978",
+        },
+        minor: 2,
+        fractions: 100,
+    };
 
     #[test]
-    fn test_fmt() {
-        println!("{}", USD);
+    fn test_currency_display() {
+        let display_output = format!("{}", USD);
+        assert!(display_output.contains("United States Dollar"));
+        assert!(display_output.contains("USD"));
+        assert!(display_output.contains("840"));
+    }
+
+    #[test]
+    fn test_money_display() {
+        let money = Money::new(USD, 20.5);
+        let display_output = format!("{}", money);
+        assert!(display_output.contains("20.5"));
+        assert!(display_output.contains("United States Dollar"));
+        assert!(display_output.contains("USD"));
+    }
+
+    #[test]
+    fn test_iso_4217_display() {
+        let display_output = format!("{}", USD.code);
+        assert!(display_output.contains("USD"));
+        assert!(display_output.contains("840"));
+    }
+
+    #[test]
+    fn test_currency_equality() {
+        let another_usd = USD;
+        let euro = EUR;
+        assert_eq!(USD, another_usd);
+        assert_ne!(USD, euro);
+    }
+
+    #[test]
+    fn test_money_equality() {
+        let money1 = Money::new(USD, 20.5);
+        let money2 = Money::new(USD, 20.5);
+        let money3 = Money::new(USD, 10.5);
+        assert_eq!(money1, money2);
+        assert_ne!(money1, money3);
+    }
+
+    #[test]
+    fn test_money_addition() {
+        let money1 = Money::new(USD, 20.5);
+        let money2 = Money::new(USD, 10.5);
+        let result = money1 + money2;
+        assert_eq!(result.amount(), 31.0);
+    }
+
+    #[test]
+    #[should_panic(expected = "Cannot add two different currencies.")]
+    fn test_money_addition_different_currencies() {
+        let money1 = Money::new(USD, 20.5);
+        let money2 = Money::new(EUR, 10.5);
+        let _ = money1 + money2;
+    }
+
+    #[test]
+    fn test_money_subtraction() {
+        let money1 = Money::new(USD, 20.5);
+        let money2 = Money::new(USD, 10.5);
+        let result = money1 - money2;
+        assert_eq!(result.amount(), 10.0);
+    }
+
+    #[test]
+    #[should_panic(expected = "Cannot subtract two different currencies.")]
+    fn test_money_subtraction_different_currencies() {
+        let money1 = Money::new(USD, 20.5);
+        let money2 = Money::new(EUR, 10.5);
+        let _ = money1 - money2;
+    }
+
+    #[test]
+    fn test_money_multiplication() {
+        let money1 = Money::new(USD, 20.0);
+        let money2 = Money::new(USD, 2.0);
+        let result = money1 * money2;
+        assert_eq!(result.amount(), 40.0);
+    }
+
+    #[test]
+    #[should_panic(expected = "Cannot multiply two different currencies.")]
+    fn test_money_multiplication_different_currencies() {
+        let money1 = Money::new(USD, 20.5);
+        let money2 = Money::new(EUR, 2.5);
+        let _ = money1 * money2;
+    }
+
+    #[test]
+    fn test_money_division() {
+        let money1 = Money::new(USD, 40.0);
+        let money2 = Money::new(USD, 2.0);
+        let result = money1 / money2;
+        assert_eq!(result.amount(), 20.0);
+    }
+
+    #[test]
+    #[should_panic(expected = "Cannot divide two different currencies.")]
+    fn test_money_division_different_currencies() {
+        let money1 = Money::new(USD, 40.0);
+        let money2 = Money::new(EUR, 2.0);
+        let _ = money1 / money2;
     }
 }

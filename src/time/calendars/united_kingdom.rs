@@ -68,3 +68,62 @@ fn is_bank_holiday(d: u8, w: Weekday, m: Month, y: i32) -> bool {
         // May 8th, 2023 (King Charles III Coronation Bank Holiday)
         || (d == 8 && m == Month::May && y == 2023)
 }
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// UNIT TESTS for United Kingdom
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+#[cfg(test)]
+mod test_united_kingdom {
+    use super::*;
+    use time::macros::datetime;
+
+    // Test to verify the name() method.
+    #[test]
+    fn test_name() {
+        let calendar = UnitedKingdom;
+        assert_eq!(calendar.name(), "United Kingdom");
+    }
+
+    // Test to verify if weekends are not considered business days.
+    #[test]
+    fn test_is_weekend() {
+        let calendar = UnitedKingdom;
+        let sat = datetime!(2023-08-05 12:00:00 UTC);
+        let sun = datetime!(2023-08-06 12:00:00 UTC);
+        assert!(calendar.is_business_day(sat));
+        assert!(calendar.is_business_day(sun));
+    }
+
+    // Test to verify if the is_business_day() method properly accounts for public holidays.
+    #[test]
+    fn test_is_public_holiday() {
+        let calendar = UnitedKingdom;
+        let new_years_day = datetime!(2023-01-01 12:00:00 UTC);
+        let good_friday = datetime!(2023-04-07 12:00:00 UTC); // This date might need adjustment based on easter calculation
+        let bank_holiday_may = datetime!(2023-05-01 12:00:00 UTC); // First Monday of May
+        let coronation_day = datetime!(2023-05-08 12:00:00 UTC); // King Charles III Coronation Bank Holiday
+        let christmas = datetime!(2023-12-25 12:00:00 UTC);
+        let boxing_day = datetime!(2023-12-26 12:00:00 UTC);
+
+        assert!(calendar.is_business_day(new_years_day));
+        assert!(calendar.is_business_day(good_friday));
+        assert!(calendar.is_business_day(bank_holiday_may));
+        assert!(calendar.is_business_day(coronation_day));
+        assert!(calendar.is_business_day(christmas));
+        assert!(calendar.is_business_day(boxing_day));
+    }
+
+    // Test to verify if the is_business_day() method properly accounts for regular business days.
+    #[test]
+    fn test_is_regular_business_day() {
+        let calendar = UnitedKingdom;
+        let regular_day1 = datetime!(2023-03-15 12:00:00 UTC);
+        let regular_day2 = datetime!(2023-07-11 12:00:00 UTC);
+        let regular_day3 = datetime!(2023-09-15 12:00:00 UTC);
+
+        assert!(calendar.is_business_day(regular_day1));
+        assert!(calendar.is_business_day(regular_day2));
+        assert!(calendar.is_business_day(regular_day3));
+    }
+}

@@ -69,14 +69,14 @@ mod tests_plotters {
     #[test]
     fn test_assert_approx_equal() {
         assert_approx_equal!(1_f64, 1.0, 1e-10);
-        assert_approx_equal!(1_f64.exp(), 2.718281828459045, 1e-10);
+        assert_approx_equal!(1_f64.exp(), std::f64::consts::E, 1e-10);
         assert_approx_equal!(1_f64.ln(), 0.0, 1e-10);
         assert_approx_equal!(1_f64.sin(), 0.8414709848078965, 1e-10);
         assert_approx_equal!(1_f64.cos(), 0.5403023058681398, 1e-10);
         assert_approx_equal!(1_f64.tan(), 1.5574077246549023, 1e-10);
-        assert_approx_equal!(1_f64.asin(), 1.5707963267948966, 1e-10);
+        assert_approx_equal!(1_f64.asin(), std::f64::consts::FRAC_PI_2, 1e-10);
         assert_approx_equal!(1_f64.acos(), 0.0, 1e-10);
-        assert_approx_equal!(1_f64.atan(), 0.7853981633974483, 1e-10);
+        assert_approx_equal!(1_f64.atan(), std::f64::consts::FRAC_PI_4, 1e-10);
         assert_approx_equal!(1_f64.sinh(), 1.1752011936438014, 1e-10);
         assert_approx_equal!(1_f64.cosh(), 1.5430806348152437, 1e-10);
         assert_approx_equal!(1_f64.tanh(), 0.7615941559557649, 1e-10);
@@ -86,7 +86,7 @@ mod tests_plotters {
 
     #[test]
     fn test_plot_vector_macro() {
-        let v = vec![1.0, 2.0, 3.0, 4.0, 5.0, 4.0, 6.0, 3.0, 7.0, 2.0, 8.0, 1.0];
+        let v = [1.0, 2.0, 3.0, 4.0, 5.0, 4.0, 6.0, 3.0, 7.0, 2.0, 8.0, 1.0];
         let file = "plot_macro.png";
 
         // THIS WORKS.

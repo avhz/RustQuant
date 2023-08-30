@@ -244,4 +244,19 @@ mod tests_variable {
         assert_eq!(var2.cmp(&var1), std::cmp::Ordering::Less);
         assert_eq!(var1.cmp(&var1), std::cmp::Ordering::Equal);
     }
+
+    #[test]
+    fn test_variable_impl() {
+        let g = Graph::new();
+
+        assert!(g.var(1.0).is_finite());
+        assert!(g.var(1.0).is_normal());
+        assert!(!g.var(1.0).is_subnormal());
+        assert!(!g.var(1.0).is_nan());
+        assert!(!g.var(1.0).is_infinite());
+        assert!(!g.var(1.0).is_zero());
+        assert!(g.var(1.0).is_positive());
+        assert!(!g.var(1.0).is_negative());
+        assert_eq!(g.var(1.0).signum(), 1.0);
+    }
 }
