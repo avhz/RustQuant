@@ -4,6 +4,8 @@
 // See LICENSE or <https://www.gnu.org/licenses/>.
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+use time::OffsetDateTime;
+
 /// Instrument trait
 /// The trait provides a common interface for all instruments.
 /// All instruments can be queried for their net present value (NPV) and
@@ -13,12 +15,12 @@
 /// some exotic products it might be the exercise date.
 pub trait Instrument {
     /// Returns the price (net present value) of the instrument.
-    fn price(&self) -> f64;
+    fn price(&self, engine: PricingEngine) -> f64;
     /// Returns the error on the NPV in case the pricing engine can
     /// provide it (e.g. Monte Carlo pricing engine).
     fn error(&self) -> f64;
     /// Returns the date at which the NPV is calculated.
-    fn valuationDate(&self) -> f64;
+    fn valuation_date(&self) -> OffsetDateTime;
 }
 
 /// Pricing engine for instruments.

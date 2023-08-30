@@ -79,7 +79,7 @@ impl Portfolio {
     /// * `r_p` is the average return of the portfolio.
     /// * `r` is the risk-free return over the same period.
     /// * `ss_drawdowns` is the sum of the squared drawdowns.
-    pub fn burke_ratio(&self, drawdowns: &mut [f64]) -> f64 {
+    pub fn burke_ratio(&self, drawdowns: &[f64]) -> f64 {
         let ss_drawdowns = drawdowns.iter().map(|x| x.powi(2)).sum::<f64>();
 
         (self.r_p - self.r) / ss_drawdowns
@@ -147,10 +147,10 @@ mod tests_risk_reward {
 
     #[test]
     fn test_burke_ratio() {
-        let mut drawdowns = vec![0.05, 0.10, 0.20];
+        let drawdowns = vec![0.05, 0.10, 0.20];
         let ss_drawdowns = drawdowns.iter().map(|x| x * x).sum::<f64>();
         assert_eq!(
-            PORTFOLIO.burke_ratio(&mut drawdowns),
+            PORTFOLIO.burke_ratio(&drawdowns),
             (0.12 - 0.05) / ss_drawdowns
         );
     }

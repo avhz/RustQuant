@@ -46,6 +46,7 @@ pub fn graphviz(graph: &Graph, vars: &[Variable]) -> String {
     for (index, _vertex) in vertices.iter().enumerate() {
         if var_indices.contains(&index) {
             let var_value = vars.iter().find(|var| var.index == index).unwrap().value();
+
             dot.push_str(&format!(
                 "\t{} [label=\"Input: x_{}, Value: {:.2}\", color=\"red\"];\n",
                 index, index, var_value
@@ -60,6 +61,7 @@ pub fn graphviz(graph: &Graph, vars: &[Variable]) -> String {
         for (i, parent) in vertex.parents.iter().enumerate() {
             if parent != &index {
                 let label = vertex.partials[i];
+
                 dot.push_str(&format!(
                     "\t{} -> {} [label=\"\u{2202}_{}: {:.2?}\"];\n",
                     parent, index, i, label

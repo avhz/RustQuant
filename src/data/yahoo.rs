@@ -25,10 +25,22 @@ pub struct YahooFinanceData {
     pub end: Option<OffsetDateTime>,
     /// Price history time series.
     pub price_history: Option<DataFrame>,
+    /// Returns
+    pub returns: Option<DataFrame>,
     /// Options chain, if available.
     pub options_chain: Option<DataFrame>,
     /// Latest available quote.
     pub latest_quote: Option<DataFrame>,
+}
+
+/// Return type for the Yahoo! Finance data struct.
+pub enum ReturnsType {
+    /// Arithmetic/simple returns.
+    Arithmetic,
+    /// Logarithmic returns.
+    Logarithmic,
+    /// Absolute returns.
+    Absolute,
 }
 
 /// Yahoo! Finance data reader trait.
@@ -48,11 +60,16 @@ impl Default for YahooFinanceData {
             start: Some(OffsetDateTime::UNIX_EPOCH),
             end: Some(OffsetDateTime::now_utc()),
             price_history: None,
+            returns: None,
             options_chain: None,
             latest_quote: None,
         }
     }
 }
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// IMPLEMENTATIONS
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 impl YahooFinanceData {
     /// Creates a new Yahoo! Finance data struct.
@@ -72,11 +89,87 @@ impl YahooFinanceData {
     pub fn set_end_date(&mut self, end: OffsetDateTime) {
         self.end = Some(end);
     }
-}
 
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// IMPLEMENTATIONS
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    /// Sets both the start and end dates for the price history.
+    pub fn set_date_range(&mut self, start: OffsetDateTime, end: OffsetDateTime) {
+        self.start = Some(start);
+        self.end = Some(end);
+    }
+
+    /// Computes the returns from the price history.
+    pub fn compute_returns(&mut self, returns_type: ReturnsType) {
+        if self.price_history.is_none() {
+            self.get_price_history()
+        }
+
+        // Closure to select all columns except for the date and volume columns.
+        // These are: open, high, low, close, adjusted.
+        let price_columns = || col("*").exclude(["date", "volume"]);
+
+        // Compute the returns.
+        match returns_type {
+            ReturnsType::Arithmetic => {
+                self.returns = Some(
+                    self.price_history
+                        .clone()
+                        .unwrap()
+                        .lazy()
+                        .select(vec![
+                            col("date"),
+                            col("volume"),
+                            (price_columns() / price_columns().shift(1) - lit(1.))
+                                .suffix("_arithmetic"),
+                        ])
+                        .collect()
+                        .unwrap(),
+                );
+            }
+            ReturnsType::Absolute => {
+                self.returns = Some(
+                    self.price_history
+                        .clone()
+                        .unwrap()
+                        .lazy()
+                        .select(vec![
+                            col("date"),
+                            col("volume"),
+                            (price_columns() - price_columns().shift(1)).suffix("_absolute"),
+                        ])
+                        .collect()
+                        .unwrap(),
+                );
+            }
+            ReturnsType::Logarithmic => {
+                fn logarithm(col: &Series) -> Series {
+                    col.f64().unwrap().apply(|x| x.ln()).into_series()
+                }
+
+                // THIS IS EXTREMELY HACKY AND SHOULD BE FIXED
+                // IF YOU SEE THIS, FEEL FREE TO SUBMIT A PULL REQUEST
+                // If you venture past here, you'll see more .unwrap()
+                // calls than you've ever seen before in your life.
+                let mut prices = self.price_history.clone().unwrap();
+                prices.apply("open", logarithm).unwrap();
+                prices.apply("high", logarithm).unwrap();
+                prices.apply("low", logarithm).unwrap();
+                prices.apply("close", logarithm).unwrap();
+                prices.apply("adjusted", logarithm).unwrap();
+
+                self.returns = Some(
+                    prices
+                        .lazy()
+                        .select(vec![
+                            col("date"),
+                            col("volume"),
+                            (price_columns() - price_columns().shift(1)).suffix("_logarithmic"),
+                        ])
+                        .collect()
+                        .unwrap(),
+                );
+            }
+        }
+    }
+}
 
 impl YahooFinanceReader for YahooFinanceData {
     fn get_price_history(&mut self) {
@@ -192,6 +285,7 @@ impl YahooFinanceReader for YahooFinanceData {
 
 #[cfg(test)]
 mod test_yahoo {
+    // cargo t test_yahoo --all-features  -- --nocapture
 
     use super::*;
 
@@ -205,6 +299,18 @@ mod test_yahoo {
         yfd.get_price_history();
 
         println!("Apple's quotes: {:?}", yfd.price_history)
+    }
+
+    #[test]
+    fn test_compute_returns() {
+        let mut yfd = YahooFinanceData::new("AAPL".to_string());
+
+        yfd.set_start_date(time::macros::datetime!(2019 - 01 - 01 0:00 UTC));
+        yfd.set_end_date(time::macros::datetime!(2020 - 01 - 01 0:00 UTC));
+
+        yfd.compute_returns(ReturnsType::Logarithmic);
+
+        println!("Apple's returns: {:?}", yfd.returns)
     }
 
     #[test]

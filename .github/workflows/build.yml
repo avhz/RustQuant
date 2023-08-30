@@ -30,4 +30,4 @@ jobs:
       # BUILD THE LIBRARY
       # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       - name: Build RustQuant.
-        run: cargo build --release --verbose
+        run: cargo build --release --verbose --all-features

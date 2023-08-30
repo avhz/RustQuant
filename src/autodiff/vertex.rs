@@ -18,6 +18,8 @@ pub struct Vertex {
     pub partials: [f64; 2],
     /// Array that contains the indices of the parent vertices.
     pub parents: [usize; 2],
+    // /// Operation.
+    // pub operation: Operation,
 }
 
 /// Enumeration for the operation type.
@@ -26,7 +28,7 @@ pub struct Vertex {
 ///     - A binary operation has two parents.
 ///     - A unary operation has one parent.
 ///     - A nullary operation has no parents.
-pub enum OperationArity {
+pub enum Arity {
     /// Nullary operation (e.g. a constant).
     /// This has no parents.
     Nullary,
@@ -36,6 +38,27 @@ pub enum OperationArity {
     /// Binary operation (e.g. x + y).
     /// This has two parents.
     Binary,
+}
+
+/// Enumeration for the operation type.
+#[derive(Clone, Copy, Debug)]
+enum Operation {
+    _ADD,
+    _SUB,
+    _MUL,
+    _DIV,
+    _POW,
+    _SIN,
+    _COS,
+    _TAN,
+    _EXP,
+    _LOG,
+    _SQRT,
+    _ABS,
+    _NEG,
+    _INV,
+    _MAX,
+    _MIN,
 }
 
 impl Vertex {

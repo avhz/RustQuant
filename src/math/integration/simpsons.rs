@@ -4,7 +4,7 @@
 // See LICENSE or <https://www.gnu.org/licenses/>.
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use crate::utilities::linspace;
+use crate::math::linspace;
 
 /// Composite Simpson's 3/8 rule for numerical integration.
 pub fn simpsons<F>(f: F, a: f64, b: f64, n: usize) -> f64

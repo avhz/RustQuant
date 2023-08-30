@@ -46,7 +46,7 @@ mod sde_tests {
     // use std::time::Instant;
 
     use super::*;
-    use crate::{assert_approx_equal, utilities::*};
+    use crate::{assert_approx_equal, statistics::*};
 
     #[test]
     fn test_brownian_motion() -> Result<(), Box<dyn std::error::Error>> {
@@ -91,8 +91,8 @@ mod sde_tests {
             .filter_map(|v| v.last().cloned())
             .collect();
 
-        let E_XT = mean(&X_T, MeanType::Arithmetic);
-        let V_XT = variance(&X_T, VarianceType::Sample);
+        let E_XT = X_T.mean();
+        let V_XT = X_T.variance();
         // E[X_T] = 0
         assert_approx_equal!(E_XT, 0.0, 0.5);
         // V[X_T] = T

@@ -1,5 +1,26 @@
 # Change Log
 
+## 29 August 2023
+
+- `plotting` mod deprecated, `plot_vector` is now a macro.
+- `Statistic` trait for computing statistics on `Vec<f64>` objects.
+- Remove `utilities` module (macros and plotting are in root module now).
+
+## 28 August 2023
+
+- `Cashflow`s can now be added, subtracted, multiplied, and divided.
+- `Leg`s are now available, which are collections of `Cashflow`s.
+
+## 27 August 2023
+
+- 150+ currencies added (definitions according to [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217)).
+- Basic arithmetic operations (addition, subtraction, multiplication, division) on `Money` objects.
+- Fractional Brownian Motion generator.
+
+## 6 July 2023
+
+- Compute returns (simple, arithmetic, absolute) on Yahoo! Finance timeseries downloaded into Polars `DataFrame`s.
+
 ## 27 June 2023
 
 - Moved `options` and `bonds` modules to the parent module `instruments`.

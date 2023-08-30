@@ -44,7 +44,7 @@ impl StochasticProcess for HoLee {
 #[cfg(test)]
 mod tests_ho_lee {
     use super::*;
-    use crate::{assert_approx_equal, utilities::*};
+    use crate::{assert_approx_equal, statistics::*};
 
     // Test a simple case where theta_t is constant
     // Should add tests of simple analytically tractable case
@@ -66,8 +66,8 @@ mod tests_ho_lee {
             .filter_map(|v| v.last().cloned())
             .collect();
 
-        let E_XT = mean(&X_T, MeanType::Arithmetic);
-        let V_XT = variance(&X_T, VarianceType::Sample);
+        let E_XT = X_T.mean();
+        let V_XT = X_T.variance();
 
         // This case reduces to arithmetic brownian motion..
         // E[X_T] = X_0 + theta_T * T

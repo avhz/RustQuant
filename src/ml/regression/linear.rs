@@ -20,6 +20,8 @@ use nalgebra::{DMatrix, DVector};
 #[derive(Clone, Debug)]
 pub struct LinearRegressionInput<T> {
     /// The input data matrix, also known as the design matrix.
+    /// You do not need to add a column of ones to the design matrix,
+    /// as this is done automatically.
     pub x: DMatrix<T>,
     /// The output data vector, also known as the response vector.
     pub y: DVector<T>,

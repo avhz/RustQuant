@@ -6,7 +6,7 @@
 name = "RustQuant"
 authors = ["avhz <rustquantcontact@gmail.com>"]
 description = "A Rust library for quantitative finance tools."
-version = "0.0.21"
+version = "0.0.26"
 edition = "2021"
 readme = "README.md"
 repository = "https://github.com/avhz/RustQuant"
@@ -30,7 +30,10 @@ debug = true
 
 [dependencies]
 nalgebra = "0.32.2"         # https://docs.rs/nalgebra/latest/nalgebra/
+ndarray = "0.15.6"          # https://docs.rs/ndarray/latest/ndarray/
+num = "0.4.1"               # https://docs.rs/num/latest/num/
 num-complex = "0.4.2"       # https://docs.rs/num-complex/latest/num_complex/
+num-traits = "0.2.16"       # https://docs.rs/num-traits/latest/num_traits/
 plotters = "0.3.4"          # https://docs.rs/plotters/latest/plotters/
 rand = "0.8.5"              # https://docs.rs/rand/latest/rand/
 rand_distr = "0.4.3"        # https://docs.rs/rand_distr/latest/rand_distr/
@@ -38,43 +41,36 @@ rayon = "1.6.0"             # https://docs.rs/rayon/latest/rayon/
 serde = "1.0.163"           # https://docs.rs/serde/latest/serde
 serde_json = "1.0.96"       # https://docs.rs/serde_json/latest/serde_json
 statrs = "0.16.0"           # https://docs.rs/statrs/latest/statrs/
-tempfile = "3.5.0"          # https://docs.rs/tempfile/latest/tempfile/
 time = "0.3.20"             # https://docs.rs/time/latest/time/
 yahoo_finance_api = "2.0.0" # https://docs.rs/yahoo-finance-api/latest/yahoo_finance_api/
 
-[dependencies.crossterm] # https://docs.rs/crossterm/latest/crossterm/
-version = "0.26.1"
-optional = true
+## Optional dependencies
+crossterm = { version = "0.27.0", optional = true } # https://docs.rs/crossterm/latest/crossterm/
+eyre = { version = "0.6.8", optional = true }       # https://docs.rs/eyre/latest/eyre/
+log = { version = "0.4.19", optional = true }       # https://docs.rs/log/latest/log/
+tokio-test = { version = "0.4.2", optional = true } # https://docs.rs/tokio-test/latest/tokio_test/
+tui = { version = "0.19.0", optional = true }       # https://docs.rs/tui/latest/tui/
+tui-logger = { version = "0.9.2", optional = true } # https://docs.rs/tui-logger/latest/tui_logger/
 
-[dependencies.eyre] # https://docs.rs/eyre/latest/eyre/
-version = "0.6.8"
-optional = true
+## Dependencies with features
+polars = { version = "0.32.0", optional = true, features = [
+    "serde",
+    "json",
+    "parquet",
+    "dtype-struct",
+    "dtype-date",
+    "lazy",
+] } # https://docs.rs/polars/latest/polars/
+tokio = { version = "1.28.1", optional = true, features = [
+    "macros",
+    "rt-multi-thread",
+] } # https://docs.rs/tokio/latest/tokio/
 
-[dependencies.log] # https://docs.rs/log/latest/log/
-version = "0.4.19"
-optional = true
 
-[dependencies.polars] # https://docs.rs/polars/latest/polars/  
-version = "0.30.0"
-optional = true
-features = ["serde", "json", "parquet", "dtype-struct", "dtype-date", "lazy"]
-
-[dependencies.tokio] # https://docs.rs/tokio/latest/tokio/
-version = "1.28.1"
-optional = true
-features = ["macros", "rt-multi-thread"]
-
-[dependencies.tokio-test] # https://docs.rs/tokio-test/latest/tokio_test/
-version = "0.4.2"
-optional = true
-
-[dependencies.tui] # https://docs.rs/tui/latest/tui/
-version = "0.19.0"
-optional = true
-
-[dependencies.tui-logger] # https://docs.rs/tui-logger/latest/tui_logger/
-version = "0.9.2"
-optional = true
+[dev-dependencies]
+finitediff = "0.1.4" # https://docs.rs/finitediff/latest/finitediff/
+memuse = "0.2.1"     # https://docs.rs/memuse/latest/memuse/
+autodiff = "0.7.0"   # https://docs.rs/autodiff/latest/autodiff/
 
 
 ## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -95,6 +91,8 @@ interactive = [
     "dep:eyre",
     "dep:log",
 ]
+## This feature is used to allow the end user to seed their stochastic processes.
+seedable = []
 
 
 ## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -110,7 +108,7 @@ required-features = ["data"]
 ## TERMINAL USER INTERFACE
 ## This is simply a plan for the future.
 ##
-## Run it: cargo run 
+## Run it: cargo run --features=interactive
 ## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 [[bin]]
