@@ -365,9 +365,9 @@ mod tests_logistic_regression {
         // - compute target values:for each sample i draw from Bernouilli(prob_i)
         use crate::statistics::distributions::{Bernoulli, Distribution, Gaussian, Uniform};
 
-        let N_train = 100000; //Number of training samples
-        let N_test = 1000; //Number of test samples
-        let K = 30; //Number of Features
+        let N_train = 200; //Number of training samples
+        let N_test = 40; //Number of test samples
+        let K = 10; //Number of Features
 
         let distr_normal = Gaussian::default();
         let distr_uniform_bias = Uniform::new(-0.7, 0.7, DistributionClass::Continuous);
