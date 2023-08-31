@@ -49,6 +49,7 @@ Rust library for quantitative finance tools.
 :dart: I want to hit a stable and legitimate `v1.0.0` by the end of 2023, so any and all feedback, suggestions, or contributions are strongly welcomed!
 
 Contact: <rustquantcontact@gmail.com> 
+
 Discord: <https://discord.gg/tQcM77h8vr>
 
 **Disclaimer**: This is currently a free-time project and not a professional financial software library. Nothing in this library should be taken as financial advice, and I do not recommend you to use it for trading or making financial decisions.
