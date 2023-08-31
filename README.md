@@ -4,6 +4,31 @@
 <p align="center">
     <a href="#license" alt="license">
         <img alt="License" src="https://img.shields.io/github/license/avhz/RustQuant">
+    <a href="#version" alt="version">
+        <img alt="Crates.io" src="https://img.shields.io/crates/v/RustQuant">
+    <a href="#downloads" alt="downloads">
+        <img alt="Crates.io" src="https://img.shields.io/crates/d/RustQuant">
+    <a href="#stars" alt="stars">
+        <img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/avhz/RustQuant">
+</p>
+
+<p align="center">
+    <a href="#build" alt="build">
+        <img alt="GitHub Workflow Status" src="https://img.shields.io/github/actions/workflow/status/avhz/RustQuant/build.yml">
+    <a href="#codecov" alt="codecov">
+        <img alt="Codecov" src="https://img.shields.io/codecov/c/gh/avhz/RustQuant">
+    <a href="#deps" alt="deps">
+        <img alt="Dependencies" src="https://deps.rs/repo/github/avhz/RustQuant/status.svg">
+</p>
+
+<p align="center">
+    <a href="#discord" alt="discord">
+        <img alt="Discord" src="https://img.shields.io/discord/1146771658082881636?style=for-the-badge&logo=discord">
+</p>
+
+<!-- <p align="center">
+    <a href="#license" alt="license">
+        <img alt="License" src="https://img.shields.io/github/license/avhz/RustQuant">
     <a href="#build" alt="build">
         <img alt="GitHub Workflow Status" src="https://img.shields.io/github/actions/workflow/status/avhz/RustQuant/build.yml">
     <a href="#downloads" alt="downloads">
@@ -16,7 +41,8 @@
         <img alt="Codecov" src="https://img.shields.io/codecov/c/gh/avhz/RustQuant">
     <a href="#deps" alt="deps">
         <img alt="Dependencies" src="https://deps.rs/repo/github/avhz/RustQuant/status.svg">
-</p>
+</p> -->
+
 
 Rust library for quantitative finance tools.
 
