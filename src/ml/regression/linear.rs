@@ -11,11 +11,33 @@
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 use nalgebra::{DMatrix, DVector};
-
+use thiserror::Error;
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // STRUCTS, ENUMS, AND TRAITS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+#[derive(Error, Debug)]
+
+///For better error handling 
+pub enum LinearRegressionError {
+    /// failed to invert matrix
+    #[error("Matrix inversion failed")]
+    MatrixInversionFailed,
+
+
+    /// failed to SVD
+    #[error("SVD decomposition failed: v_t is None")]
+    SvdDecompositionFailed,
+}
+
+
+
+    
+
+
+
+    
+    
 /// Struct to hold the input data for a linear regression.
 #[derive(Clone, Debug)]
 pub struct LinearRegressionInput<T> {
@@ -77,7 +99,7 @@ impl LinearRegressionInput<f64> {
     ///     - `QR` decomposition (generally fastest).
     ///     - `SVD` decomposition (generally most stable).
     /// Both QR and SVD are usually faster than the naive implementation.
-    pub fn fit(&self, method: Decomposition) -> LinearRegressionOutput<f64> {
+    pub fn fit(&self, method: Decomposition) -> Result<LinearRegressionOutput<f64>,LinearRegressionError> {
         // Insert a column of 1s to the input data matrix,
         // to account for the intercept.
         let x = self.x.clone().insert_column(0, 1.);
@@ -87,29 +109,29 @@ impl LinearRegressionInput<f64> {
             Decomposition::None => {
                 let x_t = x.transpose();
                 let x_t_x = x_t.clone() * x;
-                let x_t_x_inv = x_t_x.try_inverse().unwrap();
+                let x_t_x_inv = x_t_x.try_inverse().ok_or(LinearRegressionError::MatrixInversionFailed)?;
                 let x_t_y = x_t * y;
 
                 let coefficients = x_t_x_inv * x_t_y;
                 let intercept = coefficients[0];
 
-                LinearRegressionOutput {
+                Ok(LinearRegressionOutput {
                     intercept,
                     coefficients,
-                }
+                })
             }
             Decomposition::QR => {
                 let qr = x.qr();
                 let q = qr.q();
                 let r = qr.r();
 
-                let coefficients = r.try_inverse().unwrap() * q.transpose() * y;
+                let coefficients = r.try_inverse().ok_or(LinearRegressionError::MatrixInversionFailed)? * q.transpose() * y;
                 let intercept = coefficients[0];
 
-                LinearRegressionOutput {
+                Ok(LinearRegressionOutput {
                     intercept,
                     coefficients,
-                }
+                })
             }
             Decomposition::SVD => {
                 let svd = x.svd(true, true);
@@ -124,10 +146,10 @@ impl LinearRegressionInput<f64> {
                 // Depends on how the input data is structured
                 let intercept = coefficients[0];
 
-                LinearRegressionOutput {
+                Ok(LinearRegressionOutput {
                     intercept,
                     coefficients,
-                }
+                })
             }
         }
     }
@@ -135,12 +157,14 @@ impl LinearRegressionInput<f64> {
 
 impl LinearRegressionOutput<f64> {
     /// Predicts the output for the given input data.
-    pub fn predict(&self, input: DMatrix<f64>) -> DVector<f64> {
+    pub fn predict(&self, input: DMatrix<f64>) -> Result<DVector<f64>, LinearRegressionError>  {
         let intercept = DVector::from_element(input.nrows(), self.intercept);
         let coefficients = self.coefficients.clone().remove_row(0);
 
         // Y = B * X + A
-        input * coefficients + intercept
+        let predictions = input * coefficients + intercept;
+
+        Ok(predictions)
     }
 }
 
@@ -149,7 +173,7 @@ impl LinearRegressionOutput<f64> {
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 #[cfg(test)]
-mod tests_linear_regression {
+mod tests_linear_regression  { 
     use std::time::Instant;
 
     use crate::assert_approx_equal;
@@ -157,7 +181,7 @@ mod tests_linear_regression {
     use super::*;
 
     #[test]
-    fn test_linear_regression() {
+    fn test_linear_regression() -> Result<(), LinearRegressionError> {
         // TEST DATA GENERATED FROM THE FOLLOWING R CODE:
         //
         // set.seed(2023)
@@ -202,33 +226,46 @@ mod tests_linear_regression {
         };
 
         let start_none = Instant::now();
-        let output = input.fit(Decomposition::None);
+        let output =  input.fit(Decomposition::None)?;
+           
+        
+         
         let elapsed_none = start_none.elapsed();
+        let coefficients = output.coefficients.clone();
+        
+        
+
+
 
         let start_qr = Instant::now();
-        let output_qr = input.fit(Decomposition::QR);
+        let output_qr = input.fit(Decomposition::QR)?;
+        let coefficients_qr = output_qr.coefficients.clone();
         let elapsed_qr = start_qr.elapsed();
 
         let start_svd = Instant::now();
-        let output_svd = input.fit(Decomposition::SVD);
-        let elapsed_svd = start_svd.elapsed();
-
+        let output_svd = input.fit(Decomposition::SVD)?;
+        let coefficients_svd = output_svd.coefficients.clone();
+        let elapsed_svd = start_svd.elapsed();  
+        
         println!(
             "None: time {:?}, Coefs: {:?}\n",
-            elapsed_none, output.coefficients
+            elapsed_none, coefficients
         );
         println!(
             "QR: time {:?}, Coefs: {:?}\n",
-            elapsed_qr, output_qr.coefficients
+            elapsed_qr, coefficients_qr
         );
         println!(
             "SVD: time {:?}, Coefs: {:?}\n",
-            elapsed_svd, output_svd.coefficients
+            elapsed_svd, coefficients_svd
         );
 
         // Predict the response for the test data.
-        let preds = output.predict(x_test);
-
+        
+        let preds = output.predict(x_test)?;
+        
+            
+        
         // Check intercept.
         assert_approx_equal!(output.intercept, 0.45326734, 1e-6);
 
@@ -242,12 +279,16 @@ mod tests_linear_regression {
         }
 
         // Check predictions.
-        for (i, pred) in preds.iter().enumerate() {
+        for (i, pred) in preds
+        .iter()
+        .enumerate() {
             assert_approx_equal!(
                 pred,
                 &[0.0030197504, 0.4041016953, 2.4605541127, 1.6571889522][i],
                 1e-3
             );
+            
         }
+        Ok(())
     }
 }
