@@ -12,11 +12,15 @@
 
 use crate::ml::ActivationFunction;
 use nalgebra::{DMatrix, DVector};
+
 // use crate::autodiff::*;
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // STRUCTS, ENUMS, AND TRAITS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+// Enum for error handling in Logistic Regression Module
 
 /// Struct to hold the input data for a logistic regression.
 #[derive(Clone, Debug)]

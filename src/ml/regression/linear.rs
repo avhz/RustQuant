@@ -25,10 +25,14 @@ pub enum LinearRegressionError {
     MatrixInversionFailed,
 
 
-    /// failed to SVD
-    #[error("SVD decomposition failed: v_t is None")]
+    /// failed to perform SVD decomposition
+    #[error("SVD decomposition failed: v_t is likely wrong type")]
     SvdDecompositionFailed,
+    /// failed to compute u 
+    #[error("SVD decomposition failed: u is likely wrong type")]
+    SvdDecompositionFailedOnU,
 }
+
 
 
 
@@ -135,9 +139,9 @@ impl LinearRegressionInput<f64> {
             }
             Decomposition::SVD => {
                 let svd = x.svd(true, true);
-                let v = svd.v_t.unwrap().transpose();
+                let v = svd.v_t.ok_or(LinearRegressionError::SvdDecompositionFailed)?.transpose();
                 let s_inv = DMatrix::from_diagonal(&svd.singular_values.map(|x| 1.0 / x));
-                let u = svd.u.unwrap();
+                let u = svd.u.ok_or(LinearRegressionError::SvdDecompositionFailedOnU)?;
 
                 let pseudo_inverse = v * s_inv * u.transpose();
                 let coefficients = &pseudo_inverse * y;

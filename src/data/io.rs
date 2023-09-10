@@ -71,25 +71,56 @@ impl Data {
     }
 }
 
+pub enum DataFormat {
+    /// CSV format.
+    CSV,
+    /// JSON format.
+    JSON,
+    /// PARQUET format.
+    PARQUET,
+}
+
+/// Data reader trait.
+/// Eagerly reads data from the source.
+pub trait DataReader {
+    /// Reads data from the source.
+    fn read(&mut self) -> Result<(), Box<dyn std::error::Error>>;
+}
+
+/// Data writer trait.
+pub trait DataWriter {
+    /// Writes data to the source.
+    fn write(&mut self) -> Result<(), Box<dyn std::error::Error>>;
+}
+
+/// Data scanner trait.
+/// Lazily scans data from the source.
+pub trait DataScanner {
+    /// Scans data from the source.
+    fn scan(&mut self) -> Result<LazyFrame, Box<dyn std::error::Error>>;
+}
+
+// ...
+
 impl DataReader for Data {
-    fn read(&mut self) -> Result<(), std::io::Error> {
+    fn read(&mut self) -> Result<(), Box<dyn std::error::Error>> {
         match self.format {
             DataFormat::CSV => {
-                let df = CsvReader::from_path(&self.path).unwrap().finish().unwrap();
+                let df = CsvReader::from_path(&self.path)?;
                 self.data = df;
 
                 Ok(())
             }
             DataFormat::JSON => {
-                let mut file = std::fs::File::open(&self.path).unwrap();
-                let df = JsonReader::new(&mut file).finish().unwrap();
+                let mut file = std::fs::File::open(&self.path)?;
+                let df = JsonReader::new(&mut file).finish()?;
                 self.data = df;
 
                 Ok(())
             }
             DataFormat::PARQUET => {
-                let mut file = std::fs::File::open(&self.path).unwrap();
-                let df = ParquetReader::new(&mut file).finish().unwrap();
+                let mut file = std::fs::File::open(&self.path)?;
+                let df = ParquetReader::new(&mut file).finish()?;
                 self.data = df;
 
                 Ok(())
@@ -99,31 +130,74 @@ impl DataReader for Data {
 }
 
 impl DataWriter for Data {
-    fn write(&mut self) -> Result<(), std::io::Error> {
+    fn write(&mut self) -> Result<(), Box<dyn std::error::Error>> {
         match self.format {
             DataFormat::CSV => {
-                let mut file = std::fs::File::create(&self.path).unwrap();
+                let mut file = std::fs::File::create(&self.path)?;
 
-                CsvWriter::new(&mut file).finish(&mut self.data).unwrap();
+                CsvWriter::new(&mut file).finish(&mut self.data)?;
 
                 Ok(())
             }
             DataFormat::JSON => {
-                let mut file = std::fs::File::create(&self.path).unwrap();
+                let mut file = std::fs::File::create(&self.path)?;
 
                 JsonWriter::new(&mut file)
                     .with_json_format(JsonFormat::Json)
-                    .finish(&mut self.data)
-                    .unwrap();
+                    .finish(&mut self.data)?;
 
                 Ok(())
             }
             DataFormat::PARQUET => {
-                let mut file = std::fs::File::create(&self.path).unwrap();
+                let mut file = std::fs::File::create(&self.path)?;
 
                 ParquetWriter::new(&mut file)
-                    .finish(&mut self.data)
-                    .unwrap();
+                    .finish(&mut self.data)?;
+
+                Ok(())
+            }
+        }
+    }
+}
+
+impl DataScanner for Data {
+    fn scan(&mut self) -> Result<LazyFrame, Box<dyn std::error::Error>> {
+        match self.format {
+            DataFormat::CSV => Ok(LazyCsvReader::new(&self.path).finish()?),
+            DataFormat::JSON => Ok(LazyJsonLineReader::new(self.path.clone()).finish()?),
+            DataFormat::PARQUET => {
+                Ok(LazyFrame::scan_parquet(&self.path, ScanArgsParquet::default())?)
+            }
+        }
+    }
+}
+
+
+
+impl DataWriter for Data {
+    fn write(&mut self) -> Result<(), std::io::Error> {
+        match self.format {
+            DataFormat::CSV => {
+                let mut file = std::fs::File::create(&self.path)?;
+
+                CsvWriter::new(&mut file).finish(&mut self.data)?;
+
+                Ok(())
+            }
+            DataFormat::JSON => {
+                let mut file = std::fs::File::create(&self.path)?;
+
+                JsonWriter::new(&mut file)
+                    .with_json_format(JsonFormat::Json)
+                    .finish(&mut self.data)?;
+
+                Ok(())
+            }
+            DataFormat::PARQUET => {
+                let mut file = std::fs::File::create(&self.path)?;
+
+                ParquetWriter::new(&mut file)
+                    .finish(&mut self.data)?;
 
                 Ok(())
             }
@@ -134,10 +208,10 @@ impl DataWriter for Data {
 impl DataScanner for Data {
     fn scan(&mut self) -> Result<LazyFrame, std::io::Error> {
         match self.format {
-            DataFormat::CSV => Ok(LazyCsvReader::new(&self.path).finish().unwrap()),
-            DataFormat::JSON => Ok(LazyJsonLineReader::new(self.path.clone()).finish().unwrap()),
+            DataFormat::CSV => Ok(LazyCsvReader::new(&self.path).finish())?,
+            DataFormat::JSON => Ok(LazyJsonLineReader::new(self.path.clone()).finish())?,
             DataFormat::PARQUET => {
-                Ok(LazyFrame::scan_parquet(&self.path, ScanArgsParquet::default()).unwrap())
+                Ok(LazyFrame::scan_parquet(&self.path, ScanArgsParquet::default()))?;
             }
         }
     }
@@ -159,11 +233,11 @@ mod test_io {
             data: DataFrame::default(),
         };
 
-        data.read().unwrap();
+        data.read()?;
 
         data.path = String::from("./src/data/examples/write.csv");
 
-        data.write().unwrap();
+        data.write()?;
 
         println!("{:?}", data.data)
     }
@@ -176,11 +250,11 @@ mod test_io {
             data: DataFrame::default(),
         };
 
-        data.read().unwrap();
+        data.read()?;
 
         data.path = String::from("./src/data/examples/write.json");
 
-        data.write().unwrap();
+        data.write()?;
 
         println!("{:?}", data.data)
     }
