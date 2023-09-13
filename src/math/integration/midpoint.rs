@@ -7,7 +7,7 @@
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use crate::math::linspace;
+use crate::math::sequences::linspace::linspace;
 
 /// Midpoint rule for numerical integration.
 pub fn midpoint<F>(f: F, a: f64, b: f64, n: usize) -> f64
