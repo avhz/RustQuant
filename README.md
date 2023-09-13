@@ -3,7 +3,7 @@
 
 <p align="center">
     <a href="#license" alt="license">
-        <img alt="License" src="https://img.shields.io/github/license/avhz/RustQuant">
+        <img alt="License" src="https://img.shields.io/badge/Dual_License-MIT_and_Apache_2.0-black?logo=apache">
     <a href="#version" alt="version">
         <img alt="Crates.io" src="https://img.shields.io/crates/v/RustQuant">
     <a href="#downloads" alt="downloads">
