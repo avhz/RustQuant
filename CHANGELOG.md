@@ -1,5 +1,9 @@
 # Change Log
 
+## 13 September 2023
+
+- Re-licensing from GPL3 to dual Apache2/MIT licenses.
+
 ## 29 August 2023
 
 - `plotting` mod deprecated, `plot_vector` is now a macro.
