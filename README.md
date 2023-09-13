@@ -5,11 +5,11 @@
     <a href="#license" alt="license">
         <img alt="License" src="https://img.shields.io/badge/Dual_License-MIT_and_Apache_2.0-black?logo=apache">
     <a href="#version" alt="version">
-        <img alt="Crates.io" src="https://img.shields.io/crates/v/RustQuant?logo=rust">
+        <img alt="Crates.io" src="https://img.shields.io/crates/v/RustQuant?logo=rust?color=black">
     <a href="#downloads" alt="downloads">
-        <img alt="Crates.io" src="https://img.shields.io/crates/d/RustQuant?logo=rust">
+        <img alt="Crates.io" src="https://img.shields.io/crates/d/RustQuant?logo=rust?color=black">
     <a href="#stars" alt="stars">
-        <img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/avhz/RustQuant?logo=github">
+        <img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/avhz/RustQuant?logo=github?color=black">
 </p>
 
 <p align="center">
