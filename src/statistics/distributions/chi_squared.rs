@@ -4,7 +4,7 @@
 // See LICENSE or <https://www.gnu.org/licenses/>.
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use crate::statistics::distributions::Distribution;
+use crate::statistics::{distributions::Distribution, DistributionError};
 use num_complex::Complex;
 use statrs::function::gamma::{gamma, gamma_li};
 
@@ -98,7 +98,7 @@ impl Distribution for ChiSquared {
         (1.0 - 2.0 * t).powf(-(self.k as f64) / 2.0)
     }
 
-    fn sample(&self, n: usize) -> Vec<f64> {
+    fn sample(&self, n: usize) -> Result<Vec<f64>, DistributionError> {
         // IMPORT HERE TO AVOID CLASH WITH
         // `RustQuant::distributions::Distribution`
         use rand::thread_rng;
@@ -108,7 +108,7 @@ impl Distribution for ChiSquared {
 
         let mut rng = thread_rng();
 
-        let dist = ChiSquared::new(self.k as f64).unwrap();
+        let dist = ChiSquared::new(self.k as f64)?;
 
         let mut variates: Vec<f64> = Vec::with_capacity(n);
 
@@ -116,7 +116,7 @@ impl Distribution for ChiSquared {
             variates.push(dist.sample(&mut rng) as usize as f64);
         }
 
-        variates
+        Ok(variates)
     }
 }
 

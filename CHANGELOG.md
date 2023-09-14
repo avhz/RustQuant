@@ -1,5 +1,8 @@
 # Change Log
 
+## 14 September 2023
+- Added `Result` wrapping for `statistics` module.
+
 ## 29 August 2023
 
 - `plotting` mod deprecated, `plot_vector` is now a macro.

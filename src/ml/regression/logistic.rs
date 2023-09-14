@@ -374,10 +374,10 @@ mod tests_logistic_regression {
         let distr_uniform_steepness = Uniform::new(0.5, 5., DistributionClass::Continuous);
 
         //generate random coefficients which will be used to generate target values for the x_i (direction uniform from sphere, bias uniform between -0.5 and 0.5 ) scaled by steepness
-        let bias = distr_uniform_bias.sample(1)[0];
-        let steepness = distr_uniform_steepness.sample(1)[0];
+        let bias = distr_uniform_bias.sample(1).unwrap()[0];
+        let steepness = distr_uniform_steepness.sample(1).unwrap()[0];
 
-        let coefs = DVector::from_vec(distr_normal.sample(K))
+        let coefs = DVector::from_vec(distr_normal.sample(K).unwrap())
             .normalize()
             .insert_row(0, bias)
             .scale(steepness);
@@ -390,17 +390,24 @@ mod tests_logistic_regression {
         //generate random design matrix for train/test
         let distr_uniform_features = Uniform::new(-0.5, 0.5, DistributionClass::Continuous);
 
-        let x_train =
-            DMatrix::<f64>::from_vec(N_train, K, distr_uniform_features.sample(N_train * K));
-        let x_test = DMatrix::from_vec(N_test, K, distr_uniform_features.sample(N_test * K));
+        let x_train = DMatrix::<f64>::from_vec(
+            N_train,
+            K,
+            distr_uniform_features.sample(N_train * K).unwrap(),
+        );
+        let x_test = DMatrix::from_vec(
+            N_test,
+            K,
+            distr_uniform_features.sample(N_test * K).unwrap(),
+        );
 
         //compute probabilities for each sample x_i
         let probs_train = logistic_regression.predict_proba(&x_train);
         let probs_test = logistic_regression.predict_proba(&x_test);
 
         // sample from Bernoulli distribution with p=p_i for each sample i
-        let y_train = probs_train.map(|p| Bernoulli::new(p).sample(1)[0]);
-        let y_test = probs_test.map(|p| Bernoulli::new(p).sample(1)[0]);
+        let y_train = probs_train.map(|p| Bernoulli::new(p).sample(1).unwrap()[0]);
+        let y_test = probs_test.map(|p| Bernoulli::new(p).sample(1).unwrap()[0]);
 
         // Fit the model to the training data.
         let input = LogisticRegressionInput {

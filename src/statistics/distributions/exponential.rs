@@ -4,7 +4,7 @@
 // See LICENSE or <https://www.gnu.org/licenses/>.
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use crate::statistics::distributions::Distribution;
+use crate::statistics::{distributions::Distribution, DistributionError};
 use num_complex::Complex;
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -194,7 +194,7 @@ impl Distribution for Exponential {
         self.lambda * (self.lambda - t).recip()
     }
 
-    fn sample(&self, n: usize) -> Vec<f64> {
+    fn sample(&self, n: usize) -> Result<Vec<f64>, DistributionError> {
         // IMPORT HERE TO AVOID CLASH WITH
         // `RustQuant::distributions::Distribution`
         use rand::thread_rng;
@@ -203,14 +203,14 @@ impl Distribution for Exponential {
         assert!(n > 0);
 
         let mut rng = thread_rng();
-        let dist = Exp::new(self.lambda).unwrap();
+        let dist = Exp::new(self.lambda)?;
         let mut variates: Vec<f64> = Vec::with_capacity(n);
 
         for _ in 0..variates.capacity() {
             variates.push(dist.sample(&mut rng));
         }
 
-        variates
+        Ok(variates)
     }
 }
 

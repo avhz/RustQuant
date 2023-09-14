@@ -4,7 +4,7 @@
 // See LICENSE or <https://www.gnu.org/licenses/>.
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use crate::statistics::distributions::Distribution;
+use crate::statistics::{distributions::Distribution, DistributionError};
 use num_complex::Complex;
 use std::f64::consts::{E, PI};
 
@@ -107,7 +107,7 @@ impl Distribution for Binomial {
         ((1. - self.p) + self.p * t.exp()).powi(self.n as i32)
     }
 
-    fn sample(&self, n: usize) -> Vec<f64> {
+    fn sample(&self, n: usize) -> Result<Vec<f64>, DistributionError> {
         // IMPORT HERE TO AVOID CLASH WITH
         // `RustQuant::distributions::Distribution`
         use rand::thread_rng;
@@ -117,7 +117,7 @@ impl Distribution for Binomial {
 
         let mut rng = thread_rng();
 
-        let dist = Binomial::new(n as u64, self.p).unwrap();
+        let dist = Binomial::new(n as u64, self.p)?;
 
         let mut variates: Vec<f64> = Vec::with_capacity(n);
 
@@ -125,7 +125,7 @@ impl Distribution for Binomial {
             variates.push(dist.sample(&mut rng) as f64);
         }
 
-        variates
+        Ok(variates)
     }
 }
 
