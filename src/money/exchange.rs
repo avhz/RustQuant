@@ -8,7 +8,8 @@
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 // use crate::RustQuantError;
-use super::{Currency, Money};
+// use crate::money::{iso_currencies::*, Currency, Money};
+use crate::money::*;
 use std::collections::HashMap;
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -202,7 +203,7 @@ impl ExchangeRate {
 // You can now add additional unit tests
 #[cfg(test)]
 mod test_exchange_rate {
-    use crate::money::*;
+    use super::*;
 
     #[test]
     fn test_conversion() {

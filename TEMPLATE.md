@@ -19,7 +19,7 @@ This is explained in [CONTRIBUTING.md](./CONTRIBUTING.md), but for ease of findi
 use RustQuant::*;
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// Structs, enums, and traits
+// STRUCTS, ENUMS, AND TRAITS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 enum Enum {}
@@ -29,7 +29,7 @@ struct Struct {}
 trait Trait {}
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// Implementations, functions, and macros
+// IMPLEMENTATIONS, TRAITS, AND FUNCTIONS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 impl Struct {}
@@ -37,7 +37,7 @@ impl Struct {}
 impl Trait for Struct {}
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// Unit tests
+// UNIT TESTS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 #[cfg(test)]

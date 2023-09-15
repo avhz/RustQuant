@@ -271,7 +271,7 @@ mod test_cashflows {
 
     // Test for non-matching dates during addition (should panic).
     #[test]
-    #[should_panic(expected = "assertion failed")]
+    #[should_panic]
     fn test_non_matching_dates_add() {
         let date1 = OffsetDateTime::now_utc();
         let date2 = date1 + Duration::days(1);

@@ -20,12 +20,9 @@
 //! - `θ`: is the level to which it gets pulled.
 //! - `σ`: is the diffusion coefficient.
 
+use crate::instruments::bonds::*;
+use crate::time::{DayCountConvention, DayCounter};
 use time::OffsetDateTime;
-
-use crate::{
-    instruments::bonds::*,
-    time::{DayCountConvention, DayCounter},
-};
 
 /// Struct containing the Vasicek model parameters.
 pub struct Vasicek {
