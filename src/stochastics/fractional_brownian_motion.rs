@@ -164,7 +164,7 @@ impl StochasticProcess for FractionalBrownianMotion {
         let times: Vec<f64> = (0..=n_steps).map(|t| t_0 + dt * (t as f64)).collect();
 
         let path_generator = |path: &mut Vec<f64>| {
-            let fgn = self.seedable_fgn_cholesky(n_steps, seed);
+            let fgn = self.seedable_fgn_cholesky(n_steps, t_n, seed);
 
             for t in 0..n_steps {
                 path[t + 1] = path[t]
