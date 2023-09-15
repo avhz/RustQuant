@@ -43,15 +43,13 @@
         <img alt="Dependencies" src="https://deps.rs/repo/github/avhz/RustQuant/status.svg">
 </p> -->
 
-A Rust library for quantitative finance tools.
+A Rust library for quantitative finance tools. Also the largest option pricing library in Rust.
 
-:dart: I want to hit a stable and legitimate `v1.0.0` by the end of 2023, so any and all feedback, suggestions, or contributions are strongly welcomed!
+:dart: I want to hit a stable `v1.0.0` by the end of 2023, so any feedback, suggestions, or contributions are strongly welcomed!
 
 Email me at: <RustQuantContact@gmail.com>
 
 Join the Discord server: <https://discord.gg/tQcM77h8vr>
-
-**Disclaimer**: This is currently a free-time project and not a professional financial software library. Nothing in this library should be taken as financial advice, and I do not recommend you to use it for trading or making financial decisions.
 
 ## :newspaper: Latest features
 
@@ -512,3 +510,5 @@ I would not recommend using RustQuant within any other libraries for some time, 
 - Antoine Savine - *Modern Computational Finance: AAD and Parallel Simulations*
 
 </details>
+
+**Disclaimer**: This is currently a free-time project and not a professional financial software library. Nothing in this library should be taken as financial advice, and I do not recommend you to use it for trading or making financial decisions.

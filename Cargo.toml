@@ -16,7 +16,7 @@
 name = "RustQuant"
 authors = ["avhz <rustquantcontact@gmail.com>"]
 description = "A Rust library for quantitative finance tools."
-version = "0.0.27"
+version = "0.0.28"
 edition = "2021"
 readme = "README.md"
 repository = "https://github.com/avhz/RustQuant"
