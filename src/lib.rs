@@ -144,14 +144,17 @@ pub mod instruments {
     /// Option pricers and sensitivity functions.
     pub mod options {
         pub use crate::instruments::options::{
-            american::*, asian::*, barrier::*, binary::*, binomial::*, black_scholes_merton::*,
-            european::*, forward_start::*, greeks::*, heston::*, lookback::*, option::*,
+            american::*, asian::*, bachelier::*, barrier::*, binary::*, binomial::*,
+            black_scholes_merton::*, european::*, forward_start::*, greeks::*, heston::*,
+            lookback::*, option::*,
         };
 
         /// American option pricers.
         pub mod american;
         /// Asian option pricers.
         pub mod asian;
+        /// Bachelier option pricer.
+        pub mod bachelier;
         /// Barrier option pricers.
         pub mod barrier;
         /// Binary option pricers.
