@@ -8,7 +8,7 @@
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 use super::DistributionClass;
-use crate::statistics::distributions::Distribution;
+use crate::statistics::{distributions::Distribution, DistributionError};
 use num_complex::Complex;
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -177,7 +177,7 @@ impl Distribution for Uniform {
         }
     }
 
-    fn sample(&self, n: usize) -> Vec<f64> {
+    fn sample(&self, n: usize) -> Result<Vec<f64>, DistributionError> {
         // IMPORT HERE TO AVOID CLASH WITH
         // `RustQuant::distributions::Distribution`
         use rand::thread_rng;
@@ -203,7 +203,7 @@ impl Distribution for Uniform {
             }
         }
 
-        variates
+        Ok(variates)
     }
 }
 

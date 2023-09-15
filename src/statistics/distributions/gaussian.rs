@@ -7,6 +7,8 @@
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+use crate::statistics::DistributionError;
+
 use {
     super::Distribution,
     num_complex::Complex,
@@ -269,13 +271,13 @@ impl Distribution for Gaussian {
     ///
     /// let gaussian = Gaussian::new(0.0, 1.0);
     ///
-    /// let sample = gaussian.sample(1000);
+    /// let sample = gaussian.sample(1000).expect("Gaussian sampled");
     /// let mean = sample.iter().sum::<f64>() / sample.len() as f64;
     ///
     /// assert_approx_equal!(mean, gaussian.mean(), 0.1);
     /// ```
     ///
-    fn sample(&self, n: usize) -> Vec<f64> {
+    fn sample(&self, n: usize) -> Result<Vec<f64>, DistributionError> {
         // IMPORT HERE TO AVOID CLASH WITH
         // `RustQuant::distributions::Distribution`
         use rand::thread_rng;
@@ -284,14 +286,14 @@ impl Distribution for Gaussian {
         assert!(n > 0);
 
         let mut rng = thread_rng();
-        let normal = Normal::new(self.mean, self.variance.sqrt()).unwrap();
+        let normal = Normal::new(self.mean, self.variance.sqrt())?;
         let mut variates: Vec<f64> = Vec::with_capacity(n);
 
         for _ in 0..variates.capacity() {
             variates.push(normal.sample(&mut rng));
         }
 
-        variates
+        Ok(variates)
     }
 }
 
@@ -353,14 +355,16 @@ mod tests_gaussian {
     }
 
     #[test]
-    fn test_gaussian_variate_generator() {
+    fn test_gaussian_variate_generator() -> Result<(), DistributionError> {
         let normal = Gaussian::default();
 
-        let v = normal.sample(1000);
+        let v = normal.sample(1000)?;
 
         let mean = (v.iter().sum::<f64>()) / (v.len() as f64);
 
         assert_approx_equal!(mean, 0.0, 0.1);
+
+        Ok(())
     }
 
     #[test]

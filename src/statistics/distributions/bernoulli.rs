@@ -7,6 +7,8 @@
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+use crate::statistics::DistributionError;
+
 use super::Distribution;
 use num_complex::Complex;
 
@@ -108,7 +110,7 @@ impl Distribution for Bernoulli {
         1.0 - self.p + self.p * f64::exp(t)
     }
 
-    fn sample(&self, n: usize) -> Vec<f64> {
+    fn sample(&self, n: usize) -> Result<Vec<f64>, DistributionError> {
         // IMPORT HERE TO AVOID CLASH WITH
         // `RustQuant::distributions::Distribution`
         use rand::thread_rng;
@@ -118,7 +120,7 @@ impl Distribution for Bernoulli {
 
         let mut rng = thread_rng();
 
-        let dist = Bernoulli::new(self.p).unwrap();
+        let dist = Bernoulli::new(self.p)?;
 
         let mut variates: Vec<f64> = Vec::with_capacity(n);
 
@@ -126,7 +128,7 @@ impl Distribution for Bernoulli {
             variates.push(dist.sample(&mut rng) as usize as f64);
         }
 
-        variates
+        Ok(variates)
     }
 }
 
@@ -276,16 +278,18 @@ mod tests_bernoulli {
     #[should_panic]
     fn test_sample_zero_size() {
         let bernoulli = Bernoulli::new(0.5);
-        bernoulli.sample(0);
+        _ = bernoulli.sample(0);
     }
 
     #[test]
-    fn test_sample_positive_size() {
+    fn test_sample_positive_size() -> Result<(), DistributionError> {
         let bernoulli = Bernoulli::new(0.5);
-        let sample = bernoulli.sample(100);
+        let sample = bernoulli.sample(100)?;
         assert_eq!(sample.len(), 100);
         for &value in sample.iter() {
             assert!(value == 0.0 || value == 1.0);
         }
+
+        Ok(())
     }
 }
