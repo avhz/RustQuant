@@ -43,12 +43,11 @@
         <img alt="Dependencies" src="https://deps.rs/repo/github/avhz/RustQuant/status.svg">
 </p> -->
 
-
 A Rust library for quantitative finance tools.
 
 :dart: I want to hit a stable and legitimate `v1.0.0` by the end of 2023, so any and all feedback, suggestions, or contributions are strongly welcomed!
 
-Email me at: <RustQuantContact@gmail.com> 
+Email me at: <RustQuantContact@gmail.com>
 
 Join the Discord server: <https://discord.gg/tQcM77h8vr>
 
@@ -270,6 +269,8 @@ Probability density/mass functions, distribution functions, characteristic funct
   - [x] Lookback
   - [x] Asian: Continuous Geometric Average
   - [x] Forward Start
+  - [x] Bachelier and Modified Bachelier
+  - [x] Generalised Black-Scholes-Merton
   - [ ] Basket
   - [ ] Rainbow
   - [ ] American

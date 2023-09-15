@@ -1,5 +1,10 @@
 # Change Log
 
+## 15 September 2023
+
+- Generalised Black-Scholes-Merton option pricer by @avhz.
+- Bachelier and Modified Bachelier option pricers by @avhz.
+
 ## 14 September 2023
 
 - Added `Result` wrapping for `statistics` module.
