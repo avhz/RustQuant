@@ -457,4 +457,18 @@ mod tests_statistics {
         let v = vec![42.0];
         assert_eq!(v.max(), 42.0);
     }
+
+    #[test]
+    fn test_skewness() {
+        let v = vec![1.0, 2.0, 4.0, 4.0, 5.0, 5.0, 7.0, 9.0];
+        let skew = v.skewness();
+        assert_approx_equal!(skew, 0.2824751, 1e-6);
+    }
+
+    #[test]
+    fn test_kurtosis() {
+        let v = vec![1.0, 2.0, 4.0, 4.0, 5.0, 5.0, 7.0, 9.0];
+        let kurt = v.kurtosis();
+        assert_approx_equal!(kurt, 2.351825, 1e-6);
+    }
 }
