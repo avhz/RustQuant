@@ -10,8 +10,10 @@
 //! Module to fetch data from Yahoo! Finance,
 //! and store it in a Polars DataFrame object.
 
-use polars::prelude::*;
+use polars::{error::ErrString, prelude::*};
+use thiserror::Error;
 use time::OffsetDateTime;
+use yahoo::YahooError;
 use yahoo_finance_api as yahoo;
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -49,11 +51,11 @@ pub enum ReturnsType {
 /// Yahoo! Finance data reader trait.
 pub trait YahooFinanceReader {
     /// Retrieves the price history from Yahoo! Finance.
-    fn get_price_history(&mut self);
+    fn get_price_history(&mut self) -> Result<(), YahooFinanceError>;
     /// Retrieves the options chain from Yahoo! Finance.
-    fn get_options_chain(&mut self);
+    fn get_options_chain(&mut self) -> Result<(), YahooFinanceError>;
     /// Retrieves the latest quote from Yahoo! Finance.
-    fn get_latest_quote(&mut self);
+    fn get_latest_quote(&mut self) -> Result<(), YahooFinanceError>;
 }
 
 impl Default for YahooFinanceData {
@@ -68,6 +70,22 @@ impl Default for YahooFinanceData {
             latest_quote: None,
         }
     }
+}
+
+/// Yahoo! Finance data error enum that catches errors from the Yahoo! Finance API, Polars, and from potential missing inputs from users.
+#[derive(Debug, Error)]
+pub enum YahooFinanceError {
+    /// Error variant arising from the Yahoo! Finance API.
+    #[error("{0}")]
+    YahooError(#[from] YahooError),
+
+    /// Error variant arising from Polars.
+    #[error("{0}")]
+    PolarsError(#[from] polars::error::PolarsError),
+
+    /// Error variant arising from missing inputs.
+    #[error{"{0}"}]
+    MissingInput(String),
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -100,9 +118,9 @@ impl YahooFinanceData {
     }
 
     /// Computes the returns from the price history.
-    pub fn compute_returns(&mut self, returns_type: ReturnsType) {
+    pub fn compute_returns(&mut self, returns_type: ReturnsType) -> Result<(), YahooFinanceError> {
         if self.price_history.is_none() {
-            self.get_price_history()
+            self.get_price_history()?
         }
 
         // Closure to select all columns except for the date and volume columns.
@@ -115,7 +133,7 @@ impl YahooFinanceData {
                 self.returns = Some(
                     self.price_history
                         .clone()
-                        .unwrap()
+                        .ok_or(YahooError::EmptyDataSet)?
                         .lazy()
                         .select(vec![
                             col("date"),
@@ -123,23 +141,21 @@ impl YahooFinanceData {
                             (price_columns() / price_columns().shift(1) - lit(1.))
                                 .suffix("_arithmetic"),
                         ])
-                        .collect()
-                        .unwrap(),
+                        .collect()?,
                 );
             }
             ReturnsType::Absolute => {
                 self.returns = Some(
                     self.price_history
                         .clone()
-                        .unwrap()
+                        .ok_or(YahooError::EmptyDataSet)?
                         .lazy()
                         .select(vec![
                             col("date"),
                             col("volume"),
                             (price_columns() - price_columns().shift(1)).suffix("_absolute"),
                         ])
-                        .collect()
-                        .unwrap(),
+                        .collect()?,
                 );
             }
             ReturnsType::Logarithmic => {
@@ -151,12 +167,12 @@ impl YahooFinanceData {
                 // IF YOU SEE THIS, FEEL FREE TO SUBMIT A PULL REQUEST
                 // If you venture past here, you'll see more .unwrap()
                 // calls than you've ever seen before in your life.
-                let mut prices = self.price_history.clone().unwrap();
-                prices.apply("open", logarithm).unwrap();
-                prices.apply("high", logarithm).unwrap();
-                prices.apply("low", logarithm).unwrap();
-                prices.apply("close", logarithm).unwrap();
-                prices.apply("adjusted", logarithm).unwrap();
+                let mut prices = self.price_history.clone().ok_or(YahooError::EmptyDataSet)?;
+                prices.apply("open", logarithm)?;
+                prices.apply("high", logarithm)?;
+                prices.apply("low", logarithm)?;
+                prices.apply("close", logarithm)?;
+                prices.apply("adjusted", logarithm)?;
 
                 self.returns = Some(
                     prices
@@ -166,26 +182,27 @@ impl YahooFinanceData {
                             col("volume"),
                             (price_columns() - price_columns().shift(1)).suffix("_logarithmic"),
                         ])
-                        .collect()
-                        .unwrap(),
+                        .collect()?,
                 );
             }
         }
+        Ok(())
     }
 }
 
 impl YahooFinanceReader for YahooFinanceData {
-    fn get_price_history(&mut self) {
+    fn get_price_history(&mut self) -> Result<(), YahooFinanceError> {
         let provider = yahoo::YahooConnector::new();
 
         let response = tokio_test::block_on(provider.get_quote_history(
-            self.ticker.as_ref().unwrap(),
+            self.ticker.as_ref().ok_or(YahooFinanceError::MissingInput(
+                "No ticker provided.".to_string(),
+            ))?,
             self.start.unwrap_or(OffsetDateTime::UNIX_EPOCH),
             self.end.unwrap_or(OffsetDateTime::now_utc()),
-        ))
-        .unwrap();
+        ))?;
 
-        let quotes = response.quotes().unwrap();
+        let quotes = response.quotes()?;
 
         // The timestamp from Yahoo! Finance is in seconds since UNIX Epoch (1970-01-01).
         // So we need to divide by the number of seconds in a day (86,400s) to get the date,
@@ -202,7 +219,7 @@ impl YahooFinanceReader for YahooFinanceData {
         let adjclose = quotes.iter().map(|q| q.adjclose).collect::<Vec<_>>();
 
         let df = df!(
-            "date" => Series::new("date", date).cast(&DataType::Date).unwrap(),
+            "date" => Series::new("date", date).cast(&DataType::Date)?,
             "open" => open,
             "high" => high,
             "low" => low,
@@ -211,13 +228,16 @@ impl YahooFinanceReader for YahooFinanceData {
             "adjusted" => adjclose
         );
 
-        self.price_history = Some(df.unwrap());
+        self.price_history = Some(df?);
+
+        Ok(())
     }
 
-    fn get_options_chain(&mut self) {
+    fn get_options_chain(&mut self) -> Result<(), YahooFinanceError> {
         let provider = yahoo::YahooConnector::new();
-        let response =
-            tokio_test::block_on(provider.search_options(self.ticker.as_ref().unwrap())).unwrap();
+        let response = tokio_test::block_on(provider.search_options(self.ticker.as_ref().ok_or(
+            YahooFinanceError::MissingInput("No ticker provided.".to_string()),
+        )?))?;
 
         let options = response.options;
 
@@ -258,7 +278,7 @@ impl YahooFinanceReader for YahooFinanceData {
             "strike" => strike,
             "last_trade_date" => Series::new("last_trade_date", last_trade_date)
                 .cast(&DataType::Date)
-                .unwrap(),
+                ?,
             "last_price" => last_price,
             "bid" => bid,
             "ask" => ask,
@@ -267,17 +287,17 @@ impl YahooFinanceReader for YahooFinanceData {
             "volume" => volume,
             "open_interest" => open_interest,
             "impl_volatility" => impl_volatility
-            // "contract" => Series::new("date", date).cast(&DataType::Date).unwrap(),
+            // "contract" => Series::new("date", date).cast(&DataType::Date)?,
         );
 
-        self.options_chain = Some(df.unwrap());
+        self.options_chain = Some(df?);
 
         println!("{:?}", self.options_chain);
 
-        // println!("{:?}", response);
+        Ok(())
     }
 
-    fn get_latest_quote(&mut self) {
+    fn get_latest_quote(&mut self) -> Result<(), YahooFinanceError> {
         todo!()
     }
 }

@@ -1,5 +1,9 @@
 # Change Log
 
+## 14 September 2023
+
+- Added `Result` wrapping for `statistics` module.
+
 ## 13 September 2023
 
 - Re-licensing from GPL3 to dual Apache2/MIT licenses.

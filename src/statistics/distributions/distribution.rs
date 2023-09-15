@@ -8,6 +8,7 @@
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 use num_complex::Complex;
+use thiserror::Error;
 
 /// Imaginary unit.
 #[allow(non_upper_case_globals)]
@@ -19,6 +20,38 @@ pub enum DistributionClass {
     Discrete,
     /// Continuous distribution.
     Continuous,
+}
+
+/// Distribution error type.
+#[derive(Debug, Error)]
+pub enum DistributionError {
+    /// Error variant from constructing Bernoulli distribution.
+    #[error("{0}")]
+    Bernoulli(#[from] rand_distr::BernoulliError),
+
+    /// Error variant from constructing Binomial distribution.
+    #[error("{0}")]
+    Binomial(#[from] rand_distr::BinomialError),
+
+    /// Error variant from constructing ChiSquared distribution.
+    #[error("{0}")]
+    ChiSquared(#[from] rand_distr::ChiSquaredError),
+
+    /// Error variant from constructing Exponential distribution.
+    #[error("{0}")]
+    Exponential(#[from] rand_distr::ExpError),
+
+    /// Error variant from constructing Gamma distribution.
+    #[error("{0}")]
+    Gamma(#[from] rand_distr::GammaError),
+
+    /// Error variant from constructing Gaussian distribution.
+    #[error("{0}")]
+    Gaussian(#[from] rand_distr::NormalError),
+
+    /// Error variant from constructing Poisson distribution.
+    #[error("{0}")]
+    Poisson(#[from] rand_distr::PoissonError),
 }
 
 /// Base trait for all distributions.
@@ -89,5 +122,5 @@ pub trait Distribution {
     fn mgf(&self, t: f64) -> f64;
 
     /// Generates a random sample from the distribution.
-    fn sample(&self, n: usize) -> Vec<f64>;
+    fn sample(&self, n: usize) -> Result<Vec<f64>, DistributionError>;
 }
