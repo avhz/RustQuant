@@ -3,6 +3,31 @@
 
 <p align="center">
     <a href="#license" alt="license">
+        <img alt="License" src="https://img.shields.io/badge/Dual_License-MIT_and_Apache_2.0-black?logo=apache">
+    <a href="#version" alt="version">
+        <img alt="Crates.io" src="https://img.shields.io/crates/v/RustQuant?logo=rust&color=black">
+    <a href="#downloads" alt="downloads">
+        <img alt="Crates.io" src="https://img.shields.io/crates/d/RustQuant?logo=rust&color=black">
+    <a href="#stars" alt="stars">
+        <img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/avhz/RustQuant?logo=github&color=black">
+</p>
+
+<p align="center">
+    <a href="#build" alt="build">
+        <img alt="GitHub Workflow Status" src="https://img.shields.io/github/actions/workflow/status/avhz/RustQuant/build.yml">
+    <a href="#codecov" alt="codecov">
+        <img alt="Codecov" src="https://img.shields.io/codecov/c/gh/avhz/RustQuant">
+    <a href="#deps" alt="deps">
+        <img alt="Dependencies" src="https://deps.rs/repo/github/avhz/RustQuant/status.svg">
+</p>
+
+<p align="center">
+    <a href="#discord" alt="discord">
+        <img alt="Discord" src="https://img.shields.io/discord/1146771658082881636?logo=discord">
+</p>
+
+<!-- <p align="center">
+    <a href="#license" alt="license">
         <img alt="License" src="https://img.shields.io/github/license/avhz/RustQuant">
     <a href="#build" alt="build">
         <img alt="GitHub Workflow Status" src="https://img.shields.io/github/actions/workflow/status/avhz/RustQuant/build.yml">
@@ -16,13 +41,16 @@
         <img alt="Codecov" src="https://img.shields.io/codecov/c/gh/avhz/RustQuant">
     <a href="#deps" alt="deps">
         <img alt="Dependencies" src="https://deps.rs/repo/github/avhz/RustQuant/status.svg">
-</p>
+</p> -->
 
-Rust library for quantitative finance tools.
+
+A Rust library for quantitative finance tools.
 
 :dart: I want to hit a stable and legitimate `v1.0.0` by the end of 2023, so any and all feedback, suggestions, or contributions are strongly welcomed!
 
-Contact: <rustquantcontact@gmail.com>
+Email me at: <RustQuantContact@gmail.com> 
+
+Join the Discord server: <https://discord.gg/tQcM77h8vr>
 
 **Disclaimer**: This is currently a free-time project and not a professional financial software library. Nothing in this library should be taken as financial advice, and I do not recommend you to use it for trading or making financial decisions.
 

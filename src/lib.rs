@@ -1,7 +1,10 @@
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // RustQuant: A Rust library for quantitative finance tools.
 // Copyright (C) 2023 https://github.com/avhz
-// See LICENSE or <https://www.gnu.org/licenses/>.
+// Dual licensed under Apache 2.0 and MIT.
+// See:
+//      - LICENSE-APACHE.md
+//      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 //! RustQuant: A Rust library for quantitative finance.
@@ -267,10 +270,10 @@ pub mod data {
 /// Mathematics related items.
 pub mod math {
     pub use crate::math::{
-        cumsum::*, fft::*, integration::constants::*, integration::midpoint::*,
-        integration::simpsons::*, integration::tanhsinh::*, integration::trapezoid::*,
-        interpolation::*, linspace::*, optimization::gradient_descent::*,
-        optimization::newton_raphson::*, risk_reward::*, sequence::*,
+        fft::*, integration::constants::*, integration::midpoint::*, integration::simpsons::*,
+        integration::tanhsinh::*, integration::trapezoid::*, interpolation::*,
+        optimization::gradient_descent::*, optimization::newton_raphson::*, risk_reward::*,
+        sequences::*,
     };
 
     /// Numerical integration routines.
@@ -303,18 +306,24 @@ pub mod math {
         // pub mod secant;
     }
 
-    /// Cumulative sum of a vector.
-    pub mod cumsum;
+    /// Sequences of numbers and associated functions.
+    pub mod sequences {
+        pub use crate::math::sequences::{cumsum::*, linspace::*, sequence::*};
+
+        /// Cumulative sum of a vector.
+        pub mod cumsum;
+        /// Generate a linearly spaced sequence.
+        pub mod linspace;
+        /// Sequences of numbers.
+        pub mod sequence;
+    }
+
     /// Fast fourier transform.
     pub mod fft;
     /// Interpolation routines.
     pub mod interpolation;
-    /// Generate a linearly spaced sequence.
-    pub mod linspace;
     /// Simple risk/reward measures.
     pub mod risk_reward;
-    /// Sequences of numbers.
-    pub mod sequence;
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
