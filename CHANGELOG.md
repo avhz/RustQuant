@@ -1,5 +1,10 @@
 # Change Log
 
+## 16 September 2023
+
+- @avhz: Greeks for BSM model: delta, vanna, charm, lambda, gamma, zomma, speed, colour (adding more soon).
+- @avhz: Clean up year fraction computation for some options.
+
 ## 15 September 2023
 
 - Generalised Black-Scholes-Merton option pricer by @avhz.
