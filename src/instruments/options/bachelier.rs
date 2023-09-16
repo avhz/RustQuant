@@ -92,18 +92,11 @@ impl Bachelier {
         let v = self.volatility;
 
         // Compute time to maturity.
-        let T = match self.evaluation_date {
-            Some(evaluation_date) => DayCounter::day_count_factor(
-                evaluation_date,
-                self.expiration_date,
-                &DayCountConvention::Actual365,
-            ),
-            None => DayCounter::day_count_factor(
-                OffsetDateTime::now_utc(),
-                self.expiration_date,
-                &DayCountConvention::Actual365,
-            ),
-        };
+        let T = DayCounter::day_count_factor(
+            self.evaluation_date.unwrap_or(OffsetDateTime::now_utc()),
+            self.expiration_date,
+            &DayCountConvention::Actual365,
+        );
 
         let d1 = (S - K) / (v * T.sqrt());
 
@@ -146,21 +139,13 @@ impl ModifiedBachelier {
         let K = self.strike_price;
         let v = self.volatility;
         let r = self.risk_free_rate;
-        let d = self.dividend_yield;
 
         // Compute time to maturity.
-        let T = match self.evaluation_date {
-            Some(evaluation_date) => DayCounter::day_count_factor(
-                evaluation_date,
-                self.expiration_date,
-                &DayCountConvention::Actual365,
-            ),
-            None => DayCounter::day_count_factor(
-                OffsetDateTime::now_utc(),
-                self.expiration_date,
-                &DayCountConvention::Actual365,
-            ),
-        };
+        let T = DayCounter::day_count_factor(
+            self.evaluation_date.unwrap_or(OffsetDateTime::now_utc()),
+            self.expiration_date,
+            &DayCountConvention::Actual365,
+        );
 
         let d1 = (S - K) / (v * T.sqrt());
 

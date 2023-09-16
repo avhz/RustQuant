@@ -10,7 +10,7 @@ fn main() {
         volatility: 0.2,
         dividend_rate: 0.02,
         valuation_date: None, // Optional field. Defaults to now.
-        expiry_date: OffsetDateTime::now_utc() + Duration::days(365),
+        expiration_date: OffsetDateTime::now_utc() + Duration::days(365),
     };
 
     let prices = vanilla_option.price();

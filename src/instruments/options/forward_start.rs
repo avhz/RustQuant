@@ -61,30 +61,17 @@ impl ForwardStartOption {
         let v = self.volatility;
         let q = self.dividend_rate;
 
-        let T = match self.valuation_date {
-            Some(valuation_date) => DayCounter::day_count_factor(
-                valuation_date,
-                self.end,
-                &DayCountConvention::Actual365,
-            ),
-            None => DayCounter::day_count_factor(
-                OffsetDateTime::now_utc(),
-                self.end,
-                &DayCountConvention::Actual365,
-            ),
-        };
-        let t = match self.valuation_date {
-            Some(valuation_date) => DayCounter::day_count_factor(
-                valuation_date,
-                self.start,
-                &DayCountConvention::Actual365,
-            ),
-            None => DayCounter::day_count_factor(
-                OffsetDateTime::now_utc(),
-                self.start,
-                &DayCountConvention::Actual365,
-            ),
-        };
+        let T = DayCounter::day_count_factor(
+            self.valuation_date.unwrap_or(OffsetDateTime::now_utc()),
+            self.end,
+            &DayCountConvention::Actual365,
+        );
+
+        let t = DayCounter::day_count_factor(
+            self.valuation_date.unwrap_or(OffsetDateTime::now_utc()),
+            self.start,
+            &DayCountConvention::Actual365,
+        );
 
         let b = r - q;
 
@@ -115,7 +102,7 @@ impl ForwardStartOption {
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 #[cfg(test)]
-mod tests {
+mod tests_forward_start {
     use crate::assert_approx_equal;
 
     use super::*;

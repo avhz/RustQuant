@@ -59,15 +59,15 @@ impl Greeks {
         let q = option.dividend_rate;
 
         // Compute time to maturity.
-        let T = match option.valuation_date {
+        let T = match option.evaluation_date {
             Some(valuation_date) => DayCounter::day_count_factor(
                 valuation_date,
-                option.expiry_date,
+                option.expiration_date,
                 &DayCountConvention::Actual365,
             ),
             None => DayCounter::day_count_factor(
                 OffsetDateTime::now_utc(),
-                option.expiry_date,
+                option.expiration_date,
                 &DayCountConvention::Actual365,
             ),
         };
@@ -101,8 +101,8 @@ impl Greeks {
             volatility: v,
             dividend_rate: q,
             // time_to_maturity: T,
-            valuation_date: option.valuation_date,
-            expiry_date: option.expiry_date,
+            evaluation_date: option.evaluation_date,
+            expiration_date: option.expiration_date,
         };
         let BS = VanillaOption.price();
 
@@ -155,8 +155,8 @@ mod tests_greeks {
                 volatility: 0.2,
                 dividend_rate: 0.03,
                 // time_to_maturity: 1.0,
-                valuation_date: None,
-                expiry_date: OffsetDateTime::now_utc() + Duration::days(365),
+                evaluation_date: None,
+                expiration_date: OffsetDateTime::now_utc() + Duration::days(365),
             };
 
             let g = Greeks::compute(option);

@@ -89,12 +89,20 @@ impl DayCounter {
     }
 
     /// Compute the day count factor between two dates.
+    ///
+    /// # Arguments
+    ///
+    /// * `start` - The start date (optional and defaults to today).
+    /// * `end` - The end date.
+    /// * `convention` - The day count convention.
     pub fn day_count_factor(
         start: OffsetDateTime,
         end: OffsetDateTime,
         convention: &DayCountConvention,
     ) -> f64 {
         // THIS FUNCTION NEEDS WORK.
+
+        // let start = start.unwrap_or(OffsetDateTime::now_utc());
 
         let start_month = start.month().as_isize();
         let end_month = end.month().as_isize();

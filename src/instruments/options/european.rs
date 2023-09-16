@@ -32,9 +32,9 @@ pub struct EuropeanOption {
     /// `q` - Dividend rate.
     pub dividend_rate: f64,
     /// `valuation_date` - Valuation date.
-    pub valuation_date: Option<OffsetDateTime>,
+    pub evaluation_date: Option<OffsetDateTime>,
     /// `expiry_date` - Expiry date.
-    pub expiry_date: OffsetDateTime,
+    pub expiration_date: OffsetDateTime,
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -49,8 +49,8 @@ impl EuropeanOption {
         risk_free_rate: f64,
         volatility: f64,
         dividend_rate: f64,
-        valuation_date: Option<OffsetDateTime>,
-        expiry_date: OffsetDateTime,
+        evaluation_date: Option<OffsetDateTime>,
+        expiration_date: OffsetDateTime,
     ) -> Self {
         Self {
             initial_price,
@@ -58,8 +58,8 @@ impl EuropeanOption {
             risk_free_rate,
             volatility,
             dividend_rate,
-            valuation_date,
-            expiry_date,
+            evaluation_date,
+            expiration_date: expiration_date,
         }
     }
 
@@ -75,18 +75,11 @@ impl EuropeanOption {
         let q = self.dividend_rate;
 
         // Compute time to maturity.
-        let T = match self.valuation_date {
-            Some(valuation_date) => DayCounter::day_count_factor(
-                valuation_date,
-                self.expiry_date,
-                &DayCountConvention::Actual365,
-            ),
-            None => DayCounter::day_count_factor(
-                OffsetDateTime::now_utc(),
-                self.expiry_date,
-                &DayCountConvention::Actual365,
-            ),
-        };
+        let T = DayCounter::day_count_factor(
+            self.evaluation_date.unwrap_or(OffsetDateTime::now_utc()),
+            self.expiration_date,
+            &DayCountConvention::Actual365,
+        );
 
         let df: f64 = (-r * T).exp();
         let b: f64 = r - q;
