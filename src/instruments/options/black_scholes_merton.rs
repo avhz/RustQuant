@@ -117,7 +117,7 @@ impl BlackScholesMerton {
     }
 
     // Unpack struct to get option parameters.
-    pub fn unpack(&self) -> (f64, f64, f64, f64, f64) {
+    fn unpack(&self) -> (f64, f64, f64, f64, f64) {
         (
             self.underlying_price,
             self.strike_price,
@@ -186,11 +186,11 @@ impl BlackScholesMerton {
         match self.option_type {
             TypeFlag::Call => {
                 ((b - r) * T).exp()
-                    * (n.pdf(d1) * ((b / (v * T.sqrt())) - (d2 / (2 * T))) + (b - r) * n.cdf(d1))
+                    * (n.pdf(d1) * ((b / (v * T.sqrt())) - (d2 / (2.0 * T))) + (b - r) * n.cdf(d1))
             }
             TypeFlag::Put => {
                 ((b - r) * T).exp()
-                    * (n.pdf(d1) * ((b / (v * T.sqrt())) - (d2 / (2 * T))) - (b - r) * n.cdf(-d1))
+                    * (n.pdf(d1) * ((b / (v * T.sqrt())) - (d2 / (2.0 * T))) - (b - r) * n.cdf(-d1))
             }
         }
     }
