@@ -59,7 +59,7 @@ impl EuropeanOption {
             volatility,
             dividend_rate,
             evaluation_date,
-            expiration_date: expiration_date,
+            expiration_date,
         }
     }
 

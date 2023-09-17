@@ -1,5 +1,9 @@
 # Change Log
 
+## 17 September 2023
+
+- @avhz: More Greeks for BSM model: vega, vomma, ultima, vega bleed (adding more soon).
+
 ## 16 September 2023
 
 - @avhz: Greeks for BSM model: delta, vanna, charm, lambda, gamma, zomma, speed, colour (adding more soon).

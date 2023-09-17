@@ -9,7 +9,7 @@ fn main() {
         risk_free_rate: 0.05,
         volatility: 0.2,
         dividend_rate: 0.02,
-        valuation_date: None, // Optional field. Defaults to now.
+        evaluation_date: None, // Optional field. Defaults to now.
         expiration_date: OffsetDateTime::now_utc() + Duration::days(365),
     };
 
