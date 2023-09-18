@@ -10,7 +10,7 @@
 //! Module to fetch data from Yahoo! Finance,
 //! and store it in a Polars DataFrame object.
 
-use polars::{error::ErrString, prelude::*};
+use polars::prelude::*;
 use thiserror::Error;
 use time::OffsetDateTime;
 use yahoo::YahooError;

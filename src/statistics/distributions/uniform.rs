@@ -31,6 +31,16 @@ pub struct Uniform {
 
 impl Uniform {
     /// New instance of a Uniform distribution.
+    /// # Examples
+    /// ```
+    /// # use RustQuant::assert_approx_equal;
+    /// # use RustQuant::statistics::distributions::{Distribution, Uniform};
+    /// # use RustQuant::statistics::distributions::DistributionClass;
+    ///
+    /// let dist = Uniform::new(0.0, 1.0, DistributionClass::Continuous);
+    ///
+    /// assert_approx_equal!(dist.mean(), 0.5, 1e-7);
+    /// ```
     pub fn new(a: f64, b: f64, class: DistributionClass) -> Self {
         assert!(a <= b);
 
@@ -46,6 +56,19 @@ impl Uniform {
 }
 
 impl Distribution for Uniform {
+    /// Characteristic function of the Uniform distribution.
+    /// # Examples
+    /// ```
+    /// # use RustQuant::assert_approx_equal;
+    /// # use RustQuant::statistics::distributions::{Distribution, Uniform};
+    /// # use RustQuant::statistics::distributions::DistributionClass;
+    ///
+    /// let dist = Uniform::new(0.0, 1.0, DistributionClass::Continuous);
+    /// let cf = dist.cf(1.0);
+    ///
+    /// assert_approx_equal!(cf.re, 0.8414710, 1e-7);
+    /// assert_approx_equal!(cf.im, 0.4596977, 1e-7);
+    /// ```
     fn cf(&self, t: f64) -> Complex<f64> {
         let i: Complex<f64> = Complex::i();
 
@@ -60,6 +83,17 @@ impl Distribution for Uniform {
         }
     }
 
+    /// Probability density function of the Uniform distribution.
+    /// # Examples
+    /// ```
+    /// # use RustQuant::assert_approx_equal;
+    /// # use RustQuant::statistics::distributions::{Distribution, Uniform};
+    /// # use RustQuant::statistics::distributions::DistributionClass;
+    ///
+    /// let dist = Uniform::new(0.0, 1.0, DistributionClass::Continuous);
+    ///
+    /// assert_approx_equal!(dist.pdf(0.5), 1.0, 1e-7);
+    /// ```
     fn pdf(&self, x: f64) -> f64 {
         match self.class {
             DistributionClass::Discrete => {
@@ -79,6 +113,17 @@ impl Distribution for Uniform {
         }
     }
 
+    /// Probability mass function of the Uniform distribution.
+    /// # Examples
+    /// ```
+    /// # use RustQuant::assert_approx_equal;
+    /// # use RustQuant::statistics::distributions::{Distribution, Uniform};
+    /// # use RustQuant::statistics::distributions::DistributionClass;
+    ///
+    /// let dist = Uniform::new(0.0, 1.0, DistributionClass::Discrete);
+    ///
+    /// assert_approx_equal!(dist.pmf(0.5), 0.5, 1e-7);
+    /// ```
     fn pmf(&self, x: f64) -> f64 {
         match self.class {
             DistributionClass::Discrete => {
@@ -98,6 +143,17 @@ impl Distribution for Uniform {
         }
     }
 
+    /// Cumulative distribution function of the Uniform distribution.
+    /// # Examples
+    /// ```
+    /// # use RustQuant::assert_approx_equal;
+    /// # use RustQuant::statistics::distributions::{Distribution, Uniform};
+    /// # use RustQuant::statistics::distributions::DistributionClass;
+    ///
+    /// let dist = Uniform::new(0.0, 1.0, DistributionClass::Continuous);
+    ///
+    /// assert_approx_equal!(dist.cdf(0.5), 0.5, 1e-7);
+    /// ```
     fn cdf(&self, x: f64) -> f64 {
         match self.class {
             DistributionClass::Discrete => {
@@ -121,22 +177,87 @@ impl Distribution for Uniform {
         }
     }
 
-    fn inv_cdf(&self, _p: f64) -> f64 {
-        todo!()
+    /// Inverse distribution (quantile) function of the Uniform distribution.
+    /// Note: Only implemented for the continuous distribution.
+    /// # Examples
+    /// ```
+    /// # use RustQuant::assert_approx_equal;
+    /// # use RustQuant::statistics::distributions::{Distribution, Uniform};
+    /// # use RustQuant::statistics::distributions::DistributionClass;
+    ///
+    /// let dist = Uniform::new(0.0, 1.0, DistributionClass::Continuous);
+    ///
+    /// assert_approx_equal!(dist.inv_cdf(0.5), 0.5, 1e-7);
+    /// ```
+    fn inv_cdf(&self, p: f64) -> f64 {
+        assert!((0.0..=1.0).contains(&p));
+        match self.class {
+            DistributionClass::Discrete => todo!(),
+            DistributionClass::Continuous => self.a + p * (self.b - self.a),
+        }
     }
 
+    /// Mean of the Uniform distribution.
+    /// The mean of the Uniform distribution is equal to its median.
+    /// # Examples
+    /// ```
+    /// # use RustQuant::assert_approx_equal;
+    /// # use RustQuant::statistics::distributions::{Distribution, Uniform};
+    /// # use RustQuant::statistics::distributions::DistributionClass;
+    ///
+    /// let dist = Uniform::new(0.0, 1.0, DistributionClass::Continuous);
+    ///
+    /// assert_approx_equal!(dist.mean(), 0.5, 1e-7);
+    /// ```    
     fn mean(&self) -> f64 {
         0.5 * (self.a + self.b)
     }
 
+    /// Median of the Uniform distribution.
+    /// The mean of the Uniform distribution is equal to its median.
+    /// # Examples
+    /// ```
+    /// # use RustQuant::assert_approx_equal;
+    /// # use RustQuant::statistics::distributions::{Distribution, Uniform};
+    /// # use RustQuant::statistics::distributions::DistributionClass;
+    ///
+    /// let dist = Uniform::new(0.0, 1.0, DistributionClass::Continuous);
+    ///
+    /// assert_approx_equal!(dist.median(), 0.5, 1e-7);
+    /// ```
     fn median(&self) -> f64 {
         0.5 * (self.a + self.b)
     }
 
+    /// Mode of the Uniform distribution.
+    /// # Examples
+    /// ```
+    /// # use RustQuant::assert_approx_equal;
+    /// # use RustQuant::statistics::distributions::{Distribution, Uniform};
+    /// # use RustQuant::statistics::distributions::DistributionClass;
+    ///
+    /// let dist = Uniform::new(0.0, 1.0, DistributionClass::Continuous);
+    ///
+    /// assert_approx_equal!(dist.mode(), 0.5, 1e-7);
+    /// ```
     fn mode(&self) -> f64 {
-        todo!()
+        match self.class {
+            DistributionClass::Discrete => todo!(),
+            DistributionClass::Continuous => (self.a + self.b) * 0.5,
+        }
     }
 
+    /// Variance of the Uniform distribution.
+    /// # Examples
+    /// ```
+    /// # use RustQuant::assert_approx_equal;
+    /// # use RustQuant::statistics::distributions::{Distribution, Uniform};
+    /// # use RustQuant::statistics::distributions::DistributionClass;
+    ///
+    /// let dist = Uniform::new(0.0, 1.0, DistributionClass::Continuous);
+    ///
+    /// assert_approx_equal!(dist.variance(), 0.0833333, 1e-7);
+    /// ```
     fn variance(&self) -> f64 {
         match self.class {
             DistributionClass::Discrete => (self.b - self.a + 1.0).powi(2) / 12.0,
@@ -144,10 +265,32 @@ impl Distribution for Uniform {
         }
     }
 
+    /// Skewness of the Uniform distribution.
+    /// The skewness of the Uniform distribution is equal to 0.
+    /// # Examples
+    /// ```
+    /// # use RustQuant::statistics::distributions::{Distribution, Uniform};
+    /// # use RustQuant::statistics::distributions::DistributionClass;
+    ///
+    /// let dist = Uniform::new(0.0, 1.0, DistributionClass::Continuous);
+    ///
+    /// assert_eq!(dist.skewness(), 0.0);
+    /// ```
     fn skewness(&self) -> f64 {
         0.0
     }
 
+    /// Kurtosis of the Uniform distribution.
+    /// # Examples
+    /// ```
+    /// # use RustQuant::assert_approx_equal;
+    /// # use RustQuant::statistics::distributions::{Distribution, Uniform};
+    /// # use RustQuant::statistics::distributions::DistributionClass;
+    ///
+    /// let dist = Uniform::new(0.0, 1.0, DistributionClass::Continuous);
+    ///
+    /// assert_approx_equal!(dist.kurtosis(), -6.0/5.0, 1e-7);
+    /// ```
     fn kurtosis(&self) -> f64 {
         let n = self.b - self.a + 1.0;
 
@@ -157,6 +300,17 @@ impl Distribution for Uniform {
         }
     }
 
+    /// Entropy of the Uniform distribution.
+    /// # Examples
+    /// ```
+    /// # use RustQuant::assert_approx_equal;
+    /// # use RustQuant::statistics::distributions::{Distribution, Uniform};
+    /// # use RustQuant::statistics::distributions::DistributionClass;
+    ///
+    /// let dist = Uniform::new(0.5, 1.0, DistributionClass::Continuous);
+    ///
+    /// assert_approx_equal!(dist.entropy(), -0.6931472, 1e-7);
+    /// ```
     fn entropy(&self) -> f64 {
         match self.class {
             DistributionClass::Discrete => (self.b - self.a + 1.0).ln(),
@@ -164,6 +318,17 @@ impl Distribution for Uniform {
         }
     }
 
+    /// Moment generating function of the Uniform distribution.
+    /// # Examples
+    /// ```
+    /// # use RustQuant::assert_approx_equal;
+    /// # use RustQuant::statistics::distributions::{Distribution, Uniform};
+    /// # use RustQuant::statistics::distributions::DistributionClass;
+    ///
+    /// let dist = Uniform::new(0.0, 1.0, DistributionClass::Continuous);
+    ///
+    /// assert_approx_equal!(dist.mgf(1.0), 1.7182818, 1e-7);
+    /// ```
     fn mgf(&self, t: f64) -> f64 {
         let n = self.b - self.a + 1.0;
 
@@ -177,6 +342,19 @@ impl Distribution for Uniform {
         }
     }
 
+    /// Generates a random sample from a Uniform distribution.
+    /// # Examples
+    /// ```
+    /// # use RustQuant::assert_approx_equal;
+    /// # use RustQuant::statistics::distributions::{Distribution, Uniform};
+    /// # use RustQuant::statistics::distributions::DistributionClass;
+    ///
+    /// let dist = Uniform::new(0.0, 1.0, DistributionClass::Continuous);
+    /// let sample = dist.sample(1000).unwrap();
+    /// let mean = sample.iter().sum::<f64>() / sample.len() as f64;
+    ///
+    /// assert_approx_equal!(mean, dist.mean(), 0.1);
+    /// ```
     fn sample(&self, n: usize) -> Result<Vec<f64>, DistributionError> {
         // IMPORT HERE TO AVOID CLASH WITH
         // `RustQuant::distributions::Distribution`

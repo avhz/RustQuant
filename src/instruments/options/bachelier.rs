@@ -15,7 +15,7 @@ use crate::instruments::options::TypeFlag;
 use crate::statistics::distributions::{Distribution, Gaussian};
 use crate::time::{DayCountConvention, DayCounter};
 
-use time::{Duration, OffsetDateTime};
+use time::OffsetDateTime;
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // STRUCTS, ENUMS, AND TRAITS
@@ -165,6 +165,7 @@ impl ModifiedBachelier {
 #[cfg(test)]
 mod tests_bachelier {
     use super::*;
+    use time::Duration;
 
     #[test]
     fn bachelier() {
