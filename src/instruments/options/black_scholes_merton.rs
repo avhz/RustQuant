@@ -10,11 +10,16 @@
 //! The generalised Black-Scholes-Merton European Option pricing model.
 //!
 //! The differing cost of carry factor allows for the following models:
-//!     1. b = r:           Black-Scholes 1973 stock option model.
-//!     2. b = r - q:       Merton 1973 stock option model with continuous dividend yield.
-//!     3. b = 0:           Black 1976 futures option model.
-//!     4. b = 0, r = 0:    Asay 1982 margined futures option model.
-//!     5. b = r_d - r_f:   Garman and Kohlhagen 1983 currency option model.
+//! - b = r
+//!     - Black-Scholes 1973 stock option model.
+//! - b = r - q
+//!     - Merton 1973 stock option model with continuous dividend yield.
+//! - b = 0
+//!     - Black 1976 futures option model.
+//! - b = 0, r = 0
+//!     - Asay 1982 margined futures option model.
+//! - b = r_d - r_f
+//!     - Garman and Kohlhagen 1983 currency option model.
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // IMPORTS
@@ -33,26 +38,32 @@ use time::OffsetDateTime;
 /// Generalised Black-Scholes-Merton European Option pricing model.
 pub struct BlackScholesMerton {
     /// The cost of carry factor.
-    /// For the generalised Black-Scholes-Merton model,
-    /// there are five possibilities for the cost of carry factor:
-    ///     1. b = r:           Black-Scholes 1973 stock option model.
-    ///     2. b = r - q:       Merton 1973 stock option model with continuous dividend yield.
-    ///     3. b = 0:           Black 1976 futures option model.
-    ///     4. b = 0, r = 0:    Asay 1982 margined futures option model.
-    ///     5. b = r_d - r_f:   Garman and Kohlhagen 1983 currency option model.
+    /// For the generalised Black-Scholes-Merton model there are five options:
+    /// - b = r
+    ///     - Black-Scholes 1973 stock option model.
+    /// - b = r - q
+    ///     - Merton 1973 stock option model with continuous dividend yield.
+    /// - b = 0
+    ///     - Black 1976 futures option model.
+    /// - b = 0, r = 0
+    ///     - Asay 1982 margined futures option model.
+    /// - b = r_d - r_f
+    ///     - Garman and Kohlhagen 1983 currency option model.
     pub cost_of_carry: f64,
-    /// The underlying asset price.
+    /// S - The underlying asset price.
     pub underlying_price: f64,
-    /// The options strike price.
+    /// K - The options strike price.
     pub strike_price: f64,
-    /// The underlying asset's volatility.
+    /// sigma - The underlying asset's volatility.
     pub volatility: f64,
-    /// The risk-free interest rate.
+    /// r - The risk-free interest rate.
     pub risk_free_rate: f64,
+
     /// Evaluation date (optional, defaults to today t = 0).
     pub evaluation_date: Option<OffsetDateTime>,
     /// The options expiration date.
     pub expiration_date: OffsetDateTime,
+
     /// Call or put flag.
     pub option_type: TypeFlag,
 }
@@ -88,12 +99,8 @@ impl BlackScholesMerton {
     /// Generalised Black-Scholes European Option Price.
     pub fn price(&self) -> f64 {
         let (S, K, _, r, b) = self.unpack();
-
-        // Compute time to maturity.
         let T = self.year_fraction();
-
         let (d1, d2) = self.d1_d2();
-
         let n = Gaussian::default();
 
         match self.option_type {
@@ -140,12 +147,8 @@ impl BlackScholesMerton {
     /// Delta of generalised Black-Scholes European Option.
     pub fn delta(&self) -> f64 {
         let (_, _, _, r, b) = self.unpack();
-
-        // Compute time to maturity.
         let T = self.year_fraction();
-
         let d1 = self.d1_d2().0;
-
         let n = Gaussian::default();
 
         match self.option_type {
@@ -158,12 +161,8 @@ impl BlackScholesMerton {
     /// Also known as DdeltaDvol.
     pub fn vanna(&self) -> f64 {
         let (_, _, v, r, b) = self.unpack();
-
-        // Compute time to maturity.
         let T = self.year_fraction();
-
         let (d1, d2) = self.d1_d2();
-
         let n = Gaussian::default();
 
         -((b - r) * T).exp() * n.pdf(d1) * d2 / v
@@ -173,12 +172,8 @@ impl BlackScholesMerton {
     /// Also known as DdeltaDtime, delta decay or delta bleed.
     pub fn charm(&self) -> f64 {
         let (_, _, v, r, b) = self.unpack();
-
-        // Compute time to maturity.
         let T = self.year_fraction();
-
         let (d1, d2) = self.d1_d2();
-
         let n = Gaussian::default();
 
         match self.option_type {

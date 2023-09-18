@@ -9,7 +9,7 @@
 
 //! RustQuant: A Rust library for quantitative finance.
 //!
-//! Contact: rustquantcontact@gmail.com
+//! Contact: <RustQuantContact@gmail.com>
 //!
 //! This library is a work in progress. Any contributions are greatly appreciated.
 
