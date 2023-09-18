@@ -2,6 +2,10 @@
 
 ## 17 September 2023
 
+- @avhz: More Greeks for BSM model: theta, rho, phi, zeta, strike-delta, strike-gamma.
+
+## 17 September 2023
+
 - @avhz: More Greeks for BSM model: vega, vomma, ultima, vega bleed (adding more soon).
 
 ## 16 September 2023
