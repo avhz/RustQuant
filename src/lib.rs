@@ -444,6 +444,9 @@ pub mod ml {
     }
     /// Submodule of `ml`: activation functions.
     pub mod activations;
+    pub mod classification {
+        pub mod k_nearest_neighbors;
+    }
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
