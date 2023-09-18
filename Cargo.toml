@@ -64,7 +64,7 @@ tui = { version = "0.19.0", optional = true }       # https://docs.rs/tui/latest
 tui-logger = { version = "0.9.2", optional = true } # https://docs.rs/tui-logger/latest/tui_logger/
 
 ## Dependencies with features
-polars = { version = "0.32.0", optional = true, features = [
+polars = { version = "0.33.2", optional = true, features = [
     "serde",
     "json",
     "parquet",
