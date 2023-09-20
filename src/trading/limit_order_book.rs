@@ -154,7 +154,7 @@ impl Book {
     /// `shares` number of shares to buy.
     /// `is_buy` buy or sell shares.
     /// Returns tuple:
-    /// First item is a bool, if false, not enough volume to fufill order. If true, bought all
+    /// First item is a bool, if false, not enough volume to fulfill order. If true, bought all
     /// shares.
     /// Second item is vector of tuples. First item in tuple is price executed, second item is
     /// number of shares executed at price.

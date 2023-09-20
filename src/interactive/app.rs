@@ -92,7 +92,7 @@ impl App {
                 }
             }
         } else {
-            warn!("No action accociated to {}", key);
+            warn!("No action associated to {}", key);
             AppReturn::Continue
         }
     }
