@@ -71,56 +71,25 @@ impl Data {
     }
 }
 
-pub enum DataFormat {
-    /// CSV format.
-    CSV,
-    /// JSON format.
-    JSON,
-    /// PARQUET format.
-    PARQUET,
-}
-
-/// Data reader trait.
-/// Eagerly reads data from the source.
-pub trait DataReader {
-    /// Reads data from the source.
-    fn read(&mut self) -> Result<(), Box<dyn std::error::Error>>;
-}
-
-/// Data writer trait.
-pub trait DataWriter {
-    /// Writes data to the source.
-    fn write(&mut self) -> Result<(), Box<dyn std::error::Error>>;
-}
-
-/// Data scanner trait.
-/// Lazily scans data from the source.
-pub trait DataScanner {
-    /// Scans data from the source.
-    fn scan(&mut self) -> Result<LazyFrame, Box<dyn std::error::Error>>;
-}
-
-// ...
-
 impl DataReader for Data {
-    fn read(&mut self) -> Result<(), Box<dyn std::error::Error>> {
+    fn read(&mut self) -> Result<(), std::io::Error> {
         match self.format {
             DataFormat::CSV => {
-                let df = CsvReader::from_path(&self.path)?;
+                let df = CsvReader::from_path(&self.path).unwrap().finish().unwrap();
                 self.data = df;
 
                 Ok(())
             }
             DataFormat::JSON => {
-                let mut file = std::fs::File::open(&self.path)?;
-                let df = JsonReader::new(&mut file).finish()?;
+                let mut file = std::fs::File::open(&self.path).unwrap();
+                let df = JsonReader::new(&mut file).finish().unwrap();
                 self.data = df;
 
                 Ok(())
             }
             DataFormat::PARQUET => {
-                let mut file = std::fs::File::open(&self.path)?;
-                let df = ParquetReader::new(&mut file).finish()?;
+                let mut file = std::fs::File::open(&self.path).unwrap();
+                let df = ParquetReader::new(&mut file).finish().unwrap();
                 self.data = df;
 
                 Ok(())
@@ -128,76 +97,33 @@ impl DataReader for Data {
         }
     }
 }
-
-impl DataWriter for Data {
-    fn write(&mut self) -> Result<(), Box<dyn std::error::Error>> {
-        match self.format {
-            DataFormat::CSV => {
-                let mut file = std::fs::File::create(&self.path)?;
-
-                CsvWriter::new(&mut file).finish(&mut self.data)?;
-
-                Ok(())
-            }
-            DataFormat::JSON => {
-                let mut file = std::fs::File::create(&self.path)?;
-
-                JsonWriter::new(&mut file)
-                    .with_json_format(JsonFormat::Json)
-                    .finish(&mut self.data)?;
-
-                Ok(())
-            }
-            DataFormat::PARQUET => {
-                let mut file = std::fs::File::create(&self.path)?;
-
-                ParquetWriter::new(&mut file)
-                    .finish(&mut self.data)?;
-
-                Ok(())
-            }
-        }
-    }
-}
-
-impl DataScanner for Data {
-    fn scan(&mut self) -> Result<LazyFrame, Box<dyn std::error::Error>> {
-        match self.format {
-            DataFormat::CSV => Ok(LazyCsvReader::new(&self.path).finish()?),
-            DataFormat::JSON => Ok(LazyJsonLineReader::new(self.path.clone()).finish()?),
-            DataFormat::PARQUET => {
-                Ok(LazyFrame::scan_parquet(&self.path, ScanArgsParquet::default())?)
-            }
-        }
-    }
-}
-
-
 
 impl DataWriter for Data {
     fn write(&mut self) -> Result<(), std::io::Error> {
         match self.format {
             DataFormat::CSV => {
-                let mut file = std::fs::File::create(&self.path)?;
+                let mut file = std::fs::File::create(&self.path).unwrap();
 
-                CsvWriter::new(&mut file).finish(&mut self.data)?;
+                CsvWriter::new(&mut file).finish(&mut self.data).unwrap();
 
                 Ok(())
             }
             DataFormat::JSON => {
-                let mut file = std::fs::File::create(&self.path)?;
+                let mut file = std::fs::File::create(&self.path).unwrap();
 
                 JsonWriter::new(&mut file)
                     .with_json_format(JsonFormat::Json)
-                    .finish(&mut self.data)?;
+                    .finish(&mut self.data)
+                    .unwrap();
 
                 Ok(())
             }
             DataFormat::PARQUET => {
-                let mut file = std::fs::File::create(&self.path)?;
+                let mut file = std::fs::File::create(&self.path).unwrap();
 
                 ParquetWriter::new(&mut file)
-                    .finish(&mut self.data)?;
+                    .finish(&mut self.data)
+                    .unwrap();
 
                 Ok(())
             }
@@ -208,10 +134,10 @@ impl DataWriter for Data {
 impl DataScanner for Data {
     fn scan(&mut self) -> Result<LazyFrame, std::io::Error> {
         match self.format {
-            DataFormat::CSV => Ok(LazyCsvReader::new(&self.path).finish())?,
-            DataFormat::JSON => Ok(LazyJsonLineReader::new(self.path.clone()).finish())?,
+            DataFormat::CSV => Ok(LazyCsvReader::new(&self.path).finish().unwrap()),
+            DataFormat::JSON => Ok(LazyJsonLineReader::new(self.path.clone()).finish().unwrap()),
             DataFormat::PARQUET => {
-                Ok(LazyFrame::scan_parquet(&self.path, ScanArgsParquet::default()))?;
+                Ok(LazyFrame::scan_parquet(&self.path, ScanArgsParquet::default()).unwrap())
             }
         }
     }
@@ -233,11 +159,11 @@ mod test_io {
             data: DataFrame::default(),
         };
 
-        data.read()?;
+        data.read().unwrap();
 
         data.path = String::from("./src/data/examples/write.csv");
 
-        data.write()?;
+        data.write().unwrap();
 
         println!("{:?}", data.data)
     }
@@ -250,11 +176,11 @@ mod test_io {
             data: DataFrame::default(),
         };
 
-        data.read()?;
+        data.read().unwrap();
 
         data.path = String::from("./src/data/examples/write.json");
 
-        data.write()?;
+        data.write().unwrap();
 
         println!("{:?}", data.data)
     }
