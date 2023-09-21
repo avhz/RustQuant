@@ -22,7 +22,7 @@ pub struct Vertex {
     pub partials: [f64; 2],
     /// Array that contains the indices of the parent vertices.
     pub parents: [usize; 2],
-    // /// Operation.
+    /// Operation which led to this vertex.
     pub operation: Operation,
 }
 
@@ -47,40 +47,75 @@ pub enum Arity {
 /// Enumeration for the operation type.
 #[derive(Clone, Copy, Debug)]
 pub enum Operation {
+    ///Addition
     _ADD,
+    ///Subtraction
     _SUB,
+    ///Multiplication
     _MUL,
+    ///Division
     _DIV,
+    ///Power
     _POW,
+    ///Sine
     _SIN,
+    ///Cosine
     _COS,
+    ///Tan
     _TAN,
+    ///Hyperbolic Sine
     _SINH,
+    ///Hyperbolic Cosine
     _COSH,
+    ///Hyperbolic Tan
     _TANH,
+    ///Inverse Sine
     _ASIN,
+    ///Inverse Cosine
     _ACOS,
+    ///Inverse Tan
     _ATAN,
+    ///Inverse Hyperbolic Sine
     _ASINH,
+    ///Inverse Hyperbolic Cosine
     _ACOSH,
+    ///Inverse Hyperbolic Tan
     _ATANH,
+    ///Exp(x)
     _EXP,
+    ///Exp(x)-1
     _ExpM1,
+    ///2^x
     _EXP2,
+    ///Lox<y>(x)
     _LOG,
+    ///Log10(x)
     _LOG10,
+    ///Log2(x)
     _LOG2,
+    ///Natural Log
     _LN,
+    ///Ln(x+1)
     _P1LN,
+    ///Sqrt(x)
     _SQRT,
+    ///Cube root
     _CBRT,
+    ///Absolute
     _ABS,
+    ///Negative
     _NEG,
+    ///Reciprical
     _INV,
+    ///Max(x, y)
     _MAX,
+    ///Min(x, y)
     _MIN,
+    ///No operation placeholder for Nullary Arity type
     _NAN,
+    ///Error function
     _StdErr,
+    ///Complementary error function
     _CStdErr,
 }
 
@@ -142,7 +177,7 @@ impl Vertex {
         Self {
             partials: [partial_x, partial_y],
             parents: [parent_x, parent_y],
-            operation : Operation::_NAN,
+            operation: Operation::_NAN,
         }
     }
 
@@ -151,7 +186,7 @@ impl Vertex {
         Self {
             partials: [partial_x, 0.0],
             parents: [parent_x, 0],
-            operation : Operation::_NAN,
+            operation: Operation::_NAN,
         }
     }
 
@@ -160,7 +195,7 @@ impl Vertex {
         Self {
             partials: [0.0; 2],
             parents: [0; 2],
-            operation : Operation::_NAN,
+            operation: Operation::_NAN,
         }
     }
 }

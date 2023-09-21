@@ -119,10 +119,16 @@ impl Graph {
 
     /// Pushes a vertex to the graph.
     #[inline]
-    pub fn push(&self, arity: Arity, parents: &[usize], partials: &[f64], operation: Operation) -> usize {
+    pub fn push(
+        &self,
+        arity: Arity,
+        parents: &[usize],
+        partials: &[f64],
+        operation: Operation,
+    ) -> usize {
         let mut vertices = self.vertices.borrow_mut();
         let len = vertices.len();
-        
+
         let vertex = match arity {
             // Nullary operator pushback.
             //

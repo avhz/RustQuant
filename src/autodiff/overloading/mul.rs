@@ -100,9 +100,12 @@ impl<'v> Mul<f64> for Variable<'v> {
         Variable {
             graph: self.graph,
             value: self.value * other,
-            index: self
-                .graph
-                .push(Arity::Binary, &[self.index, self.index], &[other, 0.0],Operation::_MUL,),
+            index: self.graph.push(
+                Arity::Binary,
+                &[self.index, self.index],
+                &[other, 0.0],
+                Operation::_MUL,
+            ),
         }
     }
 }

@@ -55,7 +55,10 @@ pub fn graphviz(graph: &Graph, vars: &[Variable]) -> String {
                 index, index, var_value
             ));
         } else {
-            dot.push_str(&format!("\t{} [label=\"Op: {}\"];\n", index, _vertex.operation));
+            dot.push_str(&format!(
+                "\t{} [label=\"Op: {}\"];\n",
+                index, _vertex.operation
+            ));
         }
     }
 

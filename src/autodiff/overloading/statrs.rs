@@ -41,7 +41,7 @@ impl<'v> Variable<'v> {
                 Arity::Unary,
                 &[self.index],
                 &[2.0 * self.value.powi(2).neg().exp() / PI.sqrt()],
-                Operation::_StdErr
+                Operation::_StdErr,
             ),
         }
     }
@@ -73,7 +73,7 @@ impl<'v> Variable<'v> {
                 Arity::Unary,
                 &[self.index],
                 &[((2.0 * self.value.powi(2).neg().exp()).neg() / PI.sqrt())],
-                Operation::_CStdErr
+                Operation::_CStdErr,
             ),
         }
     }

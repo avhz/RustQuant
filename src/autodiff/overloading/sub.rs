@@ -115,9 +115,12 @@ impl<'v> Sub<Variable<'v>> for f64 {
         Variable {
             graph: other.graph,
             value: self - other.value,
-            index: other
-                .graph
-                .push(Arity::Binary, &[other.index, other.index], &[0.0, -1.0], Operation::_SUB),
+            index: other.graph.push(
+                Arity::Binary,
+                &[other.index, other.index],
+                &[0.0, -1.0],
+                Operation::_SUB,
+            ),
         }
     }
 }
