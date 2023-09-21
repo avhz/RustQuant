@@ -75,7 +75,7 @@ impl Graph {
         Variable {
             graph: self,
             value,
-            index: self.push(Arity::Nullary, &[], &[]),
+            index: self.push(Arity::Nullary, &[], &[], Operation::_NAN),
         }
     }
 
@@ -119,10 +119,10 @@ impl Graph {
 
     /// Pushes a vertex to the graph.
     #[inline]
-    pub fn push(&self, arity: Arity, parents: &[usize], partials: &[f64]) -> usize {
+    pub fn push(&self, arity: Arity, parents: &[usize], partials: &[f64], operation: Operation) -> usize {
         let mut vertices = self.vertices.borrow_mut();
         let len = vertices.len();
-
+        
         let vertex = match arity {
             // Nullary operator pushback.
             //
@@ -139,6 +139,7 @@ impl Graph {
                 Vertex {
                     partials: [0.0, 0.0],
                     parents: [len, len],
+                    operation: operation,
                 }
             }
             // Unary operator pushback.
@@ -156,6 +157,7 @@ impl Graph {
                 Vertex {
                     partials: [partials[0], 0.0],
                     parents: [parents[0], len],
+                    operation: operation,
                 }
             }
             // Binary operator pushback.
@@ -173,6 +175,7 @@ impl Graph {
                 Vertex {
                     partials: [partials[0], partials[1]],
                     parents: [parents[0], parents[1]],
+                    operation: operation,
                 }
             }
         };

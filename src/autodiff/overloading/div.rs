@@ -7,7 +7,7 @@
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use crate::autodiff::{variables::variable::Variable, vertex::Arity};
+use crate::autodiff::{variables::variable::Variable, vertex::Arity, vertex::Operation};
 use std::ops::{Div, DivAssign};
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -120,6 +120,7 @@ impl<'v> Div<Variable<'v>> for f64 {
                 Arity::Binary,
                 &[other.index, other.index],
                 &[0.0, -self / (other.value * other.value)],
+                Operation::_DIV,
             ),
         }
     }

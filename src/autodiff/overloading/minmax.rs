@@ -7,7 +7,7 @@
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use crate::autodiff::{variables::variable::Variable, vertex::Arity};
+use crate::autodiff::{variables::variable::Variable, vertex::Arity, vertex::Operation};
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // OVERLOADING: MIN
@@ -40,6 +40,7 @@ impl<'v> Min<Variable<'v>> for Variable<'v> {
                     if self.value < rhs.value { 1.0 } else { 0.0 },
                     if self.value > rhs.value { 1.0 } else { 0.0 },
                 ],
+                Operation::_MIN,
             ),
         }
     }
@@ -58,6 +59,7 @@ impl<'v> Min<f64> for Variable<'v> {
                 Arity::Binary,
                 &[self.index, self.index],
                 &[if self.value < rhs { 1.0 } else { 0.0 }, 0.0],
+                Operation::_MIN,
             ),
         }
     }
@@ -76,6 +78,7 @@ impl<'v> Min<Variable<'v>> for f64 {
                 Arity::Binary,
                 &[rhs.index, rhs.index],
                 &[0.0, if self < &rhs.value { 1.0 } else { 0.0 }],
+                Operation::_MIN,
             ),
         }
     }
@@ -112,6 +115,7 @@ impl<'v> Max<Variable<'v>> for Variable<'v> {
                     if self.value > rhs.value { 1.0 } else { 0.0 },
                     if self.value < rhs.value { 1.0 } else { 0.0 },
                 ],
+                Operation::_MAX,
             ),
         }
     }
@@ -130,6 +134,7 @@ impl<'v> Max<f64> for Variable<'v> {
                 Arity::Binary,
                 &[self.index, self.index],
                 &[if self.value > rhs { 1.0 } else { 0.0 }, 0.0],
+                Operation::_MAX,
             ),
         }
     }
@@ -148,6 +153,7 @@ impl<'v> Max<Variable<'v>> for f64 {
                 Arity::Binary,
                 &[rhs.index, rhs.index],
                 &[0.0, if self > &rhs.value { 1.0 } else { 0.0 }],
+                Operation::_MAX,
             ),
         }
     }

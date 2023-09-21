@@ -9,7 +9,7 @@
 
 //! Overloading functions from `statrs` crate.
 
-use crate::autodiff::{variables::variable::Variable, vertex::Arity};
+use crate::autodiff::{variables::variable::Variable, vertex::Arity, vertex::Operation};
 use std::f64::consts::PI;
 use std::ops::Neg;
 
@@ -41,6 +41,7 @@ impl<'v> Variable<'v> {
                 Arity::Unary,
                 &[self.index],
                 &[2.0 * self.value.powi(2).neg().exp() / PI.sqrt()],
+                Operation::_StdErr
             ),
         }
     }
@@ -72,6 +73,7 @@ impl<'v> Variable<'v> {
                 Arity::Unary,
                 &[self.index],
                 &[((2.0 * self.value.powi(2).neg().exp()).neg() / PI.sqrt())],
+                Operation::_CStdErr
             ),
         }
     }

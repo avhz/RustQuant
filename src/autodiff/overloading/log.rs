@@ -7,7 +7,7 @@
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use crate::autodiff::{variables::variable::Variable, vertex::Arity};
+use crate::autodiff::{variables::variable::Variable, vertex::Arity, vertex::Operation};
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // OVERLOADING: LOGARITHM
@@ -41,6 +41,7 @@ impl<'v> Log<Variable<'v>> for Variable<'v> {
                     -f64::ln(self.value) / (base.value * f64::ln(base.value).powi(2)),
                     1.0 / (self.value * f64::ln(base.value)),
                 ],
+                crate::autodiff::Operation::_LOG,
             ),
         }
     }
@@ -65,6 +66,7 @@ impl<'v> Log<Variable<'v>> for f64 {
                     -f64::ln(*self) / (base.value * f64::ln(base.value).powi(2)),
                     0.0,
                 ],
+                crate::autodiff::Operation::_LOG,
             ),
         }
     }
@@ -86,6 +88,7 @@ impl<'v> Log<f64> for Variable<'v> {
                 Arity::Binary,
                 &[self.index, self.index],
                 &[0.0, 1.0 / (f64::ln(base) * self.value)],
+                crate::autodiff::Operation::_LOG,
             ),
         }
     }

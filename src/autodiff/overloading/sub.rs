@@ -7,7 +7,7 @@
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use crate::autodiff::{variables::variable::Variable, vertex::Arity};
+use crate::autodiff::{variables::variable::Variable, vertex::Arity, vertex::Operation};
 use std::ops::{Add, Neg, Sub, SubAssign};
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -117,7 +117,7 @@ impl<'v> Sub<Variable<'v>> for f64 {
             value: self - other.value,
             index: other
                 .graph
-                .push(Arity::Binary, &[other.index, other.index], &[0.0, -1.0]),
+                .push(Arity::Binary, &[other.index, other.index], &[0.0, -1.0], Operation::_SUB),
         }
     }
 }

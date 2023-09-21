@@ -7,7 +7,7 @@
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use crate::autodiff::{variables::variable::Variable, vertex::Arity};
+use crate::autodiff::{variables::variable::Variable, vertex::Arity, vertex::Operation};
 use std::ops::{Add, AddAssign};
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -69,7 +69,7 @@ impl<'v> Add<Variable<'v>> for Variable<'v> {
             value: self.value + other.value,
             index: self
                 .graph
-                .push(Arity::Binary, &[self.index, other.index], &[1.0, 1.0]),
+                .push(Arity::Binary, &[self.index, other.index], &[1.0, 1.0], Operation::_ADD),
         }
     }
 }
@@ -99,7 +99,7 @@ impl<'v> Add<f64> for Variable<'v> {
             value: self.value + other,
             index: self
                 .graph
-                .push(Arity::Binary, &[self.index, self.index], &[1.0, 0.0]),
+                .push(Arity::Binary, &[self.index, self.index], &[1.0, 0.0], Operation::_ADD),
         }
     }
 }

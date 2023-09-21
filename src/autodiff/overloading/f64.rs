@@ -7,7 +7,7 @@
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use crate::autodiff::{variables::variable::Variable, vertex::Arity};
+use crate::autodiff::{variables::variable::Variable, vertex::Arity, vertex::Operation};
 use std::ops::Neg;
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -55,7 +55,7 @@ impl<'v> Variable<'v> {
             value: self.value.abs(),
             index: self
                 .graph
-                .push(Arity::Unary, &[self.index], &[self.value.signum()]),
+                .push(Arity::Unary, &[self.index], &[self.value.signum()], Operation::_ABS),
         }
     }
 
@@ -82,6 +82,7 @@ impl<'v> Variable<'v> {
                 Arity::Unary,
                 &[self.index],
                 &[((1.0 - self.value.powi(2)).sqrt()).recip().neg()],
+                Operation::_ACOS,
             ),
         }
     }
@@ -109,6 +110,7 @@ impl<'v> Variable<'v> {
                 Arity::Unary,
                 &[self.index],
                 &[((self.value - 1.0).sqrt() * (self.value + 1.0).sqrt()).recip()],
+                Operation::_ACOSH,
             ),
         }
     }
@@ -142,6 +144,7 @@ impl<'v> Variable<'v> {
                 } else {
                     f64::NAN
                 }],
+                Operation::_ASIN,
             ),
         }
     }
@@ -170,6 +173,7 @@ impl<'v> Variable<'v> {
                 Arity::Unary,
                 &[self.index],
                 &[((1.0 + self.value.powi(2)).sqrt()).recip()],
+                Operation::_ASINH,
             ),
         }
     }
@@ -198,6 +202,7 @@ impl<'v> Variable<'v> {
                 Arity::Unary,
                 &[self.index],
                 &[((1.0 + self.value.powi(2)).recip())],
+                Operation::_ATAN,
             ),
         }
     }
@@ -227,6 +232,7 @@ impl<'v> Variable<'v> {
                 Arity::Unary,
                 &[self.index],
                 &[((1.0 - self.value.powi(2)).recip())],
+                Operation::_ATANH,
             ),
         }
     }
@@ -256,6 +262,7 @@ impl<'v> Variable<'v> {
                 Arity::Unary,
                 &[self.index],
                 &[((3.0 * self.value.powf(2.0 / 3.0)).recip())],
+                Operation::_CBRT,
             ),
         }
     }
@@ -284,7 +291,7 @@ impl<'v> Variable<'v> {
             // index: self.graph.push_unary(self.index, self.value.sin().neg()),
             index: self
                 .graph
-                .push(Arity::Unary, &[self.index], &[self.value.sin().neg()]),
+                .push(Arity::Unary, &[self.index], &[self.value.sin().neg()], Operation::_COS),
         }
     }
 
@@ -311,7 +318,7 @@ impl<'v> Variable<'v> {
             value: self.value.cosh(),
             index: self
                 .graph
-                .push(Arity::Unary, &[self.index], &[self.value.sinh()]),
+                .push(Arity::Unary, &[self.index], &[self.value.sinh()], Operation::_SIN),
         }
     }
 
@@ -337,7 +344,7 @@ impl<'v> Variable<'v> {
             value: self.value.exp(),
             index: self
                 .graph
-                .push(Arity::Unary, &[self.index], &[self.value.exp()]),
+                .push(Arity::Unary, &[self.index], &[self.value.exp()], Operation::_EXP),
         }
     }
 
@@ -366,6 +373,7 @@ impl<'v> Variable<'v> {
                 Arity::Unary,
                 &[self.index],
                 &[2_f64.powf(self.value) * 2_f64.ln()],
+                Operation::_EXP2,
             ),
         }
     }
@@ -394,7 +402,7 @@ impl<'v> Variable<'v> {
             // index: self.graph.push_unary(self.index, self.value.exp()),
             index: self
                 .graph
-                .push(Arity::Unary, &[self.index], &[self.value.exp()]),
+                .push(Arity::Unary, &[self.index], &[self.value.exp()], Operation::_ExpM1),
         }
     }
 
@@ -420,7 +428,7 @@ impl<'v> Variable<'v> {
             value: self.value.ln(),
             index: self
                 .graph
-                .push(Arity::Unary, &[self.index], &[self.value.recip()]),
+                .push(Arity::Unary, &[self.index], &[self.value.recip()], Operation::_LN),
         }
     }
 
@@ -447,7 +455,7 @@ impl<'v> Variable<'v> {
             value: self.value.ln_1p(),
             index: self
                 .graph
-                .push(Arity::Unary, &[self.index], &[(1.0 + self.value).recip()]),
+                .push(Arity::Unary, &[self.index], &[(1.0 + self.value).recip()], Operation::_P1LN),
         }
     }
 
@@ -474,7 +482,7 @@ impl<'v> Variable<'v> {
             value: self.value.log10(),
             index: self
                 .graph
-                .push(Arity::Unary, &[self.index], &[self.value.recip()]),
+                .push(Arity::Unary, &[self.index], &[self.value.recip()], Operation::_LOG10),
         }
     }
 
@@ -501,7 +509,7 @@ impl<'v> Variable<'v> {
             value: self.value.log2(),
             index: self
                 .graph
-                .push(Arity::Unary, &[self.index], &[self.value.recip()]),
+                .push(Arity::Unary, &[self.index], &[self.value.recip()], Operation::_LOG2),
         }
     }
 
@@ -541,6 +549,7 @@ impl<'v> Variable<'v> {
                 Arity::Unary,
                 &[self.index],
                 &[self.value.powi(2).recip().neg()],
+                Operation::_INV,
             ),
         }
     }
@@ -568,7 +577,7 @@ impl<'v> Variable<'v> {
             value: self.value.sin(),
             index: self
                 .graph
-                .push(Arity::Unary, &[self.index], &[self.value.cos()]),
+                .push(Arity::Unary, &[self.index], &[self.value.cos()], Operation::_SIN),
         }
     }
 
@@ -595,7 +604,7 @@ impl<'v> Variable<'v> {
             value: self.value.sinh(),
             index: self
                 .graph
-                .push(Arity::Unary, &[self.index], &[self.value.cosh()]),
+                .push(Arity::Unary, &[self.index], &[self.value.cosh()], Operation::_SINH),
         }
     }
 
@@ -623,6 +632,7 @@ impl<'v> Variable<'v> {
                 Arity::Unary,
                 &[self.index],
                 &[(2.0 * self.value.sqrt()).recip()],
+                Operation::_SQRT,
             ),
         }
     }
@@ -652,6 +662,7 @@ impl<'v> Variable<'v> {
                 Arity::Unary,
                 &[self.index],
                 &[(self.value.cos().powi(2)).recip()],
+                Operation::_TAN
             ),
         }
     }
@@ -681,6 +692,7 @@ impl<'v> Variable<'v> {
                 Arity::Unary,
                 &[self.index],
                 &[(self.value.cosh().powi(2)).recip()],
+                Operation::_TANH
             ),
         }
     }

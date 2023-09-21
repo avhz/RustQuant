@@ -7,7 +7,7 @@
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use crate::autodiff::{variables::variable::Variable, vertex::Arity};
+use crate::autodiff::{variables::variable::Variable, vertex::Arity, vertex::Operation};
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // OVERLOADING: POWER FUNCTION TRAITS
@@ -39,6 +39,7 @@ impl<'v> Powf<Variable<'v>> for Variable<'v> {
                     other.value * f64::powf(self.value, other.value - 1.),
                     f64::powf(self.value, other.value) * f64::ln(self.value),
                 ],
+                Operation::_POW,
             ),
         }
     }
@@ -57,6 +58,7 @@ impl<'v> Powf<f64> for Variable<'v> {
                 Arity::Binary,
                 &[self.index, self.index],
                 &[n * f64::powf(self.value, n - 1.0), 0.0],
+                Operation::_POW,
             ),
         }
     }
@@ -75,6 +77,7 @@ impl<'v> Powf<Variable<'v>> for f64 {
                 Arity::Binary,
                 &[other.index, other.index],
                 &[0.0, other.value * f64::powf(*self, other.value - 1.0)],
+                Operation::_POW,
             ),
         }
     }
@@ -107,6 +110,7 @@ impl<'v> Powi<Variable<'v>> for Variable<'v> {
                     other.value * f64::powf(self.value, other.value - 1.),
                     f64::powf(self.value, other.value) * f64::ln(self.value),
                 ],
+                Operation::_POW,
             ),
         }
     }
@@ -125,6 +129,7 @@ impl<'v> Powi<i32> for Variable<'v> {
                 Arity::Binary,
                 &[self.index, self.index],
                 &[n as f64 * f64::powi(self.value, n - 1), 0.0],
+                Operation::_POW,
             ),
         }
     }
@@ -143,6 +148,7 @@ impl<'v> Powi<Variable<'v>> for f64 {
                 Arity::Binary,
                 &[other.index, other.index],
                 &[0.0, other.value * f64::powf(*self, other.value - 1.0)],
+                Operation::_POW,
             ),
         }
     }

@@ -55,7 +55,7 @@ pub fn graphviz(graph: &Graph, vars: &[Variable]) -> String {
                 index, index, var_value
             ));
         } else {
-            dot.push_str(&format!("\t{} [label=\"Op: #{}\"];\n", index, index));
+            dot.push_str(&format!("\t{} [label=\"Op: {}\"];\n", index, _vertex.operation));
         }
     }
 
@@ -123,7 +123,7 @@ mod test_graphviz {
         let x = graph.var(1.0);
         let y = graph.var(2.0);
 
-        let z = x * y + y.sin();
+        let z = std::ops::Neg::neg(x) * y + y.sin();
 
         let _g = z.accumulate();
 
