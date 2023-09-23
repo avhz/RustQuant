@@ -830,7 +830,7 @@ pub const KES: Currency = Currency {
     fractions: 100,
 };
 
-/// Kyrgyzstani som (KGS)
+/// Kyrgyzstani Som (KGS)
 pub const KGS: Currency = Currency {
     name: "Kyrgyzstani Som",
     symbol: "лв",
@@ -1756,7 +1756,7 @@ pub const UYU: Currency = Currency {
     fractions: 100,
 };
 
-/// Uzbekistan som (UZS)
+/// Uzbekistan Som (UZS)
 pub const UZS: Currency = Currency {
     name: "Uzbekistan Som",
     symbol: "лв",

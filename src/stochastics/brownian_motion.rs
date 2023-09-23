@@ -9,7 +9,7 @@
 
 use crate::stochastics::*;
 
-/// Struct containin the Geometric Brownian Motion parameters.
+/// Struct containing the Geometric Brownian Motion parameters.
 #[derive(Debug)]
 pub struct BrownianMotion {}
 

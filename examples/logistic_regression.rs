@@ -16,7 +16,7 @@ fn main() {
     //          from surface of the unit sphere S_(K-1)  and a bias from uniform(-0.5,0.5);
     //          arrange as DVector "coefs"
     //      3. Compute vector of probabilities(target=1) as sigmoid(X_ext * coefs)
-    //      4. Compute target values:for each sample i draw from Bernouilli(prob_i)
+    //      4. Compute target values:for each sample i draw from Bernoulli(prob_i)
 
     use rand::prelude::*;
     use rand_distr::{Bernoulli, StandardNormal, Uniform};

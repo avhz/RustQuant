@@ -9,7 +9,7 @@
 
 use crate::stochastics::*;
 
-/// Struct containin the Arithmetic Brownian Motion parameters.
+/// Struct containing the Arithmetic Brownian Motion parameters.
 pub struct ArithmeticBrownianMotion {
     /// The drift ($\mu$) in percentage.
     pub mu: f64,

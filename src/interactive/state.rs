@@ -41,7 +41,7 @@ pub enum AppState {
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 impl AppState {
-    /// Initilised app
+    /// Initialised app
     pub fn initialized() -> Self {
         let duration = Duration::from_secs(1);
         let counter_sleep = 0;

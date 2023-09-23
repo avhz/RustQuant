@@ -408,7 +408,7 @@ fn main() {
 <details>
 <summary>
 <h3>:chart_with_upwards_trend: Stochastic Processes and Short Rate Models <a name="stochastics"></a></h3>
-<br> Can generate Brownian Motion (standard, arithmetric and geometric) and various short-rate models (CIR, OU, Vasicek, Hull-White, etc). <br>
+<br> Can generate Brownian Motion (standard, arithmetic and geometric) and various short-rate models (CIR, OU, Vasicek, Hull-White, etc). <br>
 </summary>
 
 The following is a list of stochastic processes that can be generated.
