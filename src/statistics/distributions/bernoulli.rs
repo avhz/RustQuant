@@ -415,7 +415,7 @@ mod tests_bernoulli {
     }
 
     #[test]
-    fn test_inv_cdf_not_implemented() {
+    fn test_inv_cdf() {
         let bernoulli = Bernoulli::new(0.5);
         let inv_cdf_one = bernoulli.inv_cdf(0.5);
         let inv_cdf_two = bernoulli.inv_cdf(0.3);
@@ -424,14 +424,14 @@ mod tests_bernoulli {
     }
 
     #[test]
-    fn test_median_not_implemented() {
+    fn test_median() {
         let bernoulli = Bernoulli::new(0.5);
         let median = bernoulli.median();
         assert_eq!(median, 1.0);
     }
 
     #[test]
-    fn test_mode_not_implemented() {
+    fn test_mode() {
         let bernoulli = Bernoulli::new(0.5);
         let mode = bernoulli.mode();
         assert_eq!(mode, 0.0);
