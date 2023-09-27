@@ -45,7 +45,7 @@
 
 A Rust library for quantitative finance tools. Also the largest option pricing library in Rust.
 
-:dart: I want to hit a stable `v1.0.0` by the end of 2023, so any feedback, suggestions, or contributions are strongly welcomed!
+:dart: I want to hit a stable `v0.1.0` by the end of 2023, so any feedback, suggestions, or contributions are strongly welcomed!
 
 Email me at: <RustQuantContact@gmail.com>
 
