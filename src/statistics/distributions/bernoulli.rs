@@ -223,11 +223,11 @@ impl Distribution for Bernoulli {
     ///
     /// let bernoulli = Bernoulli::new(0.5);
     ///
-    /// assert_eq!(bernoulli.kurtosis(), 1.0);
+    /// assert_eq!(bernoulli.kurtosis(), -2.0);
     /// ```
     fn kurtosis(&self) -> f64 {
         let p = self.p;
-        (1.0 - 6.0 * p * (1.0 - p)) / (p * (1.0 - p)) + 3.0
+        (1.0 - 6.0 * p * (1.0 - p)) / (p * (1.0 - p))
     }
 
     /// Entropy of the Bernoulli distribution.
@@ -359,7 +359,7 @@ mod tests_bernoulli {
 
         // Test skewness and kurtosis
         assert_eq!(bernoulli.skewness(), 0.0);
-        assert_eq!(bernoulli.kurtosis(), 1.0);
+        assert_eq!(bernoulli.kurtosis(), -2.0);
     }
 
     #[test]
