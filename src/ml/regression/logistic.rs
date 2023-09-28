@@ -1,7 +1,10 @@
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // RustQuant: A Rust library for quantitative finance tools.
 // Copyright (C) 2023 https://github.com/avhz
-// See LICENSE or <https://www.gnu.org/licenses/>.
+// Dual licensed under Apache 2.0 and MIT.
+// See:
+//      - LICENSE-APACHE.md
+//      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 //! Module for logistic regression (classification) algorithms.
@@ -366,7 +369,7 @@ mod tests_logistic_regression {
         // - For each of the N samples (train/test) draw K feature values each from a uniform distribution over (-1.,1.) and arrange as design matrix "X".
         // - For the coefficients of the generating distribution draw K values from surface of the unit sphere S_(K-1)  and a bias from uniform(-0.7,0.7); arrange as DVector "coefs"
         // - compute vector of probabilities(target=1) as sigmoid(X_ext * coefs)
-        // - compute target values:for each sample i draw from Bernouilli(prob_i)
+        // - compute target values:for each sample i draw from Bernoulli(prob_i)
         use crate::statistics::distributions::{Bernoulli, Distribution, Gaussian, Uniform};
 
         let N_train = 200; //Number of training samples
@@ -378,10 +381,10 @@ mod tests_logistic_regression {
         let distr_uniform_steepness = Uniform::new(0.5, 5., DistributionClass::Continuous);
 
         //generate random coefficients which will be used to generate target values for the x_i (direction uniform from sphere, bias uniform between -0.5 and 0.5 ) scaled by steepness
-        let bias = distr_uniform_bias.sample(1)[0];
-        let steepness = distr_uniform_steepness.sample(1)[0];
+        let bias = distr_uniform_bias.sample(1).unwrap()[0];
+        let steepness = distr_uniform_steepness.sample(1).unwrap()[0];
 
-        let coefs = DVector::from_vec(distr_normal.sample(K))
+        let coefs = DVector::from_vec(distr_normal.sample(K).unwrap())
             .normalize()
             .insert_row(0, bias)
             .scale(steepness);
@@ -394,17 +397,24 @@ mod tests_logistic_regression {
         //generate random design matrix for train/test
         let distr_uniform_features = Uniform::new(-0.5, 0.5, DistributionClass::Continuous);
 
-        let x_train =
-            DMatrix::<f64>::from_vec(N_train, K, distr_uniform_features.sample(N_train * K));
-        let x_test = DMatrix::from_vec(N_test, K, distr_uniform_features.sample(N_test * K));
+        let x_train = DMatrix::<f64>::from_vec(
+            N_train,
+            K,
+            distr_uniform_features.sample(N_train * K).unwrap(),
+        );
+        let x_test = DMatrix::from_vec(
+            N_test,
+            K,
+            distr_uniform_features.sample(N_test * K).unwrap(),
+        );
 
         //compute probabilities for each sample x_i
         let probs_train = logistic_regression.predict_proba(&x_train);
         let probs_test = logistic_regression.predict_proba(&x_test);
 
         // sample from Bernoulli distribution with p=p_i for each sample i
-        let y_train = probs_train.map(|p| Bernoulli::new(p).sample(1)[0]);
-        let y_test = probs_test.map(|p| Bernoulli::new(p).sample(1)[0]);
+        let y_train = probs_train.map(|p| Bernoulli::new(p).sample(1).unwrap()[0]);
+        let y_test = probs_test.map(|p| Bernoulli::new(p).sample(1).unwrap()[0]);
 
         // Fit the model to the training data.
         let input = LogisticRegressionInput {

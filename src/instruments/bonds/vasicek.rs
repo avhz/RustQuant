@@ -1,7 +1,10 @@
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // RustQuant: A Rust library for quantitative finance tools.
 // Copyright (C) 2023 https://github.com/avhz
-// See LICENSE or <https://www.gnu.org/licenses/>.
+// Dual licensed under Apache 2.0 and MIT.
+// See:
+//      - LICENSE-APACHE.md
+//      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 //! Vasicek's model for zero-coupon bond prices.
@@ -17,12 +20,9 @@
 //! - `θ`: is the level to which it gets pulled.
 //! - `σ`: is the diffusion coefficient.
 
+use crate::instruments::bonds::*;
+use crate::time::{DayCountConvention, DayCounter};
 use time::OffsetDateTime;
-
-use crate::{
-    instruments::bonds::*,
-    time::{DayCountConvention, DayCounter},
-};
 
 /// Struct containing the Vasicek model parameters.
 pub struct Vasicek {

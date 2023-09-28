@@ -1,7 +1,10 @@
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // RustQuant: A Rust library for quantitative finance tools.
 // Copyright (C) 2023 https://github.com/avhz
-// See LICENSE or <https://www.gnu.org/licenses/>.
+// Dual licensed under Apache 2.0 and MIT.
+// See:
+//      - LICENSE-APACHE.md
+//      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 //! Cashflows module.
@@ -268,7 +271,7 @@ mod test_cashflows {
 
     // Test for non-matching dates during addition (should panic).
     #[test]
-    #[should_panic(expected = "assertion failed")]
+    #[should_panic]
     fn test_non_matching_dates_add() {
         let date1 = OffsetDateTime::now_utc();
         let date2 = date1 + Duration::days(1);

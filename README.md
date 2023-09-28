@@ -3,13 +3,13 @@
 
 <p align="center">
     <a href="#license" alt="license">
-        <img alt="License" src="https://img.shields.io/github/license/avhz/RustQuant">
+        <img alt="License" src="https://img.shields.io/badge/Dual_License-MIT_and_Apache_2.0-black?logo=apache">
     <a href="#version" alt="version">
-        <img alt="Crates.io" src="https://img.shields.io/crates/v/RustQuant">
+        <img alt="Crates.io" src="https://img.shields.io/crates/v/RustQuant?logo=rust&color=black">
     <a href="#downloads" alt="downloads">
-        <img alt="Crates.io" src="https://img.shields.io/crates/d/RustQuant">
+        <img alt="Crates.io" src="https://img.shields.io/crates/d/RustQuant?logo=rust&color=black">
     <a href="#stars" alt="stars">
-        <img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/avhz/RustQuant">
+        <img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/avhz/RustQuant?logo=github&color=black">
 </p>
 
 <p align="center">
@@ -43,16 +43,13 @@
         <img alt="Dependencies" src="https://deps.rs/repo/github/avhz/RustQuant/status.svg">
 </p> -->
 
+A Rust library for quantitative finance tools. Also the largest option pricing library in Rust.
 
-Rust library for quantitative finance tools.
+:dart: I want to hit a stable `v0.1.0` by the end of 2023, so any feedback, suggestions, or contributions are strongly welcomed!
 
-:dart: I want to hit a stable and legitimate `v1.0.0` by the end of 2023, so any and all feedback, suggestions, or contributions are strongly welcomed!
+Email me at: <RustQuantContact@gmail.com>
 
-Contact: <rustquantcontact@gmail.com> 
-
-Discord: <https://discord.gg/tQcM77h8vr>
-
-**Disclaimer**: This is currently a free-time project and not a professional financial software library. Nothing in this library should be taken as financial advice, and I do not recommend you to use it for trading or making financial decisions.
+Join the Discord server: <https://discord.gg/tQcM77h8vr>
 
 ## :newspaper: Latest features
 
@@ -270,6 +267,8 @@ Probability density/mass functions, distribution functions, characteristic funct
   - [x] Lookback
   - [x] Asian: Continuous Geometric Average
   - [x] Forward Start
+  - [x] Bachelier and Modified Bachelier
+  - [x] Generalised Black-Scholes-Merton
   - [ ] Basket
   - [ ] Rainbow
   - [ ] American
@@ -409,7 +408,7 @@ fn main() {
 <details>
 <summary>
 <h3>:chart_with_upwards_trend: Stochastic Processes and Short Rate Models <a name="stochastics"></a></h3>
-<br> Can generate Brownian Motion (standard, arithmetric and geometric) and various short-rate models (CIR, OU, Vasicek, Hull-White, etc). <br>
+<br> Can generate Brownian Motion (standard, arithmetic and geometric) and various short-rate models (CIR, OU, Vasicek, Hull-White, etc). <br>
 </summary>
 
 The following is a list of stochastic processes that can be generated.
@@ -511,3 +510,5 @@ I would not recommend using RustQuant within any other libraries for some time, 
 - Antoine Savine - *Modern Computational Finance: AAD and Parallel Simulations*
 
 </details>
+
+**Disclaimer**: This is currently a free-time project and not a professional financial software library. Nothing in this library should be taken as financial advice, and I do not recommend you to use it for trading or making financial decisions.

@@ -1,10 +1,13 @@
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // RustQuant: A Rust library for quantitative finance tools.
 // Copyright (C) 2023 https://github.com/avhz
-// See LICENSE or <https://www.gnu.org/licenses/>.
+// Dual licensed under Apache 2.0 and MIT.
+// See:
+//      - LICENSE-APACHE.md
+//      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use crate::statistics::distributions::Distribution;
+use crate::statistics::{distributions::Distribution, DistributionError};
 use num_complex::Complex;
 use statrs::function::gamma::*;
 
@@ -238,12 +241,12 @@ impl Distribution for Poisson {
     ///
     /// let poisson = Poisson::new(1.0);
     ///
-    /// let sample = poisson.sample(1000);
+    /// let sample = poisson.sample(1000).expect("Poisson sampled");
     /// let mean = sample.iter().sum::<f64>() / sample.len() as f64;
     ///
     /// assert_approx_equal!(mean, poisson.mean(), 0.1);
     /// ```
-    fn sample(&self, n: usize) -> Vec<f64> {
+    fn sample(&self, n: usize) -> Result<Vec<f64>, DistributionError> {
         // IMPORT HERE TO AVOID CLASH WITH
         // `RustQuant::distributions::Distribution`
         use rand::thread_rng;
@@ -253,7 +256,7 @@ impl Distribution for Poisson {
 
         let mut rng = thread_rng();
 
-        let dist = Poisson::new(self.lambda).unwrap();
+        let dist = Poisson::new(self.lambda)?;
 
         let mut variates: Vec<f64> = Vec::with_capacity(n);
 
@@ -261,7 +264,7 @@ impl Distribution for Poisson {
             variates.push(dist.sample(&mut rng) as usize as f64);
         }
 
-        variates
+        Ok(variates)
     }
 }
 
@@ -275,7 +278,7 @@ mod tests {
     use crate::assert_approx_equal;
 
     #[test]
-    fn test_poisson_distribution() {
+    fn test_poisson_distribution() -> Result<(), DistributionError> {
         let dist: Poisson = Poisson::new(1.0);
 
         // Characteristic function
@@ -325,8 +328,10 @@ mod tests {
         assert_approx_equal!(mgf, 5.5749415, 1e-7);
 
         // Sample
-        let sample = dist.sample(1000);
+        let sample = dist.sample(1000)?;
         let mean = sample.iter().sum::<f64>() / sample.len() as f64;
         assert_approx_equal!(mean, dist.mean(), 0.1);
+
+        Ok(())
     }
 }

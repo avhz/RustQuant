@@ -1,7 +1,10 @@
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // RustQuant: A Rust library for quantitative finance tools.
 // Copyright (C) 2023 https://github.com/avhz
-// See LICENSE or <https://www.gnu.org/licenses/>.
+// Dual licensed under Apache 2.0 and MIT.
+// See:
+//      - LICENSE-APACHE.md
+//      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 use crate::stochastics::*;
@@ -12,7 +15,7 @@ use rand::{rngs::StdRng, SeedableRng};
 use rand_distr::StandardNormal;
 use rayon::prelude::*;
 
-/// Struct containin the Fractional Brownian Motion parameters.
+/// Struct containing the Fractional Brownian Motion parameters.
 #[derive(Debug)]
 pub struct FractionalBrownianMotion {
     /// Hurst parameter of the process.
@@ -70,7 +73,7 @@ impl FractionalBrownianMotion {
     }
 
     /// Fractional Gaussian noise.
-    fn fgn_cholesky(&self, n: usize) -> RowDVector<f64> {
+    fn fgn_cholesky(&self, n: usize, t_n: f64) -> RowDVector<f64> {
         let acf_sqrt = self.acf_matrix_sqrt(n);
         let noise = rand::thread_rng()
             .sample_iter::<f64, StandardNormal>(StandardNormal)
@@ -78,11 +81,11 @@ impl FractionalBrownianMotion {
             .collect();
         let noise = DVector::<f64>::from_vec(noise);
 
-        (acf_sqrt * noise).transpose() * (n as f64).powf(-self.hurst)
+        (acf_sqrt * noise).transpose() * (1.0 * t_n / n as f64).powf(self.hurst)
     }
 
     #[cfg(feature = "seedable")]
-    fn seedable_fgn_cholesky(&self, n: usize, seed: u64) -> RowDVector<f64> {
+    fn seedable_fgn_cholesky(&self, n: usize, t_n: f64, seed: u64) -> RowDVector<f64> {
         let acf_sqrt = self.acf_matrix_sqrt(n);
         let rng = StdRng::seed_from_u64(seed);
         let noise = rng
@@ -91,7 +94,7 @@ impl FractionalBrownianMotion {
             .collect();
         let noise = DVector::<f64>::from_vec(noise);
 
-        (acf_sqrt * noise).transpose() * (n as f64).powf(-self.hurst)
+        (acf_sqrt * noise).transpose() * (1.0 * t_n / n as f64).powf(self.hurst)
     }
 }
 
@@ -126,12 +129,12 @@ impl StochasticProcess for FractionalBrownianMotion {
         let times: Vec<f64> = (0..=n_steps).map(|t| t_0 + dt * (t as f64)).collect();
 
         let path_generator = |path: &mut Vec<f64>| {
-            let fgn = self.fgn_cholesky(n_steps);
+            let fgn = self.fgn_cholesky(n_steps, t_n);
 
             for t in 0..n_steps {
                 path[t + 1] = path[t]
                     + self.drift(path[t], times[t]) * dt
-                    + self.diffusion(path[t], times[t]) * fgn[t] * t_n.powf(self.hurst);
+                    + self.diffusion(path[t], times[t]) * fgn[t];
             }
         };
 
@@ -164,12 +167,12 @@ impl StochasticProcess for FractionalBrownianMotion {
         let times: Vec<f64> = (0..=n_steps).map(|t| t_0 + dt * (t as f64)).collect();
 
         let path_generator = |path: &mut Vec<f64>| {
-            let fgn = self.seedable_fgn_cholesky(n_steps, seed);
+            let fgn = self.seedable_fgn_cholesky(n_steps, t_n, seed);
 
             for t in 0..n_steps {
                 path[t + 1] = path[t]
                     + self.drift(path[t], times[t]) * dt
-                    + self.diffusion(path[t], times[t]) * fgn[t] * t_n.powf(self.hurst);
+                    + self.diffusion(path[t], times[t]) * fgn[t];
             }
         };
 

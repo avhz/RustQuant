@@ -1,11 +1,15 @@
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // RustQuant: A Rust library for quantitative finance tools.
 // Copyright (C) 2023 https://github.com/avhz
-// See LICENSE or <https://www.gnu.org/licenses/>.
+// Dual licensed under Apache 2.0 and MIT.
+// See:
+//      - LICENSE-APACHE.md
+//      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 // use crate::RustQuantError;
-use super::{Currency, Money};
+// use crate::money::{iso_currencies::*, Currency, Money};
+use crate::money::*;
 use std::collections::HashMap;
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -199,7 +203,7 @@ impl ExchangeRate {
 // You can now add additional unit tests
 #[cfg(test)]
 mod test_exchange_rate {
-    use crate::money::*;
+    use super::*;
 
     #[test]
     fn test_conversion() {

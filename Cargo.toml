@@ -1,4 +1,14 @@
 ## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+## RustQuant: A Rust library for quantitative finance tools.
+## Copyright (C) 2023 https://github.com/avhz
+## Dual licensed under Apache 2.0 and MIT. 
+## See:
+##      - LICENSE-APACHE.md 
+##      - LICENSE-MIT.md
+## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ## GENERAL CONFIGURATION
 ## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -6,7 +16,7 @@
 name = "RustQuant"
 authors = ["avhz <rustquantcontact@gmail.com>"]
 description = "A Rust library for quantitative finance tools."
-version = "0.0.26"
+version = "0.0.31"
 edition = "2021"
 readme = "README.md"
 repository = "https://github.com/avhz/RustQuant"
@@ -44,6 +54,8 @@ statrs = "0.16.0"           # https://docs.rs/statrs/latest/statrs/
 time = "0.3.20"             # https://docs.rs/time/latest/time/
 yahoo_finance_api = "2.0.0" # https://docs.rs/yahoo-finance-api/latest/yahoo_finance_api/
 thiserror = "1.0.47"       # https://docs.rs/thiserror/latest/thiserror/
+
+
 ## Optional dependencies
 crossterm = { version = "0.27.0", optional = true } # https://docs.rs/crossterm/latest/crossterm/
 eyre = { version = "0.6.8", optional = true }       # https://docs.rs/eyre/latest/eyre/
@@ -53,7 +65,7 @@ tui = { version = "0.19.0", optional = true }       # https://docs.rs/tui/latest
 tui-logger = { version = "0.9.2", optional = true } # https://docs.rs/tui-logger/latest/tui_logger/
 
 ## Dependencies with features
-polars = { version = "0.32.0", optional = true, features = [
+polars = { version = "0.33.2", optional = true, features = [
     "serde",
     "json",
     "parquet",

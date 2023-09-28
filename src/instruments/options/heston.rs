@@ -1,7 +1,10 @@
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // RustQuant: A Rust library for quantitative finance tools.
 // Copyright (C) 2023 https://github.com/avhz
-// See LICENSE or <https://www.gnu.org/licenses/>.
+// Dual licensed under Apache 2.0 and MIT.
+// See:
+//      - LICENSE-APACHE.md
+//      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 use crate::{
@@ -18,32 +21,25 @@ use time::OffsetDateTime;
 /// Heston model for option pricing.
 #[allow(clippy::too_many_arguments)]
 pub fn heston(
-    S0: f64, // Initial asset value.
-    V0: f64, // Initial variance value.
-    K: f64,  // Strike price.
-    // tau: f64,   // Time to expiry.
+    S0: f64,    // Initial asset value.
+    V0: f64,    // Initial variance value.
+    K: f64,     // Strike price.
     r: f64,     // Risk-free rate.
     q: f64,     // Dividend yield.
     rho: f64,   // Correlation between the two Brownian motions.
     sigma: f64, // Volatility-of-volatility.
     kappa: f64, // Mean reversion rate in the variance process' drift term.
     theta: f64, // Long run mean of the variance process.
-    valuation_date: Option<OffsetDateTime>,
-    expiry_date: OffsetDateTime,
+    evaluation_date: Option<OffsetDateTime>,
+    expiration_date: OffsetDateTime,
 ) -> (f64, f64) {
     // Time to expiry.
-    let tau = match valuation_date {
-        Some(valuation_date) => DayCounter::day_count_factor(
-            valuation_date,
-            expiry_date,
-            &DayCountConvention::Actual365,
-        ),
-        None => DayCounter::day_count_factor(
-            OffsetDateTime::now_utc(),
-            expiry_date,
-            &DayCountConvention::Actual365,
-        ),
-    };
+
+    let tau = DayCounter::day_count_factor(
+        evaluation_date.unwrap_or(OffsetDateTime::now_utc()),
+        expiration_date,
+        &DayCountConvention::Actual365,
+    );
 
     // Market price of volatility risk (set to 0 for simplicity).
     // Should probably include, though, since for equity options it has been shown

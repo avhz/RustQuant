@@ -1,28 +1,42 @@
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // RustQuant: A Rust library for quantitative finance tools.
 // Copyright (C) 2023 https://github.com/avhz
-// See LICENSE or <https://www.gnu.org/licenses/>.
+// Dual licensed under Apache 2.0 and MIT.
+// See:
+//      - LICENSE-APACHE.md
+//      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+//! Sequences of numbers in the style of R's `seq` and `rep` functions.
+
 use num::{FromPrimitive, Num, ToPrimitive};
 
 /// Trait for generating sequences of numbers.
-pub trait Seq<T: Num + PartialOrd + Copy + FromPrimitive + ToPrimitive> {
+pub trait Sequence<T: Num + PartialOrd + Copy + FromPrimitive + ToPrimitive> {
     /// Generate a sequence of numbers from `start` to `end` with a step size of `step`.
     fn seq(start: T, end: T, step: T) -> Vec<T>;
+    /// Repeat a number `x`, `n` times.
+    fn rep(x: T, n: usize) -> Vec<T>;
 }
 
-impl<T> Seq<T> for T
+impl<T> Sequence<T> for T
 where
     T: Num + PartialOrd + Copy + FromPrimitive + ToPrimitive,
 {
     fn seq(start: T, end: T, step: T) -> Vec<T> {
-        let mut seq = Vec::new();
+        let mut seq = Vec::with_capacity(((end - start) / step).to_usize().unwrap());
         let mut x = start;
+
         while x <= end {
             seq.push(x);
             x = x + step;
         }
+
         seq
+    }
+
+    fn rep(x: T, n: usize) -> Vec<T> {
+        vec![x; n]
     }
 }
 
@@ -79,5 +93,29 @@ mod tests_sequences {
     fn test_seq_usize() {
         let seq = usize::seq(0, 10, 2);
         assert_eq!(seq, vec![0, 2, 4, 6, 8, 10]);
+    }
+
+    #[test]
+    fn test_rep_f64() {
+        let seq = f64::rep(1., 5);
+        assert_eq!(seq, vec![1., 1., 1., 1., 1.]);
+    }
+
+    #[test]
+    fn test_rep_f32() {
+        let seq = f32::rep(1., 5);
+        assert_eq!(seq, vec![1., 1., 1., 1., 1.]);
+    }
+
+    #[test]
+    fn test_rep_i32() {
+        let seq = i32::rep(1, 5);
+        assert_eq!(seq, vec![1, 1, 1, 1, 1]);
+    }
+
+    #[test]
+    fn test_rep_i64() {
+        let seq = i64::rep(1, 5);
+        assert_eq!(seq, vec![1, 1, 1, 1, 1]);
     }
 }

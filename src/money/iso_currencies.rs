@@ -1,7 +1,10 @@
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // RustQuant: A Rust library for quantitative finance tools.
 // Copyright (C) 2023 https://github.com/avhz
-// See LICENSE or <https://www.gnu.org/licenses/>.
+// Dual licensed under Apache 2.0 and MIT.
+// See:
+//      - LICENSE-APACHE.md
+//      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 //! This module contains implementations of 150+ currencies,
@@ -827,7 +830,7 @@ pub const KES: Currency = Currency {
     fractions: 100,
 };
 
-/// Kyrgyzstani som (KGS)
+/// Kyrgyzstani Som (KGS)
 pub const KGS: Currency = Currency {
     name: "Kyrgyzstani Som",
     symbol: "лв",
@@ -1753,7 +1756,7 @@ pub const UYU: Currency = Currency {
     fractions: 100,
 };
 
-/// Uzbekistan som (UZS)
+/// Uzbekistan Som (UZS)
 pub const UZS: Currency = Currency {
     name: "Uzbekistan Som",
     symbol: "лв",

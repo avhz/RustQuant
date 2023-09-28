@@ -1,5 +1,31 @@
 # Change Log
 
+## 17 September 2023
+
+- @avhz: More Greeks for BSM model: theta, rho, phi, zeta, strike-delta, strike-gamma.
+
+## 17 September 2023
+
+- @avhz: More Greeks for BSM model: vega, vomma, ultima, vega bleed (adding more soon).
+
+## 16 September 2023
+
+- @avhz: Greeks for BSM model: delta, vanna, charm, lambda, gamma, zomma, speed, colour (adding more soon).
+- @avhz: Clean up year fraction computation for some options.
+
+## 15 September 2023
+
+- Generalised Black-Scholes-Merton option pricer by @avhz.
+- Bachelier and Modified Bachelier option pricers by @avhz.
+
+## 14 September 2023
+
+- Added `Result` wrapping for `statistics` module.
+
+## 13 September 2023
+
+- Re-licensing from GPL3 to dual Apache2/MIT licenses.
+
 ## 29 August 2023
 
 - `plotting` mod deprecated, `plot_vector` is now a macro.
