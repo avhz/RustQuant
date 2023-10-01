@@ -2,7 +2,7 @@ use nalgebra::{DMatrix, DVector};
 
 use RustQuant::ml::*;
 
-fn main() {
+fn main() -> Result<(), LinearRegressionError>{
     // TEST DATA GENERATED FROM THE FOLLOWING R CODE:
     //
     // set.seed(2023)
@@ -53,13 +53,14 @@ fn main() {
     //     - `None`: No decomposition is used.
     //     - `QR`: QR decomposition is used.
     //     - `SVD`: SVD decomposition is used.
-    let output = input.fit(Decomposition::QR);
+    let output = input.fit(Decomposition::QR)?;
 
     // Predict the response for the test data.
-    let preds = output.predict(x_test);
+    let preds = output.predict(x_test)?;
 
     // Print the results.
     println!("Intercept: {:?}", output.intercept);
     println!("Coefficients: {:?}", output.coefficients);
     println!("Predictions: {:?}", preds);
+    Ok(())
 }
