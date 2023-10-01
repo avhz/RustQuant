@@ -9,6 +9,3 @@ You will be able to install the package from PyPI using:
 ```bash
 pip install rustquant
 ```
-
-
-
