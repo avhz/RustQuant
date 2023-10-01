@@ -1,5 +1,10 @@
 # Change Log
 
+## 1 October 2023
+
+- @avhz: Added basic `Portfolio` interface. Work in progress.
+- @avhz: Added power option contract pricer.
+
 ## 17 September 2023
 
 - @avhz: More Greeks for BSM model: theta, rho, phi, zeta, strike-delta, strike-gamma.

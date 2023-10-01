@@ -28,7 +28,7 @@
 // RUSTQUANT MISCELLANEOUS MODULES
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-pub use {error::*, macros::*};
+pub use {error::*, macros::*, portfolio::*};
 
 /// Macros module.
 #[macro_use]
@@ -36,6 +36,9 @@ pub mod macros;
 
 /// RustQuant error module.
 pub mod error;
+
+/// Portfolio module.
+pub mod portfolio;
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // AUTOMATIC DIFFERENTIATION MODULE
@@ -146,7 +149,7 @@ pub mod instruments {
         pub use crate::instruments::options::{
             american::*, asian::*, bachelier::*, barrier::*, binary::*, binomial::*,
             black_scholes_merton::*, european::*, forward_start::*, greeks::*, heston::*,
-            lookback::*, option::*,
+            lookback::*, option::*, power::*,
         };
 
         /// American option pricers.
@@ -175,6 +178,8 @@ pub mod instruments {
         pub mod lookback;
         /// Base option traits.
         pub mod option;
+        /// Power option pricers.
+        pub mod power;
     }
 }
 

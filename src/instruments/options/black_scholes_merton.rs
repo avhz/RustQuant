@@ -26,6 +26,7 @@
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 use crate::instruments::options::TypeFlag;
+use crate::instruments::Instrument;
 use crate::statistics::distributions::{Distribution, Gaussian};
 use crate::time::{DayCountConvention, DayCounter};
 
@@ -71,6 +72,29 @@ pub struct BlackScholesMerton {
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // IMPLEMENTATIONS, TRAITS, AND FUNCTIONS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+impl Instrument for BlackScholesMerton {
+    /// Returns the price (net present value) of the instrument.
+    fn price(&self) -> f64 {
+        self.price()
+    }
+
+    /// Returns the error on the NPV in case the pricing engine can
+    /// provide it (e.g. Monte Carlo pricing engine).
+    fn error(&self) -> Option<f64> {
+        None
+    }
+
+    /// Returns the date at which the NPV is calculated.
+    fn valuation_date(&self) -> OffsetDateTime {
+        self.evaluation_date.unwrap_or(OffsetDateTime::now_utc())
+    }
+
+    /// Instrument type.
+    fn instrument_type(&self) -> &'static str {
+        "Black-Scholes-Merton European Option"
+    }
+}
 
 impl BlackScholesMerton {
     /// New European Option
