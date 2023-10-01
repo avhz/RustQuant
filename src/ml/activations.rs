@@ -10,7 +10,7 @@
 use crate::autodiff::{Powi, Variable};
 use nalgebra::DVector;
 use statrs::function::erf;
-
+use thiserror::Error;
 /// Activation functions.
 pub trait ActivationFunction {
     /// Applies the sigmoid function to the input.
