@@ -7,6 +7,72 @@
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+//! Portfolio module.
+//! A portfolio is a collection of [Position]s, which are simply a combination
+//! of an [Instrument], a quantity, a purchase price, and a current price.
+//! You may also specify the [Currency] of the instrument.
+//!
+//! # Example
+//!
+//! ```
+//! # use RustQuant::portfolio::{Portfolio, Position};
+//! # use RustQuant::instruments::options::{BlackScholesMerton, TypeFlag};
+//! # use RustQuant::money::USD;
+//! # use time::{Duration, OffsetDateTime};
+//! # use std::collections::HashMap;
+//! # use RustQuant::assert_approx_equal;
+//!
+//! // Create a position of 100 call options.
+//! let position_1 = Position {
+//!    instrument: BlackScholesMerton::new(
+//!         0.08,
+//!         60.0,
+//!         65.0,
+//!         0.3,
+//!         0.08,
+//!         None,
+//!         OffsetDateTime::now_utc() + Duration::days(91),
+//!         TypeFlag::Call,
+//!     ),
+//!     quantity: 100,
+//!     purchase_price: 2.1045,
+//!     current_price: 3.5,
+//!     currency: Some(USD),
+//! };
+//!
+//! // Create a position of 100 put options.
+//! let position_2 = Position {
+//!    instrument: BlackScholesMerton::new(
+//!         0.1 - 0.05,
+//!         100.0,
+//!         95.0,
+//!         0.2,
+//!         0.1,
+//!         None,
+//!         OffsetDateTime::now_utc() + Duration::days(182),
+//!         TypeFlag::Put,
+//!     ),
+//!     quantity: 100,
+//!     purchase_price: 2.4524,
+//!     current_price: 2.0,
+//!     currency: Some(USD),
+//! };
+//!
+//! let positions = HashMap::from([
+//!     ("Call Options".to_string(), position_1),
+//!     ("Put Options".to_string(), position_2),
+//! ]);
+//!
+//! // Create a portfolio.
+//! let portfolio = Portfolio::new(positions);
+//!     
+//! // Check the value of the portfolio.
+//! assert_approx_equal!(portfolio.value(), 100.0 * 3.5 + 100.0 * 2.0, 1e-10);
+//!     
+//! // Check the profit of the portfolio.
+//! assert_approx_equal!(portfolio.profit(), 550.0 - portfolio.cost(), 1e-10);
+//! ```
+
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // IMPORTS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -39,7 +105,7 @@ pub struct Position<I: Instrument> {
     pub current_price: f64,
 
     /// Currency of the instrument.
-    pub currency: Currency,
+    pub currency: Option<Currency>,
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -56,7 +122,7 @@ where
         quantity: u64,
         purchase_price: f64,
         current_price: f64,
-        currency: Currency,
+        currency: Option<Currency>,
     ) -> Self {
         Self {
             instrument,
@@ -100,24 +166,24 @@ where
     /// Returns the value of the portfolio.
     pub fn value(&self) -> f64 {
         self.positions
-            .iter()
-            .map(|(_, position)| position.value())
+            .values()
+            .map(|position| position.value())
             .sum()
     }
 
     /// Returns the cost of the portfolio.
     pub fn cost(&self) -> f64 {
         self.positions
-            .iter()
-            .map(|(_, position)| position.quantity as f64 * position.purchase_price)
+            .values()
+            .map(|position| position.quantity as f64 * position.purchase_price)
             .sum()
     }
 
     /// Returns the profit (or loss) of the portfolio.
     pub fn profit(&self) -> f64 {
         self.positions
-            .iter()
-            .map(|(_, position)| position.profit())
+            .values()
+            .map(|position| position.profit())
             .sum()
     }
 
@@ -168,7 +234,7 @@ mod tests_portfolio {
             quantity: 100,
             purchase_price: 2.1045,
             current_price: 3.5,
-            currency: USD,
+            currency: Some(USD),
         };
 
         // Create a position of 100 put options.
@@ -186,7 +252,7 @@ mod tests_portfolio {
             quantity: 100,
             purchase_price: 2.4524,
             current_price: 2.0,
-            currency: USD,
+            currency: Some(USD),
         };
 
         let positions = HashMap::from([
