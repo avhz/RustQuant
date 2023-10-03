@@ -450,16 +450,3 @@ pub mod ml {
     /// Submodule of `ml`: activation functions.
     pub mod activations;
 }
-
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// RUSTQUANT INTERACTIVE
-// This is the parent module for the interactive TUI.
-// All boilerplate currently taken from:
-// https://www.monkeypatch.io/blog/2021-05-31-rust-tui
-//
-// This is a placeholder for now, but will be implemented in the future.
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-/// RustQuant interactive TUI.
-#[cfg(feature = "interactive")]
-pub mod interactive {}
