@@ -7,10 +7,9 @@
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-//! Portfolio module.
-//! A portfolio is a collection of [Position]s, which are simply a combination
-//! of an [Instrument], a quantity, a purchase price, and a current price.
-//! You may also specify the [Currency] of the instrument.
+//! A portfolio is a collection of [`Position`]s, which are simply a combination
+//! of an [`Instrument`](crate::instruments::Instrument), a quantity, a purchase price, and a current price.
+//! You may also specify the [`Currency`](crate::money::Currency) of the instrument.
 //!
 //! # Example
 //!

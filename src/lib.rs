@@ -7,11 +7,11 @@
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-//! RustQuant: A Rust library for quantitative finance.
+//! A Rust library for quantitative finance.
 //!
 //! Contact: <RustQuantContact@gmail.com>
 //!
-//! This library is a work in progress. Any contributions are greatly appreciated.
+//! Any contributions are greatly appreciated. Make a PR or open an issue !
 
 // Strictly enforce documentation.
 #![forbid(missing_docs)]
@@ -59,15 +59,15 @@ pub mod autodiff {
         vertex::*,
     };
 
-    /// `Accumulate` trait.
+    /// [`Accumulate`] trait.
     pub mod accumulate;
     /// Implements the gradient computation.
     pub mod gradient;
     /// The Graph (aka. tape or Wengert List).
     pub mod graph;
-    /// Visualisation of the `Graph`.
+    /// Visualisation of the [`Graph`].
     pub mod graphviz;
-    /// Implements `Vertex` (nodes) for the `Graph`.
+    /// Implements [`Vertex`] (nodes) for the `Graph`.
     pub mod vertex;
 
     /// Operator/function overloading.
@@ -437,7 +437,7 @@ pub mod time {
 // MACHINE LEARNING MODULE
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-/// Machine learning algorithms. This module relies on the `nalgebra` crate.
+/// Machine learning algorithms. This module relies on the [`nalgebra`] crate.
 pub mod ml {
     pub use crate::ml::activations::*;
     pub use crate::ml::regression::{linear::*, logistic::*};
