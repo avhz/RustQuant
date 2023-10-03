@@ -40,6 +40,17 @@ pub mod error;
 /// Portfolio module.
 pub mod portfolio;
 
+/// Curves module.
+/// Curves (in the financial sense) are functions that map
+/// a time to a value, such as a yield curve or a swap curve.
+/// They may also be known as term structures.
+pub mod curves {
+    pub use crate::curves::curve::*;
+
+    /// Base curve trait.
+    pub mod curve;
+}
+
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // AUTOMATIC DIFFERENTIATION MODULE
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
