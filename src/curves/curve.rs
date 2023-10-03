@@ -11,7 +11,7 @@
 // IMPORTS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use std::{collections::BTreeMap, fmt::Result};
+use std::{collections::BTreeMap, fmt::Result, time::Duration};
 use time::OffsetDateTime;
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -31,6 +31,19 @@ pub trait Curve {
 
     /// Create a new curve from a set of dates and rates.
     fn from_dates_and_rates(dates: &[OffsetDateTime], rates: &[f64]) -> Self;
+
+    /// Create a new curve from an initial date, a set of rates, and a set of
+    /// durations.
+    /// The dates are calculated as the initial date plus the duration, thus
+    /// there must be:
+    /// - One initial date
+    /// - n rates
+    /// - n-1 durations
+    fn from_initial_date_rates_and_durations(
+        initial_date: OffsetDateTime,
+        rates: &[f64],
+        durations: &[Duration],
+    ) -> Self;
 
     /// Returns the discount factor for the given date, using linear
     /// interpolation for dates between the curve's initial and terminal dates.
@@ -116,10 +129,25 @@ impl Curve for YieldCurve {
         Self { rates: rates_map }
     }
 
+    fn from_initial_date_rates_and_durations(
+        initial_date: OffsetDateTime,
+        rates: &[f64],
+        durations: &[Duration],
+    ) -> Self {
+        let mut dates = vec![initial_date];
+
+        for duration in durations.iter() {
+            dates.push(*dates.last().unwrap() + *duration);
+        }
+
+        Self::from_dates_and_rates(&dates, rates)
+    }
+
     fn discount_factor(&self, date: OffsetDateTime) -> f64 {
         // We need at least two points in the curve, otherwise we consider
         // the curve to be a flat rate, and return the same rate for all dates.
         let n = self.rates.len();
+
         match n {
             0 => panic!("The curve has no points."),
             1 => *self.rates.values().next().unwrap(),
@@ -128,9 +156,6 @@ impl Curve for YieldCurve {
 
                 let (mut x0, mut y0) = rates_iterator.next().unwrap();
                 let (mut x1, mut y1) = rates_iterator.next().unwrap();
-
-                // println!("RANGE: {:?} - {:?}", x0, x1);
-                // println!("DATE: {:?}", date);
 
                 if date < self.initial_date() || date > self.terminal_date() {
                     panic!("Date is outside the curve's range. Extraploation is not supported.");
@@ -147,12 +172,6 @@ impl Curve for YieldCurve {
                     y1 = next.unwrap().1;
                 }
 
-                // println!("x0: {:?}", x0);
-                // println!("y0: {:?}", y0);
-                // println!("x1: {:?}", x1);
-                // println!("y1: {:?}", y1);
-
-                // y = [y0 (x1 - x) + y1 (x - x0)] / (x1 - x0)
                 (*y0 * (*x1 - date) + *y1 * (date - *x0)) / (*x1 - *x0)
             }
         }

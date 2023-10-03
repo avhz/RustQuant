@@ -1,5 +1,10 @@
 # Change Log
 
+## 3 October 2023
+
+- @avhz: Added `curves` module for rate curves (work in progress).
+  - Currently only supports linear interpolation, but will add more interpolation methods soon.
+
 ## 1 October 2023
 
 - @avhz: Added basic `Portfolio` interface. Work in progress.
