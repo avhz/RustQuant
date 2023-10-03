@@ -11,8 +11,7 @@
 // IMPORTS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use std::collections::BTreeMap;
-
+use std::{collections::BTreeMap, fmt::Result};
 use time::OffsetDateTime;
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -25,27 +24,55 @@ pub trait Curve {
     fn initial_date(&self) -> OffsetDateTime;
 
     /// Final date of the curve.
-    fn final_date(&self) -> OffsetDateTime;
+    fn terminal_date(&self) -> OffsetDateTime;
 
-    /// Returns the discount factor for the given date.
-    /// Uses linear interpolation between the dates, and linear
-    /// extrapolation outside the dates.
+    /// Updates the rate for the given date.
+    fn update_rate(&mut self, date: OffsetDateTime, rate: f64);
+
+    /// Create a new curve from a set of dates and rates.
+    fn from_dates_and_rates(dates: &[OffsetDateTime], rates: &[f64]) -> Self;
+
+    /// Returns the discount factor for the given date, using linear
+    /// interpolation for dates between the curve's initial and terminal dates.
+    /// If the date is outside the curve's range, we panic.
     ///
-    /// That is:
+    /// We use the following formula for the interpolation:
+    /// - y = [y0 (x1 - x) + y1 (x - x0)] / (x1 - x0)
     ///
-    /// - Linear interpolation: y = [y0 (x1 - x) + y1 (x - x0)] / (x1 - x0)
-    /// - Linear extrapolation: y = y0 + (y1 - y0) * (x - x0) / (x1 - x0)
+    /// Note: there must be at least two points in the curve, otherwise
+    /// we consider the curve to be a flat rate, and return the same rate
+    /// for all dates.
     fn discount_factor(&self, date: OffsetDateTime) -> f64;
 }
 
 /// Yield curve struct.
 pub struct YieldCurve {
-    rates: BTreeMap<OffsetDateTime, f64>,
+    /// Map of dates and rates.
+    /// The dates are the keys and the rates are the values.
+    /// The reason for using a [BTreeMap] is that it is sorted by date,
+    /// which makes sense for a term structure.
+    pub rates: BTreeMap<OffsetDateTime, f64>,
 }
 
-/// Swap curve struct.
+/// Swap rate curve struct.
 pub struct SwapCurve {
-    rates: BTreeMap<OffsetDateTime, f64>,
+    /// Map of dates and rates.
+    /// The dates are the keys and the rates are the values.
+    /// The reason for using a [BTreeMap] is that it is sorted by date,
+    /// which makes sense for a term structure.
+    /// We also need the dates to be sorted for the interpolation, since
+    /// non-increasing dates give a meaningless interpolation.
+    pub rates: BTreeMap<OffsetDateTime, f64>,
+}
+
+/// Curve error enum.
+#[derive(Debug, Clone, Copy)]
+pub enum CurveError {
+    /// The date is outside the curve's range.
+    DateOutsideRange,
+
+    /// The curve has no points.
+    NoPoints,
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -59,45 +86,76 @@ impl YieldCurve {
     }
 }
 
+impl SwapCurve {
+    /// Creates a new swap rate curve.
+    pub fn new(rates: BTreeMap<OffsetDateTime, f64>) -> Self {
+        Self { rates }
+    }
+}
+
 impl Curve for YieldCurve {
     fn initial_date(&self) -> OffsetDateTime {
         *self.rates.keys().min().unwrap()
     }
 
-    fn final_date(&self) -> OffsetDateTime {
+    fn terminal_date(&self) -> OffsetDateTime {
         *self.rates.keys().max().unwrap()
     }
 
+    fn update_rate(&mut self, date: OffsetDateTime, rate: f64) {
+        self.rates.insert(date, rate);
+    }
+
+    fn from_dates_and_rates(dates: &[OffsetDateTime], rates: &[f64]) -> Self {
+        let mut rates_map = BTreeMap::new();
+
+        for (date, rate) in dates.iter().zip(rates.iter()) {
+            rates_map.insert(*date, *rate);
+        }
+
+        Self { rates: rates_map }
+    }
+
     fn discount_factor(&self, date: OffsetDateTime) -> f64 {
-        let mut iter = self.rates.iter();
+        // We need at least two points in the curve, otherwise we consider
+        // the curve to be a flat rate, and return the same rate for all dates.
+        let n = self.rates.len();
+        match n {
+            0 => panic!("The curve has no points."),
+            1 => *self.rates.values().next().unwrap(),
+            _ => {
+                let mut rates_iterator = self.rates.iter();
 
-        let (mut x0, mut y0) = iter.next().unwrap();
-        let (mut x1, mut y1) = iter.next().unwrap();
+                let (mut x0, mut y0) = rates_iterator.next().unwrap();
+                let (mut x1, mut y1) = rates_iterator.next().unwrap();
 
-        while x1 < &date {
-            x0 = x1;
-            y0 = y1;
-            let next = iter.next();
-            if next.is_none() {
-                break;
+                // println!("RANGE: {:?} - {:?}", x0, x1);
+                // println!("DATE: {:?}", date);
+
+                if date < self.initial_date() || date > self.terminal_date() {
+                    panic!("Date is outside the curve's range. Extraploation is not supported.");
+                }
+
+                while x1 < &date {
+                    x0 = x1;
+                    y0 = y1;
+                    let next = rates_iterator.next();
+                    if next.is_none() {
+                        break;
+                    }
+                    x1 = next.unwrap().0;
+                    y1 = next.unwrap().1;
+                }
+
+                // println!("x0: {:?}", x0);
+                // println!("y0: {:?}", y0);
+                // println!("x1: {:?}", x1);
+                // println!("y1: {:?}", y1);
+
+                // y = [y0 (x1 - x) + y1 (x - x0)] / (x1 - x0)
+                (*y0 * (*x1 - date) + *y1 * (date - *x0)) / (*x1 - *x0)
             }
-            x1 = next.unwrap().0;
-            y1 = next.unwrap().1;
         }
-
-        println!("x0: {:?}", x0);
-        println!("y0: {:?}", y0);
-        println!("x1: {:?}", x1);
-        println!("y1: {:?}", y1);
-
-        match date {
-            _ if date < *x0 => *y0 + (y1 - y0) * (date - *x0) / (*x1 - *x0),
-            _ if date > *x1 => y1 + (y1 - y0) * (date - *x1) / (*x1 - *x0),
-            _ => (*y0 * (*x1 - date) + *y1 * (date - *x0)) / (*x1 - *x0),
-        }
-
-        // (*y0 * (*x1 - date) + *y1 * (date - *x0)) / (*x1 - *x0)
-        // y0 + (y1 - y0) * (x - x0) / (x1 - x0)
     }
 }
 
@@ -144,31 +202,48 @@ mod tests_curves {
         rates.insert(OffsetDateTime::UNIX_EPOCH + Duration::days(60), 0.03);
 
         let yield_curve = YieldCurve::new(rates);
-        let final_date = yield_curve.final_date();
+        let final_date = yield_curve.terminal_date();
 
         assert_eq!(final_date, OffsetDateTime::UNIX_EPOCH + Duration::days(60));
     }
 
     #[test]
     fn test_yield_curve_discount_factor() {
-        let mut rates = BTreeMap::new();
+        // Initial date of the curve.
+        let t0 = OffsetDateTime::UNIX_EPOCH;
 
-        rates.insert(OffsetDateTime::UNIX_EPOCH + Duration::days(30), 0.025);
-        rates.insert(OffsetDateTime::UNIX_EPOCH + Duration::days(60), 0.03);
+        // Create a yield curve with 8 points.
+        let rate_vec = vec![0.025, 0.03, 0.035, 0.04, 0.045, 0.05, 0.055, 0.06];
+        let date_vec = vec![
+            t0 + Duration::days(30),
+            t0 + Duration::days(60),
+            t0 + Duration::days(90),
+            t0 + Duration::days(120),
+            t0 + Duration::days(150),
+            t0 + Duration::days(180),
+            t0 + Duration::days(210),
+            t0 + Duration::days(360),
+        ];
 
-        let yield_curve = YieldCurve::new(rates);
+        let yield_curve = YieldCurve::from_dates_and_rates(&date_vec, &rate_vec);
 
+        println!("Curve: {:?}", yield_curve.rates);
+
+        // Test the discount factor for a dates inside the curve's range.
         let date1 = OffsetDateTime::UNIX_EPOCH + Duration::days(45);
-        let date2 = OffsetDateTime::UNIX_EPOCH + Duration::days(90);
+        let date2 = OffsetDateTime::UNIX_EPOCH + Duration::days(80);
+        let date3 = OffsetDateTime::UNIX_EPOCH + Duration::days(250);
 
         let df1 = yield_curve.discount_factor(date1);
         let df2 = yield_curve.discount_factor(date2);
+        let df3 = yield_curve.discount_factor(date3);
 
         println!("df1: {:?}", df1);
         println!("df2: {:?}", df2);
+        println!("df3: {:?}", df3);
 
-        assert!(df1 > 0.0);
-        assert!(df2 > 0.0);
-        assert!(df1 < df2);
+        assert!(df1 > 0.0 && df1 < 1.0 && df2 > 0.0 && df2 < 1.0 && df3 > 0.0 && df3 < 1.0);
+
+        assert!(df1 < df2 && df2 < df3);
     }
 }
