@@ -147,34 +147,41 @@ impl Instrument for CouponBond {
 
         println!("Discounts: {:?}", discount_factors);
 
+        println!("Frequency: {}", self.coupon_frequency as i32);
+
         // Compute the present value of the coupons.
-        let pv_coupons = self
-            .coupons
+        self.coupons
             .values()
             .zip(discount_factors.iter().enumerate())
             .map(|(coupon, (i, df))| {
-                coupon
-                    / (1. + df / self.coupon_frequency as i32 as f64)
-                        .powi((i + 1) as i32 * self.coupon_frequency as i32)
+                println!("Coupon: {}, i: {}", coupon, i);
+                let discounted_coupon =
+                    coupon / (1. + df / self.coupon_frequency as i32 as f64).powi((i + 1) as i32);
+
+                println!("Discounted Coupon: {}", discounted_coupon);
+
+                discounted_coupon
             })
-            .sum::<f64>();
+            .sum::<f64>()
+
         // .map(|(coupon, df)| coupon * df)
         // .sum::<f64>();
 
-        println!("PV Coupons: {}", pv_coupons);
+        // println!("PV Coupons: {}", pv_coupons);
 
-        // Compute the present value of the face value.
-        let years = (self.expiration_date - self.evaluation_date).whole_days() / 365;
-        println!("Years: {}", years);
-        let pv_face_value =
-            self.face_value / (1. + discount_factors.last().unwrap()).powi(years as i32);
+        // // Compute the present value of the face value.
+        // let years = (self.expiration_date - self.evaluation_date).whole_days() / 365;
+        // println!("Years: {}", years);
+        // let pv_face_value = self.face_value
+        //     / (1. + discount_factors.last().unwrap() / self.coupon_frequency as i32 as f64)
+        //         .powi(years as i32 * self.coupon_frequency as i32);
 
-        println!("PV Face Value: {}", pv_face_value);
+        // println!("PV Face Value: {}", pv_face_value);
 
-        // Compute the price of the bond.
-        let price = pv_coupons + pv_face_value;
+        // // Compute the price of the bond.
+        // let price = pv_coupons; //+ pv_face_value;
 
-        price
+        // price
     }
 
     /// Returns the error on the NPV in case the pricing engine can
@@ -225,13 +232,13 @@ mod tests_bond {
 
         let mut bond = CouponBond {
             evaluation_date: today,
-            expiration_date: today + Duration::days(365 * 5),
+            expiration_date: today + Duration::days(365 * 2),
             currency: Some(USD),
             coupon_rate: 0.05,
             coupon_frequency: PaymentFrequency::SemiAnnually,
             settlement_convention: BusinessDayConvention::Actual,
             yield_curve: create_test_yield_curve(today),
-            face_value: 100.0,
+            face_value: 1000.0,
             coupons: BTreeMap::new(),
         };
 
