@@ -24,8 +24,10 @@
 //! - `t`: time to check price at
 //! - `maturity`: time at bond maturity
 
-use crate::instruments::bonds::*;
+use crate::instruments::Instrument;
 use crate::math::integrate;
+use crate::time::{DayCountConvention, DayCounter};
+use time::OffsetDateTime;
 
 /// Struct containing the Hull-White model parameters.
 pub struct HullWhite {
@@ -33,8 +35,11 @@ pub struct HullWhite {
     theta_t: fn(f64) -> f64,
     sigma: f64,
     r_t: f64,
-    t: f64,
-    maturity: f64,
+
+    /// `evaluation_date` - Valuation date.
+    pub evaluation_date: Option<OffsetDateTime>,
+    /// `expiration_date` - Expiry date.
+    pub expiration_date: OffsetDateTime,
 }
 
 impl HullWhite {
@@ -47,25 +52,48 @@ impl HullWhite {
     // TODO make dependenont t,T
     fn A(&self) -> f64 {
         assert!(self.a > 0.0);
-        let first = -1.0 * integrate(|u| (self.theta_t)(u) * self.B(), self.t, self.maturity);
-        let second =
-            ((self.sigma).powi(2) / (2.0 * (self.a).powi(2))) * (self.B() - self.maturity + self.t);
+
+        let today = OffsetDateTime::now_utc();
+        let t = (self.evaluation_date.unwrap_or(today).year() - today.year()) as f64;
+        let T = (self.expiration_date.year() - today.year()) as f64;
+
+        let first = -1.0 * integrate(|u| (self.theta_t)(u) * self.B(), t, T);
+
+        let second = ((self.sigma).powi(2) / (2.0 * (self.a).powi(2))) * (self.B() - self.tau());
+
         let third = ((self.sigma).powi(2) / (4.0 * self.a)) * (self.B()).powi(2);
 
         (first - second - third).exp()
     }
+
+    fn tau(&self) -> f64 {
+        DayCounter::day_count_factor(
+            self.evaluation_date.unwrap_or(OffsetDateTime::now_utc()),
+            self.expiration_date,
+            &DayCountConvention::Actual365,
+        )
+    }
 }
 
-impl ZeroCouponBond for HullWhite {
+impl Instrument for HullWhite {
     fn price(&self) -> f64 {
         assert!(self.a > 0.0);
-        assert!(self.maturity >= self.t);
+        assert!(self.expiration_date >= self.evaluation_date.unwrap_or(OffsetDateTime::now_utc()));
 
         self.A() * (-1.0 * self.B() * self.r_t).exp()
     }
 
-    // fn duration(&self) -> f64 {}
-    // fn convexity(&self) -> f64 {}
+    fn error(&self) -> Option<f64> {
+        None
+    }
+
+    fn valuation_date(&self) -> time::OffsetDateTime {
+        self.evaluation_date.unwrap_or(OffsetDateTime::now_utc())
+    }
+
+    fn instrument_type(&self) -> &'static str {
+        "Zero Coupon Bond"
+    }
 }
 
 #[cfg(test)]
@@ -79,8 +107,8 @@ mod tests {
             theta_t: |_x| 0.5,
             sigma: 0.3,
             r_t: 0.05,
-            t: 0.0,
-            maturity: 10.0,
+            evaluation_date: None,
+            expiration_date: OffsetDateTime::now_utc() + time::Duration::days(365 * 10),
         };
         let _price = hw_bond.price();
         // TODO check price against actual

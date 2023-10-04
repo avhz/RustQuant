@@ -11,7 +11,7 @@
 // IMPORTS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use std::{collections::BTreeMap, fmt::Result, time::Duration};
+use std::{collections::BTreeMap, time::Duration};
 use time::OffsetDateTime;
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -45,6 +45,18 @@ pub trait Curve {
         durations: &[Duration],
     ) -> Self;
 
+    /// Function to find the interval of dates that contains the given date.
+    /// The interval is defined by the two dates that are closest to the given
+    /// date, just before and just after.
+    fn find_date_interval(&self, date: OffsetDateTime) -> (OffsetDateTime, OffsetDateTime);
+
+    // /// Function to find the three points that are closest to the given date,
+    // /// to be used for a quadratic interpolation.
+    // fn find_three_points(
+    //     &self,
+    //     date: OffsetDateTime,
+    // ) -> (OffsetDateTime, OffsetDateTime, OffsetDateTime);
+
     /// Returns the discount factor for the given date, using linear
     /// interpolation for dates between the curve's initial and terminal dates.
     /// If the date is outside the curve's range, we panic.
@@ -56,6 +68,16 @@ pub trait Curve {
     /// we consider the curve to be a flat rate, and return the same rate
     /// for all dates.
     fn discount_factor(&self, date: OffsetDateTime) -> f64;
+
+    /// Returns multiple discount factors for the given dates.
+    /// This is a convenience function that calls [discount_factor] for each
+    /// date.
+    fn discount_factors(&self, dates: &[OffsetDateTime]) -> Vec<f64> {
+        dates
+            .iter()
+            .map(|date| self.discount_factor(*date))
+            .collect::<Vec<f64>>()
+    }
 }
 
 /// Yield curve struct.
@@ -64,17 +86,6 @@ pub struct YieldCurve {
     /// The dates are the keys and the rates are the values.
     /// The reason for using a [BTreeMap] is that it is sorted by date,
     /// which makes sense for a term structure.
-    pub rates: BTreeMap<OffsetDateTime, f64>,
-}
-
-/// Swap rate curve struct.
-pub struct SwapCurve {
-    /// Map of dates and rates.
-    /// The dates are the keys and the rates are the values.
-    /// The reason for using a [BTreeMap] is that it is sorted by date,
-    /// which makes sense for a term structure.
-    /// We also need the dates to be sorted for the interpolation, since
-    /// non-increasing dates give a meaningless interpolation.
     pub rates: BTreeMap<OffsetDateTime, f64>,
 }
 
@@ -94,13 +105,6 @@ pub enum CurveError {
 
 impl YieldCurve {
     /// Creates a new yield curve.
-    pub fn new(rates: BTreeMap<OffsetDateTime, f64>) -> Self {
-        Self { rates }
-    }
-}
-
-impl SwapCurve {
-    /// Creates a new swap rate curve.
     pub fn new(rates: BTreeMap<OffsetDateTime, f64>) -> Self {
         Self { rates }
     }
@@ -144,38 +148,64 @@ impl Curve for YieldCurve {
     }
 
     fn discount_factor(&self, date: OffsetDateTime) -> f64 {
-        // We need at least two points in the curve, otherwise we consider
-        // the curve to be a flat rate, and return the same rate for all dates.
         let n = self.rates.len();
 
         match n {
             0 => panic!("The curve has no points."),
             1 => *self.rates.values().next().unwrap(),
             _ => {
-                let mut rates_iterator = self.rates.iter();
+                let (x0, x1) = self.find_date_interval(date);
 
-                let (mut x0, mut y0) = rates_iterator.next().unwrap();
-                let (mut x1, mut y1) = rates_iterator.next().unwrap();
+                println!("x0: {:?}, x1: {:?}", x0.date(), x1.date());
 
-                if date < self.initial_date() || date > self.terminal_date() {
-                    panic!("Date is outside the curve's range. Extraploation is not supported.");
-                }
+                let y0 = *self.rates.get(&x0).unwrap();
+                let y1 = *self.rates.get(&x1).unwrap();
 
-                while x1 < &date {
-                    x0 = x1;
-                    y0 = y1;
-                    let next = rates_iterator.next();
-                    if next.is_none() {
-                        break;
-                    }
-                    x1 = next.unwrap().0;
-                    y1 = next.unwrap().1;
-                }
+                (y0 * (x1 - date) + y1 * (date - x0)) / (x1 - x0)
 
-                (*y0 * (*x1 - date) + *y1 * (date - *x0)) / (*x1 - *x0)
+                // MIGHT IMPLEMENT A QUADRATIC INTERPOLATION LATER
+
+                // let t = (date - x0) / (x1 - x0);
+                // let t2 = t * t;
+
+                // y0 + (2.0 * t - 1.0) * (y1 - y0) * t2
             }
         }
     }
+
+    fn find_date_interval(&self, date: OffsetDateTime) -> (OffsetDateTime, OffsetDateTime) {
+        (
+            *self.rates.range(..date).next_back().unwrap().0,
+            *self.rates.range(date..).next().unwrap().0,
+        )
+    }
+
+    // fn find_three_points(
+    //     &self,
+    //     date: OffsetDateTime,
+    // ) -> (OffsetDateTime, OffsetDateTime, OffsetDateTime) {
+    //     let mut dates = self.rates.keys().collect::<Vec<&OffsetDateTime>>();
+
+    //     // dates.sort();
+
+    //     let mut i = 0;
+
+    //     while dates[i] < &date {
+    //         i += 1;
+    //     }
+
+    //     if i == 0 {
+    //         (dates[0], dates[1], dates[2])
+    //     } else if i == dates.len() - 1 {
+    //         (
+    //             dates[dates.len() - 3],
+    //             dates[dates.len() - 2],
+    //             dates[dates.len() - 1],
+    //         )
+    //     } else {
+    //         (dates[i - 1], dates[i], dates[i + 1])
+    //     }
+    // }
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -224,6 +254,28 @@ mod tests_curves {
         let final_date = yield_curve.terminal_date();
 
         assert_eq!(final_date, OffsetDateTime::UNIX_EPOCH + Duration::days(60));
+    }
+
+    #[test]
+    fn test_find_date_interval() {
+        let mut rates = BTreeMap::new();
+
+        rates.insert(OffsetDateTime::UNIX_EPOCH + Duration::days(30), 0.025);
+        rates.insert(OffsetDateTime::UNIX_EPOCH + Duration::days(60), 0.03);
+
+        let yield_curve = YieldCurve::new(rates);
+
+        let date1 = OffsetDateTime::UNIX_EPOCH + Duration::days(30);
+        let date2 = OffsetDateTime::UNIX_EPOCH + Duration::days(45);
+        let date3 = OffsetDateTime::UNIX_EPOCH + Duration::days(60);
+
+        let interval1 = yield_curve.find_date_interval(date1);
+        let interval2 = yield_curve.find_date_interval(date2);
+        let interval3 = yield_curve.find_date_interval(date3);
+
+        assert_eq!(interval1, (date1, date1));
+        assert_eq!(interval2, (date1, date3));
+        assert_eq!(interval3, (date3, date3));
     }
 
     #[test]

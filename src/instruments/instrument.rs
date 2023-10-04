@@ -31,41 +31,41 @@ pub trait Instrument {
     fn instrument_type(&self) -> &'static str;
 }
 
-/// Price structure.
-pub struct Price {
-    /// Price of the instrument.
-    pub price: f64,
+// /// Price structure.
+// pub struct Price {
+//     /// Price of the instrument.
+//     pub price: f64,
 
-    /// Error on the price of the instrument.
-    pub error: Option<f64>,
-}
+//     /// Error on the price of the instrument.
+//     pub error: Option<f64>,
+// }
 
-/// Pricing engine for instruments.
-pub enum PricingEngine {
-    /// Analytic pricing method (e.g. closed-form solution).
-    Analytic,
+// /// Pricing engine for instruments.
+// pub enum PricingEngine {
+//     /// Analytic pricing method (e.g. closed-form solution).
+//     Analytic,
 
-    /// Simulation pricing method (e.g. Monte Carlo).
-    Simulation,
+//     /// Simulation pricing method (e.g. Monte Carlo).
+//     Simulation,
 
-    /// Numerical method (e.g. PDE, lattice, finite differences).
-    Numerical,
-}
+//     /// Numerical method (e.g. PDE, lattice, finite differences).
+//     Numerical,
+// }
 
-/// Base instrument type enum.
-pub enum InstrumentType {
-    /// A stock instrument.
-    Stock,
-    /// A bond instrument.
-    Bond,
-    /// An option contract.
-    Option,
-    /// A future contract.
-    Future,
-    /// A swap contract.
-    Swap,
-    /// Commodities.
-    Commodity,
-    /// A hybrid instrument (e.g. callable bond).
-    Hybrid,
-}
+// /// Base instrument type enum.
+// pub enum InstrumentType {
+//     /// A stock instrument.
+//     Stock,
+//     /// A bond instrument.
+//     Bond,
+//     /// An option contract.
+//     Option,
+//     /// A future contract.
+//     Future,
+//     /// A swap contract.
+//     Swap,
+//     /// Commodities.
+//     Commodity,
+//     /// A hybrid instrument (e.g. callable bond).
+//     Hybrid,
+// }

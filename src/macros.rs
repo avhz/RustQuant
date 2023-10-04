@@ -49,7 +49,10 @@ macro_rules! plot_vector {
             .margin(5)
             .x_label_area_size(30)
             .y_label_area_size(30)
-            .build_cartesian_2d(0f64..vec2d.len() as f64, min..max)
+            .build_cartesian_2d(
+                0f64..vec2d.len() as f64,
+                (min * 0.95)..(max * 1.05), // 5% padding on y-axis
+            )
             .unwrap();
 
         chart.configure_mesh().draw().unwrap();

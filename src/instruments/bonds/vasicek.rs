@@ -20,7 +20,7 @@
 //! - `θ`: is the level to which it gets pulled.
 //! - `σ`: is the diffusion coefficient.
 
-use crate::instruments::bonds::*;
+use crate::instruments::Instrument;
 use crate::time::{DayCountConvention, DayCounter};
 use time::OffsetDateTime;
 
@@ -31,13 +31,13 @@ pub struct Vasicek {
     theta: f64,
     sigma: f64,
 
-    /// `valuation_date` - Valuation date.
-    pub valuation_date: Option<OffsetDateTime>,
-    /// `expiry_date` - Expiry date.
-    pub expiry_date: OffsetDateTime,
+    /// `evaluation_date` - Valuation date.
+    pub evaluation_date: Option<OffsetDateTime>,
+    /// `expiration_date` - Expiry date.
+    pub expiration_date: OffsetDateTime,
 }
 
-impl ZeroCouponBond for Vasicek {
+impl Instrument for Vasicek {
     fn price(&self) -> f64 {
         let k = self.k;
         let theta = self.theta;
@@ -45,15 +45,15 @@ impl ZeroCouponBond for Vasicek {
         let r0 = self.r0;
 
         // Compute time to maturity.
-        let tau = match self.valuation_date {
+        let tau = match self.evaluation_date {
             Some(valuation_date) => DayCounter::day_count_factor(
                 valuation_date,
-                self.expiry_date,
+                self.expiration_date,
                 &DayCountConvention::Actual365,
             ),
             None => DayCounter::day_count_factor(
                 OffsetDateTime::now_utc(),
-                self.expiry_date,
+                self.expiration_date,
                 &DayCountConvention::Actual365,
             ),
         };
@@ -83,8 +83,17 @@ impl ZeroCouponBond for Vasicek {
         // )
     }
 
-    // fn duration(&self) -> f64 {}
-    // fn convexity(&self) -> f64 {}
+    fn error(&self) -> Option<f64> {
+        None
+    }
+
+    fn valuation_date(&self) -> OffsetDateTime {
+        self.evaluation_date.unwrap_or(OffsetDateTime::now_utc())
+    }
+
+    fn instrument_type(&self) -> &'static str {
+        "Zero Coupon Bond"
+    }
 }
 
 #[cfg(test)]
@@ -102,8 +111,8 @@ mod tests_bond_vasicek {
             k: 0.3,
             theta: 0.1,
             sigma: 0.03,
-            valuation_date: None,
-            expiry_date,
+            evaluation_date: None,
+            expiration_date: expiry_date,
         };
 
         let vasicek_price = vasicek.price();

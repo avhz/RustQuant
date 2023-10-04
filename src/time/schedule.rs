@@ -25,20 +25,25 @@ use time::{Duration, OffsetDateTime};
 pub struct Schedule {
     /// The dates of the schedule.
     pub dates: Vec<OffsetDateTime>,
+
     /// The start date of the schedule.
     /// This is optional, and is used if you wish to generate a schedule
     /// between two dates, with a given frequency.
     pub start: Option<OffsetDateTime>,
+
     /// The end date of the schedule.
     /// This is optional, and is used if you wish to generate a schedule
     /// between two dates, with a given frequency.
     pub end: Option<OffsetDateTime>,
+
     /// The frequency of the schedule.
     /// This is optional, and is used if you wish to generate a schedule
     /// between two dates, with a given frequency.
     pub frequency: Option<PaymentFrequency>,
+
     /// The convention of the schedule.
     pub day_count_convention: DayCountConvention,
+
     /// The business day convention of the schedule.
     pub business_day_convention: BusinessDayConvention,
 }

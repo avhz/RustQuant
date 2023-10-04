@@ -1,5 +1,11 @@
 # Change Log
 
+## 4 October 2023
+
+- @avhz: Added 5% padding to the y-axis in the `plot_vector` macro.
+- @avhz: Updated the `curves` module.
+- @avhz: Included a yield curve interpolation example [here](./examples/yield_curve_interpolation.rs) with a plot output [here](./images/interpolated_yield_curve.png)
+
 ## 3 October 2023
 
 - @avhz: Added `curves` module for rate curves (work in progress).

@@ -20,22 +20,27 @@
 pub enum BusinessDayConvention {
     /// Actual: paid on the actual day, even if it is a non-business day.
     Actual,
+
     /// Following business day: the payment date is rolled to the next business day.
     Following,
+
     /// Modified following business day: the payment date is rolled to the
     /// next business day, unless doing so
     /// would cause the payment to be in the next calendar month,
     /// in which case the payment date is rolled to the previous business day.
     /// Many institutions have month-end accounting procedures that necessitate this.
     ModifiedFollowing,
+
     /// Previous business day: the payment date is rolled to the previous business day.
     Preceding,
+
     /// Modified previous business day: the payment date is rolled to the previous
     /// business day, unless doing so would cause the payment to be in the previous
     /// calendar month, in which case the payment date is rolled to the next
     /// business day. Many institutions have month-end accounting procedures
     /// that necessitate this.
     ModifiedPreceding,
+
     /// Modified Rolling business day: the payment date is rolled to the next
     /// business day. The adjusted week date is used for the next coupon date.
     /// So adjustments are cumulative (excluding month change).
@@ -57,14 +62,6 @@ pub enum BusinessDayConvention {
 /// payment dates, the seller is eligible to some fraction of the coupon amount.
 /// """
 pub enum DayCountConvention {
-    /// Actual/365 day count convention.
-    Actual365,
-    /// Actual/360 day count convention.
-    Actual360,
-    /// Actual/364 day count convention.
-    Actual364,
-    /// Thirty/360 day count convention.
-    Thirty360,
     // TODO: Implement the following day count conventions.
     // There are fiddly techicalities to consider, such as leap years.
     // Also need some sort of calendar to determine which days are holidays, etc.
@@ -77,28 +74,50 @@ pub enum DayCountConvention {
     // Actual365L,
     // ActualActual_AFB,
     // OneOne,
+    //
+    /// Actual/365 day count convention.
+    Actual365,
+
+    /// Actual/360 day count convention.
+    Actual360,
+
+    /// Actual/364 day count convention.
+    Actual364,
+
+    /// Thirty/360 day count convention.
+    Thirty360,
 }
 
 /// Interest payment frequency/year enumeration.
+#[derive(Debug, Clone, Copy)]
 pub enum PaymentFrequency {
     /// Daily.
     Daily = 252,
+
     /// Weekly.
     Weekly = 52,
+
     /// Bi-weekly.
     BiWeekly = 26,
+
     /// Semi-monthly.
     SemiMonthly = 24,
+
     /// Monthly.
     Monthly = 12,
+
     /// Semi-quarterly.
     SemiQuarterly = 6,
+
     /// Quarterly.
     Quarterly = 4,
+
     /// Tri-annually.
     TriAnnually = 3,
+
     /// Semi-annually.
     SemiAnnually = 2,
+
     /// Annually.
     Annually = 1,
 }
