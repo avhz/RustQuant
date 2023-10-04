@@ -153,7 +153,9 @@ impl Instrument for CouponBond {
             .values()
             .zip(discount_factors.iter().enumerate())
             .map(|(coupon, (i, df))| {
-                coupon / (1. + df).powi((i + 1) as i32 / self.coupon_frequency as i32)
+                coupon
+                    / (1. + df / self.coupon_frequency as i32 as f64)
+                        .powi((i + 1) as i32 * self.coupon_frequency as i32)
             })
             .sum::<f64>();
         // .map(|(coupon, df)| coupon * df)
