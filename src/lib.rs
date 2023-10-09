@@ -463,6 +463,7 @@ pub mod ml {
 
     /// Classification algorithms
     pub mod classification {
+        /// K Nearest Neighbor classifier
         pub mod k_nearest_neighbors;
     }
 }
