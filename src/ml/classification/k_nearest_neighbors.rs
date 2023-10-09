@@ -54,6 +54,9 @@ pub enum Metric {
 
 impl KNearestClassifier<f64> {
     /// New KNN classifier object
+    /// x: data points with features along columns
+    /// y: labels of data points
+    /// metric: choice of metric to compute distances
     pub fn new(x: DMatrix<f64>, y: DVector<f64>, metric: Metric) -> Self {
         assert_eq!(x.nrows(), y.nrows());
 
