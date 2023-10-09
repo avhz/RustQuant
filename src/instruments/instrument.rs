@@ -18,38 +18,54 @@ use time::OffsetDateTime;
 /// some exotic products it might be the exercise date.
 pub trait Instrument {
     /// Returns the price (net present value) of the instrument.
-    fn price(&self, engine: PricingEngine) -> f64;
+    fn price(&self) -> f64;
+
     /// Returns the error on the NPV in case the pricing engine can
     /// provide it (e.g. Monte Carlo pricing engine).
-    fn error(&self) -> f64;
+    fn error(&self) -> Option<f64>;
+
     /// Returns the date at which the NPV is calculated.
     fn valuation_date(&self) -> OffsetDateTime;
+
+    /// Instrument type.
+    fn instrument_type(&self) -> &'static str;
 }
 
-/// Pricing engine for instruments.
-pub enum PricingEngine {
-    /// Analytic pricing method (e.g. closed-form solution).
-    Analytic,
-    /// Simulation pricing method (e.g. Monte Carlo).
-    Simulation,
-    /// Numerical method (e.g. PDE, lattice, finite differences).
-    Numerical,
-}
+// /// Price structure.
+// pub struct Price {
+//     /// Price of the instrument.
+//     pub price: f64,
 
-/// Base instrument type enum.
-pub enum InstrumentType {
-    /// A stock instrument.
-    Stock,
-    /// A bond instrument.
-    Bond,
-    /// An option contract.
-    Option,
-    /// A future contract.
-    Future,
-    /// A swap contract.
-    Swap,
-    /// Commodities.
-    Commodity,
-    /// A hybrid instrument (e.g. callable bond).
-    Hybrid,
-}
+//     /// Error on the price of the instrument.
+//     pub error: Option<f64>,
+// }
+
+// /// Pricing engine for instruments.
+// pub enum PricingEngine {
+//     /// Analytic pricing method (e.g. closed-form solution).
+//     Analytic,
+
+//     /// Simulation pricing method (e.g. Monte Carlo).
+//     Simulation,
+
+//     /// Numerical method (e.g. PDE, lattice, finite differences).
+//     Numerical,
+// }
+
+// /// Base instrument type enum.
+// pub enum InstrumentType {
+//     /// A stock instrument.
+//     Stock,
+//     /// A bond instrument.
+//     Bond,
+//     /// An option contract.
+//     Option,
+//     /// A future contract.
+//     Future,
+//     /// A swap contract.
+//     Swap,
+//     /// Commodities.
+//     Commodity,
+//     /// A hybrid instrument (e.g. callable bond).
+//     Hybrid,
+// }

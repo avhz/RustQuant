@@ -9,7 +9,7 @@
 
 use crate::stochastics::*;
 
-/// Struct containin the Geometric Brownian Motion parameters.
+/// Struct containing the Geometric Brownian Motion parameters.
 pub struct GeometricBrownianMotion {
     /// The drift ($\mu$) in percentage.
     pub mu: f64,

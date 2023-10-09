@@ -97,7 +97,7 @@ impl Distribution for Gaussian {
         (-0.5 * ((x - self.mean) / self.variance).powi(2)).exp() / (2.0 * PI * self.variance).sqrt()
     }
 
-    /// Probability mass function for the Gaussian distribution (continous) is not defined.
+    /// Probability mass function for the Gaussian distribution (continuous) is not defined.
     /// Using this method will call `self.pdf()` instead.
     /// # Examples
     /// ```

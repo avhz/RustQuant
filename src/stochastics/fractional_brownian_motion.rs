@@ -15,7 +15,7 @@ use rand::{rngs::StdRng, SeedableRng};
 use rand_distr::StandardNormal;
 use rayon::prelude::*;
 
-/// Struct containin the Fractional Brownian Motion parameters.
+/// Struct containing the Fractional Brownian Motion parameters.
 #[derive(Debug)]
 pub struct FractionalBrownianMotion {
     /// Hurst parameter of the process.

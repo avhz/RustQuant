@@ -24,17 +24,26 @@ pub struct Binomial {
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// IMPLMENTATIONS
+// IMPLEMENTATIONS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 impl Default for Binomial {
+    // Default is a Binomial distribution with n = 1 and p = 0.5.
     fn default() -> Self {
-        Self::new(1, 0.5)
+        Self { n: 1, p: 0.5 }
     }
 }
 
 impl Binomial {
     /// New instance of a Binomial distribution.
+    /// # Examples
+    /// ```
+    /// # use RustQuant::statistics::distributions::{Binomial, Distribution};
+    ///
+    /// let binomial = Binomial::new(5, 0.4);
+    ///
+    /// assert_eq!(binomial.mean(), 2.0);
+    /// ```
     pub fn new(trials: usize, probability: f64) -> Self {
         assert!((0.0..=1.0).contains(&probability));
 
@@ -46,6 +55,18 @@ impl Binomial {
 }
 
 impl Distribution for Binomial {
+    /// Characteristic function of the Binomial distribution.
+    /// # Examples
+    /// ```
+    /// # use RustQuant::assert_approx_equal;
+    /// # use RustQuant::statistics::distributions::{Binomial, Distribution};
+    ///
+    /// let binomial = Binomial::new(5, 0.4);
+    /// let cf = binomial.cf(1.0);
+    ///
+    /// assert_approx_equal!(cf.re, -0.2014034, 1e-7);
+    /// assert_approx_equal!(cf.im, 0.4969347, 1e-7);
+    /// ```
     fn cf(&self, t: f64) -> Complex<f64> {
         assert!((0.0..=1.0).contains(&self.p));
 
@@ -53,10 +74,35 @@ impl Distribution for Binomial {
         (1.0 - self.p + self.p * (i * t).exp()).powi(self.n as i32)
     }
 
+    /// Probability density function of the Binomial distribution.
+    /// Note: Identical to the probability mass function.
+    /// # Examples
+    /// ```
+    /// # use RustQuant::assert_approx_equal;
+    /// # use RustQuant::statistics::distributions::{Binomial, Distribution};
+    ///
+    /// let binomial = Binomial::new(5, 0.4);
+    /// let pdf = binomial.pdf(3.0);
+    /// let pmf = binomial.pmf(3.0);
+    ///
+    /// assert_approx_equal!(pdf, 0.2304000, 1e-7);
+    /// assert_approx_equal!(pdf, pmf, 1e-7);
+    /// ```
     fn pdf(&self, x: f64) -> f64 {
         self.pmf(x)
     }
 
+    /// Probability mass function of the Binomial distribution.
+    /// # Examples
+    /// ```
+    /// # use RustQuant::assert_approx_equal;
+    /// # use RustQuant::statistics::distributions::{Binomial, Distribution};
+    ///
+    /// let binomial = Binomial::new(5, 0.4);
+    /// let pmf = binomial.pmf(3.0);
+    ///
+    /// assert_approx_equal!(pmf, 0.2304000, 1e-7);
+    /// ```
     fn pmf(&self, k: f64) -> f64 {
         assert!(k as usize <= self.n);
         assert!((0.0..=1.0).contains(&self.p));
@@ -70,46 +116,161 @@ impl Distribution for Binomial {
             * (1.0 - self.p).powi((self.n - k as usize) as i32)
     }
 
+    /// Cumulative distribution function of the Binomial distribution.
+    /// # Examples
+    /// ```
+    /// # use RustQuant::assert_approx_equal;
+    /// # use RustQuant::statistics::distributions::{Binomial, Distribution};
+    ///
+    /// let binomial = Binomial::new(5, 0.4);
+    ///
+    /// assert_approx_equal!(binomial.cdf(3.0), 0.9129600, 1e-7);
+    /// ```
     fn cdf(&self, k: f64) -> f64 {
         statrs::function::beta::beta_reg((self.n - k as usize) as f64, 1. + k, 1. - self.p)
     }
 
-    fn inv_cdf(&self, _p: f64) -> f64 {
-        todo!()
+    /// Inverse distribution (quantile) function of the Binomial distribution.
+    /// # Examples
+    /// ```
+    /// # use RustQuant::assert_approx_equal;
+    /// # use RustQuant::statistics::distributions::{Binomial, Distribution};
+    ///
+    /// let binomial = Binomial::new(5, 0.4);
+    ///
+    /// assert_eq!(binomial.inv_cdf(0.5), 2.0);    
+    fn inv_cdf(&self, p: f64) -> f64 {
+        assert!((0.0..=1.0).contains(&p));
+
+        let mut k = 0.0;
+        let mut cdf = self.cdf(k);
+
+        while cdf < p {
+            k += 1.0;
+            cdf = self.cdf(k);
+        }
+        k
     }
 
+    /// Mean of the Binomial distribution.
+    /// # Examples
+    /// ```
+    /// # use RustQuant::statistics::distributions::{Binomial, Distribution};
+    ///
+    /// let binomial = Binomial::new(5, 0.4);
+    ///
+    /// assert_eq!(binomial.mean(), 2.0);
     fn mean(&self) -> f64 {
         self.n as f64 * self.p
     }
 
+    /// Median of the Binomial distribution.
+    /// # Examples
+    /// ```
+    /// # use RustQuant::statistics::distributions::{Binomial, Distribution};
+    ///
+    /// let binomial = Binomial::new(5, 0.4);
+    ///
+    /// assert_eq!(binomial.median(), 2.0);
+    ///
     fn median(&self) -> f64 {
         self.mean().floor()
     }
 
+    /// Mode of the Binomial distribution.
+    /// # Examples
+    /// ```
+    /// # use RustQuant::statistics::distributions::{Binomial, Distribution};
+    ///
+    /// let binomial = Binomial::new(5, 0.4);
+    ///
+    /// assert_eq!(binomial.mode(), 2.0);
+    /// ```
     fn mode(&self) -> f64 {
         ((self.n as f64 + 1.) * self.p).floor()
     }
 
+    /// Variance of the Binomial distribution.
+    /// # Examples
+    /// ```
+    /// # use RustQuant::statistics::distributions::{Binomial, Distribution};
+    ///
+    /// let binomial = Binomial::new(5, 0.4);
+    ///
+    /// assert_eq!(binomial.variance(), 1.2);
+    /// ```
     fn variance(&self) -> f64 {
         self.n as f64 * self.p * (1. - self.p)
     }
 
+    /// Skewness of the Binomial distribution.
+    /// # Examples
+    /// ```
+    /// # use RustQuant::assert_approx_equal;
+    /// # use RustQuant::statistics::distributions::{Binomial, Distribution};
+    ///
+    /// let binomial = Binomial::new(5, 0.4);
+    ///
+    /// assert_approx_equal!(binomial.skewness(), 0.1825742, 1e-7);
+    /// ```
     fn skewness(&self) -> f64 {
         (1. - 2. * self.p) / self.variance().sqrt()
     }
 
+    /// Kurtosis of the Binomial distribution.
+    /// # Examples
+    /// ```
+    /// # use RustQuant::assert_approx_equal;
+    /// # use RustQuant::statistics::distributions::{Binomial, Distribution};
+    ///
+    /// let binomial = Binomial::new(5, 0.4);
+    ///
+    /// assert_approx_equal!(binomial.kurtosis(), -0.3666667, 1e-7);
+    /// ```
     fn kurtosis(&self) -> f64 {
         (1. - 6. * self.p * (1. - self.p)) / self.variance()
     }
 
+    /// Entropy of the Binomial distribution.
+    /// # Examples
+    /// ```
+    /// # use RustQuant::assert_approx_equal;
+    /// # use RustQuant::statistics::distributions::{Binomial, Distribution};
+    ///
+    /// let binomial = Binomial::new(5, 0.4);
+    ///
+    /// assert_approx_equal!(binomial.entropy(), 1.510099, 1e-6);
+    /// ```
     fn entropy(&self) -> f64 {
         0.5 * (2. * PI * E * self.variance()).ln()
     }
 
+    /// Moment generating function of the Binomial distribution.
+    /// # Examples
+    /// ```
+    /// # use RustQuant::assert_approx_equal;
+    /// # use RustQuant::statistics::distributions::{Binomial, Distribution};
+    ///
+    /// let binomial = Binomial::new(5, 0.4);
+    ///
+    /// assert_approx_equal!(binomial.mgf(1.0), 13.67659, 1e-5);
+    /// ```
     fn mgf(&self, t: f64) -> f64 {
         ((1. - self.p) + self.p * t.exp()).powi(self.n as i32)
     }
 
+    /// Generates a random sample from a Binomial distribution.
+    /// # Examples
+    /// ```
+    /// # use RustQuant::assert_approx_equal;
+    /// # use RustQuant::statistics::distributions::{Binomial, Distribution};
+    ///
+    /// let binomial = Binomial::new(100, 0.4);
+    /// let sample = binomial.sample(100).unwrap();
+    /// let mean = sample.iter().sum::<f64>() / sample.len() as f64;
+    ///
+    /// assert_approx_equal!(mean, binomial.mean(), 1.0);
+    /// ```
     fn sample(&self, n: usize) -> Result<Vec<f64>, DistributionError> {
         // IMPORT HERE TO AVOID CLASH WITH
         // `RustQuant::distributions::Distribution`

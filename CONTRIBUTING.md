@@ -19,7 +19,7 @@ I welcome contributions of all kinds, including:
 
 If you have any ideas, feel free to make an issue to discuss it, or just make a pull request.
 
-Additionally, feel free to contact me directly at: <rustquantcontact@gmail.com>
+Additionally, feel free to contact me directly at: <RustQuantContact@gmail.com>
 
 If you decide to contribute, please include the following license header in any files you create:
 
@@ -79,6 +79,6 @@ mod tests {
 }
 ```
 
-One last thing, add an entry to the `CHANGELOG.md` file so that people can see what you've done.
+One last thing, add an entry with your @username to the `CHANGELOG.md` file so that people can see what you've done.
 
 Thank you for your interest in contributing to RustQuant!

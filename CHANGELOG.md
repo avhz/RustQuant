@@ -1,5 +1,25 @@
 # Change Log
 
+## 4 October 2023
+
+- @avhz: Added 5% padding to the y-axis in the `plot_vector` macro.
+- @avhz: Updated the `curves` module.
+- @avhz: Included a yield curve interpolation example [here](./examples/yield_curve_interpolation.rs) with a plot output [here](./images/interpolated_yield_curve.png)
+
+## 3 October 2023
+
+- @avhz: Added `curves` module for rate curves (work in progress).
+  - Currently only supports linear interpolation, but will add more interpolation methods soon.
+
+## 1 October 2023
+
+- @avhz: Added basic `Portfolio` interface. Work in progress.
+- @avhz: Added power option contract pricer.
+
+## 17 September 2023
+
+- @avhz: More Greeks for BSM model: theta, rho, phi, zeta, strike-delta, strike-gamma.
+
 ## 17 September 2023
 
 - @avhz: More Greeks for BSM model: vega, vomma, ultima, vega bleed (adding more soon).

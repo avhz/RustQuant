@@ -24,7 +24,7 @@
 //! the standard deviation increases.
 
 use crate::{
-    instruments::bonds::*,
+    instruments::Instrument,
     time::{DayCountConvention, DayCounter},
 };
 use time::OffsetDateTime;
@@ -33,16 +33,16 @@ use time::OffsetDateTime;
 pub struct CoxIngersollRoss {
     a: f64,
     b: f64,
-    sigma: f64,
     r: f64,
+    sigma: f64,
 
-    /// `valuation_date` - Valuation date.
-    pub valuation_date: Option<OffsetDateTime>,
-    /// `expiry_date` - Expiry date.
-    pub expiry_date: OffsetDateTime,
+    /// `evaluation_date` - Valuation date.
+    pub evaluation_date: Option<OffsetDateTime>,
+    /// `expiration_date` - Expiry date.
+    pub expiration_date: OffsetDateTime,
 }
 
-impl ZeroCouponBond for CoxIngersollRoss {
+impl Instrument for CoxIngersollRoss {
     fn price(&self) -> f64 {
         let a = self.a;
         let b = self.b;
@@ -50,18 +50,11 @@ impl ZeroCouponBond for CoxIngersollRoss {
         let r = self.r;
 
         // Compute time to maturity.
-        let tau = match self.valuation_date {
-            Some(valuation_date) => DayCounter::day_count_factor(
-                valuation_date,
-                self.expiry_date,
-                &DayCountConvention::Actual365,
-            ),
-            None => DayCounter::day_count_factor(
-                OffsetDateTime::now_utc(),
-                self.expiry_date,
-                &DayCountConvention::Actual365,
-            ),
-        };
+        let tau = DayCounter::day_count_factor(
+            self.evaluation_date.unwrap_or(OffsetDateTime::now_utc()),
+            self.expiration_date,
+            &DayCountConvention::Actual365,
+        );
 
         let gamma = (a * a + 2.0 * sigma.powi(2)).sqrt();
 
@@ -75,8 +68,17 @@ impl ZeroCouponBond for CoxIngersollRoss {
         a_t * (-b_t * r).exp()
     }
 
-    // fn duration(&self) -> f64 {}
-    // fn convexity(&self) -> f64 {}
+    fn error(&self) -> Option<f64> {
+        None
+    }
+
+    fn valuation_date(&self) -> OffsetDateTime {
+        self.evaluation_date.unwrap_or(OffsetDateTime::now_utc())
+    }
+
+    fn instrument_type(&self) -> &'static str {
+        "Zero Coupon Bond"
+    }
 }
 
 #[cfg(test)]
@@ -94,8 +96,8 @@ mod tests {
             b: 0.1,
             sigma: 0.03,
             r: 0.03,
-            valuation_date: None,
-            expiry_date: expiry,
+            evaluation_date: None,
+            expiration_date: expiry,
         };
 
         let cir_price = cir.price();

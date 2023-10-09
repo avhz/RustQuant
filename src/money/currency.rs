@@ -15,6 +15,10 @@
 
 use std::fmt::{self, Formatter};
 
+use time::OffsetDateTime;
+
+use crate::instruments::Instrument;
+
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // STRUCTS, ENUMS, AND TRAITS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -60,6 +64,24 @@ pub struct ISO_4217 {
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // IMPLEMENTATIONS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+impl Instrument for Currency {
+    fn price(&self) -> f64 {
+        1.0
+    }
+
+    fn error(&self) -> Option<f64> {
+        None
+    }
+
+    fn valuation_date(&self) -> time::OffsetDateTime {
+        OffsetDateTime::now_utc()
+    }
+
+    fn instrument_type(&self) -> &'static str {
+        self.name
+    }
+}
 
 impl Eq for Currency {}
 impl Eq for Money {}

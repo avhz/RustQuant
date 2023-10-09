@@ -160,7 +160,7 @@ impl YahooFinanceData {
             }
             ReturnsType::Logarithmic => {
                 fn logarithm(col: &Series) -> Series {
-                    col.f64().unwrap().apply(|x| x.ln()).into_series()
+                    col.f64().unwrap().apply(|x| Some(x?.ln())).into_series()
                 }
 
                 // THIS IS EXTREMELY HACKY AND SHOULD BE FIXED
@@ -319,7 +319,7 @@ mod test_yahoo {
         yfd.set_start_date(time::macros::datetime!(2019 - 01 - 01 0:00 UTC));
         yfd.set_end_date(time::macros::datetime!(2020 - 01 - 01 0:00 UTC));
 
-        yfd.get_price_history();
+        let _ = yfd.get_price_history();
 
         println!("Apple's quotes: {:?}", yfd.price_history)
     }
@@ -331,7 +331,7 @@ mod test_yahoo {
         yfd.set_start_date(time::macros::datetime!(2019 - 01 - 01 0:00 UTC));
         yfd.set_end_date(time::macros::datetime!(2020 - 01 - 01 0:00 UTC));
 
-        yfd.compute_returns(ReturnsType::Logarithmic);
+        let _ = yfd.compute_returns(ReturnsType::Logarithmic);
 
         println!("Apple's returns: {:?}", yfd.returns)
     }
@@ -340,7 +340,7 @@ mod test_yahoo {
     fn test_get_options_chain() {
         let mut yfd = YahooFinanceData::new("AAPL".to_string());
 
-        yfd.get_options_chain();
+        let _ = yfd.get_options_chain();
 
         // println!("Apple's options chain: {:?}", yfd.options_chain)
     }

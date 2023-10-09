@@ -7,11 +7,11 @@
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-//! RustQuant: A Rust library for quantitative finance.
+//! A Rust library for quantitative finance.
 //!
-//! Contact: rustquantcontact@gmail.com
+//! Contact: <RustQuantContact@gmail.com>
 //!
-//! This library is a work in progress. Any contributions are greatly appreciated.
+//! Any contributions are greatly appreciated. Make a PR or open an issue !
 
 // Strictly enforce documentation.
 #![forbid(missing_docs)]
@@ -28,7 +28,7 @@
 // RUSTQUANT MISCELLANEOUS MODULES
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-pub use {error::*, macros::*};
+pub use {error::*, macros::*, portfolio::*};
 
 /// Macros module.
 #[macro_use]
@@ -36,6 +36,20 @@ pub mod macros;
 
 /// RustQuant error module.
 pub mod error;
+
+/// Portfolio module.
+pub mod portfolio;
+
+/// Curves module.
+/// Curves (in the financial sense) are functions that map
+/// a time to a value, such as a yield curve or a swap curve.
+/// They may also be known as term structures.
+pub mod curves {
+    pub use crate::curves::curve::*;
+
+    /// Base curve trait.
+    pub mod curve;
+}
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // AUTOMATIC DIFFERENTIATION MODULE
@@ -56,15 +70,15 @@ pub mod autodiff {
         vertex::*,
     };
 
-    /// `Accumulate` trait.
+    /// [`Accumulate`] trait.
     pub mod accumulate;
     /// Implements the gradient computation.
     pub mod gradient;
     /// The Graph (aka. tape or Wengert List).
     pub mod graph;
-    /// Visualisation of the `Graph`.
+    /// Visualisation of the [`Graph`].
     pub mod graphviz;
-    /// Implements `Vertex` (nodes) for the `Graph`.
+    /// Implements [`Vertex`] (nodes) for the `Graph`.
     pub mod vertex;
 
     /// Operator/function overloading.
@@ -146,7 +160,7 @@ pub mod instruments {
         pub use crate::instruments::options::{
             american::*, asian::*, bachelier::*, barrier::*, binary::*, binomial::*,
             black_scholes_merton::*, european::*, forward_start::*, greeks::*, heston::*,
-            lookback::*, option::*,
+            lookback::*, option::*, power::*,
         };
 
         /// American option pricers.
@@ -175,6 +189,8 @@ pub mod instruments {
         pub mod lookback;
         /// Base option traits.
         pub mod option;
+        /// Power option pricers.
+        pub mod power;
     }
 }
 
@@ -432,7 +448,7 @@ pub mod time {
 // MACHINE LEARNING MODULE
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-/// Machine learning algorithms. This module relies on the `nalgebra` crate.
+/// Machine learning algorithms. This module relies on the [`nalgebra`] crate.
 pub mod ml {
     pub use crate::ml::activations::*;
     pub use crate::ml::regression::{linear::*, logistic::*};
@@ -448,16 +464,3 @@ pub mod ml {
         pub mod k_nearest_neighbors;
     }
 }
-
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// RUSTQUANT INTERACTIVE
-// This is the parent module for the interactive TUI.
-// All boilerplate currently taken from:
-// https://www.monkeypatch.io/blog/2021-05-31-rust-tui
-//
-// This is a placeholder for now, but will be implemented in the future.
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-/// RustQuant interactive TUI.
-#[cfg(feature = "interactive")]
-pub mod interactive {}

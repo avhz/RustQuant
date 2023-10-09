@@ -11,7 +11,7 @@ use crate::time::{is_weekend, Calendar};
 use time::{Month, OffsetDateTime, Weekday};
 
 /// Australiann settlement calendar.
-/// See: https://www.australia.gov.au/public-holidays
+/// See: <https://www.australia.gov.au/public-holidays>
 pub struct Australia;
 
 impl Calendar for Australia {

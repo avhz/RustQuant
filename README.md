@@ -45,19 +45,22 @@
 
 A Rust library for quantitative finance tools. Also the largest option pricing library in Rust.
 
-:dart: I want to hit a stable `v1.0.0` by the end of 2023, so any feedback, suggestions, or contributions are strongly welcomed!
+:dart: I want to hit a stable `v0.1.0` by the end of 2023, so any feedback, suggestions, or contributions are strongly welcomed!
 
 Email me at: <RustQuantContact@gmail.com>
 
 Join the Discord server: <https://discord.gg/tQcM77h8vr>
 
-## :newspaper: Latest features
+## :newspaper: Latest changes
 
 See [CHANGELOG.md](./CHANGELOG.md) for a full list of changes.
 
+
+## Features
+
 <details>
 <summary>
-<h3>:link: Automatic Differentiation <a name="autodiff"></a></h3>
+<h4>:link: Automatic Differentiation <a name="autodiff"></a></h4>
 <br>Reverse (Adjoint) Mode Automatic Differentiation.<br>
 </summary>
 
@@ -119,7 +122,7 @@ If you want to improve the visualization, please feel free to submit a PR!
 
 <details>
 <summary>
-<h3>:bar_chart: Data <a name="data"></a></h3>
+<h4>:bar_chart: Data <a name="data"></a></h4>
 <br>Methods for reading and writing data from/to various sources (CSV, JSON, Parquet). Can also download data from Yahoo! Finance.<br>
 </summary>
 
@@ -221,7 +224,7 @@ fn main() {
 
 <details>
 <summary>
-<h3>:bar_chart: Distributions <a name="distributions"></a></h3>
+<h4>:bar_chart: Distributions <a name="distributions"></a></h4>
 <br>PDFs, CDFs, MGFs, CFs, and other ditrubution related functions for common distributions.<br>
 </summary>
 
@@ -240,7 +243,7 @@ Probability density/mass functions, distribution functions, characteristic funct
 
 <details>
 <summary>
-<h3> :chart_with_upwards_trend: Instruments <a name="instruments"></a></h3>
+<h4> :chart_with_upwards_trend: Instruments <a name="instruments"></a></h4>
 <br>Various implementations for instruments like `Bonds` and `Options`, and the pricing of them. Others coming in the future (swaps, futures, CDSs, etc).<br>
 </summary>
 
@@ -308,7 +311,7 @@ fn main() {
 
 <details>
 <summary>
-<h3> :triangular_ruler: Mathematics <a name="maths"></a></h3>
+<h4> :triangular_ruler: Mathematics <a name="maths"></a></h4>
 <br>Fast Fourier Transform (FFT), numerical integration (double-exponential quadrature), optimisation/root-finding (gradient descent, Newton-Raphson), and risk-reward metrics. <br>
 </summary>
 
@@ -380,7 +383,7 @@ fn main() {
 
 <details>
 <summary>
-<h3>:crystal_ball: Machine Learning <a name="ml"></a></h3>
+<h4>:crystal_ball: Machine Learning <a name="ml"></a></h4>
 <br>Currently only linear regression is implemented (and working on logistic regression). More to come in the future.<br>
 </summary>
 
@@ -393,7 +396,7 @@ fn main() {
 
 <details>
 <summary>
-<h3> :moneybag: Money <a name="money"></a></h3>
+<h4> :moneybag: Money <a name="money"></a></h4>
 <br>Implementations for `Cashflows`, `Currencies`, and `Quotes`, and similar objects.<br>
 </summary>
 
@@ -407,8 +410,8 @@ fn main() {
 
 <details>
 <summary>
-<h3>:chart_with_upwards_trend: Stochastic Processes and Short Rate Models <a name="stochastics"></a></h3>
-<br> Can generate Brownian Motion (standard, arithmetric and geometric) and various short-rate models (CIR, OU, Vasicek, Hull-White, etc). <br>
+<h4>:chart_with_upwards_trend: Stochastic Processes and Short Rate Models <a name="stochastics"></a></h4>
+<br> Can generate Brownian Motion (standard, arithmetic and geometric) and various short-rate models (CIR, OU, Vasicek, Hull-White, etc). <br>
 </summary>
 
 The following is a list of stochastic processes that can be generated.
@@ -453,7 +456,7 @@ fn main() {
 
 <details>
 <summary>
-<h3>:calendar: Time and Date <a name="time"></a></h3>
+<h4>:calendar: Time and Date <a name="time"></a></h4>
 <br>Time and date functionality. Mostly the `DayCounter` for pricing options and bonds. <br>
 </summary>
 
@@ -463,7 +466,7 @@ fn main() {
 
 <details>
 <summary>
-<h3>:handshake: Miscellaneous Functions and Macros <a name="helpers"></a></h3>
+<h4>:handshake: Miscellaneous Functions and Macros <a name="helpers"></a></h4>
 <br>Various helper functions and macros.<br>
 </summary>
 
@@ -479,7 +482,7 @@ A collection of utility functions and macros.
 
 <details>
 <summary>
-<h3>:heavy_check_mark: How-tos <a name="howto"></a></h3>
+<h4>:heavy_check_mark: How-tos <a name="howto"></a></h4>
 <br>Guides for using RustQuant.<br>
 </summary>
 
@@ -497,7 +500,7 @@ I would not recommend using RustQuant within any other libraries for some time, 
 
 <details>
 <summary>
-<h3>:book: References <a name="references"></a></h3>
+<h4>:book: References <a name="references"></a></h4>
 <br>References and resources used for this project.<br>
 </summary>
 
@@ -511,4 +514,7 @@ I would not recommend using RustQuant within any other libraries for some time, 
 
 </details>
 
-**Disclaimer**: This is currently a free-time project and not a professional financial software library. Nothing in this library should be taken as financial advice, and I do not recommend you to use it for trading or making financial decisions.
+
+## Disclaimer 
+
+This is currently a free-time project and not a professional financial software library. Nothing in this library should be taken as financial advice, and I do not recommend you to use it for trading or making financial decisions.

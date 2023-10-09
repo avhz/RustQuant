@@ -33,7 +33,7 @@ impl<'v> AddAssign<f64> for Variable<'v> {
     }
 }
 
-/// AddAsign: f64 += Variable<'v>
+/// AddAssign: f64 += Variable<'v>
 impl<'v> AddAssign<Variable<'v>> for f64 {
     #[inline]
     fn add_assign(&mut self, other: Variable<'v>) {

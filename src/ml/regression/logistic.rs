@@ -15,7 +15,6 @@
 
 use crate::ml::ActivationFunction;
 use nalgebra::{DMatrix, DVector};
-// use crate::autodiff::*;
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // STRUCTS, ENUMS, AND TRAITS
@@ -365,7 +364,7 @@ mod tests_logistic_regression {
         // - For each of the N samples (train/test) draw K feature values each from a uniform distribution over (-1.,1.) and arrange as design matrix "X".
         // - For the coefficients of the generating distribution draw K values from surface of the unit sphere S_(K-1)  and a bias from uniform(-0.7,0.7); arrange as DVector "coefs"
         // - compute vector of probabilities(target=1) as sigmoid(X_ext * coefs)
-        // - compute target values:for each sample i draw from Bernouilli(prob_i)
+        // - compute target values:for each sample i draw from Bernoulli(prob_i)
         use crate::statistics::distributions::{Bernoulli, Distribution, Gaussian, Uniform};
 
         let N_train = 200; //Number of training samples
