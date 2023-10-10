@@ -21,6 +21,7 @@ use crate::{
     time::{BusinessDayConvention, PaymentFrequency},
 };
 use std::collections::BTreeMap;
+use std::collections::BTreeMap;
 use time::{Duration, OffsetDateTime};
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -114,11 +115,6 @@ impl CouponBond {
             coupon_dates.push(coupon_date);
         }
 
-        // println!(
-        //     "{:?}",
-        //     coupon_dates.iter().map(|d| d.date()).collect::<Vec<Date>>()
-        // );
-
         // Create the coupon amounts
         let mut coupon_amounts: Vec<f64> = Vec::with_capacity(n_coupons as usize);
 
@@ -128,8 +124,6 @@ impl CouponBond {
 
             coupon_amounts.push(coupon_amount);
         }
-
-        // println!("{:?}", coupon_amounts);
 
         // Create the coupons
         for (date, amount) in coupon_dates.iter().zip(coupon_amounts.iter()) {
@@ -143,10 +137,6 @@ impl CouponBond {
         );
 
         self.coupons = coupons;
-
-        for (date, amount) in self.coupons.iter() {
-            println!("Date: {}, Coupon: {}", date.date(), amount);
-        }
     }
 }
 
@@ -154,51 +144,26 @@ impl Instrument for CouponBond {
     /// Returns the price (net present value) of the instrument.
     fn price(&self) -> f64 {
         // Compute the discount factors for the coupons.
-        let discount_factors = self.yield_curve.discount_factors(
-            &self
-                .coupons
-                .keys()
-                .cloned()
-                .collect::<Vec<OffsetDateTime>>(),
-        );
+        let discount_factors = self
+            .yield_curve
+            .discount_factors(
+                &self
+                    .coupons
+                    .keys()
+                    .cloned()
+                    .collect::<Vec<OffsetDateTime>>(),
+            )
+            .iter()
+            .enumerate()
+            .map(|(i, df)| (1. + df / self.coupon_frequency as i32 as f64).powi((i + 1) as i32))
+            .collect::<Vec<f64>>();
 
-        println!("Discounts: {:?}", discount_factors);
-
-        println!("Frequency: {}", self.coupon_frequency as i32);
-
-        // Compute the present value of the coupons.
+        // Compute the present value of the coupons and face value, and sum them.
         self.coupons
             .values()
-            .zip(discount_factors.iter().enumerate())
-            .map(|(coupon, (i, df))| {
-                println!("Coupon: {}, i: {}", coupon, i);
-                let discounted_coupon =
-                    coupon / (1. + df / self.coupon_frequency as i32 as f64).powi((i + 1) as i32);
-
-                println!("Discounted Coupon: {}", discounted_coupon);
-
-                discounted_coupon
-            })
+            .zip(discount_factors.iter())
+            .map(|(coupon, df)| coupon / df)
             .sum::<f64>()
-
-        // .map(|(coupon, df)| coupon * df)
-        // .sum::<f64>();
-
-        // println!("PV Coupons: {}", pv_coupons);
-
-        // // Compute the present value of the face value.
-        // let years = (self.expiration_date - self.evaluation_date).whole_days() / 365;
-        // println!("Years: {}", years);
-        // let pv_face_value = self.face_value
-        //     / (1. + discount_factors.last().unwrap() / self.coupon_frequency as i32 as f64)
-        //         .powi(years as i32 * self.coupon_frequency as i32);
-
-        // println!("PV Face Value: {}", pv_face_value);
-
-        // // Compute the price of the bond.
-        // let price = pv_coupons; //+ pv_face_value;
-
-        // price
     }
 
     /// Returns the error on the NPV in case the pricing engine can
@@ -285,53 +250,5 @@ mod tests_bond {
         bond.construct_coupons();
 
         println!("Price: {}", bond.price());
-
-        // assert_eq!(bond.evaluation_date, OffsetDateTime::from_unix_timestamp(0));
-        // assert_eq!(
-        //     bond.expiration_date,
-        //     OffsetDateTime::from_unix_timestamp(1000000)
-        // );
-        // assert_eq!(bond.coupon_rate, 0.05);
-        // assert_eq!(bond.coupon_frequency, PaymentFrequency::SemiAnnual);
-        // assert_eq!(bond.face_value, 100.0);
     }
-
-    // #[test]
-    // fn test_zero_coupon_bond() {
-    //     let bond = ZeroCouponBond {
-    //         evaluation_date: OffsetDateTime::from_unix_timestamp(0),
-    //         expiration_date: OffsetDateTime::from_unix_timestamp(1000000),
-    //         currency: None,
-    //     };
-
-    //     assert_eq!(bond.evaluation_date, OffsetDateTime::from_unix_timestamp(0));
-    //     assert_eq!(
-    //         bond.expiration_date,
-    //         OffsetDateTime::from_unix_timestamp(1000000)
-    //     );
-    // }
-
-    // #[test]
-    // fn test_coupon_bond() {
-    //     let mut bond = CouponBond {
-    //         evaluation_date: OffsetDateTime::from_unix_timestamp(0),
-    //         expiration_date: OffsetDateTime::from_unix_timestamp(1000000),
-    //         currency: None,
-    //         coupon_rate: 0.05,
-    //         coupon_frequency: PaymentFrequency::SemiAnnual,
-    //         face_value: 100.0,
-    //         coupons: BTreeMap::new(),
-    //     };
-
-    //     bond.construct_coupons();
-
-    //     assert_eq!(bond.evaluation_date, OffsetDateTime::from_unix_timestamp(0));
-    //     assert_eq!(
-    //         bond.expiration_date,
-    //         OffsetDateTime::from_unix_timestamp(1000000)
-    //     );
-    //     assert_eq!(bond.coupon_rate, 0.05);
-    //     assert_eq!(bond.coupon_frequency, PaymentFrequency::SemiAnnual);
-    //     assert_eq!(bond.face_value, 100.0);
-    // }
 }
