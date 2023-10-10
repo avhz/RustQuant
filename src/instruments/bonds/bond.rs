@@ -10,7 +10,9 @@
 //! The bond module takes most of the notation and formulas from:
 //! *Interest Rate Models* by Brigo & Mercurio
 
-use std::collections::BTreeMap;
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// IMPORTS
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 use crate::{
     curves::{Curve, YieldCurve},
@@ -18,7 +20,12 @@ use crate::{
     money::Currency,
     time::{BusinessDayConvention, PaymentFrequency},
 };
+use std::collections::BTreeMap;
 use time::{Duration, OffsetDateTime};
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// STRUCTS, ENUMS, AND TRAITS
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 /// Zero-coupon bond struct.
 /// A zero-coupon bond (aka a pure discount bond or simply a zero) is a
@@ -78,6 +85,16 @@ pub struct CouponBond {
     /// The final coupon is the face value of the bond.
     pub coupons: BTreeMap<OffsetDateTime, f64>,
 }
+
+/// Coupon bond struct.
+pub struct CouponBond2 {
+    /// Portfolio of zero-coupon bonds.
+    pub coupons: BTreeMap<OffsetDateTime, ZeroCouponBond>,
+}
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// IMPLEMENTATIONS
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 impl CouponBond {
     /// Constructs the coupons of the bond.
@@ -200,6 +217,29 @@ impl Instrument for CouponBond {
         "Coupon Bond"
     }
 }
+
+impl CouponBond2 {
+    /// Validate the dates.
+    /// All evaluation dates must be the same, since it is a single instrument,
+    /// we just happen to be treating it as a portfolio of zero-coupon bonds.
+    pub fn validate_dates(&self) -> bool {
+        let mut evaluation_date: Option<OffsetDateTime> = None;
+
+        for (_, bond) in self.coupons.iter() {
+            if evaluation_date.is_none() {
+                evaluation_date = Some(bond.evaluation_date);
+            } else if evaluation_date != Some(bond.evaluation_date) {
+                return false;
+            }
+        }
+
+        true
+    }
+}
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// UNIT TESTS
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 #[cfg(test)]
 mod tests_bond {
