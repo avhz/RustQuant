@@ -460,4 +460,10 @@ pub mod ml {
     }
     /// Submodule of `ml`: activation functions.
     pub mod activations;
+
+    /// Classification algorithms
+    pub mod classification {
+        /// K Nearest Neighbor classifier
+        pub mod k_nearest_neighbors;
+    }
 }
