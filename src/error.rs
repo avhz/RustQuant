@@ -7,28 +7,40 @@
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use std::{error::Error, fmt};
-
 /// Error type for RustQuant.
-#[derive(Debug)]
-pub struct RustQuantError {
-    /// Error message.
-    message: String,
+#[derive(Debug, thiserror::Error)]
+pub enum RustQuantError {
+    /// This error indicates that an problem occurred in the computation.
+    #[error("Computation error: {text:?}")]
+    ComputationError {
+        /// Text to include in error message.
+        text: String,
+    },
+
+    /// This error indicates an invalid parameter/argument was passed.
+    #[error("Invalid parameter: {text:?}")]
+    InvalidParameter {
+        /// Text to include in error message.
+        text: String,
+    },
+
+    /// This error indicates that a condition is violated.
+    #[error("Condition violated: {text:?}")]
+    ConditionViolated {
+        /// Text to include in error message.
+        text: String,
+    },
 }
 
-impl RustQuantError {
-    /// Create a new RustQuant error.
-    pub fn new(message: &str) -> RustQuantError {
-        RustQuantError {
-            message: String::from(message),
+/// Create a `RustQuantError` with the text to include in the output.
+/// You would use it as follows:
+/// `return Err(error!(ComputationError, "Linear Regression: Singular Value Decomposition failed."));`
+#[macro_export]
+macro_rules! error {
+    ($error_type:ident, $msg:expr) => {
+        $crate::RustQuant::$error_type {
+            text: $msg.to_string(),
         }
-    }
-}
-
-impl Error for RustQuantError {}
-
-impl std::fmt::Display for RustQuantError {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> fmt::Result {
-        write!(f, "{}", self.message)
-    }
+        .into()
+    };
 }

@@ -450,20 +450,16 @@ pub mod time {
 
 /// Machine learning algorithms. This module relies on the [`nalgebra`] crate.
 pub mod ml {
-    pub use crate::ml::activations::*;
-    pub use crate::ml::regression::{linear::*, logistic::*};
+    pub use crate::ml::{
+        activations::*, k_nearest_neighbors::*, linear_regression::*, logistic_regression::*,
+    };
 
-    /// Regression algorithms.
-    pub mod regression {
-        pub mod linear;
-        pub mod logistic;
-    }
     /// Submodule of `ml`: activation functions.
     pub mod activations;
-
-    /// Classification algorithms
-    pub mod classification {
-        /// K Nearest Neighbor classifier
-        pub mod k_nearest_neighbors;
-    }
+    /// K Nearest Neighbor classifier
+    pub mod k_nearest_neighbors;
+    /// Linear regression.
+    pub mod linear_regression;
+    /// Logistic regression.
+    pub mod logistic_regression;
 }

@@ -62,7 +62,7 @@ pub trait Curve {
     /// If the date is outside the curve's range, we panic.
     ///
     /// We use the following formula for the interpolation:
-    /// - y = [y0 (x1 - x) + y1 (x - x0)] / (x1 - x0)
+    /// y = [y0 (x1 - x) + y1 (x - x0)] / (x1 - x0)
     ///
     /// Note: there must be at least two points in the curve, otherwise
     /// we consider the curve to be a flat rate, and return the same rate
@@ -174,6 +174,14 @@ impl Curve for YieldCurve {
     }
 
     fn find_date_interval(&self, date: OffsetDateTime) -> (OffsetDateTime, OffsetDateTime) {
+        if date == self.initial_date() {
+            return (date, date);
+        }
+
+        if date == self.terminal_date() {
+            return (date, date);
+        }
+
         (
             *self.rates.range(..date).next_back().unwrap().0,
             *self.rates.range(date..).next().unwrap().0,
