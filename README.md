@@ -26,7 +26,7 @@
         <img alt="Discord" src="https://img.shields.io/discord/1146771658082881636?logo=discord">
 </p>
 
-A Rust library for quantitative finance tools. Also the largest option pricing library in Rust.
+A Rust library for quantitative finance tools.
 
 :dart: I want to hit a stable `v0.1.0` by the end of 2023, so any feedback, suggestions, or contributions are strongly welcomed!
 
@@ -41,264 +41,69 @@ A Rust library for quantitative finance tools. Also the largest option pricing l
 
 ## Modules
 
-> [`autodiff`](./src/autodiff/README.md)
+#### [`autodiff`](https://docs.rs/RustQuant/latest/RustQuant/autodiff/index.html)
 
 Algorithmic adjoint differentiation for efficiently computing gradients of scalar output functions $f: \mathbb{R}^n \rightarrow \mathbb{R}$.
 
-> [`curves`](./src/curves/README.md)
+#### [`curves`](https://docs.rs/RustQuant/latest/RustQuant/curves/index.html)
 
 Curves and surfaces, such as the yield curve and volatility surface. 
 
-> [`data`](./src/data/README.md) - Methods for reading and writing data from/to various sources (CSV, JSON, Parquet). Can also download data from Yahoo! Finance.
+#### [`data`](https://docs.rs/RustQuant/latest/RustQuant/data/index.html)
 
-> [`error`](./src/error.rs) - RustQuant error module.
+Methods for reading and writing data from/to various sources (CSV, JSON, Parquet). Can also download data from Yahoo! Finance.
 
-> [`instruments`](./src/instruments/README.md) - Various implementations for instruments like `Bonds` and `Options`, and the pricing of them. Others coming in the future (swaps, futures, CDSs, etc).
+#### [`error`](https://docs.rs/RustQuant/latest/RustQuant/error/index.html)
 
-**[`math`](./src/math/README.md)** - 
+RustQuant error handling module.
 
-**[`ml`](./src/ml/README.md)** - 
+#### [`instruments`](https://docs.rs/RustQuant/latest/RustQuant/instruments/index.html)
 
-**[`macros`](./src/macros/README.md)** - 
-
-**[`money`](./src/money/README.md)** - 
-
-**[`portfolio`](./src/portfolio/README.md)** - 
-
-**[`statistics`](./src/statistics/README.md)** - 
-
-**[`stochastics`](./src/stochastics/README.md)** - 
-
-**[`time`](./src/time/README.md)** - 
-
-**[`trading`](./src/trading/README.md)** - 
+Various implementations for instruments like `Bonds` and `Options`, and the pricing of them. Others coming in the future (swaps, futures, CDSs, etc).
 
 
+#### [`math`](https://docs.rs/RustQuant/latest/RustQuant/math/index.html)
 
-## Features
+Fast Fourier Transform (FFT), numerical integration (double-exponential quadrature), optimisation/root-finding (gradient descent, Newton-Raphson), and risk-reward metrics. Also some sequence methods such as `linspace` and `cumsum`.
 
-<details>
-<summary>
-<h4>:bar_chart: Distributions <a name="distributions"></a></h4>
-<br>PDFs, CDFs, MGFs, CFs, and other ditrubution related functions for common distributions.<br>
-</summary>
+#### [`ml`](https://docs.rs/RustQuant/latest/RustQuant/ml/index.html)
 
-Probability density/mass functions, distribution functions, characteristic functions, etc.
+Currently only linear and logistic regression, along with k-nearest neighbours classification are implemented. More to come in the future.
 
-- [x] Gaussian
-- [x] Bernoulli
-- [x] Binomial
-- [x] Poisson
-- [x] Uniform (discrete & continuous)
-- [x] Chi-Squared
-- [x] Gamma
-- [x] Exponential
+#### [`macros`](https://docs.rs/RustQuant/latest/RustQuant/macros/index.html)
 
-</details>
+Currently only `plot_vector!()` and `assert_approx_equal!()`.
 
-<details>
-<summary>
-<h4> :chart_with_upwards_trend: Instruments <a name="instruments"></a></h4>
-<br><br>
-</summary>
+#### [`money`](https://docs.rs/RustQuant/latest/RustQuant/money/index.html)
+
+Implementations for `Cashflows`, `Currencies`, and `Quotes`, and similar objects.
+
+#### [`portfolio`](https://docs.rs/RustQuant/latest/RustQuant/portfolio/index.html)
+
+#### [`statistics`](https://docs.rs/RustQuant/latest/RustQuant/statistics/index.html)
+
+PDFs, CDFs, MGFs, CFs, and other distribution related functions for common distributions.
+
+#### [`stochastics`](https://docs.rs/RustQuant/latest/RustQuant/stochastics/index.html)
+
+Stochastic process generators for Brownian Motion (standard, arithmetic, fractional, and geometric) and various short-rate models (CIR, OU, Vasicek, Hull-White, etc). Multi-factor processes coming shortly. 
+
+#### [`time`](https://docs.rs/RustQuant/latest/RustQuant/time/index.html)
+
+Time and date functionality, such as `DayCounter`, calendars, constants, conventions, schedules, etc.
+
+#### [`trading`](https://docs.rs/RustQuant/latest/RustQuant/trading/index.html)
 
 
-</details>
-
-<details>
-<summary>
-<h4> :triangular_ruler: Mathematics <a name="maths"></a></h4>
-<br>Fast Fourier Transform (FFT), numerical integration (double-exponential quadrature), optimisation/root-finding (gradient descent, Newton-Raphson), and risk-reward metrics. <br>
-</summary>
-
-### Optimization and Root Finding
-
-- [x] Gradient Descent
-- [x] Newton-Raphson
-
-Note: the reason you need to specify the lifetimes and use the type `Variable` is because the gradient descent optimiser uses the `RustQuant::autodiff` module to compute the gradients. This is a slight inconvenience, but the speed-up is enormous when working with functions with many inputs (when compared with using finite-difference quotients).
-
-```rust
-use RustQuant::optimisation::GradientDescent;
-
-// Define the objective function.
-fn himmelblau<'v>(variables: &[Variable<'v>]) -> Variable<'v> {
-    let x = variables[0];
-    let y = variables[1];
-
-    ((x.powf(2.0) + y - 11.0).powf(2.0) + (x + y.powf(2.0) - 7.0).powf(2.0))
-}
-
-fn main() {
-    // Create a new GradientDescent object with:
-    //      - Step size: 0.005 
-    //      - Iterations: 10000
-    //      - Tolerance: sqrt(machine epsilon)
-    let gd = GradientDescent::new(0.005, 10000, std::f64::EPSILON.sqrt() );
-
-    // Perform the optimisation with:
-    //      - Initial guess (10.0, 10.0),
-    //      - Verbose output.
-    let result = gd.optimize(&himmelblau, &vec![10.0, 10.0], true);
-    
-    // Print the result.
-    println!("{:?}", result.minimizer);
-}
-```
-
-### Integration
-
-- Numerical Integration (needed for Heston model, for example):
-  - [x] Tanh-Sinh (double exponential) quadrature
-  - [x] Composite Midpoint Rule
-  - [x] Composite Trapezoidal Rule
-  - [x] Composite Simpson's 3/8 Rule
-
-```rust
-use RustQuant::math::*;
-
-fn main() {
-    // Define a function to integrate: e^(sin(x))
-    fn f(x: f64) -> f64 {
-        (x.sin()).exp()
-    }
-
-    // Integrate from 0 to 5.
-    let integral = integrate(f, 0.0, 5.0);
-
-    // ~ 7.18911925
-    println!("Integral = {}", integral); 
-}
-```
-
-### Risk-Reward Metrics
-
-- [x] Risk-Reward Measures (Sharpe, Treynor, Sortino, etc)
-
-</details>
-
-<details>
-<summary>
-<h4>:crystal_ball: Machine Learning <a name="ml"></a></h4>
-<br>Currently only linear regression is implemented (and working on logistic regression). More to come in the future.<br>
-</summary>
-
-### Regression
-
-- [x] Linear (using QR or SVD decomposition)
-- [x] Logistic (via IRLS, adding MLE in the future).
-
-</details>
-
-<details>
-<summary>
-<h4> :moneybag: Money <a name="money"></a></h4>
-<br>Implementations for `Cashflows`, `Currencies`, and `Quotes`, and similar objects.<br>
-</summary>
-
-- `Cashflow`
-- `Currency`
-- `Money`
-- `Quote`
-- `Leg`
-
-</details>
-
-<details>
-<summary>
-<h4>:chart_with_upwards_trend: Stochastic Processes and Short Rate Models <a name="stochastics"></a></h4>
-<br> Can generate Brownian Motion (standard, arithmetic and geometric) and various short-rate models (CIR, OU, Vasicek, Hull-White, etc). <br>
-</summary>
-
-The following is a list of stochastic processes that can be generated.
-
-- Brownian Motions:
-  - Standard Brownian Motion
-    - $dX(t) = dW(t)$
-  - Arithmetic Brownian Motion
-    - $dX(t) = \mu dt + \sigma dW(t)$
-  - Geometric Brownian Motion
-    - $dX(t) = \mu X(t) dt + \sigma X(t) dW(t)$
-  - Fractional Brownian Motion
-- Cox-Ingersoll-Ross (1985)
-  - $dX(t) = \left[ \theta - \alpha X(t) \right] dt + \sigma \sqrt{r_t} dW(t)$
-- Ornstein-Uhlenbeck process
-  - $dX(t) = \theta \left[ \mu - X(t) \right] dt + \sigma dW(t)$
-- Ho-Lee (1986)
-  - $dX(t) = \theta(t) dt + \sigma dW(t)$
-- Hull-White (1990)
-  - $dX(t) = \left[ \theta(t) - \alpha X(t) \right]dt + \sigma dW(t)$
-- Extended Vasicek (1990)
-  - $dX(t) = \left[ \theta(t) - \alpha(t) X(t) \right] dt + \sigma dW(t)$
-- Black-Derman-Toy (1990)
-  - $d\ln[X(t)] = \left[ \theta(t) + \frac{\sigma'(t)}{\sigma(t)}\ln[X(t)] \right]dt + \sigma_t dW(t)$
-
-```rust
-use RustQuant::stochastics::*;
-
-fn main() {
-    // Create new GBM with mu and sigma.
-    let gbm = GeometricBrownianMotion::new(0.05, 0.9);
-
-    // Generate path using Euler-Maruyama scheme.
-    // Parameters: x_0, t_0, t_n, n, sims, parallel.
-    let output = (&gbm).euler_maruyama(10.0, 0.0, 0.5, 10, 1, false);
-
-    println!("GBM = {:?}", output.paths);
-}
-```
-
-</details>
-
-<details>
-<summary>
-<h4>:calendar: Time and Date <a name="time"></a></h4>
-<br>Time and date functionality. Mostly the `DayCounter` for pricing options and bonds. <br>
-</summary>
-
-- `DayCounter`
-
-</details>
-
-<details>
-<summary>
-<h4>:handshake: Miscellaneous Functions and Macros <a name="helpers"></a></h4>
-<br>Various helper functions and macros.<br>
-</summary>
-
-A collection of utility functions and macros.
-
-- [x] Plot a vector.
-- [x] Write vector to file.
-- [x] Cumulative sum of vector.
-- [x] Linearly spaced sequence.
-- [x] `assert_approx_equal!`
-
-</details>
-
-<details>
-<summary>
-<h4>:heavy_check_mark: How-tos <a name="howto"></a></h4>
-<br>Guides for using RustQuant.<br>
-</summary>
+## Examples
 
 See [/examples](./examples) for more details. Run them with:
 
 ```bash
-cargo run --example automatic_differentiation
+cargo run --example <example>
 ```
 
-I would not recommend using RustQuant within any other libraries for some time, as it will most likely go through many breaking changes as I learn more Rust and settle on a decent structure for the library.
-
-:pray: I would greatly appreciate contributions so it can get to the `v1.0.0` mark ASAP.
-
-</details>
-
-<details>
-<summary>
-<h4>:book: References <a name="references"></a></h4>
-<br>References and resources used for this project.<br>
-</summary>
+## :book: References
 
 - John C. Hull - *Options, Futures, and Other Derivatives*
 - Damiano Brigo & Fabio Mercurio - *Interest Rate Models - Theory and Practice (With Smile, Inflation and Credit)*
@@ -308,7 +113,6 @@ I would not recommend using RustQuant within any other libraries for some time, 
 - Espen Gaarder Haug - *Option Pricing Formulas*
 - Antoine Savine - *Modern Computational Finance: AAD and Parallel Simulations*
 
-</details>
 
 
 > [!NOTE]  
