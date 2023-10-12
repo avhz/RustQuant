@@ -112,7 +112,7 @@ Time and date functionality, such as `DayCounter`, calendars, constants, convent
 
 ## Examples
 
-See [/examples](./examples) for more details. Run them with:
+See [/examples](./examples) for various uses of RustQuant. You can run them with:
 
 ```bash
 cargo run --example <example>
