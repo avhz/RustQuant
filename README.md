@@ -41,9 +41,13 @@ A Rust library for quantitative finance tools. Also the largest option pricing l
 
 ## Modules
 
-**[`autodiff`](./src/autodiff/README.md)** - Algorithmic adjoint differentiation for efficiently computing gradients of scalar output functions $f: \mathbb{R}^n \rightarrow \mathbb{R}$.
+> [`autodiff`](./src/autodiff/README.md)
 
-> [`curves`](./src/curves/README.md) - Curves and surfaces, such as the yield curve and volatility surface. 
+Algorithmic adjoint differentiation for efficiently computing gradients of scalar output functions $f: \mathbb{R}^n \rightarrow \mathbb{R}$.
+
+> [`curves`](./src/curves/README.md)
+
+Curves and surfaces, such as the yield curve and volatility surface. 
 
 > [`data`](./src/data/README.md) - Methods for reading and writing data from/to various sources (CSV, JSON, Parquet). Can also download data from Yahoo! Finance.
 
@@ -51,23 +55,24 @@ A Rust library for quantitative finance tools. Also the largest option pricing l
 
 > [`instruments`](./src/instruments/README.md) - Various implementations for instruments like `Bonds` and `Options`, and the pricing of them. Others coming in the future (swaps, futures, CDSs, etc).
 
-> [`math`](./src/math/README.md)
+**[`math`](./src/math/README.md)** - 
 
-> [`ml`](./src/ml/README.md)
+**[`ml`](./src/ml/README.md)** - 
 
-> [`macros`](./src/macros/README.md)
+**[`macros`](./src/macros/README.md)** - 
 
-> [`money`](./src/money/README.md)
+**[`money`](./src/money/README.md)** - 
 
-> [`portfolio`](./src/portfolio/README.md)
+**[`portfolio`](./src/portfolio/README.md)** - 
 
-> [`statistics`](./src/statistics/README.md)
+**[`statistics`](./src/statistics/README.md)** - 
 
-> [`stochastics`](./src/stochastics/README.md)
+**[`stochastics`](./src/stochastics/README.md)** - 
 
-> [`time`](./src/time/README.md)
+**[`time`](./src/time/README.md)** - 
 
-> [`trading`](./src/trading/README.md)
+**[`trading`](./src/trading/README.md)** - 
+
 
 
 ## Features
