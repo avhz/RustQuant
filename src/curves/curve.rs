@@ -174,11 +174,7 @@ impl Curve for YieldCurve {
     }
 
     fn find_date_interval(&self, date: OffsetDateTime) -> (OffsetDateTime, OffsetDateTime) {
-        if date == self.initial_date() {
-            return (date, date);
-        }
-
-        if date == self.terminal_date() {
+        if date == self.initial_date() || date == self.terminal_date() {
             return (date, date);
         }
 

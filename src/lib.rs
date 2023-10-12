@@ -45,10 +45,13 @@ pub mod portfolio;
 /// a time to a value, such as a yield curve or a swap curve.
 /// They may also be known as term structures.
 pub mod curves {
-    pub use crate::curves::curve::*;
+    pub use crate::curves::{curve::*, models::*};
 
     /// Base curve trait.
     pub mod curve;
+
+    /// Curve models.
+    pub mod models;
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -291,26 +294,13 @@ pub mod data {
 /// Mathematics related items.
 pub mod math {
     pub use crate::math::{
-        fft::*, integration::constants::*, integration::midpoint::*, integration::simpsons::*,
-        integration::tanhsinh::*, integration::trapezoid::*, interpolation::*,
-        optimization::gradient_descent::*, optimization::newton_raphson::*, risk_reward::*,
-        sequences::*,
+        fft::*, integration::*, interpolation::*, optimization::gradient_descent::*,
+        optimization::newton_raphson::*, risk_reward::*, sequences::*,
     };
 
     /// Numerical integration routines.
     /// The primary (useful) integrator is the Tanh-Sinh (double exponential) implementation.
-    pub mod integration {
-        /// Constants used in numerical integration.
-        pub mod constants;
-        /// Composite Midpoint rule.
-        pub mod midpoint;
-        /// Composite Simpson's 3/8 rule.
-        pub mod simpsons;
-        /// Tanh-Sinh (double exponential) quadrature.
-        pub mod tanhsinh;
-        /// Composite Trapezoidal rule.
-        pub mod trapezoid;
-    }
+    pub mod integration;
 
     /// Numerical optimization and root-finding routines.
     pub mod optimization {
@@ -318,25 +308,6 @@ pub mod math {
         pub mod gradient_descent;
         /// Newton-Raphson method.
         pub mod newton_raphson;
-
-        // pub mod bisection;
-        // pub mod brent;
-        // pub mod golden_section;
-        // pub mod newton;
-        // pub mod newton_raphson;
-        // pub mod secant;
-    }
-
-    /// Sequences of numbers and associated functions.
-    pub mod sequences {
-        pub use crate::math::sequences::{cumsum::*, linspace::*, sequence::*};
-
-        /// Cumulative sum of a vector.
-        pub mod cumsum;
-        /// Generate a linearly spaced sequence.
-        pub mod linspace;
-        /// Sequences of numbers.
-        pub mod sequence;
     }
 
     /// Fast fourier transform.
@@ -345,6 +316,8 @@ pub mod math {
     pub mod interpolation;
     /// Simple risk/reward measures.
     pub mod risk_reward;
+    /// Sequences of numbers and associated functions.
+    pub mod sequences;
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
