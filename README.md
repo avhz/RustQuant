@@ -54,13 +54,13 @@ Join the Discord server: <https://discord.gg/tQcM77h8vr> -->
 See [CHANGELOG.md](./CHANGELOG.md) for a full list of changes. -->
 
 
-<p align="center">
+<div align="center">
 
 | Email                        | Discord                         | Latest Changes              |
 |:----------------------------:|:-------------------------------:|:---------------------------:|
 | <RustQuantContact@gmail.com> | <https://discord.gg/tQcM77h8vr> | [Changelog](./CHANGELOG.md) |
 
-</p>
+</div>
 
 
 ## Modules
