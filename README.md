@@ -52,9 +52,9 @@ Join the Discord server: <https://discord.gg/tQcM77h8vr> -->
 
 <p class="center">
 
-| Email                        | Discord                         |
-|:----------------------------:|:-------------------------------:|
-| <RustQuantContact@gmail.com> | <https://discord.gg/tQcM77h8vr> |
+| Email                        | Discord                         | Latest Changes                 |
+|:----------------------------:|:-------------------------------:|:------------------------------:|
+| <RustQuantContact@gmail.com> | <https://discord.gg/tQcM77h8vr> | [CHANGELOG.md](./CHANGELOG.md) |
 
 </p>
 
