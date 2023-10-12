@@ -50,13 +50,13 @@ A Rust library for quantitative finance tools. Also the largest option pricing l
 <!-- Email me at: <RustQuantContact@gmail.com>
 Join the Discord server: <https://discord.gg/tQcM77h8vr> -->
 
-<center>
+<p class="center">
 
 | Email                        | Discord                         |
 |:----------------------------:|:-------------------------------:|
 | <RustQuantContact@gmail.com> | <https://discord.gg/tQcM77h8vr> |
 
-</center>
+</p>
 
 ## :newspaper: Latest changes
 
