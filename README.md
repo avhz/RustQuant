@@ -50,17 +50,18 @@ A Rust library for quantitative finance tools. Also the largest option pricing l
 <!-- Email me at: <RustQuantContact@gmail.com>
 Join the Discord server: <https://discord.gg/tQcM77h8vr> -->
 
-<p class="center">
+<!-- ## :newspaper: Latest changes
+See [CHANGELOG.md](./CHANGELOG.md) for a full list of changes. -->
 
-| Email                        | Discord                         | Latest Changes                 |
-|:----------------------------:|:-------------------------------:|:------------------------------:|
-| <RustQuantContact@gmail.com> | <https://discord.gg/tQcM77h8vr> | [CHANGELOG.md](./CHANGELOG.md) |
+
+<p align="center">
+
+| Email                        | Discord                         | Latest Changes              |
+|:----------------------------:|:-------------------------------:|:---------------------------:|
+| <RustQuantContact@gmail.com> | <https://discord.gg/tQcM77h8vr> | [Changelog](./CHANGELOG.md) |
 
 </p>
 
-## :newspaper: Latest changes
-
-See [CHANGELOG.md](./CHANGELOG.md) for a full list of changes.
 
 ## Modules
 
