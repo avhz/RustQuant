@@ -47,14 +47,45 @@ A Rust library for quantitative finance tools. Also the largest option pricing l
 
 :dart: I want to hit a stable `v0.1.0` by the end of 2023, so any feedback, suggestions, or contributions are strongly welcomed!
 
-Email me at: <RustQuantContact@gmail.com>
+<!-- Email me at: <RustQuantContact@gmail.com>
+Join the Discord server: <https://discord.gg/tQcM77h8vr> -->
 
-Join the Discord server: <https://discord.gg/tQcM77h8vr>
+<center>
+
+| Email                        | Discord                         |
+|:----------------------------:|:-------------------------------:|
+| <RustQuantContact@gmail.com> | <https://discord.gg/tQcM77h8vr> |
+
+</center>
 
 ## :newspaper: Latest changes
 
 See [CHANGELOG.md](./CHANGELOG.md) for a full list of changes.
 
+## Modules
+
+#### [`autodiff`](./src/autodiff/README.md)
+
+Algorithmic adjoint differentiation for efficiently computing gradients of scalar output functions $f: \mathbb{R}^n \rightarrow \mathbb{R}$.
+
+#### [`curves`](./src/curves/README.md)
+
+Curves and surfaces, such as the yield curve and volatility surface. 
+
+### [`data`](./src/data/README.md)
+
+
+### [`error`](./src/error/README.md)
+### [`instruments`](./src/instruments/README.md)
+### [`math`](./src/math/README.md)
+### [`ml`](./src/ml/README.md)
+### [`macros`](./src/macros/README.md)
+### [`money`](./src/money/README.md)
+### [`portfolio`](./src/portfolio/README.md)
+### [`statistics`](./src/statistics/README.md)
+### [`stochastics`](./src/stochastics/README.md)
+### [`time`](./src/time/README.md)
+### [`trading`](./src/trading/README.md)
 
 ## Features
 
@@ -515,5 +546,5 @@ I would not recommend using RustQuant within any other libraries for some time, 
 </details>
 
 
-> [!WARNING]  
+> [!NOTE]  
 > Disclaimer: This is currently a free-time project and not a professional financial software library. Nothing in this library should be taken as financial advice, and I do not recommend you to use it for trading or making financial decisions.
