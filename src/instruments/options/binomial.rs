@@ -11,7 +11,7 @@
 // BINOMIAL OPTION PRICING PARAMETER STRUCT
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use super::{AmericanEuropeanFlag, TypeFlag};
+use super::{ExerciseFlag, TypeFlag};
 
 /// Struct containing the parameters to price an option via binomial tree method.
 #[derive(Debug, Clone, Copy)]
@@ -46,7 +46,7 @@ impl BinomialOption {
     pub fn price_CoxRossRubinstein(
         &self,
         output_flag: &str,
-        ame_eur_flag: AmericanEuropeanFlag,
+        ame_eur_flag: ExerciseFlag,
         call_put_flag: TypeFlag,
         n: usize,
     ) -> f64 {
@@ -83,12 +83,12 @@ impl BinomialOption {
         for j in (0..n).rev() {
             for i in 0..=j {
                 match ame_eur_flag {
-                    AmericanEuropeanFlag::American => {
+                    ExerciseFlag::American => {
                         option_value[i] = (z as f64
                             * (S * u.powi(i as i32) * d.powi(j as i32 - i as i32) - K))
                             .max(Df * (p * (option_value[i + 1]) + (1.0 - p) * option_value[i]));
                     }
-                    AmericanEuropeanFlag::European => {
+                    ExerciseFlag::European => {
                         option_value[i] =
                             Df * (p * (option_value[i + 1]) + (1.0 - p) * option_value[i]);
                     }
@@ -144,14 +144,8 @@ mod tests_binomial {
             volatility: 0.3,
         };
 
-        let c = BinOpt.price_CoxRossRubinstein(
-            "p",
-            AmericanEuropeanFlag::American,
-            TypeFlag::Call,
-            100,
-        );
-        let p =
-            BinOpt.price_CoxRossRubinstein("p", AmericanEuropeanFlag::American, TypeFlag::Put, 100);
+        let c = BinOpt.price_CoxRossRubinstein("p", ExerciseFlag::American, TypeFlag::Call, 100);
+        let p = BinOpt.price_CoxRossRubinstein("p", ExerciseFlag::American, TypeFlag::Put, 100);
 
         let c_intrinsic = (100_f64 - 95_f64).max(0.0);
         let p_intrinsic = (95_f64 - 100_f64).max(0.0);

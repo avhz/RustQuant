@@ -7,49 +7,24 @@
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-/// General option trait.
-/// All option types must implement this trait.
-/// All option contracts have:
-///     - `Prices` struct to store the option prices (call, put).
-///     - `Parameters` struct to store the option parameters (S, K, T, etc...).
-///     - `TypeFlag` enum to store the option type (call, put).
-///     - `Greeks` struct to store the option Greeks (sensitivities).
-///     - `prices` method to compute the option prices (call, put).
-///     - `set_parameters` method to set the option parameters.
-///     - `option_type` method to set the option type.
-///     - `greeks` method to compute the option Greeks (sensitivities).
-pub trait OptionContract {
-    /// Option prices struct.
-    type Prices;
-    /// Option parameters struct.
-    type Parameters;
-    /// Option type enum (call or put).
-    type Type;
-    /// Option Greeks struct.
-    type Greeks;
-
-    /// Base method for computing the options prices (call and put).
-    fn prices(&self) -> Self::Prices;
-    /// Base method for setting the option parameters.
-    fn set_parameters(&self) -> Self::Parameters;
-    /// Base method for setting the option type.
-    fn option_type(&self) -> Self::Type;
-    /// Base method for computing the Greeks (sensitivities).
-    fn greeks(&self) -> Self::Greeks;
+/// Option payoff trait.
+pub trait Payoff {
+    /// Base method for option payoffs.
+    fn payoff(&self, path: &[f64]) -> f64;
 }
 
 /// Option type enum.
 #[derive(Debug, Clone, Copy)]
 pub enum TypeFlag {
     /// Call option (right to BUY the underlying asset).
-    Call,
+    Call = 1,
     /// Put option (right to SELL the underlying asset).
-    Put,
+    Put = -1,
 }
 
 /// American/European option type enum.
 #[derive(Debug, Clone, Copy)]
-pub enum AmericanEuropeanFlag {
+pub enum ExerciseFlag {
     /// American option (can be exercised at any time before expiry).
     American,
     /// European option (can only be exercised at expiry).
@@ -115,3 +90,34 @@ pub trait PathDependentOption {
     /// Base method for path-dependent option prices using Monte Carlo (call and put).
     fn monte_carlo_prices(&self, n_steps: usize, n_sims: usize, parallel: bool) -> (f64, f64);
 }
+
+// /// General option trait.
+// /// All option types must implement this trait.
+// /// All option contracts have:
+// ///     - `Prices` struct to store the option prices (call, put).
+// ///     - `Parameters` struct to store the option parameters (S, K, T, etc...).
+// ///     - `TypeFlag` enum to store the option type (call, put).
+// ///     - `Greeks` struct to store the option Greeks (sensitivities).
+// ///     - `prices` method to compute the option prices (call, put).
+// ///     - `set_parameters` method to set the option parameters.
+// ///     - `option_type` method to set the option type.
+// ///     - `greeks` method to compute the option Greeks (sensitivities).
+// pub trait OptionContract {
+//     /// Option prices struct.
+//     type Prices;
+//     /// Option parameters struct.
+//     type Parameters;
+//     /// Option type enum (call or put).
+//     type Type;
+//     /// Option Greeks struct.
+//     type Greeks;
+
+//     /// Base method for computing the options prices (call and put).
+//     fn prices(&self) -> Self::Prices;
+//     /// Base method for setting the option parameters.
+//     fn set_parameters(&self) -> Self::Parameters;
+//     /// Base method for setting the option type.
+//     fn option_type(&self) -> Self::Type;
+//     /// Base method for computing the Greeks (sensitivities).
+//     fn greeks(&self) -> Self::Greeks;
+// }
