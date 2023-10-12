@@ -41,7 +41,7 @@ A Rust library for quantitative finance tools. Also the largest option pricing l
 
 ## Modules
 
-> [`autodiff`](./src/autodiff/README.md) - Algorithmic adjoint differentiation for efficiently computing gradients of scalar output functions $f: \mathbb{R}^n \rightarrow \mathbb{R}$.
+**[`autodiff`](./src/autodiff/README.md)** - Algorithmic adjoint differentiation for efficiently computing gradients of scalar output functions $f: \mathbb{R}^n \rightarrow \mathbb{R}$.
 
 > [`curves`](./src/curves/README.md) - Curves and surfaces, such as the yield curve and volatility surface. 
 
