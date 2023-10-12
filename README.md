@@ -26,9 +26,9 @@
         <img alt="Discord" src="https://img.shields.io/discord/1146771658082881636?logo=discord">
 </p>
 
-A Rust library for quantitative finance tools.
+A Rust library for quantitative finance.
 
-:dart: I want to hit a stable `v0.1.0` by the end of 2023, so any feedback, suggestions, or contributions are strongly welcomed!
+:dart: I want to hit a stable `v0.1.0` by the end of 2023, so any feedback or contributions are strongly welcomed!
 
 <div align="center">
 
@@ -42,7 +42,7 @@ A Rust library for quantitative finance tools.
 
 | Module | Description |
 |--------|-------------|
-| [`autodiff`](https://docs.rs/RustQuant/latest/RustQuant/autodiff/index.html) | Algorithmic adjoint differentiation for efficiently computing gradients of scalar output functions $f: \mathbb{R}^n \rightarrow \mathbb{R}$. |
+| [`autodiff`](https://docs.rs/RustQuant/latest/RustQuant/autodiff/index.html) | Algorithmic adjoint differentiation (AAD) for efficiently computing gradients of scalar output functions $f: \mathbb{R}^n \rightarrow \mathbb{R}$. |
 | [`curves`](https://docs.rs/RustQuant/latest/RustQuant/curves/index.html) | Curves and surfaces, such as the yield curve and volatility surface. |
 | [`data`](https://docs.rs/RustQuant/latest/RustQuant/data/index.html) | Methods for reading and writing data from/to various sources (CSV, JSON, Parquet). Can also download data from Yahoo! Finance. |
 | [`error`](https://docs.rs/RustQuant/latest/RustQuant/error/index.html) | RustQuant error handling module. |
@@ -50,12 +50,12 @@ A Rust library for quantitative finance tools.
 | [`math`](https://docs.rs/RustQuant/latest/RustQuant/math/index.html) | Fast Fourier Transform (FFT), numerical integration (double-exponential quadrature), optimisation/root-finding (gradient descent, Newton-Raphson), and risk-reward metrics. Also some sequence methods such as `linspace` and `cumsum`. |
 | [`ml`](https://docs.rs/RustQuant/latest/RustQuant/ml/index.html) | Currently only linear and logistic regression, along with k-nearest neighbours classification are implemented. More to come in the future. |
 | [`macros`](https://docs.rs/RustQuant/latest/RustQuant/macros/index.html) | Currently only `plot_vector!()` and `assert_approx_equal!()`. |
-| [`money`](https://docs.rs/RustQuant/latest/RustQuant/money/index.html) | Implementations for `Cashflows`, `Currencies`, and `Quotes`, and similar objects. |
-| [`portfolio`](https://docs.rs/RustQuant/latest/RustQuant/portfolio/index.html) | |
-| [`statistics`](https://docs.rs/RustQuant/latest/RustQuant/statistics/index.html) | PDFs, CDFs, MGFs, CFs, and other distribution related functions for common distributions. |
+| [`money`](https://docs.rs/RustQuant/latest/RustQuant/money/index.html) | Implementations for `Cashflows`, `Currencies`, and `Quotes`, and similar types. |
+| [`portfolio`](https://docs.rs/RustQuant/latest/RustQuant/portfolio/index.html) | Implementation of a portfolio type, which is a collection (`HashMap`) of `Position`s. |
+| [`statistics`](https://docs.rs/RustQuant/latest/RustQuant/statistics/index.html) | Density, distribution, moment-generating, and characteristic functions, and other distribution related functions for common distributions. |
 | [`stochastics`](https://docs.rs/RustQuant/latest/RustQuant/stochastics/index.html) | Stochastic process generators for Brownian Motion (standard, arithmetic, fractional, and geometric) and various short-rate models (CIR, OU, Vasicek, Hull-White, etc). Multi-factor processes coming shortly. |
 | [`time`](https://docs.rs/RustQuant/latest/RustQuant/time/index.html) | Time and date functionality, such as `DayCounter`, calendars, constants, conventions, schedules, etc. |
-| [`trading`](https://docs.rs/RustQuant/latest/RustQuant/trading/index.html) | |
+| [`trading`](https://docs.rs/RustQuant/latest/RustQuant/trading/index.html) | Currently only a basic limit order book (LOB). Hopefully adding additional trading tools in the future. |
 
 <!-- 
 #### [`autodiff`](https://docs.rs/RustQuant/latest/RustQuant/autodiff/index.html)
