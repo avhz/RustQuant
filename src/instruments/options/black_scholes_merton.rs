@@ -406,6 +406,7 @@ impl BlackScholesMerton {
 #[cfg(test)]
 mod tests_black_scholes_merton {
     use super::*;
+    use crate::assert_approx_equal;
     use time::Duration;
 
     #[test]

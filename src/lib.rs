@@ -24,46 +24,46 @@
 // documented with a SAFETY comment.
 #![forbid(clippy::undocumented_unsafe_blocks)]
 
-#[macro_use]
-pub mod macros;
-pub use macros::*;
-
-pub mod error;
-pub use error::*;
-
-pub mod portfolio;
-pub use portfolio::*;
-
-pub mod curves;
-pub use curves::*;
-
-pub mod stochastics;
-pub use stochastics::*;
-
 pub mod autodiff;
 pub use autodiff::*;
 
-pub mod instruments;
-pub use instruments::*;
-
-pub mod money;
-pub use money::*;
-
-pub mod statistics;
-pub use statistics::*;
+pub mod curves;
+pub use curves::*;
 
 #[cfg(feature = "data")]
 pub mod data;
 pub use data::*;
 
+pub mod error;
+pub use error::*;
+
+pub mod instruments;
+pub use instruments::*;
+
+#[macro_use]
+pub mod macros;
+pub use macros::*;
+
 pub mod math;
 pub use math::*;
+
+pub mod ml;
+pub use ml::*;
+
+pub mod money;
+pub use money::*;
+
+pub mod portfolio;
+pub use portfolio::*;
+
+pub mod statistics;
+pub use statistics::*;
+
+pub mod stochastics;
+pub use stochastics::*;
 
 pub mod time;
 pub use time::*;
 
 pub mod trading;
 pub use trading::*;
-
-pub mod ml;
-pub use ml::*;
