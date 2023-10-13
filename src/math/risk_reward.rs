@@ -12,7 +12,7 @@
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 /// Portfolio struct for risk-reward measures.
-pub struct Portfolio {
+pub struct PortfolioMeasures {
     /// The average return of the portfolio.
     r_p: f64,
     /// The risk-free return over the same period.
@@ -33,7 +33,7 @@ pub struct Portfolio {
 // FUNCTIONS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-impl Portfolio {
+impl PortfolioMeasures {
     /// Treynor's (1965) risk-reward ratio.
     ///
     /// `Treynor ratio = (r_p - r) / beta_p`
@@ -123,7 +123,7 @@ impl Portfolio {
 mod tests_risk_reward {
     use super::*;
 
-    static PORTFOLIO: Portfolio = Portfolio {
+    static PORTFOLIO: PortfolioMeasures = PortfolioMeasures {
         r_p: 0.12,
         r: 0.05,
         beta_p: 1.2,

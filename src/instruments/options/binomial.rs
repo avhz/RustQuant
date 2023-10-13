@@ -130,7 +130,6 @@ impl BinomialOption {
 
 #[cfg(test)]
 mod tests_binomial {
-    use super::*;
     use crate::*;
 
     #[test]

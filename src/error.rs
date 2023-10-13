@@ -7,6 +7,10 @@
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+//! RustQuant error handling module.
+//! A custom error type `RustQuantError` is defined, along with a macro to create an error,
+//! that propagates a `RustQuantError` with the text to include in the output.
+
 /// Error type for RustQuant.
 #[derive(Debug, thiserror::Error)]
 pub enum RustQuantError {
@@ -34,7 +38,14 @@ pub enum RustQuantError {
 
 /// Create a `RustQuantError` with the text to include in the output.
 /// You would use it as follows:
-/// `return Err(error!(ComputationError, "Linear Regression: Singular Value Decomposition failed."));`
+/// ```
+/// return Err(
+///     error!(
+///         ComputationError,
+///         "Linear Regression: Singular Value Decomposition failed."
+///     )
+/// );
+/// ```
 #[macro_export]
 macro_rules! error {
     ($error_type:ident, $msg:expr) => {

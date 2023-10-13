@@ -7,6 +7,28 @@
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+//! This module contains functions for numerical integration.
+//!
+//! The Tanh-Sinh quadrature is used for the integration.
+//! This method uses a the hyperbolic trig functions to transform
+//! the integral over $[-1, +1]$ to an integral over $\mathbb{R} = (-\infty, +\infty)$.
+//!
+//! We have the approximation:
+//!
+//! $$
+//! \int_{-1}^{+1} f(x) dx \approx \sum_{\mathbb{R}} w_k f(x_k)
+//! $$
+//!
+//! The abscissae and weights are calculated as follows:
+//!
+//! $$
+//! x_k = \tanh \left( \frac{1}{2} \pi \sinh(kh) \right)
+//! $$
+//!
+//! $$
+//! w_k = \frac{1}{2} h \pi \cosh(kh) \cosh^{-2} \left( \frac{1}{2} \pi \sinh(kh) \right)
+//! $$
+
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // FUNCTIONS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

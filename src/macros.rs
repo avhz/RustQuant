@@ -7,6 +7,8 @@
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+//! Macros for RustQuant.
+
 /// Helper macro for tests to test floating point approximate equality.
 #[macro_export]
 macro_rules! assert_approx_equal {
