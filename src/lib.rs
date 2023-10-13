@@ -556,9 +556,6 @@ pub mod data {
 ///
 /// - Numerical Integration (needed for Heston model, for example):
 ///   - [x] Tanh-Sinh (double exponential) quadrature
-///   - [x] Composite Midpoint Rule
-///   - [x] Composite Trapezoidal Rule
-///   - [x] Composite Simpson's 3/8 Rule
 ///
 /// ```rust
 /// use RustQuant::math::*;
@@ -750,6 +747,7 @@ pub mod time {
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 /// Machine learning algorithms. This module relies on the [`nalgebra`] crate.
+///
 /// ### Regression
 ///
 /// - [x] Linear (using QR or SVD decomposition)
