@@ -22,21 +22,19 @@
 //!     ((x.powf(2.0) + y - 11.0).powf(2.0) + (x + y.powf(2.0) - 7.0).powf(2.0))
 //! }
 //!
-//! fn main() {
-//!     // Create a new GradientDescent object with:
-//!     //      - Step size: 0.005
-//!     //      - Iterations: 10000
-//!     //      - Tolerance: sqrt(machine epsilon)
-//!     let gd = GradientDescent::new(0.005, 10000, std::f64::EPSILON.sqrt() );
+//! // Create a new GradientDescent object with:
+//! //      - Step size: 0.005
+//! //      - Iterations: 10000
+//! //      - Tolerance: sqrt(machine epsilon)
+//! let gd = GradientDescent::new(0.005, 10000, std::f64::EPSILON.sqrt() );
 //!
-//!     // Perform the optimisation with:
-//!     //      - Initial guess (10.0, 10.0),
-//!     //      - Verbose output.
-//!     let result = gd.optimize(&himmelblau, &vec![10.0, 10.0], true);
+//! // Perform the optimisation with:
+//! //      - Initial guess (10.0, 10.0),
+//! //      - Verbose output.
+//! let result = gd.optimize(&himmelblau, &vec![10.0, 10.0], true);
 //!     
-//!     // Print the result.
-//!     println!("{:?}", result.minimizer);
-//! }
+//! // Print the result.
+//! println!("{:?}", result.minimizer);
 //! ```
 //!
 //! ### Integration
@@ -47,18 +45,16 @@
 //! ```rust
 //! use RustQuant::math::*;
 //!
-//! fn main() {
-//!     // Define a function to integrate: e^(sin(x))
-//!     fn f(x: f64) -> f64 {
-//!         (x.sin()).exp()
-//!     }
-//!
-//!     // Integrate from 0 to 5.
-//!     let integral = integrate(f, 0.0, 5.0);
-//!
-//!     // ~ 7.18911925
-//!     println!("Integral = {}", integral);
+//! // Define a function to integrate: e^(sin(x))
+//! fn f(x: f64) -> f64 {
+//!     (x.sin()).exp()
 //! }
+//!
+//! // Integrate from 0 to 5.
+//! let integral = integrate(f, 0.0, 5.0);
+//!
+//! // ~ 7.18911925
+//! println!("Integral = {}", integral);
 //! ```
 //!
 //! ### Risk-Reward Metrics

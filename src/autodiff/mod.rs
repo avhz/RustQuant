@@ -23,28 +23,26 @@
 //! ```rust
 //! use RustQuant::autodiff::*;
 //!
-//! fn main() {
-//!     // Create a new Graph to store the computations.
-//!     let g = Graph::new();
+//! // Create a new Graph to store the computations.
+//! let g = Graph::new();
 //!
-//!     // Assign variables.
-//!     let x = g.var(69.);
-//!     let y = g.var(420.);
+//! // Assign variables.
+//! let x = g.var(69.);
+//! let y = g.var(420.);
 //!
-//!     // Define a function.
-//!     let f = {
-//!       let a = x.powi(2);
-//!       let b = y.powi(2);
+//! // Define a function.
+//! let f = {
+//!     let a = x.powi(2);
+//!     let b = y.powi(2);
 //!
-//!       a + b + (x * y).exp()
-//!     };
+//!     a + b + (x * y).exp()
+//! };
 //!
-//!     // Accumulate the gradient.
-//!     let gradient = f.accumulate();
+//! // Accumulate the gradient.
+//! let gradient = f.accumulate();
 //!
-//!     println!("Function = {}", f);
-//!     println!("Gradient = {:?}", gradient.wrt([x, y]));
-//! }
+//! println!("Function = {}", f);
+//! println!("Gradient = {:?}", gradient.wrt([x, y]));
 //! ```
 //!
 //! You can also generate Graphviz (dot) code to visualize the computation graphs:

@@ -98,6 +98,7 @@ impl KNearestClassifier<f64> {
             predictions[i] =
                 self.predict_one(&DMatrix::from(xprime.view((i, 0), (1, xprime.ncols()))), k);
         }
+
         predictions
     }
 

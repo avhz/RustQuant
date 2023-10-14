@@ -55,9 +55,8 @@ impl CurveModels {
         let term0 = b0;
         let term1 = b1 * ((1.0 - (-ttm / t1).exp()) / (ttm / t1));
         let term2 = b2 * ((1.0 - (-ttm / t1).exp()) / (ttm / t1) - (-ttm / t1).exp());
-        let zero = term0 + term1 + term2;
 
-        zero
+        term0 + term1 + term2
     }
 
     fn nelson_siegel_svensson(params: &[f64], ttm: f64) -> f64 {
@@ -75,9 +74,8 @@ impl CurveModels {
         let term1 = b1 * ((1.0 - (-ttm / t1).exp()) / (ttm / t1));
         let term2 = b2 * ((1.0 - (-ttm / t1).exp()) / (ttm / t1) - (-ttm / t1).exp());
         let term3 = b3 * ((1.0 - (-ttm / t2).exp()) / (ttm / t2) - (-ttm / t2).exp());
-        let zero = term0 + term1 + term2 + term3;
 
-        zero
+        term0 + term1 + term2 + term3
     }
 
     fn bjoerk_christensen(params: &[f64], ttm: f64) -> f64 {
@@ -95,9 +93,8 @@ impl CurveModels {
         let term1 = b1 * ((1.0 - (-ttm / t1).exp()) / (ttm / t1));
         let term2 = b2 * ((1.0 - (-ttm / t1).exp()) / (ttm / t1) - (-ttm / t1).exp());
         let term3 = b3 * ((1.0 - (-2.0 * ttm / t2).exp()) / (2.0 * ttm / t2));
-        let zero = term0 + term1 + term2 + term3;
 
-        zero
+        term0 + term1 + term2 + term3
     }
 }
 

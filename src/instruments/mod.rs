@@ -46,21 +46,19 @@
 //! ```rust
 //! use RustQuant::options::*;
 //!
-//! fn main() {
-//!     let VanillaOption = EuropeanOption {
-//!         initial_price: 100.0,
-//!         strike_price: 110.0,
-//!         risk_free_rate: 0.05,
-//!         volatility: 0.2,
-//!         dividend_rate: 0.02,
-//!         time_to_maturity: 0.5,
-//!     };
+//! let VanillaOption = EuropeanOption {
+//!     initial_price: 100.0,
+//!     strike_price: 110.0,
+//!     risk_free_rate: 0.05,
+//!     volatility: 0.2,
+//!     dividend_rate: 0.02,
+//!     time_to_maturity: 0.5,
+//! };
 //!
-//!     let prices = VanillaOption.price();
+//! let prices = VanillaOption.price();
 //!
-//!     println!("Call price = {}", prices.0);
-//!     println!("Put price = {}", prices.1);
-//! }
+//! println!("Call price = {}", prices.0);
+//! println!("Put price = {}", prices.1);
 //! ```
 
 /// Base trait for all instruments.
