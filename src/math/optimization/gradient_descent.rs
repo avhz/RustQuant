@@ -7,12 +7,77 @@
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+//! ## Gradient Descent Primer  
+//!
+//! We want to implement an algorithm for solving uncostrained optimisation problems of the form:
+//!
+//! $$
+//! \min_{x \in \mathbb{R}^n} f(x) \qquad f(x) \in \mathcal{C}^1
+//! $$
+//!
+//! when the objective function $f(x)$ and its gradient, $\nabla f(x)$, are known.
+//!
+//! We start with an initial guess, $x_0$, and perform the iteration:
+//!
+//! $$
+//! x_{k+1} = x_k + \alpha_k d_k = x_k - \alpha_k \nabla f(x_k)
+//! $$
+//!
+//! Where:
+//!
+//! $$
+//! d_k = -\nabla f(x_k) \qquad \text{is the descent direction}
+//! $$
+//!
+//! and
+//!
+//! $$
+//! \alpha_k \qquad \text{is the step size in iteration $k$}
+//! $$
+//!
+//! This iteration gives us a monotonic sequence which converges to a local minimum, $f(x^*)$, if it exists:
+//!
+//! $$
+//! f(x_0) \geq f(x_1) \geq f(x_2) \geq \cdots \geq f(x^*)
+//! $$
+//!
+//! The algorithm is repeated until the stationarity condition is fulfilled:
+//!
+//! $$
+//! \nabla f(x) = 0
+//! $$
+//!
+//! Numerically, this condition is fulfilled if:
+//!
+//! $$
+//! \| \nabla f(x_{k+1}) \| \leq \epsilon
+//! $$
+//!
+//! Where $\|\cdot\|$ denotes the Euclidean norm:
+//!
+//! $$
+//! \|x\| = \sqrt{\langle x,x \rangle}
+//! $$
+//!
+//! Or in Rust, something like:
+//!
+//! ```rust
+//! gradient.iter().map(|&x| x * x).sum::<f64>().sqrt() < std::f64::EPSILON.sqrt()
+//! ```
+//!
+//! See [this example](https://github.com/avhz/RustQuant/blob/main/examples/gradient_descent.rs)
+//! for a demonstration using Himmelblau's function:
+//!
+//! $$
+//! f(x,y) = (x^2 + y - 11)^2 + (x + y^2 - 7)^2
+//! $$
+
 use crate::autodiff::*;
-// use ::log::{info, max_level, warn, Level};
 use time::{Duration, Instant};
+// use ::log::{info, max_level, warn, Level};
 
 /// Gradient descent optimizer.
-/// NOTE: Only for functions f: R^n -> R for now.
+/// NOTE: Only for functions $f: \mathbb{R}^n \rightarrow \mathbb{R}$ for now.
 /// The gradient descent optimizer is an iterative algorithm that
 /// finds the local minimum of a function.
 /// The algorithm starts with an initial guess for the local minimum
@@ -22,8 +87,10 @@ use time::{Duration, Instant};
 pub struct GradientDescent {
     /// Learning rate (aka. alpha or eta).
     pub learning_rate: f64,
+
     /// Maximum number of iterations.
     pub max_iterations: usize,
+
     /// Tolerance for the gradient.
     pub tolerance: f64,
 }
@@ -32,10 +99,13 @@ pub struct GradientDescent {
 pub struct GradientDescentResult {
     /// Minimizer of the function.
     pub minimizer: Vec<f64>,
+
     /// Value of the function at the minimum.
     pub minimum: f64,
+
     /// Number of iterations.
     pub iterations: usize,
+
     /// Time elapsed during optimization.
     pub elapsed: Duration,
 }

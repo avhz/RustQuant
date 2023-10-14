@@ -19,3 +19,5 @@
 ![Hull-White Model](../images/hull_white.png)
 
 ![Ornstein-Uhlenbeck Process](../images/ornstein_uhlenbeck.png)
+
+![Ricker Wavelet custom process.](../images/ricker_wavelet_process.png)
