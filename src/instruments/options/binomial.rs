@@ -130,7 +130,10 @@ impl BinomialOption {
 
 #[cfg(test)]
 mod tests_binomial {
-    use crate::*;
+    use crate::{
+        assert_approx_equal,
+        instruments::{BinomialOption, ExerciseFlag, TypeFlag},
+    };
 
     #[test]
     fn TEST_CRRBinomial() {

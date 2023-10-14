@@ -18,15 +18,18 @@
 //!
 //! - [x] K-Nearest Neighbours
 
-pub use crate::ml::{
-    activations::*, k_nearest_neighbors::*, linear_regression::*, logistic_regression::*,
-};
-
 /// Submodule of `ml`: activation functions.
 pub mod activations;
+pub use activations::*;
+
 /// K Nearest Neighbor classifier
 pub mod k_nearest_neighbors;
+pub use k_nearest_neighbors::*;
+
 /// Linear regression.
 pub mod linear_regression;
+pub use linear_regression::*;
+
 /// Logistic regression.
 pub mod logistic_regression;
+pub use logistic_regression::*;

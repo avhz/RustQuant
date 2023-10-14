@@ -21,7 +21,7 @@
 // """
 
 use std::f64::consts::PI;
-use RustQuant::{plot_vector, stochastics::*, Sequence};
+use RustQuant::{math::Sequence, plot_vector, stochastics::*};
 
 fn main() {
     // Create an x-axis.

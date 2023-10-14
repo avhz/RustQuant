@@ -62,26 +62,25 @@
 //!
 //! If you want to improve the visualization, please feel free to submit a PR!
 
-pub use accumulate::*;
-pub use gradient::*;
-pub use graph::*;
-pub use graphviz::*;
-pub use overloading::{
-    add::*, div::*, f64::*, iter::*, log::*, minmax::*, mul::*, pow::*, statrs::*, sub::*,
-};
-pub use variables::{nalgebra::*, ndarray::*, variable::*};
-pub use vertex::*;
-
 /// [`Accumulate`] trait.
 pub mod accumulate;
+pub use accumulate::*;
+
 /// Implements the gradient computation.
 pub mod gradient;
+pub use gradient::*;
+
 /// The Graph (aka. tape or Wengert List).
 pub mod graph;
+pub use graph::*;
+
 /// Visualisation of the [`Graph`].
 pub mod graphviz;
+pub use graphviz::*;
+
 /// Implements [`Vertex`] (nodes) for the `Graph`.
 pub mod vertex;
+pub use vertex::*;
 
 /// Operator/function overloading.
 /// This module contains the overloaded operators and primitive functions.
@@ -112,6 +111,9 @@ pub mod overloading {
     /// Overload the standard subtraction operator (`-`).
     pub mod sub;
 }
+pub use overloading::{
+    add::*, div::*, f64::*, iter::*, log::*, minmax::*, mul::*, pow::*, statrs::*, sub::*,
+};
 
 /// `Variable`s for `autodiff`.
 pub mod variables {
@@ -122,3 +124,4 @@ pub mod variables {
     /// Base trait for all `Variable`s.
     pub mod variable;
 }
+pub use variables::{nalgebra::*, ndarray::*, variable::*};

@@ -65,31 +65,35 @@
 //!
 //! - [x] Risk-Reward Measures (Sharpe, Treynor, Sortino, etc)
 
-pub use crate::math::{
-    fft::*, integration::*, interpolation::*, optimization::gradient_descent::*,
-    optimization::newton_raphson::*, risk_reward::*, sequences::*,
-};
-
 /// Numerical integration routines.
 /// The primary (useful) integrator is the Tanh-Sinh (double exponential) implementation.
 pub mod integration;
+pub use integration::*;
 
 /// Numerical optimization and root-finding routines.
 pub mod optimization {
     /// Gradient descent optimization.
     pub mod gradient_descent;
+    pub use gradient_descent::*;
+
     /// Newton-Raphson method.
     pub mod newton_raphson;
+    pub use newton_raphson::*;
 }
+pub use optimization::*;
 
 /// Fast fourier transform.
 pub mod fft;
+pub use fft::*;
 
 /// Interpolation routines.
 pub mod interpolation;
+pub use interpolation::*;
 
 /// Simple risk/reward measures.
 pub mod risk_reward;
+pub use risk_reward::*;
 
 /// Sequences of numbers and associated functions.
 pub mod sequences;
+pub use sequences::*;

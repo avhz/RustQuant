@@ -13,7 +13,7 @@
 //! Basic arithmetic operations can be performed  on `Money` instances with the
 //! same underlying currency.
 
-use crate::Instrument;
+use crate::instruments::Instrument;
 use std::fmt::{self, Formatter};
 use time::OffsetDateTime;
 

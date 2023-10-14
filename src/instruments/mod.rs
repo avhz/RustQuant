@@ -63,16 +63,9 @@
 //! }
 //! ```
 
-pub use bonds::*;
-pub use instrument::*;
-pub use options::*;
-
 /// Base trait for all instruments.
 pub mod instrument;
-
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// BONDS MODULE
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+pub use instrument::*;
 
 /// Bond pricing models.
 pub mod bonds {
@@ -87,10 +80,7 @@ pub mod bonds {
     /// Vasicek bond pricing model.
     pub mod vasicek;
 }
-
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// OPTION PRICING MODULE
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+pub use bonds::*;
 
 /// Option pricers and sensitivity functions.
 pub mod options {
@@ -129,3 +119,4 @@ pub mod options {
     /// Power option pricers.
     pub mod power;
 }
+pub use options::*;
