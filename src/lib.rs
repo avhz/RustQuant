@@ -1,17 +1,18 @@
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// RustQuant: A Rust library for quantitative finance tools.
-// Copyright (C) 2023 https://github.com/avhz
-// Dual licensed under Apache 2.0 and MIT.
-// See:
-//      - LICENSE-APACHE.md
-//      - LICENSE-MIT.md
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-//! A Rust library for quantitative finance.
+//! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//! RustQuant: A Rust library for quantitative finance tools.
+//! Copyright (C) 2023 https://github.com/avhz
+//! Dual licensed under Apache 2.0 and MIT.
+//! See:
+//!      - LICENSE-APACHE.md
+//!      - LICENSE-MIT.md
+//! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //!
-//! Contact: <RustQuantContact@gmail.com>
+//! Contact me at: <RustQuantContact@gmail.com>
 //!
 //! Any contributions are greatly appreciated. Make a PR or open an issue !
+//!
+//! I'm particularly interested in hearing from people with strong experience
+//! in implementing quantitative software in a professional setting.
 
 // Strictly enforce documentation.
 #![forbid(missing_docs)]
