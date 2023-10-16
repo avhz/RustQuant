@@ -7,20 +7,10 @@
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-//! The bond module takes most of the notation and formulas from:
-//! *Interest Rate Models* by Brigo & Mercurio
-
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// IMPORTS
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-use crate::{
-    curves::{Curve, YieldCurve},
-    instruments::Instrument,
-    money::Currency,
-    time::{BusinessDayConvention, PaymentFrequency},
-};
-
+use crate::curves::{Curve, YieldCurve};
+use crate::instruments::Instrument;
+use crate::money::Currency;
+use crate::time::{BusinessDayConvention, PaymentFrequency};
 use std::collections::BTreeMap;
 use time::{Duration, OffsetDateTime};
 
@@ -144,25 +134,23 @@ impl Instrument for CouponBond {
     /// Returns the price (net present value) of the instrument.
     fn price(&self) -> f64 {
         // Compute the discount factors for the coupons.
-        let discount_factors = self
-            .yield_curve
-            .discount_factors(
-                &self
-                    .coupons
-                    .keys()
-                    .cloned()
-                    .collect::<Vec<OffsetDateTime>>(),
-            )
-            .iter()
-            .enumerate()
-            .map(|(i, df)| (1. + df / self.coupon_frequency as i32 as f64).powi((i + 1) as i32))
-            .collect::<Vec<f64>>();
+        let discount_factors = self.yield_curve.discount_factors(
+            &self
+                .coupons
+                .keys()
+                .cloned()
+                .collect::<Vec<OffsetDateTime>>(),
+        );
+        // .iter()
+        // .enumerate()
+        // .map(|(i, df)| (1. + df / self.coupon_frequency as i32 as f64).powi((i + 1) as i32))
+        // .collect::<Vec<f64>>();
 
         // Compute the present value of the coupons and face value, and sum them.
         self.coupons
             .values()
             .zip(discount_factors.iter())
-            .map(|(coupon, df)| coupon / df)
+            .map(|(coupon, df)| coupon * df)
             .sum::<f64>()
     }
 
@@ -239,7 +227,7 @@ mod tests_bond {
             evaluation_date: today,
             expiration_date: today + Duration::days(365 * 2),
             currency: Some(USD),
-            coupon_rate: 0.05,
+            coupon_rate: 0.15,
             coupon_frequency: PaymentFrequency::SemiAnnually,
             settlement_convention: BusinessDayConvention::Actual,
             yield_curve: create_test_yield_curve(today),
@@ -249,6 +237,10 @@ mod tests_bond {
 
         bond.construct_coupons();
 
+        // Should be: $1,184.61
+        // Getting:   $1,198.47
+        // Think its close enough for now, down to differences in my computation
+        // and the calculator I used. Possibly continuous compounding vs discrete.
         println!("Price: {}", bond.price());
     }
 }

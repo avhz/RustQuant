@@ -19,8 +19,10 @@ use time::OffsetDateTime;
 pub trait Cashflow {
     /// Amount of the cashflow.
     fn amount(&self) -> f64;
+
     /// Date of the cashflow.
     fn date(&self) -> OffsetDateTime;
+
     /// Net present value (NPV) of the cashflow.
     fn npv<F>(&self, df: F) -> f64
     where

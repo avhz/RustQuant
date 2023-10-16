@@ -6,3 +6,15 @@
 //      - LICENSE-APACHE.md
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+use crate::currencies::Currency;
+
+pub struct CommonStock {
+    pub instrument_type: InstrumentType::Stock,
+    pub ticker: String,
+    pub name: String,
+    pub currency: Currency,
+    pub ISIN: String,
+}
+
+// PreferredStock

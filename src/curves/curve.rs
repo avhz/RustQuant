@@ -14,6 +14,8 @@
 use std::{collections::BTreeMap, time::Duration};
 use time::OffsetDateTime;
 
+use crate::time::{DayCountConvention, DayCounter};
+
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Structs, enums, and traits
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -50,24 +52,34 @@ pub trait Curve {
     /// date, just before and just after.
     fn find_date_interval(&self, date: OffsetDateTime) -> (OffsetDateTime, OffsetDateTime);
 
-    // /// Function to find the three points that are closest to the given date,
-    // /// to be used for a quadratic interpolation.
-    // fn find_three_points(
-    //     &self,
-    //     date: OffsetDateTime,
-    // ) -> (OffsetDateTime, OffsetDateTime, OffsetDateTime);
-
-    /// Returns the discount factor for the given date, using linear
-    /// interpolation for dates between the curve's initial and terminal dates.
+    /// Returns the rate for the given date, using linear interpolation for
+    /// dates between the curve's initial and terminal dates.
     /// If the date is outside the curve's range, we panic.
     ///
     /// We use the following formula for the interpolation:
-    /// y = [y0 (x1 - x) + y1 (x - x0)] / (x1 - x0)
+    ///
+    /// $$
+    /// y = \frac{y_0 (x_1 - x) + y_1 (x - x_0)}{x_1 - x_0}
+    /// $$
     ///
     /// Note: there must be at least two points in the curve, otherwise
     /// we consider the curve to be a flat rate, and return the same rate
     /// for all dates.
-    fn discount_factor(&self, date: OffsetDateTime) -> f64;
+    fn rate(&self, date: OffsetDateTime) -> f64;
+
+    /// Returns the discount factor for the given date.
+    /// This is a convenience function that calls [rate] to get the rate for
+    /// the given date, and then calculates the discount factor using the
+    /// formula:
+    /// $$
+    /// p(t) = e^{- r \cdot t}
+    /// $$
+    fn discount_factor(&self, date: OffsetDateTime) -> f64 {
+        let t =
+            DayCounter::day_count_factor(self.initial_date(), date, &DayCountConvention::Actual365);
+
+        f64::exp(-self.rate(date) * t)
+    }
 
     /// Returns multiple discount factors for the given dates.
     /// This is a convenience function that calls [discount_factor] for each
@@ -147,7 +159,7 @@ impl Curve for YieldCurve {
         Self::from_dates_and_rates(&dates, rates)
     }
 
-    fn discount_factor(&self, date: OffsetDateTime) -> f64 {
+    fn rate(&self, date: OffsetDateTime) -> f64 {
         let n = self.rates.len();
 
         match n {
@@ -155,20 +167,9 @@ impl Curve for YieldCurve {
             1 => *self.rates.values().next().unwrap(),
             _ => {
                 let (x0, x1) = self.find_date_interval(date);
-
-                println!("x0: {:?}, x1: {:?}", x0.date(), x1.date());
-
-                let y0 = *self.rates.get(&x0).unwrap();
-                let y1 = *self.rates.get(&x1).unwrap();
+                let (y0, y1) = (*self.rates.get(&x0).unwrap(), *self.rates.get(&x1).unwrap());
 
                 (y0 * (x1 - date) + y1 * (date - x0)) / (x1 - x0)
-
-                // MIGHT IMPLEMENT A QUADRATIC INTERPOLATION LATER
-
-                // let t = (date - x0) / (x1 - x0);
-                // let t2 = t * t;
-
-                // y0 + (2.0 * t - 1.0) * (y1 - y0) * t2
             }
         }
     }
@@ -183,33 +184,6 @@ impl Curve for YieldCurve {
             *self.rates.range(date..).next().unwrap().0,
         )
     }
-
-    // fn find_three_points(
-    //     &self,
-    //     date: OffsetDateTime,
-    // ) -> (OffsetDateTime, OffsetDateTime, OffsetDateTime) {
-    //     let mut dates = self.rates.keys().collect::<Vec<&OffsetDateTime>>();
-
-    //     // dates.sort();
-
-    //     let mut i = 0;
-
-    //     while dates[i] < &date {
-    //         i += 1;
-    //     }
-
-    //     if i == 0 {
-    //         (dates[0], dates[1], dates[2])
-    //     } else if i == dates.len() - 1 {
-    //         (
-    //             dates[dates.len() - 3],
-    //             dates[dates.len() - 2],
-    //             dates[dates.len() - 1],
-    //         )
-    //     } else {
-    //         (dates[i - 1], dates[i], dates[i + 1])
-    //     }
-    // }
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
