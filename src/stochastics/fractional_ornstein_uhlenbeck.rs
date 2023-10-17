@@ -97,13 +97,13 @@ impl StochasticProcess for FractionalOrnsteinUhlenbeck {
 #[cfg(test)]
 mod tests_ornstein_uhlenbeck {
     use super::*;
-    use crate::{assert_approx_equal, statistics::*};
 
     #[test]
     #[ignore = "Hard to test."]
     fn test_fractional_ornstein_uhlenbeck() -> Result<(), Box<dyn std::error::Error>> {
         let fou = FractionalOrnsteinUhlenbeck::new(0.15, 0.45, 0.01, 0.7);
 
+        #[allow(dead_code)]
         let output = fou.euler_maruyama(10.0, 0.0, 0.5, 100, 100, false);
 
         std::result::Result::Ok(())
