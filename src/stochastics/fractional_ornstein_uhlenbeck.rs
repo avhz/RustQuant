@@ -104,7 +104,7 @@ mod tests_ornstein_uhlenbeck {
         let fou = FractionalOrnsteinUhlenbeck::new(0.15, 0.45, 0.01, 0.7);
 
         #[allow(dead_code)]
-        let output = fou.euler_maruyama(10.0, 0.0, 0.5, 100, 100, false);
+        let _output = fou.euler_maruyama(10.0, 0.0, 0.5, 100, 100, false);
 
         std::result::Result::Ok(())
     }
