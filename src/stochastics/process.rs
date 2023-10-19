@@ -21,6 +21,14 @@ use statrs::distribution::Normal;
 #[cfg(feature = "seedable")]
 use rand::{rngs::StdRng, SeedableRng};
 
+pub struct TimeDependent(pub Box<dyn Fn(f64) -> f64 + Send + Sync>);
+
+impl From<f64> for TimeDependent {
+    fn from(x: f64) -> Self {
+        Self(Box::new(move |_| x))
+    }
+}
+
 /// Struct to contain the time points and path values of the process.
 pub struct Trajectories {
     /// Vector of time points.
