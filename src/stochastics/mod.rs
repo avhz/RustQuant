@@ -48,6 +48,7 @@ pub use brownian_motion::*;
 pub use cox_ingersoll_ross::*;
 pub use extended_vasicek::*;
 pub use fractional_brownian_motion::*;
+pub use fractional_ornstein_uhlenbeck::*;
 pub use geometric_brownian_motion::*;
 pub use ho_lee::*;
 pub use hull_white::*;
@@ -66,6 +67,8 @@ pub mod cox_ingersoll_ross;
 pub mod extended_vasicek;
 /// Fractional Brownian Motion.
 pub mod fractional_brownian_motion;
+/// Fractional Ornstein-Uhlenbeck process.
+pub mod fractional_ornstein_uhlenbeck;
 /// Geometric Brownian Motion.
 pub mod geometric_brownian_motion;
 /// Ho-Lee process.

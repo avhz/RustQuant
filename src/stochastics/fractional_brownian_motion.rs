@@ -73,7 +73,7 @@ impl FractionalBrownianMotion {
     }
 
     /// Fractional Gaussian noise.
-    fn fgn_cholesky(&self, n: usize, t_n: f64) -> RowDVector<f64> {
+    pub fn fgn_cholesky(&self, n: usize, t_n: f64) -> RowDVector<f64> {
         let acf_sqrt = self.acf_matrix_sqrt(n);
         let noise = rand::thread_rng()
             .sample_iter::<f64, StandardNormal>(StandardNormal)
