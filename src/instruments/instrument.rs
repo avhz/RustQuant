@@ -51,3 +51,15 @@ pub enum PricingEngine {
     /// Numerical method (e.g. PDE, lattice, finite differences).
     Numerical,
 }
+
+/// Path independent payoff trait.
+pub trait PathIndependentPayoff {
+    /// Base method for path independent option payoffs.
+    fn payoff(&self, underlying: f64) -> f64;
+}
+
+/// Path dependent payoff trait.
+pub trait PathDependentPayoff {
+    /// Base method for path dependent option payoffs.
+    fn payoff(&self, path: &[f64]) -> f64;
+}
