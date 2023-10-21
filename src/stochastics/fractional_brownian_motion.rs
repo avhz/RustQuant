@@ -252,7 +252,7 @@ mod test_fractional_brownian_motion {
     use super::*;
     use crate::ml::{Decomposition, LinearRegressionInput};
 
-    pub(self) fn higuchi_fd(x: &Vec<f64>, kmax: usize) -> f64 {
+    fn higuchi_fd(x: &Vec<f64>, kmax: usize) -> f64 {
         let n_times = x.len();
 
         let mut lk = vec![0.0; kmax];
