@@ -267,7 +267,7 @@ mod test_fractional_brownian_motion {
                 let n_max = ((n_times - m - 1) as f64 / k as f64).floor() as usize;
 
                 for j in 1..n_max {
-                    ll += num::abs(x[m + j * k] - x[m + (j - 1) * k]);
+                    ll += (x[m + j * k] - x[m + (j - 1) * k]).abs();
                 }
 
                 ll /= k as f64;
