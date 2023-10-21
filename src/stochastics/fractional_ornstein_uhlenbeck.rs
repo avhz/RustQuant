@@ -134,7 +134,7 @@ mod tests_fractional_ornstein_uhlenbeck {
         );
 
         #[allow(dead_code)]
-        let output = fou.euler_maruyama(10.0, 0.0, 0.5, 100, 100, false);
+        let _output = fou.euler_maruyama(10.0, 0.0, 0.5, 100, 100, false);
 
         std::result::Result::Ok(())
     }

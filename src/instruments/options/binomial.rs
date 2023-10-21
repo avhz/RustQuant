@@ -92,6 +92,9 @@ impl BinomialOption {
                         option_value[i] =
                             Df * (p * (option_value[i + 1]) + (1.0 - p) * option_value[i]);
                     }
+                    ExerciseFlag::Bermudan => {
+                        panic!("Bermudan option pricing not implemented yet.");
+                    }
                 }
             }
             if j == 2 {

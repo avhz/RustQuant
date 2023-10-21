@@ -19,3 +19,9 @@ pub use curve::*;
 /// Curve models.
 pub mod models;
 pub use models::*;
+
+/// Surface implementations.
+/// Surfaces are simply [Curve]s with an additional dimension.
+/// For example, a volatility surface is a function of time and strike/moneyness.
+pub mod surface;
+pub use surface::*;
