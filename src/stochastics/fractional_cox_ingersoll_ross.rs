@@ -11,7 +11,7 @@ use crate::stochastics::*;
 use rayon::prelude::*;
 
 /// Struct containing the Ornstein-Uhlenbeck process parameters.
-pub struct FractionalOrnsteinUhlenbeck {
+pub struct FractionalCoxIngersollRoss {
     /// The long-run mean ($\mu$).
     pub mu: f64,
 
@@ -30,7 +30,7 @@ pub struct FractionalOrnsteinUhlenbeck {
     pub method: FractionalProcessGeneratorMethod,
 }
 
-impl FractionalOrnsteinUhlenbeck {
+impl FractionalCoxIngersollRoss {
     /// Create a new Ornstein-Uhlenbeck process.
     pub fn new(
         mu: f64,
@@ -51,13 +51,13 @@ impl FractionalOrnsteinUhlenbeck {
     }
 }
 
-impl StochasticProcess for FractionalOrnsteinUhlenbeck {
+impl StochasticProcess for FractionalCoxIngersollRoss {
     fn drift(&self, x: f64, _t: f64) -> f64 {
         self.theta * (self.mu - x)
     }
 
     fn diffusion(&self, _x: f64, _t: f64) -> f64 {
-        self.sigma
+        self.sigma * _x.sqrt()
     }
 
     fn jump(&self, _x: f64, _t: f64) -> f64 {
@@ -119,12 +119,12 @@ impl StochasticProcess for FractionalOrnsteinUhlenbeck {
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 #[cfg(test)]
-mod tests_fractional_ornstein_uhlenbeck {
+mod test_fractional_cir {
     use super::*;
 
     #[test]
     #[ignore = "Hard to test."]
-    fn test_fractional_ornstein_uhlenbeck() -> Result<(), Box<dyn std::error::Error>> {
+    fn test_fractional_cir() -> Result<(), Box<dyn std::error::Error>> {
         let fou = FractionalOrnsteinUhlenbeck::new(
             0.15,
             0.45,

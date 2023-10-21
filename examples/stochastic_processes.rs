@@ -21,7 +21,7 @@ fn main() {
     let hl = HoLee::new(0.2, theta_t);
     let hw = HullWhite::new(0.1, 0.2, theta_t);
     let ou = OrnsteinUhlenbeck::new(0.05, 0.9, 0.1);
-    let fbm = FractionalBrownianMotion::new(0.7);
+    let fbm = FractionalBrownianMotion::new(0.7, FractionalProcessGeneratorMethod::FFT);
 
     // Generate path using Euler-Maruyama scheme.
     // Parameters: x_0, t_0, t_n, n, sims, parallel.
