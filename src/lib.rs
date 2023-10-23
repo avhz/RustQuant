@@ -35,6 +35,7 @@ pub mod instruments;
 pub mod macros;
 pub mod math;
 pub mod ml;
+pub mod models;
 pub mod money;
 pub mod portfolio;
 pub mod statistics;

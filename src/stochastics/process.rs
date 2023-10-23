@@ -64,7 +64,7 @@ pub trait StochasticProcess: Sync {
     fn diffusion(&self, x: f64, t: f64) -> f64;
 
     /// Base method for the process' jump term (if applicable).
-    fn jump(&self, x: f64, t: f64) -> f64;
+    fn jump(&self, x: f64, t: f64) -> Option<f64>;
 
     /// Euler-Maruyama discretisation scheme.
     ///

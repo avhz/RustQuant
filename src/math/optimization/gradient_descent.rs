@@ -92,7 +92,7 @@ pub struct GradientDescent {
     pub max_iterations: usize,
 
     /// Tolerance for the gradient.
-    pub tolerance: f64,
+    pub tolerance: Option<f64>,
 }
 
 /// Result of the gradient descent optimization.
@@ -112,8 +112,10 @@ pub struct GradientDescentResult {
 
 impl GradientDescent {
     /// Returns a new instance of the gradient descent optimizer.
-    pub fn new(learning_rate: f64, max_iterations: usize, tolerance: f64) -> Self {
-        assert!(tolerance > 0.0);
+    pub fn new(learning_rate: f64, max_iterations: usize, tolerance: Option<f64>) -> Self {
+        if tolerance.is_some() {
+            assert!(tolerance.unwrap() > 0.0);
+        }
 
         Self {
             learning_rate,
@@ -148,6 +150,8 @@ impl GradientDescent {
     {
         let start = Instant::now();
 
+        let tolerance = self.tolerance.unwrap_or(std::f64::EPSILON.sqrt());
+
         let mut result = GradientDescentResult {
             minimum: 0.0,
             minimizer: x0.to_vec(),
@@ -164,7 +168,7 @@ impl GradientDescent {
             let function = f(&location);
             let gradient = function.accumulate().wrt(&location);
 
-            if Self::is_stationary(&gradient, self.tolerance) {
+            if Self::is_stationary(&gradient, tolerance) {
                 break;
             }
 
@@ -215,10 +219,10 @@ mod test_gradient_descent {
     // Test the creation of a new GradientDescent optimizer.
     #[test]
     fn test_gradient_descent_new() {
-        let gd = GradientDescent::new(0.1, 1000, 0.0001);
+        let gd = GradientDescent::new(0.1, 1000, Some(0.0001));
         assert_eq!(gd.learning_rate, 0.1);
         assert_eq!(gd.max_iterations, 1000);
-        assert_eq!(gd.tolerance, 0.0001);
+        assert_eq!(gd.tolerance, Some(0.0001));
     }
 
     // Test the is_stationary function.
@@ -247,7 +251,7 @@ mod test_gradient_descent {
         }
 
         // GradientDescent::new(learning_rate, max_iterations, tolerance)
-        let gd = GradientDescent::new(0.1, 1000, 0.000001);
+        let gd = GradientDescent::new(0.1, 1000, Some(0.000001));
         let result = gd.optimize(f, &[10.0], false);
 
         println!("Minimum: {:?}", result.minimum);
@@ -271,7 +275,7 @@ mod test_gradient_descent {
         }
 
         // GradientDescent::new(learning_rate, max_iterations, tolerance)
-        let gd = GradientDescent::new(0.1, 1000, 0.000001);
+        let gd = GradientDescent::new(0.1, 1000, Some(0.000001));
         let result = gd.optimize(f, &[5.0, 5.0], false);
 
         println!("Minimum: {:?}", result.minimum);
@@ -294,7 +298,7 @@ mod test_gradient_descent {
         }
 
         // GradientDescent::new(learning_rate, max_iterations, tolerance)
-        let gd = GradientDescent::new(0.001, 10000, 0.000001);
+        let gd = GradientDescent::new(0.001, 10000, Some(0.000001));
         let result = gd.optimize(f, &[0.0, 5.0], false);
 
         println!("Minimum: {:?}", result.minimum);
