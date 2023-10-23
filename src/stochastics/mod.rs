@@ -77,7 +77,9 @@ pub mod ho_lee;
 pub mod hull_white;
 /// Ornstein-Uhlenbeck process.
 pub mod ornstein_uhlenbeck;
+// Geometric brownian bridge process.
+pub mod geometric_brownian_bridge;
+pub mod merton_jump_diffusion;
 /// Defines `Trajectories` and `StochasticProcess`.
 pub mod process;
 pub mod compound_poisson;
-pub mod geometric_brownian_bridge;
