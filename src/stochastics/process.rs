@@ -14,6 +14,8 @@
 //! Autonomous refers to processes where the drift and diffusion
 //! do not explicitly depend on the time `t`.
 
+use std::fmt::{self, Formatter};
+
 use rand::prelude::Distribution;
 use rayon::prelude::*;
 use statrs::distribution::Normal;
@@ -22,6 +24,12 @@ use statrs::distribution::Normal;
 use rand::{rngs::StdRng, SeedableRng};
 
 pub struct TimeDependent(pub Box<dyn Fn(f64) -> f64 + Send + Sync>);
+
+impl fmt::Debug for TimeDependent {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        write!(f, "TimeDependent")
+    }
+}
 
 impl From<f64> for TimeDependent {
     fn from(x: f64) -> Self {

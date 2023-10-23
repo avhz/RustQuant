@@ -13,31 +13,39 @@ use crate::stochastics::*;
 #[derive(Debug)]
 pub struct CoxIngersollRoss {
     /// The long-run mean ($\mu$).
-    pub mu: f64,
+    pub mu: TimeDependent,
 
     /// The diffusion, or instantaneous volatility ($\sigma$).
-    pub sigma: f64,
+    pub sigma: TimeDependent,
 
     /// Mean reversion parameter ($\theta$).
     /// Defines the speed at which the process reverts to the long-run mean.
-    pub theta: f64,
+    pub theta: TimeDependent,
 }
 
 impl CoxIngersollRoss {
     /// Create a new Cox-Ingersoll-Ross process.
-    pub fn new(mu: f64, sigma: f64, theta: f64) -> Self {
-        assert!(sigma >= 0.0);
-        Self { mu, sigma, theta }
+    pub fn new(
+        mu: impl Into<TimeDependent>,
+        sigma: impl Into<TimeDependent>,
+        theta: impl Into<TimeDependent>,
+    ) -> Self {
+        Self {
+            mu: mu.into(),
+            sigma: sigma.into(),
+            theta: theta.into(),
+        }
     }
 }
 
 impl StochasticProcess for CoxIngersollRoss {
-    fn drift(&self, x: f64, _t: f64) -> f64 {
-        self.theta * (self.mu - x)
+    fn drift(&self, x: f64, t: f64) -> f64 {
+        self.theta.0(t) * (self.mu.0(t) - x)
     }
 
-    fn diffusion(&self, x: f64, _t: f64) -> f64 {
-        self.sigma * x.sqrt()
+    fn diffusion(&self, x: f64, t: f64) -> f64 {
+        assert!(self.sigma.0(t) >= 0.0);
+        self.sigma.0(t) * x.sqrt()
     }
 
     fn jump(&self, _x: f64, _t: f64) -> f64 {
