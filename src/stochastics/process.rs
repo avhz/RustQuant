@@ -29,6 +29,15 @@ impl From<f64> for TimeDependent {
     }
 }
 
+impl<F> From<F> for TimeDependent
+where
+    F: Fn(f64) -> f64 + 'static + Send + Sync,
+{
+    fn from(func: F) -> Self {
+        Self(Box::new(func))
+    }
+}
+
 /// Struct to contain the time points and path values of the process.
 pub struct Trajectories {
     /// Vector of time points.
