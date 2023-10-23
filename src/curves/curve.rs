@@ -11,14 +11,28 @@
 // IMPORTS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+use crate::time::{DayCountConvention, DayCounter};
 use std::{collections::BTreeMap, time::Duration};
 use time::OffsetDateTime;
-
-use crate::time::{DayCountConvention, DayCounter};
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Structs, enums, and traits
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+/// A trait for curve models.
+pub trait CurveModel {
+    /// Returns the forward rate for a given date.
+    fn forward_rate(&self, date: OffsetDateTime) -> f64;
+
+    /// Returns the spot rate for a given date.
+    fn spot_rate(&self, date: OffsetDateTime) -> f64;
+
+    /// Returns the discount factor for a given date.
+    fn discount_factor(&self, date: OffsetDateTime) -> f64;
+
+    /// Calibrates the model to a set of market rates.
+    fn calibrate<C: Curve>(&self, curve: C) -> Self;
+}
 
 /// Base trait for all curves to implement.
 pub trait Curve {

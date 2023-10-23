@@ -35,8 +35,8 @@ impl StochasticProcess for BrownianMotion {
         1.0
     }
 
-    fn jump(&self, _x: f64, _t: f64) -> f64 {
-        0.0
+    fn jump(&self, _x: f64, _t: f64) -> Option<f64> {
+        None
     }
 }
 

@@ -21,7 +21,7 @@ fn main() {
     //
     // You may need to play with the step size a bit to guarantee
     // convergence. I will add a line search method in the future.
-    let gd = GradientDescent::new(0.01, 100, std::f64::EPSILON.sqrt());
+    let gd = GradientDescent::new(0.01, 100, None);
 
     // Perform the optimisation,
     // starting from the initial guess (5.0, 5.0),
