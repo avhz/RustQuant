@@ -12,27 +12,30 @@ use crate::stochastics::*;
 /// Struct containing the Ho-Lee process parameters.
 pub struct HoLee {
     /// The diffusion, or instantaneous volatility ($\sigma$).
-    pub sigma: f64,
+    pub sigma: TimeDependent,
     /// Non-negative time-varying mean reversion function ($\theta_t$)
-    pub theta_t: fn(f64) -> f64,
+    pub theta: TimeDependent,
 }
 
 impl HoLee {
     /// Create a new Ho-Lee process.
-    pub fn new(sigma: f64, theta_t: fn(f64) -> f64) -> Self {
-        assert!(sigma >= 0.0);
-        // TODO assert theta_t is non-negative function
-        Self { sigma, theta_t }
+    pub fn new(sigma: f64, theta: fn(f64) -> f64) -> Self {
+        Self {
+            sigma: sigma.into(),
+            theta: theta.into(),
+        }
     }
 }
 
 impl StochasticProcess for HoLee {
     fn drift(&self, _x: f64, t: f64) -> f64 {
-        (self.theta_t)(t)
+        assert!(self.theta.0(t) >= 0.0);
+        (self.theta.0)(t)
     }
 
-    fn diffusion(&self, _x: f64, _t: f64) -> f64 {
-        self.sigma
+    fn diffusion(&self, _x: f64, t: f64) -> f64 {
+        assert!(self.sigma.0(t) >= 0.0);
+        self.sigma.0(t)
     }
 
     fn jump(&self, _x: f64, _t: f64) -> f64 {
