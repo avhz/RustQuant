@@ -12,29 +12,32 @@ use crate::stochastics::*;
 /// Struct containing the Arithmetic Brownian Motion parameters.
 pub struct ArithmeticBrownianMotion {
     /// The drift ($\mu$) in percentage.
-    pub mu: f64,
+    pub mu: TimeDependent,
 
     /// The volatility ($\sigma$) in percentage.
-    pub sigma: f64,
+    pub sigma: TimeDependent,
 }
 
 impl ArithmeticBrownianMotion {
     /// Create a new Arithmetic Brownian Motion process.
-    pub fn new(mu: f64, sigma: f64) -> Self {
-        assert!(sigma >= 0.0);
-        Self { mu, sigma }
+    pub fn new(mu: impl Into<TimeDependent>, sigma: impl Into<TimeDependent>) -> Self {
+        Self {
+            mu: mu.into(),
+            sigma: sigma.into(),
+        }
     }
 }
 
 impl StochasticProcess for ArithmeticBrownianMotion {
-    fn drift(&self, _x: f64, _t: f64) -> f64 {
+    fn drift(&self, _x: f64, t: f64) -> f64 {
         // mu dt
-        self.mu
+        self.mu.0(t)
     }
 
-    fn diffusion(&self, _x: f64, _t: f64) -> f64 {
+    fn diffusion(&self, _x: f64, t: f64) -> f64 {
+        assert!(self.sigma.0(t) >= 0.0);
         // sigma dW_t
-        self.sigma
+        self.sigma.0(t)
     }
 
     fn jump(&self, _x: f64, _t: f64) -> f64 {
