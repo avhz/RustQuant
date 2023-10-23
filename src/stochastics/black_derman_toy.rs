@@ -29,7 +29,7 @@ impl BlackDermanToy {
 
 impl StochasticProcess for BlackDermanToy {
     fn drift(&self, x: f64, t: f64) -> f64 {
-        self.theta.0(t) + diff(self.sigma.0, t) / self.sigma.0(t) * x
+        self.theta.0(t) + diff(&self.sigma.0, t) / self.sigma.0(t) * x
     }
 
     fn diffusion(&self, _x: f64, t: f64) -> f64 {
@@ -42,7 +42,7 @@ impl StochasticProcess for BlackDermanToy {
 }
 
 /// Central different differentiation
-pub(crate) fn diff(f: Box<dyn Fn(f64) -> f64>, t: f64) -> f64 {
+pub(crate) fn diff(f: &(dyn Fn(f64) -> f64 + Send + Sync), t: f64) -> f64 {
     // Arbitrary choice here...
     let eps = match t == 0. {
         // pretty arbitrary choice here

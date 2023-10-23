@@ -24,12 +24,12 @@ impl HullWhite {
     pub fn new(
         alpha: impl Into<TimeDependent>,
         sigma: impl Into<TimeDependent>,
-        theta_t: impl Into<TimeDependent>,
+        theta: impl Into<TimeDependent>,
     ) -> Self {
         Self {
             alpha: alpha.into(),
             sigma: sigma.into(),
-            theta: sigma.into(),
+            theta: theta.into(),
         }
     }
 }

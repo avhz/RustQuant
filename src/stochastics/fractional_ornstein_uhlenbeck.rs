@@ -39,7 +39,7 @@ impl FractionalOrnsteinUhlenbeck {
         Self {
             mu: mu.into(),
             sigma: sigma.into(),
-            theta: sigma.into(),
+            theta: theta.into(),
             hurst,
         }
     }

@@ -23,6 +23,7 @@ use statrs::distribution::Normal;
 #[cfg(feature = "seedable")]
 use rand::{rngs::StdRng, SeedableRng};
 
+/// A struct that wraps constants and functions into a single type in order to allow for all processes to have time-dependent parameters.
 pub struct TimeDependent(pub Box<dyn Fn(f64) -> f64 + Send + Sync>);
 
 impl fmt::Debug for TimeDependent {
