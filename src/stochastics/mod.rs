@@ -79,3 +79,5 @@ pub mod hull_white;
 pub mod ornstein_uhlenbeck;
 /// Defines `Trajectories` and `StochasticProcess`.
 pub mod process;
+pub mod compound_poisson;
+pub mod geometric_brownian_bridge;
