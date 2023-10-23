@@ -12,31 +12,39 @@ use crate::stochastics::*;
 /// Struct containing the Ornstein-Uhlenbeck process parameters.
 pub struct OrnsteinUhlenbeck {
     /// The long-run mean ($\mu$).
-    pub mu: f64,
+    pub mu: TimeDependent,
 
     /// The diffusion, or instantaneous volatility ($\sigma$).
-    pub sigma: f64,
+    pub sigma: TimeDependent,
 
     /// Mean reversion parameter ($\theta$).
     /// Defines the speed at which the process reverts to the long-run mean.
-    pub theta: f64,
+    pub theta: TimeDependent,
 }
 
 impl OrnsteinUhlenbeck {
     /// Create a new Ornstein-Uhlenbeck process.
-    pub fn new(mu: f64, sigma: f64, theta: f64) -> Self {
-        assert!(sigma >= 0.0);
-        Self { mu, sigma, theta }
+    pub fn new(
+        mu: impl Into<TimeDependent>,
+        sigma: impl Into<TimeDependent>,
+        theta: impl Into<TimeDependent>,
+    ) -> Self {
+        Self {
+            mu: mu.into(),
+            sigma: sigma.into(),
+            theta: theta.into(),
+        }
     }
 }
 
 impl StochasticProcess for OrnsteinUhlenbeck {
-    fn drift(&self, x: f64, _t: f64) -> f64 {
-        self.theta * (self.mu - x)
+    fn drift(&self, x: f64, t: f64) -> f64 {
+        self.theta.0(t) * (self.mu.0(t) - x)
     }
 
-    fn diffusion(&self, _x: f64, _t: f64) -> f64 {
-        self.sigma
+    fn diffusion(&self, _x: f64, t: f64) -> f64 {
+        assert!(self.sigma.0(t) >= 0.0);
+        self.sigma.0(t)
     }
 
     fn jump(&self, _x: f64, _t: f64) -> f64 {
