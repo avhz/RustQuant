@@ -59,6 +59,18 @@ pub trait DataScanner {
     fn scan(&mut self) -> Result<LazyFrame, DataError>;
 }
 
+/// Catches errors from the [`Data`] struct that can come from [`std::io`] or [`polars`].
+#[derive(Debug, Error)]
+pub enum DataError {
+    /// Error variant arising from [`std::io`].
+    #[error("IO error: {0}")]
+    Io(#[from] std::io::Error),
+
+    /// Error variant arising from [`polars`].
+    #[error("Polars error: {0}")]
+    Polars(#[from] polars::prelude::PolarsError),
+}
+
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // IMPLEMENTATIONS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -73,18 +85,6 @@ impl Data {
             data: DataFrame::default(),
         }
     }
-}
-
-/// Catches errors from the [`Data`] struct that can come from [`std::io`] or [`polars`].
-#[derive(Debug, Error)]
-pub enum DataError {
-    /// Error variant arising from [`std::io`].
-    #[error("IO error: {0}")]
-    Io(#[from] std::io::Error),
-
-    /// Error variant arising from [`polars`].
-    #[error("Polars error: {0}")]
-    Polars(#[from] polars::prelude::PolarsError),
 }
 
 impl DataReader for Data {
