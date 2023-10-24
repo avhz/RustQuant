@@ -113,6 +113,8 @@ pub struct YieldCurve {
     /// The reason for using a [BTreeMap] is that it is sorted by date,
     /// which makes sense for a term structure.
     pub rates: BTreeMap<OffsetDateTime, f64>,
+    // /// A model for the curve.
+    // pub model: Option<M>,
 }
 
 /// Curve error enum.
