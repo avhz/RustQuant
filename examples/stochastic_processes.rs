@@ -13,7 +13,7 @@ use RustQuant::stochastics::*;
 fn main() {
     // Create new stochastic processes.
     let abm = ArithmeticBrownianMotion::new(0.05, 0.9);
-    let bdt = BlackDermanToy::new(Sigma::Const(0.13), theta_t);
+    let bdt = BlackDermanToy::new(0.13, theta_t);
     let bm = BrownianMotion::new();
     let cir = CoxIngersollRoss::new(0.05, 0.9, 0.1);
     let ev = ExtendedVasicek::new(alpha_t, 2.0, theta_t);
