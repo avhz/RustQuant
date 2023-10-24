@@ -49,9 +49,11 @@ pub use cox_ingersoll_ross::*;
 pub use extended_vasicek::*;
 pub use fractional_brownian_motion::*;
 pub use fractional_ornstein_uhlenbeck::*;
+pub use geometric_brownian_bridge::*;
 pub use geometric_brownian_motion::*;
 pub use ho_lee::*;
 pub use hull_white::*;
+pub use merton_jump_diffusion::*;
 pub use ornstein_uhlenbeck::*;
 pub use process::*;
 
@@ -69,17 +71,17 @@ pub mod extended_vasicek;
 pub mod fractional_brownian_motion;
 /// Fractional Ornstein-Uhlenbeck process.
 pub mod fractional_ornstein_uhlenbeck;
+/// Geometric brownian bridge process.
+pub mod geometric_brownian_bridge;
 /// Geometric Brownian Motion.
 pub mod geometric_brownian_motion;
 /// Ho-Lee process.
 pub mod ho_lee;
 /// Hull-White model process.
 pub mod hull_white;
+/// Merton jump diffusion process.
+pub mod merton_jump_diffusion;
 /// Ornstein-Uhlenbeck process.
 pub mod ornstein_uhlenbeck;
-// Geometric brownian bridge process.
-pub mod geometric_brownian_bridge;
-// Merton jump diffusion process.
-pub mod merton_jump_diffusion;
 /// Defines `Trajectories` and `StochasticProcess`.
 pub mod process;

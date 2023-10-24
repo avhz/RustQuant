@@ -1,19 +1,39 @@
 use crate::stochastics::*;
 
+use crate::statistics::{Distribution as LocalDistribution, Gaussian, Poisson};
 use rand::prelude::Distribution;
 use rayon::prelude::*;
 use statrs::distribution::Normal;
-use crate::statistics::{Distribution as LocalDistribution, Gaussian, Poisson};
 
+/// Struct containing the Merton Jump Diffusion parameters.
+/// The Merton Jump Diffusion is a stochastic process that models a path-dependent option.
+/// It is a modification of the Geometric Brownian Motion where the end value is known.
 pub struct MertonJumpDiffusion {
+    /// The drift ($\mu$) in percentage.
     mu: TimeDependent,
+    /// The volatility ($\sigma$) in percentage.
     sigma: TimeDependent,
+    /// The jump intensity ($\lambda$) in percentage.
     lam: TimeDependent,
-    gaussian: Gaussian
+    /// The Gaussian distribution for the jump size.
+    gaussian: Gaussian,
 }
 
 impl MertonJumpDiffusion {
-    pub fn new(mu: impl Into<TimeDependent>, sigma: impl Into<TimeDependent>, lam: impl Into<TimeDependent>, m: f64, v: f64) -> Self {
+    /// Create a new Merton Jump Diffusion process.
+    /// # Arguments
+    /// * `mu` - The drift ($\mu$) in percentage.
+    /// * `sigma` - The volatility ($\sigma$) in percentage.
+    /// * `lam` - The jump intensity ($\lambda$) in percentage.
+    /// * `m` - The mean of the Gaussian distribution for the jump size.
+    /// * `v` - The variance of the Gaussian distribution for the jump size.
+    pub fn new(
+        mu: impl Into<TimeDependent>,
+        sigma: impl Into<TimeDependent>,
+        lam: impl Into<TimeDependent>,
+        m: f64,
+        v: f64,
+    ) -> Self {
         Self {
             mu: mu.into(),
             sigma: sigma.into(),
@@ -67,11 +87,15 @@ impl StochasticProcess for MertonJumpDiffusion {
             let jumps = Poisson::new(self.lam.0(0.0) * dt).sample(n_steps).unwrap();
 
             for t in 0..n_steps {
-                path[t + 1] = path[t]
-                    + self.drift(path[t], times[t]) * dt
-                    + self.diffusion(path[t], times[t]) * dW[t];
                 if jumps[t] > 0.0 {
-                    path[t + 1] += self.jump(path[t], times[t]).unwrap_or(0.0);
+                    path[t + 1] = path[t]
+                        + self.drift(path[t], times[t]) * dt
+                        + self.diffusion(path[t], times[t]) * dW[t]
+                        + self.jump(path[t], times[t]).unwrap_or(0.0);
+                } else {
+                    path[t + 1] = path[t]
+                        + self.drift(path[t], times[t]) * dt
+                        + self.diffusion(path[t], times[t]) * dW[t]
                 }
             }
         };
@@ -85,7 +109,6 @@ impl StochasticProcess for MertonJumpDiffusion {
         Trajectories { times, paths }
     }
 }
-
 
 #[cfg(test)]
 mod tests_gbm_bridge {
