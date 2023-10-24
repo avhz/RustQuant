@@ -12,29 +12,32 @@ use crate::stochastics::*;
 /// Struct containing the Geometric Brownian Motion parameters.
 pub struct GeometricBrownianMotion {
     /// The drift ($\mu$) in percentage.
-    pub mu: f64,
+    pub mu: TimeDependent,
 
     /// The volatility ($\sigma$) in percentage.
-    pub sigma: f64,
+    pub sigma: TimeDependent,
 }
 
 impl GeometricBrownianMotion {
     /// Create a new Geometric Brownian Motion process.
-    pub fn new(mu: f64, sigma: f64) -> Self {
-        assert!(sigma >= 0.0);
-        Self { mu, sigma }
+    pub fn new(mu: impl Into<TimeDependent>, sigma: impl Into<TimeDependent>) -> Self {
+        Self {
+            mu: mu.into(),
+            sigma: sigma.into(),
+        }
     }
 }
 
 impl StochasticProcess for GeometricBrownianMotion {
-    fn drift(&self, x: f64, _t: f64) -> f64 {
+    fn drift(&self, x: f64, t: f64) -> f64 {
         // mu X_t dt
-        self.mu * x
+        self.mu.0(t) * x
     }
 
-    fn diffusion(&self, x: f64, _t: f64) -> f64 {
+    fn diffusion(&self, x: f64, t: f64) -> f64 {
+        assert!(self.sigma.0(t) >= 0.0);
         // sigma X_t dW_t
-        self.sigma * x
+        self.sigma.0(t) * x
     }
 
     fn jump(&self, _x: f64, _t: f64) -> Option<f64> {

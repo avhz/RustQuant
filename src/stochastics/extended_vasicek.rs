@@ -12,31 +12,35 @@ use crate::stochastics::*;
 /// Struct containing the extended Vasicek process parameters.
 pub struct ExtendedVasicek {
     /// Mean function ($\mu(t)$)
-    pub alpha_t: fn(f64) -> f64,
+    pub alpha: TimeDependent,
     /// Non-negative diffusion, or instantaneous time-varying volatility ($\sigma$).
-    pub sigma: f64,
+    pub sigma: TimeDependent,
     /// Mean reversion function ($\theta(t)$)
-    pub theta_t: fn(f64) -> f64,
+    pub theta: TimeDependent,
 }
 
 impl ExtendedVasicek {
     /// Create a new Hull-White process.
-    pub fn new(alpha_t: fn(f64) -> f64, sigma: f64, theta_t: fn(f64) -> f64) -> Self {
+    pub fn new(
+        alpha: impl Into<TimeDependent>,
+        sigma: impl Into<TimeDependent>,
+        theta: impl Into<TimeDependent>,
+    ) -> Self {
         Self {
-            alpha_t,
-            sigma,
-            theta_t,
+            alpha: alpha.into(),
+            sigma: sigma.into(),
+            theta: theta.into(),
         }
     }
 }
 
 impl StochasticProcess for ExtendedVasicek {
     fn drift(&self, x: f64, t: f64) -> f64 {
-        (self.theta_t)(t) - (self.alpha_t)(t) * x
+        self.theta.0(t) - (self.alpha.0(t) * x)
     }
 
-    fn diffusion(&self, _x: f64, _t: f64) -> f64 {
-        self.sigma
+    fn diffusion(&self, _x: f64, t: f64) -> f64 {
+        self.sigma.0(t)
     }
 
     fn jump(&self, _x: f64, _t: f64) -> Option<f64> {
