@@ -18,6 +18,11 @@
 //!
 //! - [x] K-Nearest Neighbours
 
+/// Thin wrapper for ML data to be used
+/// in `ml` algorithms
+pub mod ml_data;
+pub use ml_data::*;
+
 /// Submodule of `ml`: activation functions.
 pub mod activations;
 pub use activations::*;
