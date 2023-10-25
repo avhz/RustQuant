@@ -14,14 +14,12 @@
 //! Autonomous refers to processes where the drift and diffusion
 //! do not explicitly depend on the time `t`.
 
-use std::fmt::{self, Formatter};
-
 use rand::prelude::Distribution;
-use rayon::prelude::*;
-use statrs::distribution::Normal;
-
 #[cfg(feature = "seedable")]
 use rand::{rngs::StdRng, SeedableRng};
+use rayon::prelude::*;
+use statrs::distribution::Normal;
+use std::fmt::{self, Formatter};
 
 /// A struct that wraps constants and functions into a single type in order to allow for all processes to have time-dependent parameters.
 pub struct TimeDependent(pub Box<dyn Fn(f64) -> f64 + Send + Sync>);
@@ -51,6 +49,7 @@ where
 pub struct Trajectories {
     /// Vector of time points.
     pub times: Vec<f64>,
+
     /// Vector of process trajectories.
     pub paths: Vec<Vec<f64>>,
 }

@@ -11,10 +11,13 @@ use statrs::distribution::Normal;
 pub struct MertonJumpDiffusion {
     /// The drift ($\mu$) in percentage.
     mu: TimeDependent,
+
     /// The volatility ($\sigma$) in percentage.
     sigma: TimeDependent,
+
     /// The jump intensity ($\lambda$) in percentage.
-    lam: TimeDependent,
+    lambda: TimeDependent,
+
     /// The Gaussian distribution for the jump size.
     gaussian: Gaussian,
 }
@@ -24,20 +27,20 @@ impl MertonJumpDiffusion {
     /// # Arguments
     /// * `mu` - The drift ($\mu$) in percentage.
     /// * `sigma` - The volatility ($\sigma$) in percentage.
-    /// * `lam` - The jump intensity ($\lambda$) in percentage.
+    /// * `lambda` - The jump intensity ($\lambda$) in percentage.
     /// * `m` - The mean of the Gaussian distribution for the jump size.
     /// * `v` - The variance of the Gaussian distribution for the jump size.
     pub fn new(
         mu: impl Into<TimeDependent>,
         sigma: impl Into<TimeDependent>,
-        lam: impl Into<TimeDependent>,
+        lambda: impl Into<TimeDependent>,
         m: f64,
         v: f64,
     ) -> Self {
         Self {
             mu: mu.into(),
             sigma: sigma.into(),
-            lam: lam.into(),
+            lambda: lambda.into(),
             gaussian: Gaussian::new(m, v),
         }
     }
@@ -84,7 +87,9 @@ impl StochasticProcess for MertonJumpDiffusion {
                 .map(|z| z * scale)
                 .collect();
 
-            let jumps = Poisson::new(self.lam.0(0.0) * dt).sample(n_steps).unwrap();
+            let jumps = Poisson::new(self.lambda.0(0.0) * dt)
+                .sample(n_steps)
+                .unwrap();
 
             for t in 0..n_steps {
                 if jumps[t] > 0.0 {

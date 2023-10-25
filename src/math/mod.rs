@@ -12,7 +12,8 @@
 //! Note: the reason you need to specify the lifetimes and use the type `Variable` is because the gradient descent optimiser uses the `RustQuant::autodiff` module to compute the gradients. This is a slight inconvenience, but the speed-up is enormous when working with functions with many inputs (when compared with using finite-difference quotients).
 //!
 //! ```rust
-//! use RustQuant::optimisation::GradientDescent;
+//! use RustQuant::math::*;
+//! use RustQuant::autodiff::*;
 //!
 //! // Define the objective function.
 //! fn himmelblau<'v>(variables: &[Variable<'v>]) -> Variable<'v> {
