@@ -22,6 +22,8 @@ fn main() {
     let hw = HullWhite::new(0.1, 0.2, theta_t);
     let ou = OrnsteinUhlenbeck::new(0.05, 0.9, 0.1);
     let fbm = FractionalBrownianMotion::new(0.7);
+    let mjd = MertonJumpDiffusion::new(0.05, 0.9, 10.0, 0.0, 0.3);
+    let gbb = GeometricBrownianBridge::new(0.05, 0.9, 5.0, 0.5);
 
     // Generate path using Euler-Maruyama scheme.
     // Parameters: x_0, t_0, t_n, n, sims, parallel.
@@ -35,6 +37,8 @@ fn main() {
     let hw_out  = hw.euler_maruyama(10.0, 0.0, 0.5, 1000, 1, false);
     let ou_out  = ou.euler_maruyama(10.0, 0.0, 0.5, 1000, 1, false);
     let fbm_out = fbm.euler_maruyama(0.0, 0.0, 0.5, 1000, 1, false);
+    let mjd_out = mjd.euler_maruyama(10.0, 0.0, 0.5, 1000, 1, false);
+    let gbb_out = gbb.euler_maruyama(10.0, 0.0, 0.5, 1000, 1, false);
 
     // Plot the paths.
     plot_vector!(abm_out.paths[0].clone(), "./images/arithmetic_brownian_motion.png");
@@ -47,6 +51,8 @@ fn main() {
     plot_vector!(hw_out.paths[0].clone(),  "./images/hull_white.png");
     plot_vector!(ou_out.paths[0].clone(),  "./images/ornstein_uhlenbeck.png");
     plot_vector!(fbm_out.paths[0].clone(), "./images/fractional_brownian_motion.png");
+    plot_vector!(mjd_out.paths[0].clone(), "./images/merton_jump_diffusion.png");
+    plot_vector!(gbb_out.paths[0].clone(), "./images/geometric_brownian_bridge.png");
 }
 
 fn theta_t(_t: f64) -> f64 {
