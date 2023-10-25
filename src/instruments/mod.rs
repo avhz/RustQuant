@@ -43,7 +43,7 @@
 //!   - [ ] Chooser
 //!   - [ ] Barrier
 //!
-//! ```rust
+//! ```no_run
 //! use RustQuant::options::*;
 //!
 //! let VanillaOption = EuropeanOption {

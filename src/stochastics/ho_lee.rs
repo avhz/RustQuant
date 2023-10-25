@@ -13,13 +13,14 @@ use crate::stochastics::*;
 pub struct HoLee {
     /// The diffusion, or instantaneous volatility ($\sigma$).
     pub sigma: TimeDependent,
+
     /// Non-negative time-varying mean reversion function ($\theta_t$)
     pub theta: TimeDependent,
 }
 
 impl HoLee {
     /// Create a new Ho-Lee process.
-    pub fn new(sigma: f64, theta: fn(f64) -> f64) -> Self {
+    pub fn new(sigma: impl Into<TimeDependent>, theta: impl Into<TimeDependent>) -> Self {
         Self {
             sigma: sigma.into(),
             theta: theta.into(),
@@ -54,12 +55,13 @@ mod tests_ho_lee {
 
     // Test a simple case where theta_t is constant
     // Should add tests of simple analytically tractable case
-    fn theta_t(_t: f64) -> f64 {
-        2.0
-    }
+    // fn theta_t(_t: f64) -> f64 {
+    //     2.0
+    // }
+
     #[test]
     fn test_ho_lee() -> Result<(), Box<dyn std::error::Error>> {
-        let hl = HoLee::new(1.6, theta_t);
+        let hl = HoLee::new(1.6, 2.0);
 
         // X_0 = 10.0
         // T = 1.0

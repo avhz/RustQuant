@@ -13,8 +13,10 @@ use crate::stochastics::*;
 pub struct ExtendedVasicek {
     /// Mean function ($\mu(t)$)
     pub alpha: TimeDependent,
+
     /// Non-negative diffusion, or instantaneous time-varying volatility ($\sigma$).
     pub sigma: TimeDependent,
+
     /// Mean reversion function ($\theta(t)$)
     pub theta: TimeDependent,
 }
@@ -57,19 +59,20 @@ mod tests_extended_vasicek {
     use super::*;
     use crate::{assert_approx_equal, statistics::*};
 
-    fn alpha_t(_t: f64) -> f64 {
-        2.0
-    }
-    fn theta_t(_t: f64) -> f64 {
-        0.5
-    }
+    // fn alpha_t(_t: f64) -> f64 {
+    //     2.0
+    // }
+    // fn theta_t(_t: f64) -> f64 {
+    //     0.5
+    // }
+
     #[test]
     fn test_extended_vasicek() -> Result<(), Box<dyn std::error::Error>> {
-        let sig = 2.0;
-        let alpha = alpha_t(1.0);
-        let theta = theta_t(1.0);
+        let sigma = 2.0;
+        let alpha = 2.0;
+        let theta = 0.5;
 
-        let ev = ExtendedVasicek::new(alpha_t, sig, theta_t);
+        let ev = ExtendedVasicek::new(alpha, sigma, theta);
 
         let output = ev.euler_maruyama(10.0, 0.0, 1.0, 150, 1000, false);
 

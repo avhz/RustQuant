@@ -13,8 +13,10 @@ use crate::stochastics::*;
 pub struct HullWhite {
     /// Long run mean ($\alpha)
     pub alpha: TimeDependent,
+
     /// Non-negative diffusion, or instantaneous volatility ($\sigma$).
     pub sigma: TimeDependent,
+
     /// Mean reversion function (non-negative) ($\theta(t)$)
     pub theta: TimeDependent,
 }
@@ -57,16 +59,17 @@ mod tests_hull_white {
     use super::*;
     use crate::{assert_approx_equal, statistics::*};
 
-    fn theta_t(_t: f64) -> f64 {
-        0.5
-    }
+    // fn theta_t(_t: f64) -> f64 {
+    //     0.5
+    // }
+
     #[test]
     fn test_hull_white() -> Result<(), Box<dyn std::error::Error>> {
         let alpha = 2.0;
-        let theta = theta_t(0.0);
-        let sig = 2.0;
+        let theta = 0.5;
+        let sigma = 2.0;
 
-        let hw = HullWhite::new(alpha, sig, theta_t);
+        let hw = HullWhite::new(alpha, sigma, theta);
 
         let output = hw.euler_maruyama(10.0, 0.0, 1.0, 150, 1000, false);
 

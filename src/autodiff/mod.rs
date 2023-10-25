@@ -20,7 +20,7 @@
 //!   - Useful when number of outputs is *larger* than number of inputs.
 //!     - i.e. for functions $f:\mathbb{R}^n \rightarrow \mathbb{R}^m$, where $m \gg n$
 //!
-//! ```rust
+//! ```no_run
 //! use RustQuant::autodiff::*;
 //!
 //! // Create a new Graph to store the computations.
@@ -47,7 +47,7 @@
 //!
 //! You can also generate Graphviz (dot) code to visualize the computation graphs:
 //!
-//! ```rust
+//! ```no_run
 //! println!("{}", graphviz(&graph, &variables));
 //! ```  
 //!

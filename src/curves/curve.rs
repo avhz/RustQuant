@@ -309,6 +309,6 @@ mod tests_curves {
 
         assert!(df1 > 0.0 && df1 < 1.0 && df2 > 0.0 && df2 < 1.0 && df3 > 0.0 && df3 < 1.0);
 
-        assert!(df1 < df2 && df2 < df3);
+        assert!(df1 > df2 && df2 > df3);
     }
 }

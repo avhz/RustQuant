@@ -13,6 +13,7 @@ use crate::stochastics::*;
 pub struct BlackDermanToy {
     /// Instantaneous volatility
     pub sigma: TimeDependent,
+
     /// Value of underlying at option expiry
     pub theta: TimeDependent,
 }
@@ -61,17 +62,19 @@ mod tests_black_derman_toy {
     use super::*;
     use crate::statistics::*;
 
-    fn theta_t(_t: f64) -> f64 {
-        1.5
-    }
-    fn sigma_t(_t: f64) -> f64 {
-        0.13
-    }
+    // fn theta_t(_t: f64) -> f64 {
+    //     1.5
+    // }
+    // fn sigma_t(_t: f64) -> f64 {
+    //     0.13
+    // }
+
     #[test]
     fn test_black_derman_toy_constant_sigma() -> Result<(), Box<dyn std::error::Error>> {
-        let sig = 0.13;
+        let sigma = 0.13;
+        let theta = 1.5;
 
-        let hw = BlackDermanToy::new(sig, theta_t);
+        let hw = BlackDermanToy::new(sigma, theta);
 
         let output = hw.euler_maruyama(0.13, 0.0, 1.0, 100, 100, false);
 
@@ -91,7 +94,10 @@ mod tests_black_derman_toy {
 
     #[test]
     fn test_black_derman_toy_varying_sigma() -> Result<(), Box<dyn std::error::Error>> {
-        let hw = BlackDermanToy::new(sigma_t, theta_t);
+        let sigma = 0.13;
+        let theta = 1.5;
+
+        let hw = BlackDermanToy::new(sigma, theta);
 
         let output = hw.euler_maruyama(0.13, 0.0, 1.0, 100, 1000, false);
 
