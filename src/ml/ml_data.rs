@@ -20,6 +20,27 @@ use std::ops::Index;
 // STRUCTS, ENUMS, AND TRAITS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+// A priori there's no way to distinguish an augmented matrix having
+// a response vector attached to it. This field will keep track of when
+// one is present or not.
+/// Indicates presence of response vector in MLData
+#[derive(Clone, Debug, Copy)]
+pub enum Response {
+    /// Response data is present
+    Present,
+    /// Response data is absent
+    Absent,
+}
+
+/// Denotes type of MLData, i.e. for train or test
+#[derive(Clone, Debug)]
+pub enum InputClass {
+    /// Train data
+    Train,
+    /// Test data
+    Test,
+}
+
 /// Thin wrapper for input data to be fed into ml algorithms
 /// Type T is generic in principle, but in practice will only be
 /// f32 or f64 to satisfy nalgebra::ComplexField trait
@@ -45,27 +66,6 @@ struct MLData<T: nalgebra::ComplexField + Clone + Default> {
 
     /// Denotes if data is for train or test
     pub data_type: InputClass,
-}
-
-// A priori there's no way to distinguish an augmented matrix having
-// a response vector attached to it. This field will keep track of when
-// one is present or not.
-/// Indicates presence of response vector in MLData
-#[derive(Clone, Debug, Copy)]
-pub enum Response {
-    /// Response data is present
-    Present,
-    /// Response data is absent
-    Absent,
-}
-
-/// Denotes type of MLData, i.e. for train or test
-#[derive(Clone, Debug)]
-pub enum InputClass {
-    /// Train data
-    Train,
-    /// Test data
-    Test,
 }
 
 impl<T: nalgebra::ComplexField + Default + Clone> MLData<T> {
