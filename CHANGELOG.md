@@ -1,5 +1,25 @@
 # Change Log
 
+## October 26 2023
+
+- @avhz: Added Constant Elasticity of Variance (CEV) model process generator.
+
+## October 24 2023
+
+- @kinrezC: Added Merton Jump Diffusion and Brownian Bridge process generators.
+
+## October 23 2023
+
+- @autoparallel: Added `TimeDependent` parameters for all stochastic processes.
+
+## October 17 2023
+
+- @dancixx: Fractional Ornstein-Uhlenbeck process generator.
+
+## October 9 2023
+
+- @aatmunbaxi: KNN classifier.
+
 ## 4 October 2023
 
 - @avhz: Added 5% padding to the y-axis in the `plot_vector` macro.

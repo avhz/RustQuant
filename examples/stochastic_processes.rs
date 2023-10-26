@@ -31,6 +31,7 @@ fn main() {
     let fbm = FractionalBrownianMotion::new(0.7);
     let mjd = MertonJumpDiffusion::new(0.05, 0.5, 30.0, 0.0, 5.0);
     let gbb = GeometricBrownianBridge::new(0.05, 0.9, INITIAL_VALUE, END_TIME);
+    let cev = ConstantElasticityOfVariance::new(0.05, 0.9, f64::sin);
 
     // Generate path using Euler-Maruyama scheme.
     // Parameters: x_0, t_0, t_n, n, sims, parallel.
@@ -46,6 +47,7 @@ fn main() {
     let fbm_out = fbm.euler_maruyama(INITIAL_VALUE, START_TIME, END_TIME, NUM_STEPS, NUM_SIMS, PARALLEL);
     let mjd_out = mjd.euler_maruyama(INITIAL_VALUE, START_TIME, END_TIME, NUM_STEPS, NUM_SIMS, PARALLEL);
     let gbb_out = gbb.euler_maruyama(INITIAL_VALUE, START_TIME, END_TIME, NUM_STEPS, NUM_SIMS, PARALLEL);
+    let cev_out = cev.euler_maruyama(INITIAL_VALUE, START_TIME, END_TIME, NUM_STEPS, NUM_SIMS, PARALLEL);
 
     // Plot the paths.
     plot_vector!(abm_out.paths[0].clone(), "./images/arithmetic_brownian_motion.png");
@@ -60,4 +62,5 @@ fn main() {
     plot_vector!(fbm_out.paths[0].clone(), "./images/fractional_brownian_motion.png");
     plot_vector!(mjd_out.paths[0].clone(), "./images/merton_jump_diffusion.png");
     plot_vector!(gbb_out.paths[0].clone(), "./images/geometric_brownian_bridge.png");
+    plot_vector!(cev_out.paths[0].clone(), "./images/constant_elasticity_of_variance.png");
 }

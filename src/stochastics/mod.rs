@@ -45,6 +45,7 @@
 pub use arithmetic_brownian_motion::*;
 pub use black_derman_toy::*;
 pub use brownian_motion::*;
+pub use constant_elasticity_of_variance::*;
 pub use cox_ingersoll_ross::*;
 pub use extended_vasicek::*;
 pub use fractional_brownian_motion::*;
@@ -63,6 +64,8 @@ pub mod arithmetic_brownian_motion;
 pub mod black_derman_toy;
 /// Standard Brownian Motion.
 pub mod brownian_motion;
+/// Constant Elasticity of Variance process.
+pub mod constant_elasticity_of_variance;
 /// Cox-Ingersoll-Ross process.
 pub mod cox_ingersoll_ross;
 /// Extended Vasicek process.
