@@ -20,7 +20,7 @@ use std::ops::Index;
 // STRUCTS, ENUMS, AND TRAITS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-// A priori there's no way to distinguish an augmented matrix having
+// a priori there's no way to distinguish an augmented matrix having
 // a response vector attached to it. This field will keep track of when
 // one is present or not.
 /// Indicates presence of response vector in MLData
@@ -41,7 +41,7 @@ pub enum InputClass {
     Test,
 }
 
-/// Thin wrapper for input data to be fed into ml algorithms
+/// Thin wrapper for input data to be fed into `ml` algorithms
 /// Type T is generic in principle, but in practice will only be
 /// f32 or f64 to satisfy nalgebra::ComplexField trait
 #[derive(Clone, Debug)]
@@ -51,11 +51,7 @@ struct MLData<T: nalgebra::ComplexField + Clone + Default> {
     /// features along the column entries
     pub data: DMatrix<T>,
 
-    /// Response vector
-    /// For classifiction, this will be a collection of class
-    /// labels parameterized by the same data type as the feature
-    /// data type.
-    /// Optional in case MLData is test data
+    /// Marker for if data has response vector
     pub y: Response,
 
     /// Number of samples
@@ -82,7 +78,7 @@ impl<T: nalgebra::ComplexField + Default + Clone> MLData<T> {
         }
     }
 
-    /// New MLData with response vector
+    /// New MLData with response vector y
     /// Length of response vector must equal the number of samples
     pub fn with_response(X: DMatrix<T>, y: &DVector<T>, data_type: InputClass) -> Self {
         let samples = X.nrows();
@@ -108,7 +104,7 @@ impl<T: nalgebra::ComplexField + Default + Clone> MLData<T> {
     }
 
     // New MLData from augmented data matrix.
-    // Last column is assumed to be a response vector
+    // Last column of Xy is assumed to be a response vector
     pub fn from_augmented(Xy: DMatrix<T>, data_type: InputClass) -> Self {
         let samples = Xy.nrows();
         let features = Xy.ncols() - 1;
@@ -135,7 +131,7 @@ impl<T: nalgebra::ComplexField + Default + Clone> MLData<T> {
         }
     }
 
-    /// Samples n random rows from the feature matrix X
+    /// Samples n random rows from data matrix
     pub fn sample(&self, n: usize, seed: Option<u64>) -> MLData<T> {
         assert!(
             n <= self.samples,
@@ -186,7 +182,7 @@ impl<T: nalgebra::ComplexField + Default + Clone> MLData<T> {
     }
 }
 
-/// Implement subscripting for RFData type
+/// Implement subscripting for MLData type
 /// Subscripts the augmented Xy matrix with
 /// response vector along the rightmost column (if applicable)
 impl<T: nalgebra::ComplexField + Clone + Default> Index<(usize, usize)> for MLData<T> {
@@ -209,11 +205,9 @@ impl<T: nalgebra::ComplexField + Clone + Default> Index<(usize, usize)> for MLDa
 
 impl<T: nalgebra::ComplexField + Clone + Default> std::fmt::Display for MLData<T> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "X: {}, y: {:?}", self.featmatrix(), self.respvector())
+        write!(f, "{}", self.data)
     }
 }
-
-// TODO: mutable indexing
 
 /// Appends response data to feature matrix and return augmented design matrix
 pub(crate) fn organize_data<T: nalgebra::ComplexField + Clone + Default>(
@@ -235,7 +229,6 @@ pub(crate) fn organize_data<T: nalgebra::ComplexField + Clone + Default>(
 }
 #[cfg(test)]
 mod tests_mlinput {
-
     use super::*;
     use nalgebra::{dmatrix, dvector};
     use rayon::prelude::*;
@@ -254,29 +247,7 @@ mod tests_mlinput {
             false => {
                 let mut rng: StdRng;
                 rng = StdRng::from_entropy();
-                let randos: Vec<f32> = (0..N).into_iter().map(|x| rng.gen::<f32>()).collect();
-                DMatrix::from_iterator(nrows, ncols, randos)
-            }
-        }
-    }
-
-    fn init_rand_X_f64(nrows: usize, ncols: usize, parallel: bool) -> DMatrix<f64> {
-        //let seed = 16;
-
-        let N = nrows * ncols;
-        match parallel {
-            true => {
-                let randos: Vec<f64> = (0..N)
-                    .into_par_iter()
-                    .map_init(|| rand::thread_rng(), |rng, _| rng.gen::<f64>())
-                    .collect::<Vec<f64>>();
-
-                DMatrix::from_iterator(nrows, ncols, randos.into_iter())
-            }
-            false => {
-                let mut rng: StdRng;
-                rng = StdRng::from_entropy();
-                let randos: Vec<f64> = (0..N).into_iter().map(|_| rng.gen::<f64>()).collect();
+                let randos: Vec<f32> = (0..N).into_iter().map(|_| rng.gen::<f32>()).collect();
                 DMatrix::from_iterator(nrows, ncols, randos)
             }
         }
@@ -284,9 +255,7 @@ mod tests_mlinput {
 
     #[test]
     fn mlinput_init_data() {
-        std::env::set_var("RUST_BACKTRACE", "1");
-
-        // Initialize identity matrix
+        // Initialize identity matrix augmented by y
         let X = dmatrix![1.,0.,0.;
                          0.,1.,0.;
                          0.,0.,1.];
@@ -304,51 +273,56 @@ mod tests_mlinput {
 
     #[test]
     fn mlinput_test_sample() {
-        std::env::set_var("RUST_BACKTRACE", "1");
         let seed = 14;
 
-        let nrows = 500000;
+        // Define data size
+        let nrows = 5000;
         let ncols = 500;
 
+        // Initialize mldata
         let X: DMatrix<f32> = init_rand_X_f32(nrows, ncols, false);
+        let input = MLData::new(X, InputClass::Train);
 
-        let input = MLData::new(X.clone(), InputClass::Train);
+        // Sample desired number of samples
+        let n = 200;
+        let samp = input.sample(n, Some(seed));
 
-        let samp = input.sample(200, Some(seed));
-        // println!("X:\n{}", X);
-        println!("Random sample:\n{}", samp);
+        assert_eq!(samp.samples, n);
+        assert_eq!(samp.features, ncols);
     }
 
     #[test]
     fn mlinput_bootstrap() {
-        std::env::set_var("RUST_BACKTRACE", "1");
         let seed = 16;
-        let mut rng: StdRng;
-        rng = StdRng::seed_from_u64(seed);
+        let mut rng = StdRng::seed_from_u64(seed);
 
+        // Define data sizes
         let nrows = 15000;
-        let ncols = 10;
-
+        let ncols = 100;
         let N = nrows * ncols;
+
+        // Generate random numbers to fill for data matrix
         let randos: Vec<f32> = (0..N)
             .into_par_iter()
             .map_init(|| rand::thread_rng(), |rng, _| rng.gen::<f32>())
             .collect::<Vec<f32>>();
 
+        // Make data to initialize test data
         let X: DMatrix<f32> = DMatrix::from_iterator(nrows, ncols, randos.into_iter());
-
         let mut y = DVector::zeros(nrows);
         for row in y.iter_mut() {
             *row = rng.gen::<i8>() as f32;
         }
-        // println!("X: {}", X);
 
         let input = MLData::with_response(X, &y, InputClass::Train);
-        let B = 50;
-        let samples = input.bootstrap(B, 10000, None);
+
+        let B = 100;
+        let N = 50;
+        let samples = input.bootstrap(B, N, None);
+
         assert_eq!(samples.len(), B);
-        for sample in samples.iter().take(10) {
-            println!("{}\n", sample);
+        for sample in samples {
+            assert_eq!(sample.samples, N);
         }
     }
 }
