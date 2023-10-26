@@ -27,7 +27,7 @@
 //! //      - Step size: 0.005
 //! //      - Iterations: 10000
 //! //      - Tolerance: sqrt(machine epsilon)
-//! let gd = GradientDescent::new(0.005, 10000, std::f64::EPSILON.sqrt() );
+//! let gd = GradientDescent::new(0.005, 10000, Some(std::f64::EPSILON.sqrt()));
 //!
 //! // Perform the optimisation with:
 //! //      - Initial guess (10.0, 10.0),

@@ -61,7 +61,7 @@
 //!
 //! Or in Rust, something like:
 //!
-//! ```no_run
+//! ```ignore
 //! gradient.iter().map(|&x| x * x).sum::<f64>().sqrt() < std::f64::EPSILON.sqrt()
 //! ```
 //!

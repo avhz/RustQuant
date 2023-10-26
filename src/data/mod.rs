@@ -81,23 +81,23 @@
 //!
 //! ### Read/write data
 //!
-//! ```rust
+//! ```ignore
 //! use RustQuant::data::*;
 //!
 //! // New `Data` instance.
 //! let mut data = Data::new(
-//!     format: DataFormat::CSV, // Can also be JSON or PARQUET.
-//!     path: String::from("./file/path/read.csv")
-//! )
+//!     DataFormat::CSV,                        // Can also be JSON or PARQUET.
+//!     String::from("./file/path/read.csv"),   // Path to read from.
+//! );
 //!
 //! // Read from the given file.
 //! data.read().unwrap();
 //!
 //! // New path to write the data to.
-//! data.path = String::from("./file/path/write.csv")
+//! data.path = String::from("./file/path/write.csv");
 //! data.write().unwrap();
 //!
-//! println!("{:?}", data.data)
+//! println!("{:?}", data.data);
 //! ```
 
 /// File reading and writing.

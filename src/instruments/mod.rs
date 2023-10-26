@@ -44,15 +44,17 @@
 //!   - [ ] Barrier
 //!
 //! ```no_run
-//! use RustQuant::options::*;
+//! use RustQuant::instruments::*;
+//! use time::{Duration, OffsetDateTime};
 //!
 //! let VanillaOption = EuropeanOption {
-//!     initial_price: 100.0,
-//!     strike_price: 110.0,
+//!     initial_price: 100.,
+//!     strike_price: 110.,
 //!     risk_free_rate: 0.05,
-//!     volatility: 0.2,
+//!     volatility: 0.3,
 //!     dividend_rate: 0.02,
-//!     time_to_maturity: 0.5,
+//!     evaluation_date: None,
+//!     expiration_date: OffsetDateTime::now_utc() + Duration::days(365),
 //! };
 //!
 //! let prices = VanillaOption.price();

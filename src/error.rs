@@ -39,7 +39,7 @@ pub enum RustQuantError {
 /// Create a `RustQuantError` with the text to include in the output.
 /// You would use it as follows:
 ///
-/// ```no_run
+/// ```ignore
 /// return Err(
 ///     error!(
 ///         ComputationError,

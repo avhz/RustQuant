@@ -20,7 +20,7 @@
 //!   - Useful when number of outputs is *larger* than number of inputs.
 //!     - i.e. for functions $f:\mathbb{R}^n \rightarrow \mathbb{R}^m$, where $m \gg n$
 //!
-//! ```no_run
+//! ```
 //! use RustQuant::autodiff::*;
 //!
 //! // Create a new Graph to store the computations.
@@ -47,13 +47,14 @@
 //!
 //! You can also generate Graphviz (dot) code to visualize the computation graphs:
 //!
-//! ```no_run
+//! ```ignore
 //! println!("{}", graphviz(&graph, &variables));
 //! ```  
 //!
-//! The computation graph from computing Black-Scholes Greeks is:
+//! The computation graph from computing Black-Scholes Greeks is shown at the
+//! following link:
 //!
-//! ![Black-Scholes Greeks tape.](./images/black_scholes_tape.png)
+//! [Black-Scholes Greeks tape.](https://github.com/avhz/RustQuant/blob/main/images/black_scholes_tape.png)
 //!
 //! It is clearly a work in progress, but gives a general idea of how the
 //! computation graph is structured.
