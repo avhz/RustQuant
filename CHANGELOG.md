@@ -3,6 +3,7 @@
 ## October 26 2023
 
 - @avhz: Added Constant Elasticity of Variance (CEV) model process generator.
+- @aatmunbaxi: Added `MLData` struct
 
 ## October 24 2023
 
