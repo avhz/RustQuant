@@ -97,13 +97,13 @@ impl<T: nalgebra::ComplexField + Default + Clone> InitializeData<T> for MLData<T
 
         assert_eq!(
             samples,
-            (&y).nrows(),
+            y.nrows(),
             "Design matrix has nrows {} but response vector has length {}",
             samples,
-            (&y).nrows()
+            y.nrows()
         );
 
-        let data = organize_data(X, &y);
+        let data = organize_data(X, y);
 
         Self {
             data,
@@ -177,8 +177,7 @@ impl<T: nalgebra::ComplexField + Default + Clone> MLData<T> {
             rng = StdRng::from_entropy();
         }
 
-        let nums = (0..self.samples).choose_multiple(&mut rng, n);
-        nums
+        (0..self.samples).choose_multiple(&mut rng, n)
     }
 
     /// Bootstrap samples in B bags of size N with replacement
@@ -198,7 +197,7 @@ impl<T: nalgebra::ComplexField + Default + Clone> MLData<T> {
 /// response vector along the rightmost column (if applicable)
 impl<T: nalgebra::ComplexField + Clone + Default> Index<(usize, usize)> for MLData<T> {
     type Output = T;
-    fn index<'a>(&'a self, (i, j): (usize, usize)) -> &'a Self::Output {
+    fn index(&self, (i, j): (usize, usize)) -> &Self::Output {
         assert!(i <= self.features, "Index i out of range.");
         assert!(j <= self.samples, "Index j out of range.");
         if i == self.features {
@@ -229,13 +228,13 @@ pub(crate) fn organize_data<T: nalgebra::ComplexField + Clone + Default>(
 
     assert_eq!(
         X.nrows(),
-        (&y).nrows(),
+        y.nrows(),
         "Design matrix has nrows {} but response vector has length {}",
         X.nrows(),
-        (&y).nrows()
+        y.nrows()
     );
     let mut design = X.insert_column(ncols, T::default());
-    design.set_column(ncols, &y);
+    design.set_column(ncols, y);
     design
 }
 #[cfg(test)]
