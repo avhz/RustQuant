@@ -12,7 +12,7 @@
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // IMPORTS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-use nalgebra::{DMatrix, DMatrixView, DVector};
+use nalgebra::{DMatrix, DMatrixView, DVector, DVectorView};
 use rand::prelude::*;
 use std::ops::Index;
 
@@ -135,10 +135,10 @@ impl<T: nalgebra::ComplexField + Default + Clone> MLData<T> {
     }
 
     /// Returns (resp)onse (vector) if present
-    pub fn respvector(&self) -> Option<DMatrixView<T>> {
+    pub fn respvector(&self) -> Option<DVectorView<T>> {
         match &self.y {
             Response::Absent => None,
-            Response::Present => Some(self.data.view((0, self.features - 1), (self.samples, 1))),
+            Response::Present => Some(self.data.column(self.features)),
         }
     }
 
