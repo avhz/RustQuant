@@ -14,6 +14,7 @@ See:
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // IMPORTS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+use crate::ml::{InitializeData, InputClass, MLData};
 use nalgebra::{DMatrix, DVector};
 use std::collections::HashMap;
 
@@ -21,22 +22,9 @@ use std::collections::HashMap;
 // STRUCTS, ENUMS, AND TRAITS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-/// KNN Classifier struct
 #[derive(Clone, Debug)]
-pub struct KNearestClassifier<T> {
-    /// Input data matrix.
-    /// Rows correspond to data points, and each column is a different
-    /// feature of the data.
-    pub x: DMatrix<T>,
-
-    /// Class labels for each row of the data matrix.
-    /// Class labels are assumed to be integers, but they are read in
-    /// as f64
-    pub y: DVector<T>,
-
-    /// Type of metric to compute distances
-    pub metric: Metric,
-}
+/// Struct to hold input data to KNN classifier
+pub struct KNearestClassifier<T: nalgebra::ComplexField + Clone + Default>(MLData<T>);
 
 /// Metric for computing distances
 #[derive(Clone, Debug)]
@@ -52,26 +40,32 @@ pub enum Metric {
     Minkowski(i32),
 }
 
-impl KNearestClassifier<f64> {
-    /// New KNN classifier object
-    /// x: data points with features along columns
-    /// y: labels of data points
-    /// metric: choice of metric to compute distances
-    pub fn new(x: DMatrix<f64>, y: DVector<f64>, metric: Metric) -> Self {
-        assert_eq!(x.nrows(), y.nrows());
-
-        Self { x, y, metric }
+impl<T: nalgebra::ComplexField + Clone + Default> InitializeData<T> for KNearestClassifier<T> {
+    fn new(X: DMatrix<T>, data_type: InputClass) -> Self {
+        KNearestClassifier(MLData::new(X, data_type))
     }
 
+    fn with_response(X: DMatrix<T>, y: &DVector<T>, data_type: InputClass) -> Self {
+        KNearestClassifier(MLData::with_response(X, y, data_type))
+    }
+
+    fn from_augmented(Xy: DMatrix<T>, data_type: InputClass) -> Self {
+        KNearestClassifier(MLData::from_augmented(Xy, data_type))
+    }
+}
+impl KNearestClassifier<f64> {
     /// Predict class of a single test data point
     /// xprime: test data point
     /// k: number of neighbors to consider
-    fn predict_one(&self, xprime: &DMatrix<f64>, k: &usize) -> f64 {
-        let neighbors = self.find_neighbors(xprime, k);
+    fn predict_one(&self, xprime: &DMatrix<f64>, k: &usize, metric: &Metric) -> f64 {
+        let neighbors = self.find_neighbors(xprime, k, metric);
 
         let mut classes: Vec<f64> = vec![0.0; neighbors.len()];
         for i in 0..neighbors.len() {
-            classes[i] = self.y[neighbors[i].0];
+            classes[i] = self
+                .0
+                .respvector()
+                .expect("Error: no response vector provided")[neighbors[i].0];
         }
 
         let mut counts = HashMap::new();
@@ -90,13 +84,16 @@ impl KNearestClassifier<f64> {
     /// Predict classes of collection of test points
     /// xprime: test data point
     /// k: number of neighbors to consider
-    pub fn predict(&self, xprime: &DMatrix<f64>, k: &usize) -> Vec<f64> {
-        assert_eq!(self.x.ncols(), xprime.ncols());
+    pub fn predict(&self, xprime: &DMatrix<f64>, k: &usize, metric: Metric) -> Vec<f64> {
+        assert_eq!(self.0.featmatrix().ncols(), xprime.ncols());
         let mut predictions: Vec<f64> = vec![0.0; xprime.nrows()];
 
         for i in 0..predictions.len() {
-            predictions[i] =
-                self.predict_one(&DMatrix::from(xprime.view((i, 0), (1, xprime.ncols()))), k);
+            predictions[i] = self.predict_one(
+                &DMatrix::from(xprime.view((i, 0), (1, xprime.ncols()))),
+                k,
+                &metric,
+            );
         }
 
         predictions
@@ -105,26 +102,31 @@ impl KNearestClassifier<f64> {
     /// Find distances of neighbors of data points
     /// xprime: test data point
     /// k: number of neighbors to consider
-    fn find_neighbors(&self, xprime: &DMatrix<f64>, k: &usize) -> Vec<(usize, f64)> {
-        let (n_samples, _n_feats) = self.x.shape();
+    /// metric: metric to use to compute distances
+    fn find_neighbors(
+        &self,
+        xprime: &DMatrix<f64>,
+        k: &usize,
+        metric: &Metric,
+    ) -> Vec<(usize, f64)> {
+        let (n_samples, _n_feats) = (self.0.samples, self.0.features);
 
         let mut distances: Vec<(usize, f64)> = vec![(0, 0.0); n_samples];
+        let x = self.0.featmatrix();
 
         for i in 0..n_samples {
             distances[i] = (
                 i,
-                match self.metric {
-                    Metric::Euclidean => self.x.row(i).metric_distance(xprime),
+                match metric {
+                    Metric::Euclidean => x.row(i).metric_distance(xprime),
 
-                    Metric::Manhattan => self
-                        .x
+                    Metric::Manhattan => x
                         .row(i)
                         .apply_metric_distance(xprime, &nalgebra::base::LpNorm(1)),
 
-                    Metric::Minkowski(p) => self
-                        .x
+                    Metric::Minkowski(p) => x
                         .row(i)
-                        .apply_metric_distance(xprime, &nalgebra::base::LpNorm(p)),
+                        .apply_metric_distance(xprime, &nalgebra::base::LpNorm(*p)),
                 },
             );
         }
@@ -246,7 +248,7 @@ mod tests_knnclassifier {
         let labels = DVector::from(class_labels);
 
         let knn: KNearestClassifier<f64> =
-            KNearestClassifier::new(iris_data, labels, Metric::Euclidean);
+            KNearestClassifier::with_response(iris_data, &labels, InputClass::Train);
 
         let test_features = dmatrix![
 
@@ -294,7 +296,7 @@ mod tests_knnclassifier {
         actual_test_labels.append(&mut vec![2.0; 10]);
 
         // Predict with k=3 nearest neighbors
-        let predictions = knn.predict(&test_features, &9);
+        let predictions = knn.predict(&test_features, &9, Metric::Euclidean);
         let N = predictions.len();
 
         let MSE = |x: &Vec<f64>, y: &Vec<f64>| -> f64 {
