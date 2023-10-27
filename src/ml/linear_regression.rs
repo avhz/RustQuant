@@ -13,6 +13,7 @@
 // IMPORTS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+use crate::ml::{InitializeData, InputClass, MLData};
 use nalgebra::{DMatrix, DVector};
 use thiserror::Error;
 
@@ -37,15 +38,22 @@ pub enum LinearRegressionError {
     SvdDecompositionFailedOnU,
 }
 
-/// Struct to hold the input data for a linear regression.
 #[derive(Clone, Debug)]
-pub struct LinearRegressionInput<T> {
-    /// The input data matrix, also known as the design matrix.
-    /// You do not need to add a column of ones to the design matrix,
-    /// as this is done automatically.
-    pub x: DMatrix<T>,
-    /// The output data vector, also known as the response vector.
-    pub y: DVector<T>,
+/// Struct for input data to linear regression
+pub struct LinearRegressionInput<T: nalgebra::ComplexField + Clone + Default>(MLData<T>);
+
+impl<T: nalgebra::ComplexField + Clone + Default> InitializeData<T> for LinearRegressionInput<T> {
+    fn new(X: DMatrix<T>, data_type: InputClass) -> Self {
+        LinearRegressionInput(MLData::new(X, data_type))
+    }
+
+    fn with_response(X: DMatrix<T>, y: &DVector<T>, data_type: InputClass) -> Self {
+        LinearRegressionInput(MLData::with_response(X, y, data_type))
+    }
+
+    fn from_augmented(Xy: DMatrix<T>, data_type: InputClass) -> Self {
+        LinearRegressionInput(MLData::from_augmented(Xy, data_type))
+    }
 }
 
 /// Struct to hold the output data for a linear regression.
@@ -84,11 +92,6 @@ pub enum Decomposition {
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 impl LinearRegressionInput<f64> {
-    /// Create a new `LinearRegressionInput` struct.
-    pub fn new(x: DMatrix<f64>, y: DVector<f64>) -> Self {
-        Self { x, y }
-    }
-
     /// Fits a linear regression to the input data.
     /// Returns the intercept and coefficients.
     /// The intercept is the first value of the coefficients.
@@ -104,8 +107,12 @@ impl LinearRegressionInput<f64> {
     ) -> Result<LinearRegressionOutput<f64>, LinearRegressionError> {
         // Insert a column of 1s to the input data matrix,
         // to account for the intercept.
-        let x = self.x.clone().insert_column(0, 1.);
-        let y = self.y.clone();
+        // let x = self.x.clone().insert_column(0, 1.);
+        let x = self.0.featmatrix().insert_column(0, 1.);
+        let y = self
+            .0
+            .respvector()
+            .expect("Error: no response vector provided");
 
         match method {
             Decomposition::None => {
@@ -189,6 +196,7 @@ impl LinearRegressionOutput<f64> {
 mod tests_linear_regression {
     use super::*;
     use crate::assert_approx_equal;
+    use crate::ml::InputClass;
     use std::time::Instant;
 
     #[test]
@@ -231,10 +239,7 @@ mod tests_linear_regression {
             DVector::from_row_slice(&[-0.44515196, -1.84780364, -0.62882531, -0.86108069]);
 
         // Fit the model to the training data.
-        let input = LinearRegressionInput {
-            x: x_train,
-            y: response,
-        };
+        let input = LinearRegressionInput::with_response(x_train, &response, InputClass::Train);
 
         let start_none = Instant::now();
         let output = input.fit(Decomposition::None)?;
