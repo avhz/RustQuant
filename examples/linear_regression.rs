@@ -2,7 +2,7 @@ use nalgebra::{DMatrix, DVector};
 
 use RustQuant::ml::*;
 
-fn main() -> Result<(), LinearRegressionError>{
+fn main() -> Result<(), LinearRegressionError> {
     // TEST DATA GENERATED FROM THE FOLLOWING R CODE:
     //
     // set.seed(2023)
@@ -42,10 +42,7 @@ fn main() -> Result<(), LinearRegressionError>{
     let response = DVector::from_row_slice(&[-0.44515196, -1.84780364, -0.62882531, -0.86108069]);
 
     // Create the input object for the linear regression model.
-    let input = LinearRegressionInput {
-        x: x_train,
-        y: response,
-    };
+    let input = LinearRegressionInput::with_response(x_train, &response, InputClass::Train);
 
     // Fit the model to the training data.
     // You need to specify which method (decomposition) to use for fitting the model.
