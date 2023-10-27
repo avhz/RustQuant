@@ -14,24 +14,30 @@
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 use crate::ml::ActivationFunction;
+use crate::ml::{InitializeData, InputClass, MLData};
 use nalgebra::{DMatrix, DVector};
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // STRUCTS, ENUMS, AND TRAITS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-/// Struct to hold the input data for a logistic regression.
 #[derive(Clone, Debug)]
-pub struct LogisticRegressionInput<T> {
-    /// The input data matrix, also known as the design matrix.
-    /// You do not need to add a column of ones to the design matrix,
-    /// as this is done automatically.
-    pub x: DMatrix<T>,
-    /// The output data vector, also known as the response vector.
-    /// The values of the response vector should be either 0 or 1.
-    pub y: DVector<T>,
-}
+/// Struct to hold the input data for a logistic regression.
+pub struct LogisticRegressionInput<T: nalgebra::ComplexField + Clone + Default>(MLData<T>);
 
+impl<T: nalgebra::ComplexField + Clone + Default> InitializeData<T> for LogisticRegressionInput<T> {
+    fn new(X: DMatrix<T>, data_type: InputClass) -> Self {
+        LogisticRegressionInput(MLData::new(X, data_type))
+    }
+
+    fn with_response(X: DMatrix<T>, y: &DVector<T>, data_type: InputClass) -> Self {
+        LogisticRegressionInput(MLData::with_response(X, y, data_type))
+    }
+
+    fn from_augmented(Xy: DMatrix<T>, data_type: InputClass) -> Self {
+        LogisticRegressionInput(MLData::from_augmented(Xy, data_type))
+    }
+}
 /// Struct to hold the output data for a logistic regression.
 #[derive(Clone, Debug)]
 pub struct LogisticRegressionOutput<T> {
@@ -69,37 +75,37 @@ pub enum LogisticRegressionAlgorithm {
 type PrepareInputResult = Result<(DMatrix<f64>, DMatrix<f64>, DVector<f64>), &'static str>;
 
 impl LogisticRegressionInput<f64> {
-    /// Create a new `LogisticRegressionInput` struct.
-    pub fn new(x: DMatrix<f64>, y: DVector<f64>) -> Self {
-        assert!(x.nrows() == y.len());
-
-        Self { x, y }
-    }
-
     /// Function to validate and prepare the input data.
     fn prepare_input(&self) -> PrepareInputResult {
+        let y: DVector<f64> = DVector::<f64>::from(
+            self.0
+                .respvector()
+                .expect("Error: no response vector present"),
+        );
+
+        let x = self.0.featmatrix();
         // Check that the response vector is either 0 or 1.
-        if self.y.iter().any(|&x| x != 0. && x != 1.) {
+        if y.iter().any(|&x| x != 0. && x != 1.) {
             return Err("The elements of the response vector should be either 0 or 1.");
         }
 
         // Check dimensions match.
-        let (n_rows, _) = self.x.shape();
+        let (n_rows, _) = x.shape();
 
-        if n_rows != self.y.len() {
+        if n_rows != y.len() {
             return Err("The number of rows in the design matrix should match the length of the response vector.");
         }
 
         // Check the input data is finite.
-        if self.x.iter().any(|&x| !x.is_finite()) || self.y.iter().any(|&x| !x.is_finite()) {
+        if x.iter().any(|&z| !z.is_finite()) || y.iter().any(|&z| !z.is_finite()) {
             return Err("The input data should be finite.");
         }
 
         // Add a column of ones to the design matrix.
-        let x = self.x.clone().insert_column(0, 1.0);
+        let x = x.insert_column(0, 1.0);
 
         // Also return the transpose of the design matrix.
-        Ok((x.clone(), x.transpose(), self.y.clone()))
+        Ok((x.clone(), x.transpose(), y))
     }
 
     /// Function to validate and prepare the output data.
@@ -107,22 +113,29 @@ impl LogisticRegressionInput<f64> {
         // Initial guess for the coefficients.
         // hyperplane orthogonal to line between  means of class 0 and 1; plane goes through the location of (weighted) mean of both clusters
 
-        let (_n_sample, n_feat) = self.x.shape();
+        let y = self
+            .0
+            .respvector()
+            .expect("Error: no response vector present");
+
+        let x = self.0.featmatrix();
+
+        let (_n_sample, n_feat) = x.shape();
         let ones = DVector::from_element(n_feat, 1.).transpose();
 
         // Calculate mean of features of samples of class 0
-        let mask0 = &self.y * &ones;
-        let x0_mean = self.x.component_mul(&mask0).row_mean();
+        let mask0 = &y * &ones;
+        let x0_mean = x.component_mul(&mask0).row_mean();
 
         // Calculate mean of features of samples of class 1
         let mask1 = (-&mask0).add_scalar(1.);
-        let x1_mean = self.x.component_mul(&mask1).row_mean();
+        let x1_mean = x.component_mul(&mask1).row_mean();
 
         //vector from x0_mean to x1_mean
         let delta = &x1_mean - &x0_mean;
 
         //fraction of samples in class 1 , used as weight
-        let y_mean = self.y.mean();
+        let y_mean = y.mean();
         let mid = x1_mean * y_mean + x0_mean * (1. - y_mean);
 
         //compute projection of weighted mean of class on direction delta
@@ -310,10 +323,7 @@ mod tests_logistic_regression {
         let response = DVector::from_row_slice(&[0., 1., 1., 1.]);
 
         // Fit the model to the training data.
-        let input = LogisticRegressionInput {
-            x: x_train,
-            y: response,
-        };
+        let input = LogisticRegressionInput::with_response(x_train, &response, InputClass::Train);
 
         let start_none = Instant::now();
         let output = input.fit(LogisticRegressionAlgorithm::IRLS, f64::EPSILON.sqrt());
@@ -412,10 +422,7 @@ mod tests_logistic_regression {
         let y_test = probs_test.map(|p| Bernoulli::new(p).sample(1).unwrap()[0]);
 
         // Fit the model to the training data.
-        let input = LogisticRegressionInput {
-            x: x_train,
-            y: y_train,
-        };
+        let input = LogisticRegressionInput::with_response(x_train, &y_train, InputClass::Train);
 
         let start_none = Instant::now();
         let output = input.fit(LogisticRegressionAlgorithm::IRLS, f64::EPSILON.sqrt());

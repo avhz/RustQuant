@@ -65,10 +65,7 @@ fn main() {
         .map(|p| Bernoulli::new(p).unwrap().sample(&mut rand::thread_rng()) as i32 as f64);
 
     // Fit the model to the training data.
-    let input = LogisticRegressionInput {
-        x: x_train,
-        y: y_train,
-    };
+    let input = LogisticRegressionInput::with_response(x_train, &y_train, InputClass::Train);
 
     let start = Instant::now();
     let output = input.fit(LogisticRegressionAlgorithm::IRLS, f64::EPSILON.sqrt());
