@@ -45,7 +45,7 @@ pub enum InputClass {
 /// Type T is generic in principle, but in practice will only be
 /// f32 or f64 to satisfy nalgebra::ComplexField trait
 #[derive(Clone, Debug)]
-struct MLData<T: nalgebra::ComplexField + Clone + Default> {
+pub struct MLData<T: nalgebra::ComplexField + Clone + Default> {
     /// Data matrix, possibly augmented by response vector
     /// Data points corresponds to rows, with
     /// features along the column entries
@@ -64,9 +64,22 @@ struct MLData<T: nalgebra::ComplexField + Clone + Default> {
     pub data_type: InputClass,
 }
 
-impl<T: nalgebra::ComplexField + Default + Clone> MLData<T> {
+/// Routines for initialization of data
+pub trait InitializeData<T> {
     /// New MLData struct, with no response vector
-    pub fn new(X: DMatrix<T>, data_type: InputClass) -> Self {
+    fn new(X: DMatrix<T>, data_type: InputClass) -> Self;
+
+    /// New MLData with response vector y
+    /// Length of response vector must equal the number of samples
+    fn with_response(X: DMatrix<T>, y: &DVector<T>, data_type: InputClass) -> Self;
+
+    /// New MLData from augmented data matrix.
+    /// Last column of Xy is assumed to be a response vector
+    fn from_augmented(Xy: DMatrix<T>, data_type: InputClass) -> Self;
+}
+
+impl<T: nalgebra::ComplexField + Default + Clone> InitializeData<T> for MLData<T> {
+    fn new(X: DMatrix<T>, data_type: InputClass) -> Self {
         let samples = X.nrows();
         let features = X.ncols();
         Self {
@@ -78,9 +91,7 @@ impl<T: nalgebra::ComplexField + Default + Clone> MLData<T> {
         }
     }
 
-    /// New MLData with response vector y
-    /// Length of response vector must equal the number of samples
-    pub fn with_response(X: DMatrix<T>, y: &DVector<T>, data_type: InputClass) -> Self {
+    fn with_response(X: DMatrix<T>, y: &DVector<T>, data_type: InputClass) -> Self {
         let samples = X.nrows();
         let features = X.ncols();
 
@@ -103,9 +114,7 @@ impl<T: nalgebra::ComplexField + Default + Clone> MLData<T> {
         }
     }
 
-    // New MLData from augmented data matrix.
-    // Last column of Xy is assumed to be a response vector
-    pub fn from_augmented(Xy: DMatrix<T>, data_type: InputClass) -> Self {
+    fn from_augmented(Xy: DMatrix<T>, data_type: InputClass) -> Self {
         let samples = Xy.nrows();
         let features = Xy.ncols() - 1;
 
@@ -117,7 +126,9 @@ impl<T: nalgebra::ComplexField + Default + Clone> MLData<T> {
             data_type,
         }
     }
+}
 
+impl<T: nalgebra::ComplexField + Default + Clone> MLData<T> {
     /// Returns (feat)ure (matrix)
     pub fn featmatrix(&self) -> DMatrixView<T> {
         self.data.view((0, 0), (self.samples, self.features))
