@@ -1,3 +1,18 @@
+# Changelog
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [Unreleased]
+
+## [0.0.37](https://github.com/avhz/RustQuant/compare/v0.0.36...v0.0.37) - 2023-11-12
+
+### Other
+- *(https://github.com/avhz/RustQuant/pull/150)* Fix gitignore problem.
+- *(https://github.com/avhz/RustQuant/pull/150)* Re-added correct logo.
+- *(https://github.com/avhz/RustQuant/pull/150)* Added `Release-plz` workflow.
+- *(https://github.com/avhz/RustQuant/pull/150)* Added `Release-plz` workflow.
 # Change Log
 
 ## October 26 2023
