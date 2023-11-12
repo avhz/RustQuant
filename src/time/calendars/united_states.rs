@@ -7,7 +7,7 @@
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use crate::time::{is_weekend, Calendar};
+use crate::time::Calendar;
 use time::{Month, OffsetDateTime, Weekday};
 
 /// United States settlement calendar.
@@ -39,16 +39,14 @@ fn is_juneteenth(d: u8, m: Month, y: i32, w: Weekday) -> bool {
 
 impl Calendar for UnitedStates {
     fn name(&self) -> &'static str {
-        "United States"
+        "United States of America"
     }
 
     fn is_business_day(&self, date: OffsetDateTime) -> bool {
-        let w = date.weekday();
-        let d = date.day();
-        let m = date.month();
-        let y = date.year();
+        let (w, d, m, y, dd) = self.unpack_date(date);
+        let em = Self::easter_monday(y as usize, false);
 
-        if is_weekend(date)
+        if Self::is_weekend(date)
             || ((d == 1 || (d == 2 && w == Weekday::Monday)) && m == Month::January)
             || (d == 31 && w == Weekday::Friday && m == Month::December)
             || ((15..=21).contains(&d) && w == Weekday::Monday && m == Month::January && y >= 1983)

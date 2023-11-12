@@ -31,12 +31,22 @@ pub mod schedule;
 
 /// Calendar definitions for settlement purposes.
 pub mod calendars {
+    /// Argentina settlement calendar.
+    pub mod argentina;
     /// Australian settlement calendar.
     pub mod australia;
     /// Austrian settlement calendar.
     pub mod austria;
+    /// Botswana settlement calendar.
+    pub mod botswana;
+    /// Brazil settlement calendar.
+    pub mod brazil;
     /// Canadian settlement calendar.
     pub mod canada;
+    /// Chile settlement calendar.
+    pub mod chile;
+    /// China settlement calendar.
+    pub mod china;
     /// UK settlement calendar.
     pub mod united_kingdom;
     /// USA settlement calendar.
