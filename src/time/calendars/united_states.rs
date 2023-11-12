@@ -39,7 +39,7 @@ fn is_juneteenth(d: u8, m: Month, y: i32, w: Weekday) -> bool {
 
 impl Calendar for UnitedStates {
     fn name(&self) -> &'static str {
-        "United States of America"
+        "United States"
     }
 
     fn is_business_day(&self, date: OffsetDateTime) -> bool {
