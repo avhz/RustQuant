@@ -47,6 +47,7 @@ A Rust library for quantitative finance.
 | [`data`](https://docs.rs/RustQuant/latest/RustQuant/data/index.html) | Methods for reading and writing data from/to various sources (CSV, JSON, Parquet). Can also download data from Yahoo! Finance. |
 | [`error`](https://docs.rs/RustQuant/latest/RustQuant/error/index.html) | RustQuant error handling module. |
 | [`instruments`](https://docs.rs/RustQuant/latest/RustQuant/instruments/index.html) | Various implementations for instruments like `Bonds` and `Options`, and the pricing of them. Others coming in the future (swaps, futures, CDSs, etc). |
+| [`iso`](https://docs.rs/RustQuant/latest/RustQuant/iso/index.html) | A few ISO code implementations. Currently: ISO-4217 (currency codes), ISO-3166 (country codes), ISO-10383 (market identifier codes). |
 | [`math`](https://docs.rs/RustQuant/latest/RustQuant/math/index.html) | Fast Fourier Transform (FFT), numerical integration (double-exponential quadrature), optimisation/root-finding (gradient descent, Newton-Raphson), and risk-reward metrics. Also some sequence methods such as `linspace` and `cumsum`. |
 | [`ml`](https://docs.rs/RustQuant/latest/RustQuant/ml/index.html) | Currently only linear and logistic regression, along with k-nearest neighbours classification are implemented. More to come in the future. |
 | [`macros`](https://docs.rs/RustQuant/latest/RustQuant/macros/index.html) | Currently only `plot_vector!()` and `assert_approx_equal!()`. |

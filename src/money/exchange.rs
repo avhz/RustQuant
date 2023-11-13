@@ -204,6 +204,7 @@ impl ExchangeRate {
 #[cfg(test)]
 mod test_exchange_rate {
     use super::*;
+    use crate::iso::*;
 
     #[test]
     fn test_conversion() {

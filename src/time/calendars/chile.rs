@@ -18,6 +18,14 @@ impl Calendar for Chile {
         "Chile"
     }
 
+    fn country_code(&self) -> crate::iso::ISO_3166 {
+        crate::iso::ISO_3166 {
+            alpha_2: "CL",
+            alpha_3: "CHL",
+            numeric: "152",
+        }
+    }
+
     fn is_business_day(&self, date: OffsetDateTime) -> bool {
         let (w, d, m, y, dd) = self.unpack_date(date);
         let em = Self::easter_monday(y as usize, false);

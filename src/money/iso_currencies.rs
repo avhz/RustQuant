@@ -12,7 +12,7 @@
 //! It currently needs to be proof-read and tested.
 
 use super::Currency;
-use super::ISO_4217;
+use crate::iso::ISO_4217;
 
 /// United Arab Emirates dirham (AED)
 pub const AED: Currency = Currency {

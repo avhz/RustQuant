@@ -18,6 +18,9 @@ pub trait Calendar {
     /// Check if the date is a business day.
     fn is_business_day(&self, date: OffsetDateTime) -> bool;
 
+    /// Returns the ISO 3166-1 country code.
+    fn country_code(&self) -> crate::iso::ISO_3166;
+
     /// Unpacks an OffsetDateTime into a tuple in the following form:
     ///
     /// ```ignore

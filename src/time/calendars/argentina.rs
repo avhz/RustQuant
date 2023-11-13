@@ -18,6 +18,14 @@ impl Calendar for Argentina {
         "Argentina"
     }
 
+    fn country_code(&self) -> crate::iso::ISO_3166 {
+        crate::iso::ISO_3166 {
+            alpha_2: "AR",
+            alpha_3: "ARG",
+            numeric: "032",
+        }
+    }
+
     fn is_business_day(&self, date: OffsetDateTime) -> bool {
         let (w, d, m, y, dd) = self.unpack_date(date);
         let em = Self::easter_monday(y as usize, false);

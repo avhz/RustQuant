@@ -30,6 +30,7 @@ pub mod curves;
 pub mod data;
 pub mod error;
 pub mod instruments;
+pub mod iso;
 #[macro_use]
 pub mod macros;
 pub mod math;
