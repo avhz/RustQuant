@@ -47,7 +47,7 @@ impl Calendar for Botswana {
         || ((d == 1 || (d == 2 && w == Weekday::Monday))
             && m == Month::July)
         // Presidents' Day (third Monday of July)
-        || ((d >= 15 && d <= 21) && w == Weekday::Monday && m == Month::July)
+        || ((15..=21).contains(&d) && w == Weekday::Monday && m == Month::July)
         // Independence Day, September 30th (possibly moved to Monday)
         || ((d == 30 && m == Month::September) || 
             (d == 1  && w == Weekday::Monday && m == Month::October))
@@ -63,6 +63,6 @@ impl Calendar for Botswana {
             return false;
         }
 
-        return true;
+        true
     }
 }

@@ -13,7 +13,7 @@
 ///     - `alpha_2`: ISO 3166-1 alpha-2 country code. e.g. US = United States
 ///     - `alpha_3`: ISO 3166-1 alpha-3 country code. e.g. USA = United States
 ///    - `numeric`: ISO 3166-1 numeric code. e.g. USA = 840
-#[derive(Debug, Clone, Copy, serde::Deserialize)]
+#[derive(Debug, Clone, Copy)]
 #[allow(non_camel_case_types)]
 pub struct ISO_3166 {
     /// The ISO 3166-1 alpha-2 country code.

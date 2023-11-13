@@ -45,7 +45,7 @@ impl Calendar for Chile {
             // Day of Aboriginal People
             || (d == 21 && m == Month::June && y >= 2021)
             // St. Peter and St. Paul
-            || (d >= 26 && d <= 29 && m == Month::June && w == Weekday::Monday)
+            || ((26..=29).contains(&d) && m == Month::June && w == Weekday::Monday)
             || (d == 2 && m == Month::July && w == Weekday::Monday)
             // Our Lady of Mount Carmel
             || (d == 16 && m == Month::July)
@@ -58,7 +58,7 @@ impl Calendar for Chile {
             || (d == 19 && m == Month::September)
             || (d == 20 && m == Month::September && w == Weekday::Friday && y >= 2007)
             // Discovery of Two Worlds
-            || (d >= 9 && d <= 12 && m == Month::October && w == Weekday::Monday)
+            || ((9..=12).contains(&d) && m == Month::October && w == Weekday::Monday)
             || (d == 15 && m == Month::October && w == Weekday::Monday)
             // Reformation Day
             || (((d == 27 && m == Month::October && w == Weekday::Friday)
@@ -74,6 +74,6 @@ impl Calendar for Chile {
             return false;
         }
 
-        return true;
+        true
     }
 }

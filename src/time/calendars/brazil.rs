@@ -8,7 +8,7 @@
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 use crate::time::Calendar;
-use time::{Month, OffsetDateTime, Weekday};
+use time::{Month, OffsetDateTime};
 
 /// Brazil calendar.
 pub struct Brazil;
@@ -27,7 +27,7 @@ impl Calendar for Brazil {
     }
 
     fn is_business_day(&self, date: OffsetDateTime) -> bool {
-        let (w, d, m, y, dd) = self.unpack_date(date);
+        let (_, d, m, y, dd) = self.unpack_date(date);
         let em = Self::easter_monday(y as usize, false);
 
         if Self::is_weekend(date)
@@ -57,6 +57,6 @@ impl Calendar for Brazil {
             return false;
         }
 
-        return true;
+        true
     }
 }

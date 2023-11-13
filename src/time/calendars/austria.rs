@@ -27,7 +27,7 @@ impl Calendar for Austria {
     }
 
     fn is_business_day(&self, date: OffsetDateTime) -> bool {
-        let (w, d, m, y, dd) = self.unpack_date(date);
+        let (_, d, m, y, dd) = self.unpack_date(date);
         let em = Self::easter_monday(y as usize, false);
 
         if Self::is_weekend(date)

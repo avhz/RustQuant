@@ -42,11 +42,11 @@ impl Calendar for Argentina {
             // May Revolution
             || (d == 25 && m == Month::May)
             // Death of General Manuel Belgrano
-            || (d >= 15 && d <= 21 && w == Weekday::Monday && m == Month::June)
+            || ((15..=21).contains(&d) && w == Weekday::Monday && m == Month::June)
             // Independence Day
             || (d == 9 && m == Month::July)
             // Death of General José de San Martín
-            || (d >= 15 && d <= 21 && w ==Weekday::Monday && m == Month::August)
+            || ((15..=21).contains(&d) && w ==Weekday::Monday && m == Month::August)
             // Columbus Day
             || ((d == 10 || d == 11 || d == 12 || d == 15 || d == 16)
                 && w == Weekday::Monday && m == Month::October)
@@ -60,6 +60,6 @@ impl Calendar for Argentina {
             return false;
         }
 
-        return true;
+        true
     }
 }

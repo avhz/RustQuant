@@ -8,7 +8,7 @@
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 use crate::time::Calendar;
-use time::{Month, OffsetDateTime, Weekday};
+use time::{Month, OffsetDateTime};
 
 /// China calendar.
 pub struct China;
@@ -26,9 +26,9 @@ impl Calendar for China {
         }
     }
 
+    #[allow(clippy::manual_range_contains)]
     fn is_business_day(&self, date: OffsetDateTime) -> bool {
-        let (w, d, m, y, dd) = self.unpack_date(date);
-        let em = Self::easter_monday(y as usize, false);
+        let (_, d, m, y, _) = self.unpack_date(date);
 
         if Self::is_weekend(date)
             // New Year's Day
@@ -164,11 +164,11 @@ impl Calendar for China {
             || (y == 2022 && d >= 3 && d <= 7 && m == Month::October)
             || (y == 2023 && d >= 2 && d <= 6 && m == Month::October)
             // 70th anniversary of the victory of anti-Japanese war
-            || (y == 2015 && d >= 3 && d <= 4 && m == Month::September)
+            || (y == 2015 && (3..=4).contains(&d) && m == Month::September)
         {
             return false;
         }
 
-        return true;
+        true
     }
 }

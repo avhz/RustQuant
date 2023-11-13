@@ -88,7 +88,7 @@ impl CurveModel for NelsonSiegel {
         f64::exp(-self.spot_rate(date) * tau / 100.)
     }
 
-    fn calibrate<C: Curve>(&self, curve: C) -> Self {
+    fn calibrate<C: Curve>(&self, _curve: C) -> Self {
         unimplemented!()
     }
 }
