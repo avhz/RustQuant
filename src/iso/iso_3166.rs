@@ -13,7 +13,7 @@
 ///     - `alpha_2`: ISO 3166-1 alpha-2 country code. e.g. US = United States
 ///     - `alpha_3`: ISO 3166-1 alpha-3 country code. e.g. USA = United States
 ///    - `numeric`: ISO 3166-1 numeric code. e.g. USA = 840
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, Eq, PartialEq)]
 #[allow(non_camel_case_types)]
 pub struct ISO_3166 {
     /// The ISO 3166-1 alpha-2 country code.
@@ -104,7 +104,7 @@ impl ISO_3166 {
             "CU" => Some(CUBA),
             "CW" => Some(CURAÇAO),
             "CY" => Some(CYPRUS),
-            "CZ" => Some(CZECHIA),
+            "CZ" => Some(CZECH_REPUBLIC),
             "DK" => Some(DENMARK),
             "DJ" => Some(DJIBOUTI),
             "DM" => Some(DOMINICA),
@@ -382,7 +382,7 @@ iso_3166! {
     CUBA: "CU", "CUB", "192",
     CURAÇAO: "CW", "CUW", "531",
     CYPRUS: "CY", "CYP", "196",
-    CZECHIA: "CZ", "CZE", "203",
+    CZECH_REPUBLIC: "CZ", "CZE", "203",
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // D
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

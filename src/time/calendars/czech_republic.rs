@@ -19,7 +19,7 @@ impl Calendar for CzechRepublic {
     }
 
     fn country_code(&self) -> crate::iso::ISO_3166 {
-        crate::iso::CZECHIA
+        crate::iso::CZECH_REPUBLIC
     }
 
     fn market_identifier_code(&self) -> crate::iso::ISO_10383 {

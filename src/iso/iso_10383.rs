@@ -13,7 +13,7 @@
 //! whether a date is a business day or not.
 
 /// ISO 10383 market identifier codes enum.
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[allow(non_camel_case_types)]
 pub struct ISO_10383 {
     /// The ISO 10383 operating MIC.
@@ -36,7 +36,7 @@ pub struct ISO_10383 {
 }
 
 /// Operating/segment flag.
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum OperatingOrSegment {
     /// Operating MIC.
     Operating,
@@ -46,7 +46,7 @@ pub enum OperatingOrSegment {
 }
 
 /// MIC status flag.
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[allow(non_camel_case_types)]
 pub enum MICStatus {
     /// Active.
