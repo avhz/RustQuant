@@ -6,6 +6,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.0.38](https://github.com/avhz/RustQuant/compare/v0.0.37...v0.0.38) - 2023-11-14
+
+### Other
+- [#142](https://github.com/avhz/RustQuant/pull/142) - Add more calendars (Czech Rep., Denmark, Finland, France, Germany, Hong Kong)
+- Fix some clippy lints.
+- Add ISO code implementations (ISO-4217, ISO-3166, ISO-10383)
+- [#142](https://github.com/avhz/RustQuant/pull/142) - Add calendar boilerplate
+- [#142](https://github.com/avhz/RustQuant/pull/142) - Add calendars (Argentina, Botswana, Brazil, Chile, China)
+
 ## [0.0.37](https://github.com/avhz/RustQuant/compare/v0.0.36...v0.0.37) - 2023-11-12
 
 ### Other
