@@ -47,6 +47,18 @@ pub mod calendars {
     pub mod chile;
     /// China settlement calendar.
     pub mod china;
+    /// Czech Republic settlement calendar.
+    pub mod czech_republic;
+    /// Denmark settlement calendar.
+    pub mod denmark;
+    /// Finland settlement calendar.
+    pub mod finland;
+    /// France settlement calendar.
+    pub mod france;
+    /// Germany settlement calendar.
+    pub mod germany;
+    /// Hong Kong settlement calendar.
+    pub mod hong_kong;
     /// UK settlement calendar.
     pub mod united_kingdom;
     /// USA settlement calendar.

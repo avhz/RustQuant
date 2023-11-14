@@ -107,7 +107,7 @@ impl CurveModel for NelsonSiegelSvensson {
 #[cfg(test)]
 mod tests_nelson_siegel_svensson {
     use super::*;
-    use crate::plot_vector;
+    // use crate::plot_vector;
     use time::Duration;
 
     #[test]
@@ -125,20 +125,20 @@ mod tests_nelson_siegel_svensson {
             .map(|i| OffsetDateTime::now_utc() + Duration::days(i))
             .collect::<Vec<OffsetDateTime>>();
 
-        let forward_curve = dates
+        let _forward_curve = dates
             .iter()
             .map(|date| nss.forward_rate(*date))
             .collect::<Vec<_>>();
 
-        let discount_curve = dates
+        let _discount_curve = dates
             .iter()
             .map(|date| nss.discount_factor(*date))
             .collect::<Vec<_>>();
 
-        plot_vector!(forward_curve, "./images/nelson_siegel_svensson_forward.png");
-        plot_vector!(
-            discount_curve,
-            "./images/nelson_siegel_svensson_discount.png"
-        );
+        // plot_vector!(forward_curve, "./images/nelson_siegel_svensson_forward.png");
+        // plot_vector!(
+        //     discount_curve,
+        //     "./images/nelson_siegel_svensson_discount.png"
+        // );
     }
 }

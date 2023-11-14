@@ -19,11 +19,11 @@ impl Calendar for Brazil {
     }
 
     fn country_code(&self) -> crate::iso::ISO_3166 {
-        crate::iso::ISO_3166 {
-            alpha_2: "BR",
-            alpha_3: "BRA",
-            numeric: "076",
-        }
+        crate::iso::BRAZIL
+    }
+
+    fn market_identifier_code(&self) -> crate::iso::ISO_10383 {
+        crate::iso::BVMF
     }
 
     fn is_business_day(&self, date: OffsetDateTime) -> bool {

@@ -19,11 +19,11 @@ impl Calendar for Chile {
     }
 
     fn country_code(&self) -> crate::iso::ISO_3166 {
-        crate::iso::ISO_3166 {
-            alpha_2: "CL",
-            alpha_3: "CHL",
-            numeric: "152",
-        }
+        crate::iso::CHILE
+    }
+
+    fn market_identifier_code(&self) -> crate::iso::ISO_10383 {
+        crate::iso::XSGO
     }
 
     fn is_business_day(&self, date: OffsetDateTime) -> bool {

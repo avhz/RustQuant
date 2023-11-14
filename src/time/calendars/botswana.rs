@@ -19,11 +19,11 @@ impl Calendar for Botswana {
     }
 
     fn country_code(&self) -> crate::iso::ISO_3166 {
-        crate::iso::ISO_3166 {
-            alpha_2: "BW",
-            alpha_3: "BWA",
-            numeric: "072",
-        }
+        crate::iso::BOTSWANA
+    }
+
+    fn market_identifier_code(&self) -> crate::iso::ISO_10383 {
+        crate::iso::XBOT
     }
 
     fn is_business_day(&self, date: OffsetDateTime) -> bool {

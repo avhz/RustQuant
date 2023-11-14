@@ -21,6 +21,9 @@ pub trait Calendar {
     /// Returns the ISO 3166-1 country code.
     fn country_code(&self) -> crate::iso::ISO_3166;
 
+    /// Returns the ISO 10383 market identifier code.
+    fn market_identifier_code(&self) -> crate::iso::ISO_10383;
+
     /// Unpacks an OffsetDateTime into a tuple in the following form:
     ///
     /// ```ignore

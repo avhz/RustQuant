@@ -19,11 +19,11 @@ impl Calendar for UnitedKingdom {
     }
 
     fn country_code(&self) -> crate::iso::ISO_3166 {
-        crate::iso::ISO_3166 {
-            alpha_2: "GB",
-            alpha_3: "GBR",
-            numeric: "826",
-        }
+        crate::iso::UNITED_KINGDOM_OF_GREAT_BRITAIN_AND_NORTHERN_IRELAND
+    }
+
+    fn market_identifier_code(&self) -> crate::iso::ISO_10383 {
+        crate::iso::XLON
     }
 
     fn is_business_day(&self, date: OffsetDateTime) -> bool {

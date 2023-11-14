@@ -19,11 +19,11 @@ impl Calendar for China {
     }
 
     fn country_code(&self) -> crate::iso::ISO_3166 {
-        crate::iso::ISO_3166 {
-            alpha_2: "CN",
-            alpha_3: "CHN",
-            numeric: "156",
-        }
+        crate::iso::CHINA
+    }
+
+    fn market_identifier_code(&self) -> crate::iso::ISO_10383 {
+        crate::iso::XSHG
     }
 
     #[allow(clippy::manual_range_contains)]

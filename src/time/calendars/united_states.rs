@@ -43,15 +43,15 @@ impl Calendar for UnitedStates {
     }
 
     fn country_code(&self) -> crate::iso::ISO_3166 {
-        crate::iso::ISO_3166 {
-            alpha_2: "US",
-            alpha_3: "USA",
-            numeric: "840",
-        }
+        crate::iso::UNITED_STATES_OF_AMERICA
+    }
+
+    fn market_identifier_code(&self) -> crate::iso::ISO_10383 {
+        crate::iso::XNYS
     }
 
     fn is_business_day(&self, date: OffsetDateTime) -> bool {
-        let (w, d, m, y, dd) = self.unpack_date(date);
+        let (w, d, m, y, _) = self.unpack_date(date);
 
         if Self::is_weekend(date)
             || ((d == 1 || (d == 2 && w == Weekday::Monday)) && m == Month::January)

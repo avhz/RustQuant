@@ -19,42 +19,44 @@ impl Calendar for Argentina {
     }
 
     fn country_code(&self) -> crate::iso::ISO_3166 {
-        crate::iso::ISO_3166 {
-            alpha_2: "AR",
-            alpha_3: "ARG",
-            numeric: "032",
-        }
+        crate::iso::ARGENTINA
     }
 
+    fn market_identifier_code(&self) -> crate::iso::ISO_10383 {
+        crate::iso::XBUE
+    }
+
+    /// Argentina holidays:
+    ///     - New Year's Day
+    ///     - Holy Thursday
+    ///     - Good Friday
+    ///     - Labour Day
+    ///     - May Revolution
+    ///     - Death of General Manuel Belgrano
+    ///     - Independence Day
+    ///     - Death of General José de San Martín
+    ///     - Columbus Day
+    ///     - Immaculate Conception
+    ///     - Christmas Eve
+    ///     - New Year's Eve
     fn is_business_day(&self, date: OffsetDateTime) -> bool {
         let (w, d, m, y, dd) = self.unpack_date(date);
         let em = Self::easter_monday(y as usize, false);
 
         if Self::is_weekend(date)
-            // New Year's Day
             || (d == 1 && m == Month::January)
-            // Holy Thursday
-            || (dd == em-4)
-            // Good Friday
-            || (dd == em-3)
-            // Labour Day
+            || (dd == em - 4)
+            || (dd == em - 3)
             || (d == 1 && m == Month::May)
-            // May Revolution
             || (d == 25 && m == Month::May)
-            // Death of General Manuel Belgrano
             || ((15..=21).contains(&d) && w == Weekday::Monday && m == Month::June)
-            // Independence Day
             || (d == 9 && m == Month::July)
-            // Death of General José de San Martín
-            || ((15..=21).contains(&d) && w ==Weekday::Monday && m == Month::August)
-            // Columbus Day
+            || ((15..=21).contains(&d) && w == Weekday::Monday && m == Month::August)
             || ((d == 10 || d == 11 || d == 12 || d == 15 || d == 16)
-                && w == Weekday::Monday && m == Month::October)
-            // Immaculate Conception
+                && w == Weekday::Monday
+                && m == Month::October)
             || (d == 8 && m == Month::December)
-            // Christmas Eve
             || (d == 24 && m == Month::December)
-            // New Year's Eve
             || ((d == 31 || (d == 30 && w == Weekday::Friday)) && m == Month::December)
         {
             return false;

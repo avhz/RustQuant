@@ -19,11 +19,11 @@ impl Calendar for Canada {
     }
 
     fn country_code(&self) -> crate::iso::ISO_3166 {
-        crate::iso::ISO_3166 {
-            alpha_2: "CA",
-            alpha_3: "CAN",
-            numeric: "124",
-        }
+        crate::iso::CANADA
+    }
+
+    fn market_identifier_code(&self) -> crate::iso::ISO_10383 {
+        crate::iso::XCNQ
     }
 
     fn is_business_day(&self, date: OffsetDateTime) -> bool {
