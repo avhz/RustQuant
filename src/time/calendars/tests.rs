@@ -21,6 +21,7 @@ mod calendar_tests {
     const BRAZIL: Brazil = Brazil;
     const CANADA: Canada = Canada;
     const CHILE: Chile = Chile;
+    const CHINA: China = China;
     const CZECH_REPUBLIC: CzechRepublic = CzechRepublic;
     const DENMARK: Denmark = Denmark;
     const FINLAND: Finland = Finland;
@@ -39,6 +40,7 @@ mod calendar_tests {
         assert!(BRAZIL.is_business_day(DATE));
         assert!(CANADA.is_business_day(DATE));
         assert!(CHILE.is_business_day(DATE));
+        assert!(CHINA.is_business_day(DATE));
         assert!(CZECH_REPUBLIC.is_business_day(DATE));
         assert!(DENMARK.is_business_day(DATE));
         assert!(FINLAND.is_business_day(DATE));
@@ -59,6 +61,7 @@ mod calendar_tests {
         assert_eq!(BRAZIL.country_code(), crate::iso::BRAZIL);
         assert_eq!(CANADA.country_code(), crate::iso::CANADA);
         assert_eq!(CHILE.country_code(), crate::iso::CHILE);
+        assert_eq!(CHINA.country_code(), crate::iso::CHINA);
         assert_eq!(CZECH_REPUBLIC.country_code(), crate::iso::CZECH_REPUBLIC);
         assert_eq!(DENMARK.country_code(), crate::iso::DENMARK);
         assert_eq!(FINLAND.country_code(), crate::iso::FINLAND);
@@ -78,6 +81,7 @@ mod calendar_tests {
         assert_eq!(BRAZIL.market_identifier_code(), crate::iso::BVMF);
         assert_eq!(CANADA.market_identifier_code(), crate::iso::XCNQ);
         assert_eq!(CHILE.market_identifier_code(), crate::iso::XSGO);
+        assert_eq!(CHINA.market_identifier_code(), crate::iso::XSHG);
         assert_eq!(CZECH_REPUBLIC.market_identifier_code(), crate::iso::XPRA);
         assert_eq!(DENMARK.market_identifier_code(), crate::iso::XCSE);
         assert_eq!(FINLAND.market_identifier_code(), crate::iso::XHEL);
@@ -98,6 +102,7 @@ mod calendar_tests {
         assert_eq!(BRAZIL.unpack_date(DATE), (Weekday::Tuesday, 14, Month::November, 2023, 318));
         assert_eq!(CANADA.unpack_date(DATE), (Weekday::Tuesday, 14, Month::November, 2023, 318));
         assert_eq!(CHILE.unpack_date(DATE), (Weekday::Tuesday, 14, Month::November, 2023, 318));
+        assert_eq!(CHINA.unpack_date(DATE), (Weekday::Tuesday, 14, Month::November, 2023, 318));
         assert_eq!(CZECH_REPUBLIC.unpack_date(DATE), (Weekday::Tuesday, 14, Month::November, 2023, 318));
         assert_eq!(DENMARK.unpack_date(DATE), (Weekday::Tuesday, 14, Month::November, 2023, 318));
         assert_eq!(FINLAND.unpack_date(DATE), (Weekday::Tuesday, 14, Month::November, 2023, 318));
