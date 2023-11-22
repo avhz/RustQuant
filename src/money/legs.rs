@@ -29,11 +29,13 @@ pub struct Leg<C: Cashflow> {
 
 impl<C: Cashflow> Leg<C> {
     /// Creates a new leg with given cashflows.
+    #[must_use]
     pub fn new(cashflows: Vec<C>) -> Self {
         Self { cashflows }
     }
 
     /// Returns the number of cashflows in the leg.
+    #[must_use]
     pub fn size(&self) -> usize {
         self.cashflows.len()
     }
@@ -52,21 +54,25 @@ impl<C: Cashflow> Leg<C> {
     }
 
     /// Returns a slice of all the cashflows in the leg.
+    #[must_use]
     pub fn cashflows(&self) -> &[C] {
         &self.cashflows
     }
 
     /// Returns the start date of the leg.
+    #[must_use]
     pub fn start_date(&self) -> Option<OffsetDateTime> {
-        self.cashflows.iter().map(|x| x.date()).min()
+        self.cashflows.iter().map(Cashflow::date).min()
     }
 
     /// Returns the end date of the leg.
+    #[must_use]
     pub fn end_date(&self) -> Option<OffsetDateTime> {
-        self.cashflows.iter().map(|x| x.date()).max()
+        self.cashflows.iter().map(Cashflow::date).max()
     }
 
     /// Returns true if the leg is active at the given date.
+    #[must_use]
     pub fn is_active(&self, current_date: OffsetDateTime) -> bool {
         match (self.start_date(), self.end_date()) {
             (Some(start), Some(end)) => current_date >= start && current_date <= end,
@@ -84,6 +90,9 @@ mod tests_legs {
     use super::super::SimpleCashflow;
     use super::*;
     use time::Duration;
+
+    use crate::assert_approx_equal;
+    use std::f64::EPSILON as EPS;
 
     // Utility function to generate a simple leg for testing.
     fn generate_simple_leg(now: OffsetDateTime) -> Leg<SimpleCashflow> {
@@ -111,7 +120,7 @@ mod tests_legs {
 
         // Discount function that reduces value by 10%.
         let df = |_| 0.9;
-        assert_eq!(leg.npv(df), 540.0);
+        assert_approx_equal!(leg.npv(df), 540.0, EPS);
     }
 
     // Test to verify the `add_cashflow` method.
@@ -122,9 +131,10 @@ mod tests_legs {
         let new_cashflow = SimpleCashflow::new(400.0, now + Duration::days(90));
         leg.add_cashflow(new_cashflow.clone());
         assert_eq!(leg.size(), 4);
-        assert_eq!(
+        assert_approx_equal!(
             leg.cashflows().last().unwrap().amount(),
-            new_cashflow.amount()
+            new_cashflow.amount(),
+            EPS
         );
     }
 

@@ -34,11 +34,11 @@ impl Limit {
         self.orders.push_back(order_id);
     }
 
-    pub fn cancel(&mut self, order_id: &u64) -> bool {
+    pub fn cancel(&mut self, order_id: u64) -> bool {
         let index = self
             .orders
             .iter()
-            .position(|id| id == order_id)
+            .position(|id| id == &order_id)
             .expect("This limit should have this id but doesn't");
 
         self.orders.remove(index);
@@ -46,10 +46,10 @@ impl Limit {
         self.orders.is_empty()
     }
 
-    pub fn execute(&mut self, shares: &u64, order_map: &mut HashMap<u64, Order>) -> (u64, bool) {
+    pub fn execute(&mut self, shares: u64, order_map: &mut HashMap<u64, Order>) -> (u64, bool) {
         let mut executed_shares = 0;
 
-        while &executed_shares < shares && !self.orders.is_empty() {
+        while executed_shares < shares && !self.orders.is_empty() {
             let order_id = self.orders.front().unwrap();
             let order_shares = order_map.get(order_id).unwrap().shares;
 

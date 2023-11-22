@@ -124,7 +124,7 @@ impl<'v> Powi<i32> for Variable<'v> {
             index: self.graph.push(
                 Arity::Binary,
                 &[self.index, self.index],
-                &[n as f64 * f64::powi(self.value, n - 1), 0.0],
+                &[f64::from(n) * f64::powi(self.value, n - 1), 0.0],
             ),
         }
     }

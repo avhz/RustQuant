@@ -40,6 +40,7 @@ pub struct Bachelier {
 }
 
 /// Bachelier European Option pricing model.
+#[allow(clippy::module_name_repetitions)]
 pub struct ModifiedBachelier {
     /// The underlying asset price.
     pub underlying_price: f64,
@@ -67,6 +68,7 @@ pub struct ModifiedBachelier {
 
 impl Bachelier {
     /// New Bachelier European Option
+    #[must_use]
     pub fn new(
         underlying_price: f64,
         strike_price: f64,
@@ -86,6 +88,7 @@ impl Bachelier {
     }
 
     /// Bachelier European Option price.
+    #[must_use]
     pub fn price(&self) -> f64 {
         let S = self.underlying_price;
         let K = self.strike_price;
@@ -111,7 +114,9 @@ impl Bachelier {
 
 impl ModifiedBachelier {
     /// New Modified Bachelier European Option
-    pub fn new(
+    #[allow(clippy::too_many_arguments)]
+    #[must_use]
+    pub const fn new(
         underlying_price: f64,
         strike_price: f64,
         volatility: f64,
@@ -134,6 +139,7 @@ impl ModifiedBachelier {
     }
 
     /// Modified Bachelier European Option price.
+    #[must_use]
     pub fn price(&self) -> f64 {
         let S = self.underlying_price;
         let K = self.strike_price;
@@ -178,7 +184,7 @@ mod tests_bachelier {
             OffsetDateTime::now_utc() + Duration::days(365),
             TypeFlag::Call,
         );
-        assert_approx_equal!(bachelier.price(), 0.07967908186015137, 1e-10);
+        assert_approx_equal!(bachelier.price(), 0.079_679_081_860_151_37, 1e-10);
     }
 
     #[test]
@@ -193,6 +199,6 @@ mod tests_bachelier {
             OffsetDateTime::now_utc() + Duration::days(365),
             TypeFlag::Call,
         );
-        assert_approx_equal!(bachelier.price(), 2.511692140521875, 1e-10);
+        assert_approx_equal!(bachelier.price(), 2.511_692_140_521_875, 1e-10);
     }
 }

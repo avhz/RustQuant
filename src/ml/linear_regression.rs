@@ -23,6 +23,7 @@ use thiserror::Error;
 #[derive(Error, Debug)]
 
 ///For better error handling
+#[allow(clippy::module_name_repetitions)]
 pub enum LinearRegressionError {
     /// failed to invert matrix
     #[error("Matrix inversion failed")]
@@ -38,6 +39,7 @@ pub enum LinearRegressionError {
 }
 
 /// Struct to hold the input data for a linear regression.
+#[allow(clippy::module_name_repetitions)]
 #[derive(Clone, Debug)]
 pub struct LinearRegressionInput<T> {
     /// The input data matrix, also known as the design matrix.
@@ -49,6 +51,7 @@ pub struct LinearRegressionInput<T> {
 }
 
 /// Struct to hold the output data for a linear regression.
+#[allow(clippy::module_name_repetitions)]
 #[derive(Clone, Debug)]
 pub struct LinearRegressionOutput<T> {
     /// The intercept of the linear regression,
@@ -60,6 +63,7 @@ pub struct LinearRegressionOutput<T> {
 }
 
 /// Enum for type of matrix decomposition used.
+#[derive(Copy, Clone)]
 pub enum Decomposition {
     /// No decomposition to be used.
     /// Naive implementation of linear regression.
@@ -85,6 +89,7 @@ pub enum Decomposition {
 
 impl LinearRegressionInput<f64> {
     /// Create a new `LinearRegressionInput` struct.
+    #[must_use]
     pub fn new(x: DMatrix<f64>, y: DVector<f64>) -> Self {
         Self { x, y }
     }
@@ -191,6 +196,8 @@ mod tests_linear_regression {
     use crate::assert_approx_equal;
     use std::time::Instant;
 
+    use std::f64::EPSILON as EPS;
+
     #[test]
     fn test_linear_regression() -> Result<(), LinearRegressionError> {
         // TEST DATA GENERATED FROM THE FOLLOWING R CODE:
@@ -211,24 +218,24 @@ mod tests_linear_regression {
         let x_train = DMatrix::from_row_slice(
             4, // rows
             3, // columns
-            &[-0.083784355, -0.63348570, -0.39926660, 
-              -0.982943745,  1.09079746, -0.46812305,
-              -1.875067321, -0.91372727,  0.32696208,
-              -0.186144661,  1.00163971, -0.41274690],
+            &[-0.083_784_355, -0.633_485_70, -0.399_266_60,
+              -0.982_943_745,  1.090_797_46, -0.468_123_05,
+              -1.875_067_321, -0.913_727_27,  0.326_962_08,
+              -0.186_144_661,  1.001_639_71, -0.412_746_90],
         );
 
         #[rustfmt::skip]
         let x_test = DMatrix::from_row_slice(
             4, // rows
             3, // columns
-            &[0.56203647, 0.59584645, -0.41165301, 
-              0.66335826, 0.45209183, -0.29432715,
-             -0.60289728, 0.89674396, 1.21857396, 
-              0.69837769, 0.57221651, 0.24411143],
+            &[0.562_036_47, 0.595_846_45, -0.411_653_01,
+              0.663_358_26, 0.452_091_83, -0.294_327_15,
+             -0.602_897_28, 0.896_743_96, 1.218_573_96,
+              0.698_377_69, 0.572_216_51, 0.244_111_43],
         );
 
         let response =
-            DVector::from_row_slice(&[-0.44515196, -1.84780364, -0.62882531, -0.86108069]);
+            DVector::from_row_slice(&[-0.445_151_96, -1.847_803_64, -0.628_825_31, -0.861_080_69]);
 
         // Fit the model to the training data.
         let input = LinearRegressionInput {
@@ -264,14 +271,19 @@ mod tests_linear_regression {
         let preds = output.predict(x_test)?;
 
         // Check intercept.
-        assert_approx_equal!(output.intercept, 0.45326734, 1e-6);
+        assert_approx_equal!(output.intercept, 0.453_267_356_085_818_9, EPS);
 
         // Check coefficients.
         for (i, coefficient) in output.coefficients.iter().enumerate() {
             assert_approx_equal!(
                 coefficient,
-                &[0.45326734, 1.05986612, -0.16909348, 2.29605328][i],
-                1e-6
+                &[
+                    0.453_267_356_085_818_9,
+                    1.059_866_132_317_468_5,
+                    -0.169_093_464_601_759_45,
+                    2.296_053_332_765_449_5
+                ][i],
+                EPS
             );
         }
 
@@ -279,8 +291,13 @@ mod tests_linear_regression {
         for (i, pred) in preds.iter().enumerate() {
             assert_approx_equal!(
                 pred,
-                &[0.0030197504, 0.4041016953, 2.4605541127, 1.6571889522][i],
-                1e-3
+                &[
+                    0.003_019_769_611_493_972,
+                    0.404_101_701_919_158_5,
+                    2.460_554_206_769_587_4,
+                    1.657_189_007_522_339_4
+                ][i],
+                EPS
             );
         }
         Ok(())

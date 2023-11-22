@@ -73,23 +73,24 @@ macro_rules! plot_vector {
 
 #[cfg(test)]
 mod tests_plotters {
+    use std::f64::EPSILON as EPS;
 
     #[test]
     fn test_assert_approx_equal() {
-        assert_approx_equal!(1_f64, 1.0, 1e-10);
-        assert_approx_equal!(1_f64.exp(), std::f64::consts::E, 1e-10);
-        assert_approx_equal!(1_f64.ln(), 0.0, 1e-10);
-        assert_approx_equal!(1_f64.sin(), 0.8414709848078965, 1e-10);
-        assert_approx_equal!(1_f64.cos(), 0.5403023058681398, 1e-10);
-        assert_approx_equal!(1_f64.tan(), 1.5574077246549023, 1e-10);
-        assert_approx_equal!(1_f64.asin(), std::f64::consts::FRAC_PI_2, 1e-10);
-        assert_approx_equal!(1_f64.acos(), 0.0, 1e-10);
-        assert_approx_equal!(1_f64.atan(), std::f64::consts::FRAC_PI_4, 1e-10);
-        assert_approx_equal!(1_f64.sinh(), 1.1752011936438014, 1e-10);
-        assert_approx_equal!(1_f64.cosh(), 1.5430806348152437, 1e-10);
-        assert_approx_equal!(1_f64.tanh(), 0.7615941559557649, 1e-10);
-        assert_approx_equal!(1_f64.asinh(), 0.881373587019543, 1e-10);
-        assert_approx_equal!(1_f64.acosh(), 0.0, 1e-10);
+        assert_approx_equal!(1_f64, 1.0, EPS);
+        assert_approx_equal!(1_f64.exp(), std::f64::consts::E, EPS);
+        assert_approx_equal!(1_f64.ln(), 0.0, EPS);
+        assert_approx_equal!(1_f64.sin(), 0.841_470_984_807_896_5, EPS);
+        assert_approx_equal!(1_f64.cos(), 0.540_302_305_868_139_8, EPS);
+        assert_approx_equal!(1_f64.tan(), 1.557_407_724_654_902_3, EPS);
+        assert_approx_equal!(1_f64.asin(), std::f64::consts::FRAC_PI_2, EPS);
+        assert_approx_equal!(1_f64.acos(), 0.0, EPS);
+        assert_approx_equal!(1_f64.atan(), std::f64::consts::FRAC_PI_4, EPS);
+        assert_approx_equal!(1_f64.sinh(), 1.175_201_193_643_801_4, EPS);
+        assert_approx_equal!(1_f64.cosh(), 1.543_080_634_815_243_7, EPS);
+        assert_approx_equal!(1_f64.tanh(), 0.761_594_155_955_764_9, EPS);
+        assert_approx_equal!(1_f64.asinh(), 0.881_373_587_019_543, EPS);
+        assert_approx_equal!(1_f64.acosh(), 0.0, EPS);
     }
 
     #[test]

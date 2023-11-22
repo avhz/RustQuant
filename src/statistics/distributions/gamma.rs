@@ -38,6 +38,11 @@ pub struct Gamma {
 
 impl Gamma {
     /// New instance of a Gamma distribution.
+    ///
+    /// # Panics
+    ///
+    /// Panics if alpha and beta are not positive.
+    #[must_use]
     pub fn new(alpha: f64, beta: f64) -> Self {
         assert!(alpha > 0.0 && beta > 0.0);
 
@@ -148,6 +153,7 @@ impl Distribution for Gamma {
 mod tests {
     use super::*;
     use crate::assert_approx_equal;
+    use std::f64::EPSILON as EPS;
 
     #[test]
     fn test_gamma_characteristic_function() {
@@ -166,10 +172,10 @@ mod tests {
 
         // Values computed using R
         // assert_approx_equal!(dist.pdf(0.0), 1.00000000, 1e-8);
-        assert_approx_equal!(dist.pdf(1.0), 0.36787944, 1e-8);
-        assert_approx_equal!(dist.pdf(2.0), 0.13533528, 1e-8);
-        assert_approx_equal!(dist.pdf(3.0), 0.04978707, 1e-8);
-        assert_approx_equal!(dist.pdf(4.0), 0.01831564, 1e-8);
+        assert_approx_equal!(dist.pdf(1.0), 0.367_879_441_171_442_5, EPS);
+        assert_approx_equal!(dist.pdf(2.0), 0.135_335_283_236_612_76, EPS);
+        assert_approx_equal!(dist.pdf(3.0), 0.049_787_068_367_863_965, EPS);
+        assert_approx_equal!(dist.pdf(4.0), 0.018_315_638_888_734_186, EPS);
     }
 
     #[test]
@@ -178,9 +184,9 @@ mod tests {
 
         // Values computed using R
         // assert_approx_equal!(dist.cdf(0.0), 0.0000000, 1e-7);
-        assert_approx_equal!(dist.cdf(1.0), 0.6321206, 1e-7);
-        assert_approx_equal!(dist.cdf(2.0), 0.8646647, 1e-7);
-        assert_approx_equal!(dist.cdf(3.0), 0.9502129, 1e-7);
-        assert_approx_equal!(dist.cdf(4.0), 0.9816844, 1e-7);
+        assert_approx_equal!(dist.cdf(1.0), 0.632_120_558_828_558_1, EPS);
+        assert_approx_equal!(dist.cdf(2.0), 0.864_664_716_763_387_2, EPS);
+        assert_approx_equal!(dist.cdf(3.0), 0.950_212_931_632_136, EPS);
+        assert_approx_equal!(dist.cdf(4.0), 0.981_684_361_111_265_8, EPS);
     }
 }

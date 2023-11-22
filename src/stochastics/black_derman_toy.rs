@@ -7,7 +7,7 @@
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use crate::stochastics::*;
+use crate::stochastics::{StochasticProcess, TimeDependent};
 
 /// Struct containing the Black-Derman-Toy process parameters.
 pub struct BlackDermanToy {
@@ -70,7 +70,7 @@ mod tests_black_derman_toy {
     // }
 
     #[test]
-    fn test_black_derman_toy_constant_sigma() -> Result<(), Box<dyn std::error::Error>> {
+    fn test_black_derman_toy_constant_sigma() {
         let sigma = 0.13;
         let theta = 1.5;
 
@@ -82,18 +82,16 @@ mod tests_black_derman_toy {
         let X_T: Vec<f64> = output
             .paths
             .iter()
-            .filter_map(|v| v.last().cloned())
+            .filter_map(|v| v.last().copied())
             .collect();
 
         let E_XT = X_T.mean();
         assert!(E_XT.exp() >= 0.);
         // println!("Final expected short rate: {}", E_XT);
-
-        std::result::Result::Ok(())
     }
 
     #[test]
-    fn test_black_derman_toy_varying_sigma() -> Result<(), Box<dyn std::error::Error>> {
+    fn test_black_derman_toy_varying_sigma() {
         let sigma = 0.13;
         let theta = 1.5;
 
@@ -105,13 +103,11 @@ mod tests_black_derman_toy {
         let X_T: Vec<f64> = output
             .paths
             .iter()
-            .filter_map(|v| v.last().cloned())
+            .filter_map(|v| v.last().copied())
             .collect();
 
         let E_XT = X_T.mean();
         assert!(E_XT.exp() >= 0.);
         // println!("Final expected short rate: {}", E_XT);
-
-        std::result::Result::Ok(())
     }
 }

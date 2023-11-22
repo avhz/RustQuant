@@ -8,7 +8,7 @@
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 use crate::{
-    math::*,
+    math::integrate,
     time::{DayCountConvention, DayCounter},
 };
 use num_complex::Complex;
@@ -20,6 +20,7 @@ use time::OffsetDateTime;
 
 /// Heston model for option pricing.
 #[allow(clippy::too_many_arguments)]
+#[must_use]
 pub fn heston(
     S0: f64,    // Initial asset value.
     V0: f64,    // Initial variance value.
@@ -152,6 +153,7 @@ mod tests {
     use crate::assert_approx_equal;
 
     use super::*;
+    use std::f64::EPSILON as EPS;
 
     #[test]
     fn test_heston_options() {
@@ -172,9 +174,9 @@ mod tests {
             expiry_date,
         );
         // Call price.
-        assert_approx_equal!(heston1.0, 6.2442, 1e-4);
+        assert_approx_equal!(heston1.0, 6.244_175_780_382_292, EPS);
         // Put price.
-        assert_approx_equal!(heston1.1, 5.7517, 1e-4);
+        assert_approx_equal!(heston1.1, 5.751_722_351_735_211, EPS);
 
         // WITHOUT DIVIDEND YIELD.
         let heston2 = heston(
@@ -191,8 +193,8 @@ mod tests {
             expiry_date,
         );
         // Call price.
-        assert_approx_equal!(heston2.0, 6.8575, 1e-4);
+        assert_approx_equal!(heston2.0, 6.857_458_545_841_29, EPS);
         // Put price.
-        assert_approx_equal!(heston2.1, 5.3727, 1e-4);
+        assert_approx_equal!(heston2.1, 5.372_700_994_566_344, EPS);
     }
 }

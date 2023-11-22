@@ -30,6 +30,7 @@ impl<'v> Variable<'v> {
     /// assert_approx_equal!(z.value,      0.84270079294, 1e-10);
     /// assert_approx_equal!(grad.wrt(&x), 0.41510749742, 1e-10);
     /// ```
+    #[must_use]
     #[inline]
     pub fn erf(self) -> Self {
         use statrs::function::erf::erf;
@@ -61,6 +62,7 @@ impl<'v> Variable<'v> {
     /// assert_approx_equal!(z.value,       0.15729920705, 1e-10);
     /// assert_approx_equal!(grad.wrt(&x), -0.41510749742, 1e-10);
     /// ```
+    #[must_use]
     #[inline]
     pub fn erfc(self) -> Self {
         use statrs::function::erf::erfc;

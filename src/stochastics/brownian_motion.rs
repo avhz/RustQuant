@@ -7,7 +7,7 @@
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use crate::stochastics::*;
+use crate::stochastics::StochasticProcess;
 
 /// Struct containing the Geometric Brownian Motion parameters.
 #[derive(Debug)]
@@ -21,6 +21,7 @@ impl Default for BrownianMotion {
 
 impl BrownianMotion {
     /// Create a new Geometric Brownian Motion process.
+    #[must_use]
     pub fn new() -> Self {
         Self {}
     }
@@ -52,7 +53,7 @@ mod sde_tests {
     use crate::{assert_approx_equal, statistics::*};
 
     #[test]
-    fn test_brownian_motion() -> Result<(), Box<dyn std::error::Error>> {
+    fn test_brownian_motion() {
         let bm = BrownianMotion::new();
 
         // AT LEAST 100 PATHS BEFORE PARALLEL IS WORTH IT.
@@ -91,7 +92,7 @@ mod sde_tests {
         let X_T: Vec<f64> = output_serial
             .paths
             .iter()
-            .filter_map(|v| v.last().cloned())
+            .filter_map(|v| v.last().copied())
             .collect();
 
         let E_XT = X_T.mean();
@@ -100,7 +101,5 @@ mod sde_tests {
         assert_approx_equal!(E_XT, 0.0, 0.5);
         // V[X_T] = T
         assert_approx_equal!(V_XT, 0.5, 0.5);
-
-        std::result::Result::Ok(())
     }
 }

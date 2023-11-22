@@ -8,10 +8,10 @@
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 use crate::{
-    instruments::options::*,
+    instruments::options::TypeFlag,
     statistics::distributions::{Distribution, Gaussian},
-    statistics::*,
-    stochastics::*,
+    statistics::Statistic,
+    stochastics::{GeometricBrownianMotion, StochasticProcess},
 };
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -20,6 +20,7 @@ use crate::{
 
 /// Lookback option strike type enum.
 /// The strike can be either fixed or floating.
+#[allow(clippy::module_name_repetitions)]
 #[derive(Debug, Clone, Copy)]
 pub enum LookbackStrike {
     /// Floating strike lookback option.
@@ -35,6 +36,7 @@ pub enum LookbackStrike {
 }
 
 /// Struct containing Lookback Option parameters.
+#[allow(clippy::module_name_repetitions)]
 #[derive(Debug, Clone, Copy)]
 pub struct LookbackOption {
     /// `S` - Initial price of the underlying.
@@ -68,6 +70,7 @@ pub struct LookbackOption {
 
 impl LookbackOption {
     /// Closed-form lookback option price.
+    #[must_use]
     pub fn price_analytic(&self) -> (f64, f64) {
         let s = self.initial_price;
         let r = self.risk_free_rate;
@@ -91,7 +94,18 @@ impl LookbackOption {
                 let b1 = ((s / s_max).ln() + (b + v * v / 2.0) * t) / (v * t.sqrt());
                 let b2 = b1 - v * t.sqrt();
 
-                if b != 0.0 {
+                if b == 0.0 {
+                    call = s * (-r * t).exp() * norm.cdf(a1)
+                        - s_min * (-r * t).exp() * norm.cdf(a2)
+                        + s * (-r * t).exp()
+                            * v
+                            * t.sqrt()
+                            * (norm.pdf(a1) + a1 * (norm.cdf(a1) - 1.0));
+
+                    put = -s * ((b - r) * t).exp() * norm.cdf(-b1)
+                        + s_max * (-r * t).exp() * norm.cdf(-b2)
+                        + s * (-r * t).exp() * v * t.sqrt() * (norm.pdf(b1) + b1 * norm.cdf(b1));
+                } else {
                     call = s * ((b - r) * t).exp() * norm.cdf(a1)
                         - s_min * (-r * t).exp() * norm.cdf(a2)
                         + s * (-r * t).exp()
@@ -107,18 +121,8 @@ impl LookbackOption {
                             * (-(s / s_max).powf(-2.0 * b / (v * v))
                                 * norm.cdf(b1 - 2.0 * b * t.sqrt() / v)
                                 + (b * t).exp() * norm.cdf(b1));
-                } else {
-                    call = s * (-r * t).exp() * norm.cdf(a1)
-                        - s_min * (-r * t).exp() * norm.cdf(a2)
-                        + s * (-r * t).exp()
-                            * v
-                            * t.sqrt()
-                            * (norm.pdf(a1) + a1 * (norm.cdf(a1) - 1.0));
-
-                    put = -s * ((b - r) * t).exp() * norm.cdf(-b1)
-                        + s_max * (-r * t).exp() * norm.cdf(-b2)
-                        + s * (-r * t).exp() * v * t.sqrt() * (norm.pdf(b1) + b1 * norm.cdf(b1));
                 }
+
                 (call, put)
             }
             LookbackStrike::Fixed => {
@@ -193,6 +197,7 @@ impl LookbackOption {
     }
 
     /// Monte Carlo simulation of the lookback option price.
+    #[must_use]
     pub fn price_simulated(&self, n_steps: usize, n_sims: usize, parallel: bool) -> (f64, f64) {
         let x_0 = self.initial_price;
         let r = self.risk_free_rate;

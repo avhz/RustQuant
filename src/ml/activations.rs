@@ -14,24 +14,32 @@ use statrs::function::erf;
 /// Activation functions.
 pub trait ActivationFunction {
     /// Applies the sigmoid function to the input.
+    #[must_use]
     fn sigmoid(&self) -> Self;
     /// Applies the identity function to the input.
+    #[must_use]
     fn identity(&self) -> Self;
     /// Applies the logistic function to the input.
     ///
     /// Note (for logistic regression):
     /// sigmoid(x) = 1 / (1 + exp(-x)) = exp(x) / (exp(x) + 1)    
     /// mu(x) = E[Y | X] = P(Y = 1 | X) = sigmoid(w^T x)
+    #[must_use]
     fn logistic(&self) -> Self;
     /// Applies the rectified linear unit function to the input.
+    #[must_use]
     fn relu(&self) -> Self;
     /// Applies the gaussian error linear unit function to the input.
+    #[must_use]
     fn gelu(&self) -> Self;
     /// Applies the hyperbolic tangent function to the input.
+    #[must_use]
     fn tanh(&self) -> Self;
     /// Applies the softplus function to the input.
+    #[must_use]
     fn softplus(&self) -> Self;
     /// Applies the gaussian function to the input.
+    #[must_use]
     fn gaussian(&self) -> Self;
 }
 
@@ -151,7 +159,7 @@ impl ActivationFunction for DVector<f64> {
 
     #[inline]
     fn tanh(&self) -> Self {
-        self.map(|x| x.tanh())
+        self.map(f64::tanh)
     }
 
     #[inline]

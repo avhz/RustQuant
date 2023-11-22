@@ -18,6 +18,7 @@ use std::f64::consts::PI;
 
 /// Real FFT inplace,
 /// `x` length must be a power of 2
+#[allow(clippy::module_name_repetitions)]
 pub fn fft_real_inplace(x: &mut Vec<f64>) {
     check_vec_length(x);
 
@@ -26,6 +27,8 @@ pub fn fft_real_inplace(x: &mut Vec<f64>) {
 
 /// Real FFT and returns a new vector,
 /// `x` length must be a power of 2
+#[allow(clippy::module_name_repetitions)]
+#[must_use]
 pub fn fft_real(x: &Vec<f64>) -> Vec<f64> {
     check_vec_length(x);
 
@@ -38,6 +41,7 @@ pub fn fft_real(x: &Vec<f64>) -> Vec<f64> {
 
 /// Complex FFT inplace,
 /// `x` length must be a power of 2
+#[allow(clippy::module_name_repetitions)]
 pub fn fft_complex_inplace(x: &mut Vec<Complex<f64>>) {
     check_vec_length(x);
 
@@ -46,6 +50,8 @@ pub fn fft_complex_inplace(x: &mut Vec<Complex<f64>>) {
 
 /// Complex FFT and returns a new vector,
 /// `x` length must be a power of 2
+#[allow(clippy::module_name_repetitions)]
+#[must_use]
 pub fn fft_complex(x: &Vec<Complex<f64>>) -> Vec<Complex<f64>> {
     check_vec_length(x);
 
@@ -57,14 +63,16 @@ pub fn fft_complex(x: &Vec<Complex<f64>>) -> Vec<Complex<f64>> {
 }
 
 /// Helper function to check if a vector length is a power of 2
+#[must_use]
 pub fn is_valid_length<T>(x: &Vec<T>) -> bool {
     ((x.len() as f64).log2() % 1.0).abs() < 1e-10
 }
 
 fn check_vec_length<T>(x: &Vec<T>) {
-    if !is_valid_length(x) {
-        panic!("FFT can only handle vectors which length is a power of 2");
-    }
+    assert!(
+        is_valid_length(x),
+        "FFT can only handle vectors which length is a power of 2."
+    );
 }
 
 /// Real fourier transform in place
@@ -134,7 +142,7 @@ mod test {
     use super::*;
     use num_complex::Complex;
 
-    const SQRT_20: f64 = 4.472135955;
+    const SQRT_20: f64 = 4.472_135_955;
     const REAL_TEST_SEQUENCE: [f64; 4] = [-1.0, 2.0, 3.0, 0.0];
     const REAL_TEST_RESULT: [f64; 4] = [4.0, SQRT_20, 0.0, SQRT_20];
     const COMPLEX_TEST_SEQUENCE: [Complex<f64>; 4] = [
@@ -150,7 +158,7 @@ mod test {
         Complex::new(-4.0, 2.0),
     ];
 
-    fn assert_complex_vecs_almost_equal(x: Vec<Complex<f64>>, y: Vec<Complex<f64>>) {
+    fn assert_complex_vecs_almost_equal(x: &Vec<Complex<f64>>, y: &Vec<Complex<f64>>) {
         assert_eq!(x.len(), y.len());
 
         for (x_value, y_value) in x.iter().zip(y.iter()) {
@@ -158,7 +166,7 @@ mod test {
         }
     }
 
-    fn assert_real_vecs_almost_equal(x: Vec<f64>, y: Vec<f64>) {
+    fn assert_real_vecs_almost_equal(x: &Vec<f64>, y: &Vec<f64>) {
         assert_eq!(x.len(), y.len());
 
         for (x_value, y_value) in x.iter().zip(y.iter()) {
@@ -171,7 +179,7 @@ mod test {
         let mut test_vec = COMPLEX_TEST_SEQUENCE.to_vec();
         fft_complex_inplace(&mut test_vec);
 
-        assert_complex_vecs_almost_equal(test_vec, COMPLEX_TEST_RESULT.to_vec());
+        assert_complex_vecs_almost_equal(&test_vec, &COMPLEX_TEST_RESULT.to_vec());
     }
 
     #[test]
@@ -179,8 +187,8 @@ mod test {
         let test_vec = COMPLEX_TEST_SEQUENCE.to_vec();
         let result = fft_complex(&test_vec);
 
-        assert_complex_vecs_almost_equal(result, COMPLEX_TEST_RESULT.to_vec());
-        assert_complex_vecs_almost_equal(test_vec, COMPLEX_TEST_SEQUENCE.to_vec());
+        assert_complex_vecs_almost_equal(&result, &COMPLEX_TEST_RESULT.to_vec());
+        assert_complex_vecs_almost_equal(&test_vec, &COMPLEX_TEST_SEQUENCE.to_vec());
     }
 
     #[test]
@@ -188,7 +196,7 @@ mod test {
         let mut test_vec = REAL_TEST_SEQUENCE.to_vec();
         fft_real_inplace(&mut test_vec);
 
-        assert_real_vecs_almost_equal(test_vec, REAL_TEST_RESULT.to_vec());
+        assert_real_vecs_almost_equal(&test_vec, &REAL_TEST_RESULT.to_vec());
     }
 
     #[test]
@@ -196,12 +204,12 @@ mod test {
         let test_vec = REAL_TEST_SEQUENCE.to_vec();
         let result = fft_real(&test_vec);
 
-        assert_real_vecs_almost_equal(result, REAL_TEST_RESULT.to_vec());
-        assert_real_vecs_almost_equal(test_vec, REAL_TEST_SEQUENCE.to_vec());
+        assert_real_vecs_almost_equal(&result, &REAL_TEST_RESULT.to_vec());
+        assert_real_vecs_almost_equal(&test_vec, &REAL_TEST_SEQUENCE.to_vec());
     }
 
     #[test]
-    #[should_panic]
+    #[should_panic(expected = "FFT can only handle vectors which length is a power of 2.")]
     fn test_invalid_vec_length() {
         let test_vec = vec![0; 31];
         check_vec_length(&test_vec);

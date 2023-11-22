@@ -13,6 +13,7 @@ use super::{order_lifespan::OrderTimeInForce, order_side::OrderSide, order_type:
 use time::OffsetDateTime;
 
 /// Order ID type.
+#[allow(clippy::module_name_repetitions)]
 pub type OrderID = u64;
 
 /// Order struct containing parameters for a given order in the LOB.
@@ -118,51 +119,61 @@ impl Order {
     }
 
     /// Get the `Order` ID.
+    #[must_use]
     pub fn id(&self) -> u64 {
         self.id
     }
 
     /// Get the `Order` symbol ID.
+    #[must_use]
     pub fn symbol_id(&self) -> u32 {
         self.symbol_id
     }
 
     /// Get the `Order` type.
+    #[must_use]
     pub fn order_type(&self) -> &OrderType {
         &self.order_type
     }
 
     /// Get the `Order` side.
+    #[must_use]
     pub fn order_side(&self) -> &OrderSide {
         &self.order_side
     }
 
     /// Get the `Order` price.
+    #[must_use]
     pub fn price(&self) -> f64 {
         self.price
     }
 
     /// Get the `Order` stop price.
+    #[must_use]
     pub fn stop_price(&self) -> f64 {
         self.stop_price
     }
 
     /// Get the `Order` quantity.
+    #[must_use]
     pub fn quantity(&self) -> u64 {
         self.quantity
     }
 
     /// Get the `Order` executed quantity.
+    #[must_use]
     pub fn executed_quantity(&self) -> u64 {
         self.executed_quantity
     }
 
     /// Get the `Order` leaves quantity.
+    #[must_use]
     pub fn leaves_quantity(&self) -> u64 {
         self.leaves_quantity
     }
 
     /// Get the `Order` time in force.
+    #[must_use]
     pub fn time_in_force(&self) -> &OrderTimeInForce {
         &self.time_in_force
     }
@@ -173,6 +184,7 @@ impl Order {
     // }
 
     /// Get the `Order` timestamp.
+    #[must_use]
     pub fn timestamp(&self) -> OffsetDateTime {
         self.timestamp
     }

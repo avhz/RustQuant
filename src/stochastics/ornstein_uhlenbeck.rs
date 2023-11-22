@@ -7,7 +7,7 @@
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use crate::stochastics::*;
+use crate::stochastics::{StochasticProcess, TimeDependent};
 
 /// Struct containing the Ornstein-Uhlenbeck process parameters.
 pub struct OrnsteinUhlenbeck {
@@ -62,7 +62,7 @@ mod tests_ornstein_uhlenbeck {
     use crate::{assert_approx_equal, statistics::*};
 
     #[test]
-    fn test_ornstein_uhlenbeck() -> Result<(), Box<dyn std::error::Error>> {
+    fn test_ornstein_uhlenbeck() {
         let ou = OrnsteinUhlenbeck::new(0.15, 0.45, 0.01);
 
         let output = ou.euler_maruyama(10.0, 0.0, 0.5, 100, 100, false);
@@ -71,7 +71,7 @@ mod tests_ornstein_uhlenbeck {
         let X_T: Vec<f64> = output
             .paths
             .iter()
-            .filter_map(|v| v.last().cloned())
+            .filter_map(|v| v.last().copied())
             .collect();
 
         let E_XT = X_T.mean();
@@ -93,7 +93,5 @@ mod tests_ornstein_uhlenbeck {
         // plot_vector((&output.trajectories[0]).clone(), file1).unwrap();
         // let file2 = "./images/OU2.png";
         // plot_vector((&output.trajectories[1]).clone(), file2)
-
-        std::result::Result::Ok(())
     }
 }

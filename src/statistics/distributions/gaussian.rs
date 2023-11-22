@@ -54,6 +54,11 @@ impl Gaussian {
     /// assert_approx_equal!(gaussian.cf(5.0).re, 3.7266532e-6, 1e-7);
     /// assert_eq!(gaussian.cf(5.0).im, 0.0);
     /// ```
+    ///
+    /// # Panics
+    ///
+    /// Panics if variance is not positive.
+    #[must_use]
     pub fn new(mean: f64, variance: f64) -> Self {
         assert!(variance > 0.0);
 
@@ -306,6 +311,8 @@ mod tests_gaussian {
     use super::*;
     use crate::assert_approx_equal;
 
+    use std::f64::EPSILON as EPS;
+
     #[test]
     fn test_gaussian_characteristic_function() {
         // Standard normal distribution
@@ -314,8 +321,8 @@ mod tests_gaussian {
 
         // Characteristic function
         let cf = dist.cf(1.0);
-        assert_approx_equal!(cf.re, 1.0 / (1_f64.exp()).sqrt(), 1e-10);
-        assert_approx_equal!(cf.im, 0.0, 1e-10);
+        assert_approx_equal!(cf.re, 1.0 / (1_f64.exp()).sqrt(), EPS);
+        assert_approx_equal!(cf.im, 0.0, EPS);
     }
 
     #[test]
@@ -325,15 +332,15 @@ mod tests_gaussian {
         let dist: Gaussian = Gaussian::default();
 
         // Values from WolframAlpha
-        assert_approx_equal!(dist.pdf(-4.0), 0.00013383, 1e-8);
-        assert_approx_equal!(dist.pdf(-3.0), 0.00443185, 1e-8);
-        assert_approx_equal!(dist.pdf(-2.0), 0.05399097, 1e-8);
-        assert_approx_equal!(dist.pdf(-1.0), 0.24197072, 1e-8);
-        assert_approx_equal!(dist.pdf(0.0), 0.39894228, 1e-8);
-        assert_approx_equal!(dist.pdf(1.0), 0.24197072, 1e-8);
-        assert_approx_equal!(dist.pdf(2.0), 0.05399097, 1e-8);
-        assert_approx_equal!(dist.pdf(3.0), 0.00443185, 1e-8);
-        assert_approx_equal!(dist.pdf(4.0), 0.00013383, 1e-8);
+        assert_approx_equal!(dist.pdf(-4.0), 0.000_133_830_225_764_885_37, EPS);
+        assert_approx_equal!(dist.pdf(-3.0), 0.004_431_848_411_938_007_5, EPS);
+        assert_approx_equal!(dist.pdf(-2.0), 0.053_990_966_513_188_06, EPS);
+        assert_approx_equal!(dist.pdf(-1.0), 0.241_970_724_519_143_37, EPS);
+        assert_approx_equal!(dist.pdf(0.0), 0.398_942_280_401_432_7, EPS);
+        assert_approx_equal!(dist.pdf(1.0), 0.241_970_724_519_143_37, EPS);
+        assert_approx_equal!(dist.pdf(2.0), 0.053_990_966_513_188_06, EPS);
+        assert_approx_equal!(dist.pdf(3.0), 0.004_431_848_411_938_007_5, EPS);
+        assert_approx_equal!(dist.pdf(4.0), 0.000_133_830_225_764_885_37, EPS);
     }
 
     #[test]
@@ -343,15 +350,15 @@ mod tests_gaussian {
         let dist: Gaussian = Gaussian::default();
 
         // Values from WolframAlpha
-        assert_approx_equal!(dist.cdf(-4.0), 0.00003167, 1e-8);
-        assert_approx_equal!(dist.cdf(-3.0), 0.00134990, 1e-8);
-        assert_approx_equal!(dist.cdf(-2.0), 0.02275013, 1e-8);
-        assert_approx_equal!(dist.cdf(-1.0), 0.15865525, 1e-8);
-        assert_approx_equal!(dist.cdf(0.0), 0.5, 1e-8);
-        assert_approx_equal!(dist.cdf(1.0), 0.84134475, 1e-8);
-        assert_approx_equal!(dist.cdf(2.0), 0.97724987, 1e-8);
-        assert_approx_equal!(dist.cdf(3.0), 0.99865010, 1e-8);
-        assert_approx_equal!(dist.cdf(4.0), 0.99996833, 1e-8);
+        assert_approx_equal!(dist.cdf(-4.0), 0.000_031_671_241_835_663_76, EPS);
+        assert_approx_equal!(dist.cdf(-3.0), 0.001_349_898_031_574_464_2, EPS);
+        assert_approx_equal!(dist.cdf(-2.0), 0.022_750_131_947_162_62, EPS);
+        assert_approx_equal!(dist.cdf(-1.0), 0.158_655_253_945_057_25, EPS);
+        assert_approx_equal!(dist.cdf(0.0), 0.5, EPS);
+        assert_approx_equal!(dist.cdf(1.0), 0.841_344_746_054_942_8, EPS);
+        assert_approx_equal!(dist.cdf(2.0), 0.977_249_868_052_837_4, EPS);
+        assert_approx_equal!(dist.cdf(3.0), 0.998_650_101_968_425_5, EPS);
+        assert_approx_equal!(dist.cdf(4.0), 0.999_968_328_758_164_3, EPS);
     }
 
     #[test]
@@ -371,28 +378,28 @@ mod tests_gaussian {
     fn test_gaussian_moments() {
         let normal = Gaussian::default();
 
-        assert_approx_equal!(normal.mean(), 0.0, 1e-8);
-        assert_approx_equal!(normal.median(), 0.0, 1e-8);
-        assert_approx_equal!(normal.mode(), 0.0, 1e-8);
-        assert_approx_equal!(normal.variance(), 1.0, 1e-8);
-        assert_approx_equal!(normal.skewness(), 0.0, 1e-8);
-        assert_approx_equal!(normal.kurtosis(), 0.0, 1e-8);
-        assert_approx_equal!(normal.entropy(), 1.418_938_533_204_672_7, 1e-8);
+        assert_approx_equal!(normal.mean(), 0.0, EPS);
+        assert_approx_equal!(normal.median(), 0.0, EPS);
+        assert_approx_equal!(normal.mode(), 0.0, EPS);
+        assert_approx_equal!(normal.variance(), 1.0, EPS);
+        assert_approx_equal!(normal.skewness(), 0.0, EPS);
+        assert_approx_equal!(normal.kurtosis(), 0.0, EPS);
+        assert_approx_equal!(normal.entropy(), 1.418_938_533_204_672_7, EPS);
     }
 
     #[test]
     fn test_gaussian_mgf() {
         let normal = Gaussian::default();
 
-        assert_approx_equal!(normal.mgf(0.0), 1.0, 1e-8);
-        assert_approx_equal!(normal.mgf(1.0), 1.0_f64.exp().sqrt(), 1e-8);
-        assert_approx_equal!(normal.mgf(2.0), 1.0_f64.exp().powi(2), 1e-8);
+        assert_approx_equal!(normal.mgf(0.0), 1.0, EPS);
+        assert_approx_equal!(normal.mgf(1.0), 1.0_f64.exp().sqrt(), EPS);
+        assert_approx_equal!(normal.mgf(2.0), 7.389_056_098_930_65, EPS);
     }
 
     #[test]
     fn test_gaussian_entropy() {
         let normal = Gaussian::default();
 
-        assert_approx_equal!(normal.entropy(), 1.418_938_533_204_672_7, 1e-8);
+        assert_approx_equal!(normal.entropy(), 1.418_938_533_204_672_7, EPS);
     }
 }

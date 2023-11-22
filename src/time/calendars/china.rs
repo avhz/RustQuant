@@ -26,7 +26,7 @@ impl Calendar for China {
         crate::iso::XSHG
     }
 
-    #[allow(clippy::manual_range_contains)]
+    #[allow(clippy::manual_range_contains, clippy::too_many_lines)]
     fn is_business_day(&self, date: OffsetDateTime) -> bool {
         let (_, d, m, y, _) = self.unpack_date(date);
 

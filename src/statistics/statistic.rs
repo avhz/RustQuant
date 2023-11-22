@@ -163,9 +163,10 @@ impl Statistic<f64> for Vec<f64> {
         let std_dev_x = self.standard_deviation();
         let std_dev_y = other.standard_deviation();
 
-        if std_dev_x == 0.0 || std_dev_y == 0.0 {
-            panic!("Standard deviation should not be zero.");
-        }
+        assert!(
+            !(std_dev_x == 0.0 || std_dev_y == 0.0),
+            "Standard deviation should not be zero."
+        );
 
         cov / (std_dev_x * std_dev_y)
     }
@@ -287,26 +288,27 @@ mod tests_statistics {
 
     use super::*;
     use crate::assert_approx_equal;
+    use std::f64::EPSILON as EPS;
 
     #[test]
     fn test_mean_arithmetic() {
         let v = vec![1.0, 2.0, 3.0, 4.0, 5.0];
         let m = v.arithmetic_mean();
-        assert_eq!(m, 3.0);
+        assert_approx_equal!(m, 3.0, EPS);
     }
 
     #[test]
     fn test_mean_geometric() {
         let v = vec![1.0, 2.0, 4.0, 8.0, 16.0];
         let m = v.geometric_mean();
-        assert_approx_equal!(m, 4.0, 1e-10);
+        assert_approx_equal!(m, 4.0, EPS);
     }
 
     #[test]
     fn test_mean_harmonic() {
         let v = vec![1.0, 2.0, 4.0];
         let m = v.harmonic_mean();
-        assert_approx_equal!(m, 1.7142857, 1e-7);
+        assert_approx_equal!(m, 1.714_285_714_285_714_2, EPS);
     }
 
     #[test]
@@ -320,7 +322,7 @@ mod tests_statistics {
     fn test_standard_deviation() {
         let v = vec![1.0, 2.0, 4.0, 4.0, 5.0, 5.0, 7.0, 9.0];
         let stddev = v.standard_deviation();
-        assert_approx_equal!(stddev, 2.559994, 1e-6);
+        assert_approx_equal!(stddev, 2.559_994_419_636_775, EPS);
     }
 
     #[test]
@@ -335,7 +337,7 @@ mod tests_statistics {
         let x = vec![2.1, 2.5, 4.0, 3.6];
         let y = vec![8.0, 10.0, 12.0, 14.0];
         let corr = x.correlation(&y);
-        assert_approx_equal!(corr, 0.8642268, 1e-6);
+        assert_approx_equal!(corr, 0.864_226_802_873_516_2, EPS);
     }
 
     #[test]
@@ -367,7 +369,7 @@ mod tests_statistics {
         let x = vec![2.1, 2.5, 4.0, 3.6];
         let y = vec![8.0, 10.0, 12.0, 14.0];
         let cov = x.covariance(&y);
-        assert_approx_equal!(cov, 2.0, 1e-10);
+        assert_approx_equal!(cov, 2.0, EPS);
     }
 
     #[test]
@@ -393,32 +395,32 @@ mod tests_statistics {
 
         // Population variance.
         let var_pop = v.population_variance();
-        assert_approx_equal!(var_pop, 2.0, 0.0001);
+        assert_approx_equal!(var_pop, 2.0, EPS);
 
         // Sample variance.
         let var_samp = v.variance();
-        assert_approx_equal!(var_samp, 2.5, 0.0001);
+        assert_approx_equal!(var_samp, 2.5, EPS);
     }
 
     #[test]
     fn test_population_standard_deviation() {
         let v = vec![1.0, 2.0, 4.0, 4.0, 5.0, 5.0, 7.0, 9.0];
         let pop_stddev = v.population_standard_deviation();
-        assert_approx_equal!(pop_stddev, 2.3946555, 1e-6);
+        assert_approx_equal!(pop_stddev, 2.394_655_507_583_502, EPS);
     }
 
     #[test]
     fn test_sample_standard_deviation() {
         let v = vec![1.0, 2.0, 4.0, 4.0, 5.0, 5.0, 7.0, 9.0];
         let samp_stddev = v.sample_standard_deviation();
-        assert_approx_equal!(samp_stddev, 2.559994, 1e-6);
+        assert_approx_equal!(samp_stddev, 2.559_994_419_636_775, EPS);
     }
 
     #[test]
     fn test_sample_standard_deviation_two_elements() {
         let v = vec![1.0, 2.0];
         let samp_stddev = v.sample_standard_deviation();
-        assert_approx_equal!(samp_stddev, std::f64::consts::FRAC_1_SQRT_2, 1e-7);
+        assert_approx_equal!(samp_stddev, std::f64::consts::FRAC_1_SQRT_2, EPS);
     }
 
     #[test]
@@ -432,7 +434,7 @@ mod tests_statistics {
     fn test_population_standard_deviation_two_elements() {
         let v = vec![1.0, 2.0];
         let pop_stddev = v.population_standard_deviation();
-        assert_approx_equal!(pop_stddev, 0.5, 1e-7);
+        assert_approx_equal!(pop_stddev, 0.5, EPS);
     }
 
     #[test]
@@ -452,13 +454,13 @@ mod tests_statistics {
     #[test]
     fn test_min_single_element() {
         let v = vec![42.0];
-        assert_eq!(v.min(), 42.0);
+        assert_approx_equal!(v.min(), 42.0, EPS);
     }
 
     #[test]
     fn test_max_single_element() {
         let v = vec![42.0];
-        assert_eq!(v.max(), 42.0);
+        assert_approx_equal!(v.max(), 42.0, EPS);
     }
 
     // #[test]

@@ -158,19 +158,19 @@ where
     I: Instrument,
 {
     /// Create a new portfolio.
-    pub fn new(positions: HashMap<String, Position<I>>) -> Self {
+    #[must_use]
+    pub const fn new(positions: HashMap<String, Position<I>>) -> Self {
         Self { positions }
     }
 
     /// Returns the value of the portfolio.
+    #[must_use]
     pub fn value(&self) -> f64 {
-        self.positions
-            .values()
-            .map(|position| position.value())
-            .sum()
+        self.positions.values().map(Position::value).sum()
     }
 
     /// Returns the cost of the portfolio.
+    #[must_use]
     pub fn cost(&self) -> f64 {
         self.positions
             .values()
@@ -179,14 +179,16 @@ where
     }
 
     /// Returns the profit (or loss) of the portfolio.
+    #[must_use]
     pub fn profit(&self) -> f64 {
-        self.positions
-            .values()
-            .map(|position| position.profit())
-            .sum()
+        self.positions.values().map(Position::profit).sum()
     }
 
     /// Update the price of a position in the portfolio.
+    ///
+    /// # Panics
+    ///
+    /// Panics if `instrument_name` not found in the portfolio
     pub fn update_price(&mut self, instrument_name: &str, new_price: f64) {
         self.positions
             .get_mut(instrument_name)
@@ -195,6 +197,10 @@ where
     }
 
     /// Update the quantity of a position in the portfolio.
+    ///
+    /// # Panics
+    ///
+    /// Panics if `instrument_name` not found in the portfolio
     pub fn update_quantity(&mut self, instrument_name: &str, new_quantity: u64) {
         self.positions
             .get_mut(instrument_name)

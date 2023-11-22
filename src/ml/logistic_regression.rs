@@ -16,11 +16,14 @@
 use crate::ml::ActivationFunction;
 use nalgebra::{DMatrix, DVector};
 
+use std::f64::EPSILON as EPS;
+
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // STRUCTS, ENUMS, AND TRAITS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 /// Struct to hold the input data for a logistic regression.
+#[allow(clippy::module_name_repetitions)]
 #[derive(Clone, Debug)]
 pub struct LogisticRegressionInput<T> {
     /// The input data matrix, also known as the design matrix.
@@ -33,6 +36,7 @@ pub struct LogisticRegressionInput<T> {
 }
 
 /// Struct to hold the output data for a logistic regression.
+#[allow(clippy::module_name_repetitions)]
 #[derive(Clone, Debug)]
 pub struct LogisticRegressionOutput<T> {
     /// The coefficients of the logistic regression,
@@ -44,6 +48,8 @@ pub struct LogisticRegressionOutput<T> {
 }
 
 /// Algorithm to use for logistic regression.
+#[allow(clippy::module_name_repetitions)]
+#[derive(Copy, Clone)]
 pub enum LogisticRegressionAlgorithm {
     /// Maximum Likelihood Estimation using Algorithmic Adjoint Differentiation
     /// See: <https://en.wikipedia.org/wiki/Logistic_regression#Maximum_likelihood_estimation_(MLE)>
@@ -70,6 +76,11 @@ type PrepareInputResult = Result<(DMatrix<f64>, DMatrix<f64>, DVector<f64>), &'s
 
 impl LogisticRegressionInput<f64> {
     /// Create a new `LogisticRegressionInput` struct.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the number of rows in x are not equal to the length of y.
+    #[must_use]
     pub fn new(x: DMatrix<f64>, y: DVector<f64>) -> Self {
         assert!(x.nrows() == y.len());
 
@@ -79,7 +90,11 @@ impl LogisticRegressionInput<f64> {
     /// Function to validate and prepare the input data.
     fn prepare_input(&self) -> PrepareInputResult {
         // Check that the response vector is either 0 or 1.
-        if self.y.iter().any(|&x| x != 0. && x != 1.) {
+        if self
+            .y
+            .iter()
+            .any(|&x| x.abs() < EPS && (x - 1.0).abs() < EPS)
+        {
             return Err("The elements of the response vector should be either 0 or 1.");
         }
 
@@ -103,7 +118,7 @@ impl LogisticRegressionInput<f64> {
     }
 
     /// Function to validate and prepare the output data.
-    fn prepare_output(&self) -> Result<LogisticRegressionOutput<f64>, &'static str> {
+    fn prepare_output(&self) -> LogisticRegressionOutput<f64> {
         // Initial guess for the coefficients.
         // hyperplane orthogonal to line between  means of class 0 and 1; plane goes through the location of (weighted) mean of both clusters
 
@@ -134,10 +149,10 @@ impl LogisticRegressionInput<f64> {
         let coef = dir.insert_column(0, bias);
 
         // Return the output struct, with the initial guess for the coefficients.
-        Ok(LogisticRegressionOutput {
+        LogisticRegressionOutput {
             coefficients: coef.transpose(),
             iterations: 0,
-        })
+        }
     }
 
     /// Fit a logistic regression model to the input data.
@@ -148,7 +163,7 @@ impl LogisticRegressionInput<f64> {
     ) -> Result<LogisticRegressionOutput<f64>, &'static str> {
         // Validate and prepare the input and output data.
         let (X, X_T, y) = self.prepare_input()?;
-        let mut output = self.prepare_output()?;
+        let mut output = self.prepare_output();
 
         // Number of rows and columns in the design matrix.
         let (n_rows, n_cols) = X.shape();
@@ -215,6 +230,7 @@ impl LogisticRegressionInput<f64> {
 
 impl LogisticRegressionOutput<f64> {
     /// Predicts the output for the given input data.
+    #[must_use]
     pub fn predict(&self, input: &DMatrix<f64>) -> DVector<f64> {
         let probabilities = self.predict_proba(input);
 
@@ -222,7 +238,8 @@ impl LogisticRegressionOutput<f64> {
         probabilities.map(|p| if p > 0.5 { 1. } else { 0. })
     }
 
-    /// Compute the probabilities Pr(output_i=1|input_i,coefficients) for the given input data.
+    /// Compute the probabilities $Pr(output_i=1|input_i,coefficients)$ for the given input data.
+    #[must_use]
     pub fn predict_proba(&self, input: &DMatrix<f64>) -> DVector<f64> {
         let coef = self.coefficients.clone();
         let bias = coef[0];
@@ -233,22 +250,32 @@ impl LogisticRegressionOutput<f64> {
         ActivationFunction::logistic(&eta)
     }
 
-    /// Compute the misclassification rate for given y and y_hat.
+    /// Compute the misclassification rate for given `y` and `y_hat`.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the shape of `y` is not equal to the shape of `y_hat`.
+    #[must_use]
     pub fn score_misclassification(&self, y: &DVector<f64>, y_hat: &DVector<f64>) -> f64 {
         assert_eq!(y.shape(), y_hat.shape());
         let (N_samples, _) = y.shape();
         (y - y_hat).abs().sum() / N_samples as f64
     }
 
-    /// Compute average cross-entropy for given y and p_hat.
+    /// Compute average cross-entropy for given y and `p_hat`.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the shape of `y` is not equal to the shape of `p_hat`.
+    #[must_use]
     pub fn score_cross_entropy(&self, y: &DVector<f64>, p_hat: &DVector<f64>) -> f64 {
         //could be done with only one param input:&LogisticRegressionInput
         assert_eq!(y.shape(), p_hat.shape());
 
         let y_complement = (-y).add_scalar(1.);
         let p_complement = (-p_hat).add_scalar(1.);
-        let log_p = p_hat.map(|x| x.ln());
-        let log_p_complement = p_complement.map(|x| x.ln());
+        let log_p = p_hat.map(f64::ln);
+        let log_p_complement = p_complement.map(f64::ln);
 
         // Cross-entropy
         (y.component_mul(&log_p) + y_complement.component_mul(&log_p_complement)).mean()
@@ -291,20 +318,20 @@ mod tests_logistic_regression {
         let x_train = DMatrix::from_row_slice(
             4, // rows
             3, // columns
-            &[-1.2070657,  0.4291247, -0.5644520,
-               0.2774292,  0.5060559, -0.8900378,
-               1.0844412, -0.5747400, -0.4771927,
-              -2.3456977, -0.5466319, -0.9983864],
+            &[-1.207_065_7,  0.429_124_7, -0.564_452_0,
+               0.277_429_2,  0.506_055_9, -0.890_037_8,
+               1.084_441_2, -0.574_740_0, -0.477_192_7,
+              -2.345_697_7, -0.546_631_9, -0.998_386_4],
         );
 
         #[rustfmt::skip]
         let _x_test = DMatrix::from_row_slice(
             4, // rows
             3, // columns
-            &[-0.77625389, -0.5110095,  0.1340882,
-               0.06445882, -0.9111954, -0.4906859,
-               0.95949406, -0.8371717, -0.4405479,
-              -0.11028549,  2.4158352,  0.4595894],
+            &[-0.776_253_89, -0.511_009_5,  0.134_088_2,
+               0.064_458_82, -0.911_195_4, -0.490_685_9,
+               0.959_494_06, -0.837_171_7, -0.440_547_9,
+              -0.110_285_49,  2.415_835_2,  0.459_589_4],
         );
 
         let response = DVector::from_row_slice(&[0., 1., 1., 1.]);

@@ -25,6 +25,7 @@ use time::OffsetDateTime;
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 /// Interpolation method, either linear, quadratic, or cubic.
+#[allow(clippy::module_name_repetitions)]
 pub enum InterpolationMethod {
     /// Linear interpolation.
     Linear,
@@ -135,12 +136,15 @@ where
 mod tests_interpolation {
     use super::*;
 
+    use crate::assert_approx_equal;
+    use std::f64::EPSILON as EPS;
+
     #[test]
     fn test_lerp() {
-        assert_eq!(lerp(0.0, 1.0, 0.5), 0.5);
-        assert_eq!(lerp(0.0, 1.0, 0.0), 0.0);
-        assert_eq!(lerp(0.0, 1.0, 1.0), 1.0);
-        assert_eq!(lerp(0.0, 1.0, 2.0), 2.0);
-        assert_eq!(lerp(0.0, 1.0, -1.0), -1.0);
+        assert_approx_equal!(lerp(0.0, 1.0, 0.5), 0.5, EPS);
+        assert_approx_equal!(lerp(0.0, 1.0, 0.0), 0.0, EPS);
+        assert_approx_equal!(lerp(0.0, 1.0, 1.0), 1.0, EPS);
+        assert_approx_equal!(lerp(0.0, 1.0, 2.0), 2.0, EPS);
+        assert_approx_equal!(lerp(0.0, 1.0, -1.0), -1.0, EPS);
     }
 }

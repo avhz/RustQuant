@@ -16,7 +16,7 @@ use std::collections::VecDeque;
 /// The half-books are double-ended queues,
 /// one for the bids (buy orders) and one for the asks (sell orders).
 ///
-/// VecDeque\<T\> is not the most efficient choice, but it is convenient
+/// `VecDeque`\<T\> is not the most efficient choice, but it is convenient
 /// since we can push/pop from both the front and back easily.
 #[derive(Debug, Clone)]
 pub struct OrderBook {
@@ -35,7 +35,8 @@ impl Default for OrderBook {
 
 impl OrderBook {
     /// New `OrderBook` instance.
-    pub fn new() -> Self {
+    #[must_use]
+    pub const fn new() -> Self {
         Self {
             bids: VecDeque::new(),
             asks: VecDeque::new(),
@@ -51,11 +52,13 @@ impl OrderBook {
     }
 
     /// Check if `OrderBook` is empty.
+    #[must_use]
     pub fn is_empty(&self) -> bool {
         self.bids.is_empty() && self.asks.is_empty()
     }
 
     /// Get the size of the `OrderBook`.
+    #[must_use]
     pub fn len(&self) -> usize {
         self.bids.len() + self.asks.len()
     }
