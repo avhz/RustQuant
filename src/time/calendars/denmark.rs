@@ -48,7 +48,7 @@ impl Calendar for Denmark {
             || (dd == em - 4)
             || (dd == em - 3)
             || (dd == em)
-            || (dd == em + 25)
+            || (dd == em + 25 && y <= 2023)
             || (dd == em + 38)
             || (dd == em + 39 && y >= 2009)
             || (dd == em + 49)
