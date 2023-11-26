@@ -6,6 +6,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.0.39](https://github.com/avhz/RustQuant/compare/v0.0.38...v0.0.39) - 2023-11-26
+
+### Fixed
+- denmark calender: general prayer day is no longer a public holiday from 2024
+
+### Other
+- Merge pull request [#159](https://github.com/avhz/RustQuant/pull/159) from robertchristensen/docs/fix-warnings
+- [#142](https://github.com/avhz/RustQuant/pull/142) - tests for denmark calendar
+- [#142](https://github.com/avhz/RustQuant/pull/142) - tests for calendars & update Hong Kong calendar
+- [#142](https://github.com/avhz/RustQuant/pull/142) - tests for calendars
+
 ## [0.0.38](https://github.com/avhz/RustQuant/compare/v0.0.37...v0.0.38) - 2023-11-14
 
 ### Other

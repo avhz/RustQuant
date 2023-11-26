@@ -84,7 +84,7 @@ pub trait Curve {
     fn rate(&self, date: OffsetDateTime) -> f64;
 
     /// Returns the discount factor for the given date.
-    /// This is a convenience function that calls [rate] to get the rate for
+    /// This is a convenience function that calls [`rate`](Curve::rate) to get the rate for
     /// the given date, and then calculates the discount factor using the
     /// formula:
     /// $$
@@ -98,7 +98,7 @@ pub trait Curve {
     }
 
     /// Returns multiple discount factors for the given dates.
-    /// This is a convenience function that calls `discount_factor` for each
+    /// This is a convenience function that calls [`discount_factor`](Curve::discount_factor) for each
     /// date.
     fn discount_factors(&self, dates: &[OffsetDateTime]) -> Vec<f64> {
         dates
