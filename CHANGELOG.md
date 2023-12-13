@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.0.40](https://github.com/avhz/RustQuant/compare/v0.0.39...v0.0.40) - 2023-12-13
+
+### Other
+- Merge branch 'main' into interpolation
+
 ## [0.0.39](https://github.com/avhz/RustQuant/compare/v0.0.38...v0.0.39) - 2023-11-26
 
 ### Fixed
