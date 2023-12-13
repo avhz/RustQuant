@@ -29,8 +29,9 @@ pub struct NelsonSiegel {
 
 impl NelsonSiegel {
     /// Create a new Nelson-Siegel model.
-    pub fn new(beta0: f64, beta1: f64, beta2: f64, lambda: f64) -> Self {
-        NelsonSiegel {
+    #[must_use]
+    pub const fn new(beta0: f64, beta1: f64, beta2: f64, lambda: f64) -> Self {
+        Self {
             beta0,
             beta1,
             beta2,

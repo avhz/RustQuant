@@ -28,21 +28,26 @@ pub struct ISO_3166 {
 
 impl ISO_3166 {
     /// Returns the ISO 3166-1 alpha-2 country code.
+    #[must_use]
     pub fn alpha_2(&self) -> &'static str {
         self.alpha_2
     }
 
     /// Returns the ISO 3166-1 alpha-3 country code.
+    #[must_use]
     pub fn alpha_3(&self) -> &'static str {
         self.alpha_3
     }
 
     /// Returns the ISO 3166-1 numeric code.
+    #[must_use]
     pub fn numeric(&self) -> &'static str {
         self.numeric
     }
 
     /// Convert ISO 3166-1 alpha-2 country code to `ISO_3166` struct.
+    #[allow(clippy::too_many_lines)]
+    #[must_use]
     pub fn from_alpha_2(alpha_2: &str) -> Option<Self> {
         match alpha_2 {
             "AF" => Some(AFGHANISTAN),

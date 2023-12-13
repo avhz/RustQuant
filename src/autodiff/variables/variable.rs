@@ -49,8 +49,9 @@ pub struct Variable<'v> {
 
 impl<'v> Variable<'v> {
     /// Instantiate a new variable.
+    #[must_use]
     #[inline]
-    pub fn new(graph: &'v Graph, index: usize, value: f64) -> Self {
+    pub const fn new(graph: &'v Graph, index: usize, value: f64) -> Self {
         Variable {
             graph,
             index,
@@ -69,66 +70,77 @@ impl<'v> Variable<'v> {
     // }
 
     /// Function to return the value contained in a vertex.
+    #[must_use]
     #[inline]
     pub fn value(&self) -> f64 {
         self.value
     }
 
     /// Function to return the index of a vertex.
+    #[must_use]
     #[inline]
     pub fn index(&self) -> usize {
         self.index
     }
 
     /// Function to return the graph.
+    #[must_use]
     #[inline]
     pub fn graph(&self) -> &'v Graph {
         self.graph
     }
 
     /// Check if variable is finite.
+    #[must_use]
     #[inline]
     pub fn is_finite(&self) -> bool {
         self.value.is_finite()
     }
 
     /// Check if variable is infinite.
+    #[must_use]
     #[inline]
     pub fn is_infinite(&self) -> bool {
         self.value.is_infinite()
     }
 
     /// Check if variable is NaN.
+    #[must_use]
     #[inline]
     pub fn is_nan(&self) -> bool {
         self.value.is_nan()
     }
 
     /// Check if variable is normal.
+    #[must_use]
     #[inline]
     pub fn is_normal(&self) -> bool {
         self.value.is_normal()
     }
 
     /// Check if variable is subnormal.
+    #[must_use]
     #[inline]
     pub fn is_subnormal(&self) -> bool {
         self.value.is_subnormal()
     }
 
     /// Check if variable is zero.
+    #[must_use]
     #[inline]
     pub fn is_zero(&self) -> bool {
         self.value == 0.0
     }
 
     /// Check if variable is positive.
+    #[must_use]
     #[inline]
     pub fn is_positive(&self) -> bool {
         self.value.is_sign_positive()
     }
 
     /// Check if variable is negative.
+    #[must_use]
     #[inline]
     pub fn is_negative(&self) -> bool {
         self.value.is_sign_negative()
@@ -141,6 +153,7 @@ impl<'v> Variable<'v> {
     }
 
     /// Returns the sign of the variable.
+    #[must_use]
     #[inline]
     pub fn signum(&self) -> f64 {
         self.value.signum()
@@ -196,6 +209,7 @@ impl<'v> Ord for Variable<'v> {
 #[cfg(test)]
 mod tests_variable {
     use super::*;
+    use crate::assert_approx_equal;
 
     #[test]
     fn test_value() {
@@ -205,7 +219,7 @@ mod tests_variable {
             index: 5,
             value: std::f64::consts::PI,
         };
-        assert_eq!(var.value(), std::f64::consts::PI);
+        assert_approx_equal!(var.value(), std::f64::consts::PI, f64::EPSILON);
     }
 
     #[test]
@@ -227,7 +241,7 @@ mod tests_variable {
             index: 5,
             value: std::f64::consts::PI,
         };
-        assert_eq!(var.graph() as *const _, &graph as *const _);
+        assert_eq!(var.graph() as *const _, std::ptr::addr_of!(graph));
     }
 
     #[test]
@@ -260,6 +274,6 @@ mod tests_variable {
         assert!(!g.var(1.0).is_zero());
         assert!(g.var(1.0).is_positive());
         assert!(!g.var(1.0).is_negative());
-        assert_eq!(g.var(1.0).signum(), 1.0);
+        assert_approx_equal!(g.var(1.0).signum(), 1.0, f64::EPSILON);
     }
 }

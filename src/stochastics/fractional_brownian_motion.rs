@@ -7,7 +7,7 @@
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use crate::stochastics::*;
+use crate::stochastics::{StochasticProcess, Trajectories};
 use nalgebra::{DMatrix, DVector, Dim, Dyn, RowDVector};
 use rand::Rng;
 #[cfg(feature = "seedable")]
@@ -30,6 +30,11 @@ impl Default for FractionalBrownianMotion {
 
 impl FractionalBrownianMotion {
     /// Create a new Fractional Brownian Motion process.
+    ///
+    /// # Panics
+    ///
+    /// Will panic if Hurst parameter is not in [0, 1].
+    #[must_use]
     pub fn new(hurst: f64) -> Self {
         assert!((0.0..=1.0).contains(&hurst));
 
@@ -47,7 +52,7 @@ impl FractionalBrownianMotion {
             let idx = i as f64;
 
             v[i] = 0.5
-                * ((idx + 1.0).powf(2.0 * h) - 2.0 * idx.powf(2.0 * h) + (idx - 1.0).powf(2.0 * h))
+                * ((idx + 1.0).powf(2.0 * h) - 2.0 * idx.powf(2.0 * h) + (idx - 1.0).powf(2.0 * h));
         }
 
         v
@@ -73,6 +78,7 @@ impl FractionalBrownianMotion {
     }
 
     /// Fractional Gaussian noise.
+    #[must_use]
     pub fn fgn_cholesky(&self, n: usize, t_n: f64) -> RowDVector<f64> {
         let acf_sqrt = self.acf_matrix_sqrt(n);
         let noise = rand::thread_rng()
@@ -221,7 +227,7 @@ mod test_fractional_brownian_motion {
     }
 
     #[test]
-    fn test_brownian_motion() -> Result<(), Box<dyn std::error::Error>> {
+    fn test_brownian_motion() {
         let fbm = FractionalBrownianMotion::new(0.7);
         let output_serial = fbm.euler_maruyama(0.0, 0.0, 0.5, 100, 1000, false);
         // let output_parallel = (&bm).euler_maruyama(10.0, 0.0, 0.5, 100, 10, true);
@@ -230,14 +236,12 @@ mod test_fractional_brownian_motion {
         let X_T: Vec<f64> = output_serial
             .paths
             .iter()
-            .filter_map(|v| v.last().cloned())
+            .filter_map(|v| v.last().copied())
             .collect();
 
         // E[X_T] = 0
         assert_approx_equal!(X_T.mean(), 0.0, 0.5);
         // V[X_T] = T
         assert_approx_equal!(X_T.variance(), 0.5, 0.5);
-
-        std::result::Result::Ok(())
     }
 }

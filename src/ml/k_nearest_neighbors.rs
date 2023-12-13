@@ -57,6 +57,11 @@ impl KNearestClassifier<f64> {
     /// x: data points with features along columns
     /// y: labels of data points
     /// metric: choice of metric to compute distances
+    ///
+    /// # Panics
+    ///
+    /// Will panic if x and y have different number of data points.
+    #[must_use]
     pub fn new(x: DMatrix<f64>, y: DVector<f64>, metric: Metric) -> Self {
         assert_eq!(x.nrows(), y.nrows());
 
@@ -66,7 +71,7 @@ impl KNearestClassifier<f64> {
     /// Predict class of a single test data point
     /// xprime: test data point
     /// k: number of neighbors to consider
-    fn predict_one(&self, xprime: &DMatrix<f64>, k: &usize) -> f64 {
+    fn predict_one(&self, xprime: &DMatrix<f64>, k: usize) -> f64 {
         let neighbors = self.find_neighbors(xprime, k);
 
         let mut classes: Vec<f64> = vec![0.0; neighbors.len()];
@@ -90,14 +95,19 @@ impl KNearestClassifier<f64> {
     /// Predict classes of collection of test points
     /// xprime: test data point
     /// k: number of neighbors to consider
+    ///
+    /// # Panics
+    ///
+    /// Panics if x and xprime do not have the same number of columns.
+    #[must_use]
     pub fn predict(&self, xprime: &DMatrix<f64>, k: &usize) -> Vec<f64> {
         assert_eq!(self.x.ncols(), xprime.ncols());
         let mut predictions: Vec<f64> = vec![0.0; xprime.nrows()];
 
-        for i in 0..predictions.len() {
+        (0..predictions.len()).for_each(|i| {
             predictions[i] =
-                self.predict_one(&DMatrix::from(xprime.view((i, 0), (1, xprime.ncols()))), k);
-        }
+                self.predict_one(&DMatrix::from(xprime.view((i, 0), (1, xprime.ncols()))), *k);
+        });
 
         predictions
     }
@@ -105,12 +115,13 @@ impl KNearestClassifier<f64> {
     /// Find distances of neighbors of data points
     /// xprime: test data point
     /// k: number of neighbors to consider
-    fn find_neighbors(&self, xprime: &DMatrix<f64>, k: &usize) -> Vec<(usize, f64)> {
+    #[must_use]
+    fn find_neighbors(&self, xprime: &DMatrix<f64>, k: usize) -> Vec<(usize, f64)> {
         let (n_samples, _n_feats) = self.x.shape();
 
         let mut distances: Vec<(usize, f64)> = vec![(0, 0.0); n_samples];
 
-        for i in 0..n_samples {
+        (0..n_samples).for_each(|i| {
             distances[i] = (
                 i,
                 match self.metric {
@@ -127,10 +138,10 @@ impl KNearestClassifier<f64> {
                         .apply_metric_distance(xprime, &nalgebra::base::LpNorm(p)),
                 },
             );
-        }
+        });
 
         distances.sort_by(|(_x, y), (_z, w)| y.partial_cmp(w).unwrap());
-        distances.into_iter().take(*k).collect()
+        distances.into_iter().take(k).collect()
     }
 }
 
@@ -140,6 +151,7 @@ mod tests_knnclassifier {
     use super::*;
     use nalgebra::dmatrix;
 
+    #[allow(clippy::too_many_lines)]
     #[test]
     fn iris_dataset_test_knn_classifier() {
         let iris_data = dmatrix![

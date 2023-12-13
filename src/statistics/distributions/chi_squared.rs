@@ -42,6 +42,11 @@ impl ChiSquared {
     ///
     /// assert_eq!(dist.mean(), 1.0);
     /// ```
+    ///
+    /// # Panics
+    ///
+    /// Panics if `k` is not positive.
+    #[must_use]
     pub fn new(k: usize) -> Self {
         assert!(k > 0);
 
@@ -312,8 +317,8 @@ mod tests {
         let dist: ChiSquared = ChiSquared::new(1);
 
         let cf = dist.cf(1.0);
-        assert_approx_equal!(cf.re, 0.5688645, 1e-7);
-        assert_approx_equal!(cf.im, 0.3515776, 1e-7);
+        assert_approx_equal!(cf.re, 0.568_864_5, 1e-7);
+        assert_approx_equal!(cf.im, 0.351_577_6, 1e-7);
     }
 
     #[test]
@@ -321,11 +326,11 @@ mod tests {
         let dist: ChiSquared = ChiSquared::new(1);
 
         // Values computed using R
-        assert_approx_equal!(dist.pdf(1.0), 0.24197072, 1e-8);
-        assert_approx_equal!(dist.pdf(2.0), 0.10377687, 1e-8);
-        assert_approx_equal!(dist.pdf(3.0), 0.05139344, 1e-8);
-        assert_approx_equal!(dist.pdf(4.0), 0.02699548, 1e-8);
-        assert_approx_equal!(dist.pdf(5.0), 0.01464498, 1e-8);
+        assert_approx_equal!(dist.pdf(1.0), 0.241_970_72, 1e-8);
+        assert_approx_equal!(dist.pdf(2.0), 0.103_776_87, 1e-8);
+        assert_approx_equal!(dist.pdf(3.0), 0.051_393_44, 1e-8);
+        assert_approx_equal!(dist.pdf(4.0), 0.026_995_48, 1e-8);
+        assert_approx_equal!(dist.pdf(5.0), 0.014_644_98, 1e-8);
     }
 
     #[test]
@@ -333,10 +338,10 @@ mod tests {
         let dist: ChiSquared = ChiSquared::new(1);
 
         // Values computed using R
-        assert_approx_equal!(dist.cdf(1.0), 0.6826895, 1e-7);
-        assert_approx_equal!(dist.cdf(2.0), 0.8427008, 1e-7);
-        assert_approx_equal!(dist.cdf(3.0), 0.9167355, 1e-7);
-        assert_approx_equal!(dist.cdf(4.0), 0.9544997, 1e-7);
-        assert_approx_equal!(dist.cdf(5.0), 0.9746527, 1e-7);
+        assert_approx_equal!(dist.cdf(1.0), 0.682_689_5, 1e-7);
+        assert_approx_equal!(dist.cdf(2.0), 0.842_700_8, 1e-7);
+        assert_approx_equal!(dist.cdf(3.0), 0.916_735_5, 1e-7);
+        assert_approx_equal!(dist.cdf(4.0), 0.954_499_7, 1e-7);
+        assert_approx_equal!(dist.cdf(5.0), 0.974_652_7, 1e-7);
     }
 }

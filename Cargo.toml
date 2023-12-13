@@ -48,20 +48,22 @@ rustdoc-args = ["--html-in-header", "katex_header.html", "--cfg", "docsrs"]
 ## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 [dependencies]
-csv = "1.3.0"         # https://docs.rs/csv/latest/csv/
-nalgebra = "0.32.2"   # https://docs.rs/nalgebra/latest/nalgebra/
-ndarray = "0.15.6"    # https://docs.rs/ndarray/latest/ndarray/
-num = "0.4.1"         # https://docs.rs/num/latest/num/
-num-complex = "0.4.2" # https://docs.rs/num-complex/latest/num_complex/
-num-traits = "0.2.16" # https://docs.rs/num-traits/latest/num_traits/
-plotters = "0.3.4"    # https://docs.rs/plotters/latest/plotters/
-rand = "0.8.5"        # https://docs.rs/rand/latest/rand/
-rand_distr = "0.4.3"  # https://docs.rs/rand_distr/latest/rand_distr/
-rayon = "1.6.0"       # https://docs.rs/rayon/latest/rayon/
-serde = "1.0.163"     # https://docs.rs/serde/latest/serde
-serde_json = "1.0.96" # https://docs.rs/serde_json/latest/serde_json
-statrs = "0.16.0"     # https://docs.rs/statrs/latest/statrs/
-thiserror = "1.0.47"  # https://docs.rs/thiserror/latest/thiserror/
+csv = "1.3.0"                # https://docs.rs/csv/latest/csv/
+nalgebra = "0.32.2"          # https://docs.rs/nalgebra/latest/nalgebra/
+ndarray = "0.15.6"           # https://docs.rs/ndarray/latest/ndarray/
+num = "0.4.1"                # https://docs.rs/num/latest/num/
+num-complex = "0.4.2"        # https://docs.rs/num-complex/latest/num_complex/
+num-traits = "0.2.16"        # https://docs.rs/num-traits/latest/num_traits/
+plotters = "0.3.4"           # https://docs.rs/plotters/latest/plotters/
+rand = "0.8.5"               # https://docs.rs/rand/latest/rand/
+rand_distr = "0.4.3"         # https://docs.rs/rand_distr/latest/rand_distr/
+rayon = "1.6.0"              # https://docs.rs/rayon/latest/rayon/
+rust_decimal = "1.33.1"      # https://docs.rs/rust_decimal/latest/rust_decimal/
+rust_decimal_macros = "1.33" # https://docs.rs/rust_decimal_macros/latest/rust_decimal_macros/
+serde = "1.0.163"            # https://docs.rs/serde/latest/serde
+serde_json = "1.0.96"        # https://docs.rs/serde_json/latest/serde_json
+statrs = "0.16.0"            # https://docs.rs/statrs/latest/statrs/
+thiserror = "1.0.47"         # https://docs.rs/thiserror/latest/thiserror/
 
 time = { version = "0.3.20", features = [
     "macros",

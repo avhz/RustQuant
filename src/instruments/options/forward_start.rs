@@ -19,6 +19,7 @@ use crate::{
 };
 
 /// Forward Start Option parameters struct
+#[allow(clippy::module_name_repetitions)]
 #[derive(Debug)]
 pub struct ForwardStartOption {
     /// `S` - Initial price of the underlying.
@@ -53,6 +54,7 @@ impl ForwardStartOption {
     /// Returns a tuple: `(call_price, put_price)`
     /// # Note:
     /// * `b = r - q` - The cost of carry.
+    #[must_use]
     pub fn price(&self) -> (f64, f64) {
         let S = self.initial_price;
         let a = self.alpha;

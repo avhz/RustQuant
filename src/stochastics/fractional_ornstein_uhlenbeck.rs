@@ -7,7 +7,9 @@
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use crate::stochastics::*;
+use crate::stochastics::{
+    FractionalBrownianMotion, StochasticProcess, TimeDependent, Trajectories,
+};
 use rayon::prelude::*;
 
 /// Struct containing the Ornstein-Uhlenbeck process parameters.
@@ -105,12 +107,10 @@ mod tests_ornstein_uhlenbeck {
 
     #[test]
     #[ignore = "Hard to test."]
-    fn test_fractional_ornstein_uhlenbeck() -> Result<(), Box<dyn std::error::Error>> {
+    fn test_fractional_ornstein_uhlenbeck() {
         let fou = FractionalOrnsteinUhlenbeck::new(0.15, 0.45, 0.01, 0.7);
 
         #[allow(dead_code)]
         let _output = fou.euler_maruyama(10.0, 0.0, 0.5, 100, 100, false);
-
-        std::result::Result::Ok(())
     }
 }

@@ -27,6 +27,7 @@ pub trait Surface {
 /// space dimension (e.g. strike or moneyness) and a time dimension (e.g. dates).
 ///
 /// We represent this as a map from time to a curve of volatilities.
+#[allow(clippy::module_name_repetitions)]
 pub struct VolatilitySurface<C: Curve> {
     /// The volatilities of the surface.
     pub volatilities: BTreeMap<f64, C>,

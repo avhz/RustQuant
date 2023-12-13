@@ -24,7 +24,7 @@ pub trait Calendar {
     /// Returns the ISO 10383 market identifier code.
     fn market_identifier_code(&self) -> crate::iso::ISO_10383;
 
-    /// Unpacks an OffsetDateTime into a tuple in the following form:
+    /// Unpacks an `OffsetDateTime` into a tuple in the following form:
     ///
     /// ```ignore
     /// (
@@ -47,13 +47,15 @@ pub trait Calendar {
     }
 
     /// Returns the Easter Monday for the given year.
+    #[must_use]
     fn easter_monday(year: usize, is_orthodox: bool) -> u16 {
-        let index = if is_orthodox { 1 } else { 0 };
+        let index = usize::from(is_orthodox);
 
         super::EASTER_MONDAYS[index][year - 1901]
     }
 
     /// Checks if date is a weekend.
+    #[must_use]
     fn is_weekend(date: OffsetDateTime) -> bool {
         let w = date.weekday();
 

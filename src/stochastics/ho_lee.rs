@@ -7,7 +7,7 @@
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use crate::stochastics::*;
+use crate::stochastics::{StochasticProcess, TimeDependent};
 
 /// Struct containing the Ho-Lee process parameters.
 pub struct HoLee {
@@ -60,7 +60,7 @@ mod tests_ho_lee {
     // }
 
     #[test]
-    fn test_ho_lee() -> Result<(), Box<dyn std::error::Error>> {
+    fn test_ho_lee() {
         let hl = HoLee::new(1.6, 2.0);
 
         // X_0 = 10.0
@@ -71,7 +71,7 @@ mod tests_ho_lee {
         let X_T: Vec<f64> = output
             .paths
             .iter()
-            .filter_map(|v| v.last().cloned())
+            .filter_map(|v| v.last().copied())
             .collect();
 
         let E_XT = X_T.mean();
@@ -83,7 +83,5 @@ mod tests_ho_lee {
         // Same here
         // V[X_T] = sigma^2 * T
         assert_approx_equal!(V_XT, 1.6 * 1.6 * 1.0, 0.5);
-
-        std::result::Result::Ok(())
     }
 }

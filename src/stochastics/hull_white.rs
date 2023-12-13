@@ -7,7 +7,7 @@
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use crate::stochastics::*;
+use crate::stochastics::{StochasticProcess, TimeDependent};
 
 /// Struct containing the Hull-White process parameters.
 pub struct HullWhite {
@@ -64,7 +64,7 @@ mod tests_hull_white {
     // }
 
     #[test]
-    fn test_hull_white() -> Result<(), Box<dyn std::error::Error>> {
+    fn test_hull_white() {
         let alpha = 2.0;
         let theta = 0.5;
         let sigma = 2.0;
@@ -77,7 +77,7 @@ mod tests_hull_white {
         let X_T: Vec<f64> = output
             .paths
             .iter()
-            .filter_map(|v| v.last().cloned())
+            .filter_map(|v| v.last().copied())
             .collect();
 
         let E_XT = X_T.mean();
@@ -90,6 +90,5 @@ mod tests_hull_white {
 
         // No closed form solution for variance that I know of...
         // Have to take it on faith that it works
-        std::result::Result::Ok(())
     }
 }

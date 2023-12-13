@@ -1,4 +1,4 @@
-use crate::stochastics::*;
+use crate::stochastics::{StochasticProcess, TimeDependent};
 
 /// Struct containing the Geometric Brownian Bridge parameters.
 /// The Geometric Brownian Bridge is a stochastic process that models a path-dependent option.
@@ -62,7 +62,7 @@ mod tests_gbm_bridge {
 
     /// Test the Geometric Brownian Bridge process.
     #[test]
-    fn test_geometric_brownian_motion_bridge() -> Result<(), Box<dyn std::error::Error>> {
+    fn test_geometric_brownian_motion_bridge() {
         let gbm = GeometricBrownianBridge::new(0.05, 0.9, 10.0, 0.5);
 
         let output = gbm.euler_maruyama(10.0, 0.0, 0.5, 125, 10000, false);
@@ -71,7 +71,7 @@ mod tests_gbm_bridge {
         let X_T: Vec<f64> = output
             .paths
             .iter()
-            .filter_map(|v| v.last().cloned())
+            .filter_map(|v| v.last().copied())
             .collect();
 
         let E_XT = X_T.mean();
@@ -80,7 +80,5 @@ mod tests_gbm_bridge {
         assert_approx_equal!(E_XT, 10.0, 0.5);
         // V[X_T] = https://en.wikipedia.org/wiki/Geometric_Brownian_motion
         assert_approx_equal!(V_XT, 0.0, 0.5);
-
-        std::result::Result::Ok(())
     }
 }

@@ -7,7 +7,7 @@
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use crate::stochastics::*;
+use crate::stochastics::{StochasticProcess, TimeDependent};
 
 /// Struct containing the extended Vasicek process parameters.
 pub struct ExtendedVasicek {
@@ -67,7 +67,7 @@ mod tests_extended_vasicek {
     // }
 
     #[test]
-    fn test_extended_vasicek() -> Result<(), Box<dyn std::error::Error>> {
+    fn test_extended_vasicek() {
         let sigma = 2.0;
         let alpha = 2.0;
         let theta = 0.5;
@@ -80,7 +80,7 @@ mod tests_extended_vasicek {
         let X_T: Vec<f64> = output
             .paths
             .iter()
-            .filter_map(|v| v.last().cloned())
+            .filter_map(|v| v.last().copied())
             .collect();
 
         let E_XT = X_T.mean();
@@ -92,7 +92,5 @@ mod tests_extended_vasicek {
             (-alpha * 1.0_f64).exp() * 10.0 + (theta / alpha) * (1.0 - alpha * 1.0_f64).exp(),
             0.25
         );
-
-        std::result::Result::Ok(())
     }
 }

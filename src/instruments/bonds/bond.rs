@@ -22,6 +22,7 @@ use time::{Duration, OffsetDateTime};
 /// A zero-coupon bond (aka a pure discount bond or simply a zero) is a
 /// debt security that doesn't pay interest (a coupon) periodically but
 /// instead pays the principal in full at maturity.
+#[allow(clippy::module_name_repetitions)]
 pub struct ZeroCouponBond {
     /// The date the bond is evaluated (i.e. priced).
     pub evaluation_date: OffsetDateTime,
@@ -45,6 +46,7 @@ pub struct ZeroCouponBond {
 /// - A 6-month zero-coupon bond with a face value of $2.50.
 /// - A 12-month zero-coupon bond with a face value of $2.50.
 /// - An 18-month zero-coupon bond with a face value of $102.50.
+#[allow(clippy::module_name_repetitions)]
 pub struct CouponBond {
     /// The date the bond is evaluated (i.e. priced).
     pub evaluation_date: OffsetDateTime,
@@ -138,7 +140,7 @@ impl Instrument for CouponBond {
             &self
                 .coupons
                 .keys()
-                .cloned()
+                .copied()
                 .collect::<Vec<OffsetDateTime>>(),
         );
         // .iter()
@@ -175,10 +177,11 @@ impl CouponBond2 {
     /// Validate the dates.
     /// All evaluation dates must be the same, since it is a single instrument,
     /// we just happen to be treating it as a portfolio of zero-coupon bonds.
+    #[must_use]
     pub fn validate_dates(&self) -> bool {
         let mut evaluation_date: Option<OffsetDateTime> = None;
 
-        for (_, bond) in self.coupons.iter() {
+        for bond in self.coupons.values() {
             if evaluation_date.is_none() {
                 evaluation_date = Some(bond.evaluation_date);
             } else if evaluation_date != Some(bond.evaluation_date) {
@@ -202,6 +205,7 @@ mod tests_bond {
 
     use super::*;
 
+    #[allow(clippy::similar_names)]
     fn create_test_yield_curve(t0: OffsetDateTime) -> YieldCurve {
         // Create a treasury yield curve with 8 points (3m, 6m, 1y, 2y, 5y, 10y, 30y).
         // Values from Bloomberg: <https://www.bloomberg.com/markets/rates-bonds/government-bonds/us>

@@ -19,6 +19,7 @@ use crate::{
 };
 
 /// Black-Scholes Vanilla European Option
+#[allow(clippy::module_name_repetitions)]
 #[derive(Debug, Clone, Copy)]
 pub struct EuropeanOption {
     /// `S` - Initial price of the underlying.
@@ -43,6 +44,7 @@ pub struct EuropeanOption {
 
 impl EuropeanOption {
     /// New European Option
+    #[must_use]
     pub fn new(
         initial_price: f64,
         strike_price: f64,
@@ -67,6 +69,7 @@ impl EuropeanOption {
     /// Returns a tuple: `(call_price, put_price)`
     /// # Note:
     /// * `b = r - q` - The cost of carry.
+    #[must_use]
     pub fn price(&self) -> (f64, f64) {
         let S = self.initial_price;
         let K = self.strike_price;

@@ -15,6 +15,7 @@ use thiserror::Error;
 pub const i: Complex<f64> = Complex { re: 0.0, im: 1.0 };
 
 /// Distribution class/type.
+#[allow(clippy::module_name_repetitions)]
 pub enum DistributionClass {
     /// Discrete distribution.
     Discrete,
@@ -24,6 +25,7 @@ pub enum DistributionClass {
 
 /// Distribution error type.
 #[derive(Debug, Error)]
+#[allow(clippy::module_name_repetitions)]
 pub enum DistributionError {
     /// Error variant from constructing Bernoulli distribution.
     #[error("{0}")]

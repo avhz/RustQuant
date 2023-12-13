@@ -20,6 +20,7 @@ use time::OffsetDateTime;
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 /// Power Option contract.
+#[allow(clippy::module_name_repetitions)]
 #[derive(Debug, Clone, Copy)]
 pub struct PowerOption {
     /// `S` - Initial price of the underlying.
@@ -48,6 +49,8 @@ pub struct PowerOption {
 
 impl PowerOption {
     /// New Power Option contract.
+    #[allow(clippy::too_many_arguments)]
+    #[must_use]
     pub fn new(
         initial_price: f64,
         strike_price: f64,
@@ -71,6 +74,7 @@ impl PowerOption {
     }
 
     /// Power Option price.
+    #[must_use]
     pub fn price(&self) -> f64 {
         let S = self.initial_price;
         let K = self.strike_price;
@@ -100,6 +104,8 @@ mod tests_power_contract {
     use crate::assert_approx_equal;
     use time::Duration;
 
+    use std::f64::EPSILON as EPS;
+
     #[test]
     fn test_power() {
         let power_option = PowerOption {
@@ -113,6 +119,6 @@ mod tests_power_contract {
             expiration_date: OffsetDateTime::now_utc() + Duration::days(182),
         };
 
-        assert_approx_equal!(power_option.price(), 0.8313226401449854, 1e-10);
+        assert_approx_equal!(power_option.price(), 0.831_322_640_144_985_4, EPS);
     }
 }

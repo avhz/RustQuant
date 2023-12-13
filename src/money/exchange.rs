@@ -9,7 +9,7 @@
 
 // use crate::RustQuantError;
 // use crate::money::{iso_currencies::*, Currency, Money};
-use crate::money::*;
+use crate::money::{Currency, Money};
 use std::collections::HashMap;
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -26,7 +26,8 @@ pub struct Exchange {
     pub rates: HashMap<String, ExchangeRate>,
 }
 
-/// ExchangeRate struct to hold exchange rate information.
+/// `ExchangeRate` struct to hold exchange rate information.
+#[allow(clippy::module_name_repetitions)]
 #[derive(Debug, Clone, Copy)]
 pub struct ExchangeRate {
     /// From currency
@@ -51,13 +52,14 @@ impl Exchange {
     /// let exchange = Exchange::new();
     /// ```
     ///
+    #[must_use]
     pub fn new() -> Self {
         Self {
             rates: HashMap::new(),
         }
     }
 
-    /// Adds a new ExchangeRate to the Exchange.
+    /// Adds a new `ExchangeRate` to the Exchange.
     ///
     /// # Example
     /// ```
@@ -80,7 +82,7 @@ impl Exchange {
         self.rates.insert(key, rate);
     }
 
-    /// Retrieves an ExchangeRate from the Exchange.
+    /// Retrieves an `ExchangeRate` from the Exchange.
     ///
     /// # Example
     /// ```
@@ -96,11 +98,12 @@ impl Exchange {
     ///
     /// let retrieved_usd_to_eur = exchange.get_rate(&USD, &EUR).expect("Rate not found");
     /// assert_eq!(retrieved_usd_to_eur.rate, 0.85);
-    ///     
+    ///
     /// let retrieved_eur_to_usd = exchange.get_rate(&EUR, &USD).expect("Rate not found");
     /// assert_eq!(retrieved_eur_to_usd.rate, 1.18);
     /// ```
     ///
+    #[must_use]
     pub fn get_rate(
         &self,
         from_currency: &Currency,
@@ -114,26 +117,27 @@ impl Exchange {
     }
 
     /// Convert money from one currency to another using the exchange rate in the Exchange.
-    /// It panics if the conversion rate is not found or if the money's currency doesn't match with from_currency.
+    /// It panics if the conversion rate is not found or if the money's currency doesn't match with `from_currency`.
     ///
     /// # Example
     /// ```
     /// use RustQuant::money::*;
-    ///     
+    ///
     /// let mut exchange = Exchange::new();
     ///
     /// let usd_to_eur = ExchangeRate::new(USD, EUR, 0.85); // USD to EUR
     /// let eur_to_usd = ExchangeRate::new(EUR, USD, 1.18); // EUR to USD
-    ///     
+    ///
     /// exchange.add_rate(usd_to_eur);
     /// exchange.add_rate(eur_to_usd);
-    ///     
+    ///
     /// let usd_100 = Money::new(USD, 100.0); // 100 USD
     /// let eur_85 = exchange.convert(usd_100, EUR); // Should be 85 EUR
     ///
     /// assert_eq!(eur_85.currency, EUR);
     /// assert_eq!(eur_85.amount, 85.0);
     /// ```
+    #[must_use]
     pub fn convert(&self, money: Money, to_currency: Currency) -> Money {
         let rate = self
             .get_rate(&money.currency, &to_currency)
@@ -149,6 +153,7 @@ impl Exchange {
 
 impl ExchangeRate {
     /// Create a new exchange rate.
+    #[must_use]
     pub fn new(from_currency: Currency, to_currency: Currency, rate: f64) -> Self {
         Self {
             from_currency,
@@ -158,7 +163,7 @@ impl ExchangeRate {
     }
 
     /// Convert money from one currency to another using this exchange rate.
-    /// It panics if the money's currency doesn't match with from_currency.
+    /// It panics if the money's currency doesn't match with `from_currency`.
     ///
     /// # Example
     /// ```
@@ -174,7 +179,7 @@ impl ExchangeRate {
     /// assert_eq!(eur.currency, EUR);
     /// ```
     ///
-    /// It panics if the money's currency doesn't match with from_currency.
+    /// It panics if the money's currency doesn't match with `from_currency`.
     ///
     /// ```should_panic
     /// use RustQuant::money::*;
@@ -184,6 +189,7 @@ impl ExchangeRate {
     ///
     /// eur_usd.convert(usd);  // This will panic
     /// ```
+    #[must_use]
     pub fn convert(&self, money: Money) -> Money {
         if money.currency == self.from_currency {
             let new_amount = money.amount * self.rate;
@@ -205,6 +211,10 @@ impl ExchangeRate {
 mod test_exchange_rate {
     use super::*;
     use crate::iso::*;
+
+    use crate::assert_approx_equal;
+    use crate::money::{EUR, USD};
+    use std::f64::EPSILON as EPS;
 
     #[test]
     fn test_conversion() {
@@ -230,7 +240,7 @@ mod test_exchange_rate {
 
         // Verify the conversion
         assert_eq!(eur_85.currency, eur);
-        assert_eq!(eur_85.amount, 85_f64);
+        assert_approx_equal!(eur_85.amount, 85.0, EPS);
     }
 
     #[test]
@@ -244,10 +254,10 @@ mod test_exchange_rate {
         exchange.add_rate(eur_to_usd);
 
         let retrieved_usd_to_eur = exchange.get_rate(&USD, &EUR).expect("Rate not found");
-        assert_eq!(retrieved_usd_to_eur.rate, 0.85);
+        assert_approx_equal!(retrieved_usd_to_eur.rate, 0.85, EPS);
 
         let retrieved_eur_to_usd = exchange.get_rate(&EUR, &USD).expect("Rate not found");
-        assert_eq!(retrieved_eur_to_usd.rate, 1.18);
+        assert_approx_equal!(retrieved_eur_to_usd.rate, 1.18, EPS);
     }
 
     #[test]
@@ -264,6 +274,6 @@ mod test_exchange_rate {
         let eur_85 = exchange.convert(usd_100, EUR); // Should be 85 EUR
 
         assert_eq!(eur_85.currency, EUR);
-        assert_eq!(eur_85.amount, 85.0);
+        assert_approx_equal!(eur_85.amount, 85.0, EPS);
     }
 }

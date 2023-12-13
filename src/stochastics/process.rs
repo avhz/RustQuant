@@ -55,6 +55,7 @@ pub struct Trajectories {
 }
 
 /// Trait to implement stochastic processes.
+#[allow(clippy::module_name_repetitions)]
 pub trait StochasticProcess: Sync {
     /// Base method for the process' drift.
     fn drift(&self, x: f64, t: f64) -> f64;

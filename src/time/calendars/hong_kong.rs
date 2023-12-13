@@ -372,179 +372,180 @@ impl Calendar for HongKong {
     }
 }
 
+#[allow(clippy::unnested_or_patterns)]
 fn is_lunar_new_year(year: i32, day: u8, month: Month) -> bool {
-    if year == 2004 && month == Month::January && (day == 22 || day == 23 || day == 24)
-        || year == 2005 && month == Month::February && (day == 9 || day == 10 || day == 11)
-        || year == 2006 && month == Month::January && (day == 28 || day == 29 || day == 30)
-        || year == 2007 && month == Month::February && (day == 17 || day == 18 || day == 19)
-        || year == 2008 && month == Month::February && (day == 7 || day == 8 || day == 9)
-        || year == 2009 && month == Month::January && (day == 26 || day == 27 || day == 28)
-        || year == 2010 && month == Month::February && (day == 13 || day == 14 || day == 15)
-        || year == 2011 && month == Month::February && (day == 2 || day == 3 || day == 4)
-        || year == 2012 && month == Month::January && (day == 23 || day == 24 || day == 25)
-        || year == 2013 && month == Month::February && (day == 10 || day == 11 || day == 12)
-        || year == 2014 && month == Month::January && (day == 31 || day == 1 || day == 2)
-        || year == 2015 && month == Month::February && (day == 19 || day == 20 || day == 21)
-        || year == 2016 && month == Month::February && (day == 8 || day == 9 || day == 10)
-        || year == 2017 && month == Month::January && (day == 28 || day == 29 || day == 30)
-        || year == 2018 && month == Month::February && (day == 16 || day == 17 || day == 18)
-        || year == 2019 && month == Month::February && (day == 5 || day == 6 || day == 7)
-        || year == 2020 && month == Month::January && (day == 25 || day == 27 || day == 28)
-    {
-        return true;
-    }
-
-    false
+    use Month::{February, January};
+    matches!(
+        (year, day, month),
+        (2004, 22..=24, January)
+            | (2005, 9..=11, February)
+            | (2006, 28..=30, January)
+            | (2007, 17..=19, February)
+            | (2008, 7..=9, February)
+            | (2009, 26..=28, January)
+            | (2010, 13..=15, February)
+            | (2011, 2..=4, February)
+            | (2012, 23..=25, January)
+            | (2013, 10..=12, February)
+            | (2014, 31 | 1 | 2, January)
+            | (2015, 19..=21, February)
+            | (2016, 8..=10, February)
+            | (2017, 28..=30, January)
+            | (2018, 16..=18, February)
+            | (2019, 5..=7, February)
+            | (2020, 25 | 27 | 28, January)
+    )
 }
 
+#[allow(clippy::unnested_or_patterns)]
 fn is_buddhas_birthday(year: i32, day: u8, month: Month) -> bool {
-    if year == 2004 && month == Month::May && day == 26
-        || year == 2005 && month == Month::May && day == 16
-        || year == 2006 && month == Month::May && day == 5
-        || year == 2007 && month == Month::May && day == 24
-        || year == 2008 && month == Month::May && day == 12
-        || year == 2009 && month == Month::May && day == 2
-        || year == 2010 && month == Month::May && day == 21
-        || year == 2011 && month == Month::May && day == 10
-        || year == 2012 && month == Month::May && day == 28
-        || year == 2013 && month == Month::May && day == 17
-        || year == 2014 && month == Month::May && day == 6
-        || year == 2015 && month == Month::May && day == 25
-        || year == 2016 && month == Month::May && day == 14
-        || year == 2017 && month == Month::May && day == 3
-        || year == 2018 && month == Month::May && day == 22
-        || year == 2019 && month == Month::May && day == 12
-        || year == 2020 && month == Month::May && day == 30
-    {
-        return true;
-    }
-
-    false
+    use Month::May;
+    matches!(
+        (year, day, month),
+        (2004, 26, May)
+            | (2005, 16, May)
+            | (2006, 5, May)
+            | (2007, 24, May)
+            | (2008, 12, May)
+            | (2009, 2, May)
+            | (2010, 21, May)
+            | (2011, 10, May)
+            | (2012, 28, May)
+            | (2013, 17, May)
+            | (2014, 6, May)
+            | (2015, 25, May)
+            | (2016, 14, May)
+            | (2017, 3, May)
+            | (2018, 22, May)
+            | (2019, 12, May)
+            | (2020, 30, May)
+    )
 }
 
+#[allow(clippy::unnested_or_patterns)]
 fn is_ching_ming_festival(year: i32, day: u8, month: Month) -> bool {
-    if year == 2004 && month == Month::April && day == 5
-        || year == 2005 && month == Month::April && day == 5
-        || year == 2006 && month == Month::April && day == 5
-        || year == 2007 && month == Month::April && day == 5
-        || year == 2008 && month == Month::April && day == 4
-        || year == 2009 && month == Month::April && day == 4
-        || year == 2010 && month == Month::April && day == 5
-        || year == 2011 && month == Month::April && day == 5
-        || year == 2012 && month == Month::April && day == 4
-        || year == 2013 && month == Month::April && day == 4
-        || year == 2014 && month == Month::April && day == 5
-        || year == 2015 && month == Month::April && day == 5
-        || year == 2016 && month == Month::April && day == 4
-        || year == 2017 && month == Month::April && day == 4
-        || year == 2018 && month == Month::April && day == 5
-        || year == 2019 && month == Month::April && day == 5
-        || year == 2020 && month == Month::April && day == 4
-    {
-        return true;
-    }
-
-    false
+    use Month::April;
+    matches!(
+        (year, day, month),
+        (2004, 5, April)
+            | (2005, 5, April)
+            | (2006, 5, April)
+            | (2007, 5, April)
+            | (2008, 4, April)
+            | (2009, 4, April)
+            | (2010, 5, April)
+            | (2011, 5, April)
+            | (2012, 4, April)
+            | (2013, 4, April)
+            | (2014, 5, April)
+            | (2015, 5, April)
+            | (2016, 4, April)
+            | (2017, 4, April)
+            | (2018, 5, April)
+            | (2019, 5, April)
+            | (2020, 4, April)
+    )
 }
 
+#[allow(clippy::unnested_or_patterns)]
 fn is_tuen_ng_festival(year: i32, day: u8, month: Month) -> bool {
-    if year == 2004 && month == Month::June && day == 22
-        || year == 2005 && month == Month::June && day == 11
-        || year == 2006 && month == Month::June && day == 1
-        || year == 2007 && month == Month::June && day == 19
-        || year == 2008 && month == Month::June && day == 9
-        || year == 2009 && month == Month::June && day == 28
-        || year == 2010 && month == Month::June && day == 16
-        || year == 2011 && month == Month::June && day == 6
-        || year == 2012 && month == Month::June && day == 23
-        || year == 2013 && month == Month::June && day == 12
-        || year == 2014 && month == Month::June && day == 2
-        || year == 2015 && month == Month::June && day == 20
-        || year == 2016 && month == Month::June && day == 9
-        || year == 2017 && month == Month::May && day == 30
-        || year == 2018 && month == Month::June && day == 18
-        || year == 2019 && month == Month::June && day == 7
-        || year == 2020 && month == Month::June && day == 25
-    {
-        return true;
-    }
+    use Month::{June, May};
 
-    false
+    matches!(
+        (year, day, month),
+        (2004, 22, June)
+            | (2005, 11, June)
+            | (2006, 1, June)
+            | (2007, 19, June)
+            | (2008, 9, June)
+            | (2009, 28, June)
+            | (2010, 16, June)
+            | (2011, 6, June)
+            | (2012, 23, June)
+            | (2013, 12, June)
+            | (2014, 2, June)
+            | (2015, 20, June)
+            | (2016, 9, June)
+            | (2017, 30, May)
+            | (2018, 18, June)
+            | (2019, 7, June)
+            | (2020, 25, June)
+    )
 }
 
+#[allow(clippy::unnested_or_patterns)]
 fn is_mid_autumn_festival(year: i32, day: u8, month: Month) -> bool {
-    if year == 2004 && month == Month::September && day == 28
-        || year == 2005 && month == Month::September && day == 18
-        || year == 2006 && month == Month::October && day == 7
-        || year == 2007 && month == Month::September && day == 26
-        || year == 2008 && month == Month::September && day == 15
-        || year == 2009 && month == Month::October && day == 3
-        || year == 2010 && month == Month::September && day == 22
-        || year == 2011 && month == Month::September && day == 12
-        || year == 2012 && month == Month::September && day == 30
-        || year == 2013 && month == Month::September && day == 19
-        || year == 2014 && month == Month::September && day == 9
-        || year == 2015 && month == Month::September && day == 27
-        || year == 2016 && month == Month::September && day == 15
-        || year == 2017 && month == Month::October && day == 5
-        || year == 2018 && month == Month::September && day == 25
-        || year == 2019 && month == Month::September && day == 14
-        || year == 2020 && month == Month::October && day == 1
-    {
-        return true;
-    }
-
-    false
+    use Month::{October, September};
+    matches!(
+        (year, day, month),
+        (2004, 28, September)
+            | (2005, 18, September)
+            | (2006, 7, October)
+            | (2007, 26, September)
+            | (2008, 15, September)
+            | (2009, 3, October)
+            | (2010, 22, September)
+            | (2011, 12, September)
+            | (2012, 30, September)
+            | (2013, 19, September)
+            | (2014, 9, September)
+            | (2015, 27, September)
+            | (2016, 15, September)
+            | (2017, 5, October)
+            | (2018, 25, September)
+            | (2019, 14, September)
+            | (2020, 1, October)
+    )
 }
 
+#[allow(clippy::unnested_or_patterns)]
 fn is_chung_yeung_festival(year: i32, day: u8, month: Month) -> bool {
-    if year == 2004 && month == Month::October && day == 28
-        || year == 2005 && month == Month::October && day == 18
-        || year == 2006 && month == Month::October && day == 7
-        || year == 2007 && month == Month::October && day == 26
-        || year == 2008 && month == Month::October && day == 16
-        || year == 2009 && month == Month::October && day == 26
-        || year == 2010 && month == Month::October && day == 16
-        || year == 2011 && month == Month::October && day == 5
-        || year == 2012 && month == Month::October && day == 23
-        || year == 2013 && month == Month::October && day == 14
-        || year == 2014 && month == Month::October && day == 2
-        || year == 2015 && month == Month::October && day == 21
-        || year == 2016 && month == Month::October && day == 10
-        || year == 2017 && month == Month::October && day == 28
-        || year == 2018 && month == Month::October && day == 17
-        || year == 2019 && month == Month::October && day == 7
-        || year == 2020 && month == Month::October && day == 26
-    {
-        return true;
-    }
-
-    false
+    use Month::October;
+    matches!(
+        (year, day, month),
+        (2004, 28, October)
+            | (2005, 18, October)
+            | (2006, 7, October)
+            | (2007, 26, October)
+            | (2008, 16, October)
+            | (2009, 26, October)
+            | (2010, 16, October)
+            | (2011, 5, October)
+            | (2012, 23, October)
+            | (2013, 14, October)
+            | (2014, 2, October)
+            | (2015, 21, October)
+            | (2016, 10, October)
+            | (2017, 28, October)
+            | (2018, 17, October)
+            | (2019, 7, October)
+            | (2020, 26, October)
+    )
 }
 
+#[allow(clippy::unnested_or_patterns)]
 fn is_second_day_after_christmas(year: i32, day: u8, month: Month) -> bool {
-    if year == 2004 && month == Month::December && day == 27
-        || year == 2005 && month == Month::December && day == 27
-        || year == 2006 && month == Month::December && day == 27
-        || year == 2007 && month == Month::December && day == 27
-        || year == 2008 && month == Month::December && day == 29
-        || year == 2009 && month == Month::December && day == 28
-        || year == 2010 && month == Month::December && day == 27
-        || year == 2011 && month == Month::December && day == 27
-        || year == 2012 && month == Month::December && day == 27
-        || year == 2013 && month == Month::December && day == 27
-        || year == 2014 && month == Month::December && day == 29
-        || year == 2015 && month == Month::December && day == 28
-        || year == 2016 && month == Month::December && day == 27
-        || year == 2017 && month == Month::December && day == 27
-        || year == 2018 && month == Month::December && day == 27
-        || year == 2019 && month == Month::December && day == 27
-        || year == 2020 && month == Month::December && day == 28
-    {
-        return true;
-    }
-
-    false
+    use Month::December;
+    matches!(
+        (year, day, month),
+        (2004, 27, December)
+            | (2005, 27, December)
+            | (2006, 27, December)
+            | (2007, 27, December)
+            | (2008, 29, December)
+            | (2009, 28, December)
+            | (2010, 27, December)
+            | (2011, 27, December)
+            | (2012, 27, December)
+            | (2013, 27, December)
+            | (2014, 29, December)
+            | (2015, 28, December)
+            | (2016, 27, December)
+            | (2017, 27, December)
+            | (2018, 27, December)
+            | (2019, 27, December)
+            | (2020, 28, December)
+    )
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

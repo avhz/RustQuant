@@ -9,7 +9,7 @@
 
 use crate::statistics::{distributions::Distribution, DistributionError};
 use num_complex::Complex;
-use statrs::function::gamma::*;
+use statrs::function::gamma::{gamma_li, gamma_ui};
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // STRUCTS
@@ -37,6 +37,11 @@ impl Poisson {
     /// assert_eq!(poisson.mean(), 1.0);
     /// assert_approx_equal!(poisson.cf(1.0).re, 0.4207936, 1e-7);
     /// ```
+    ///
+    /// # Panics
+    ///
+    /// Panics if lambda is not positive.
+    #[must_use]
     pub fn new(lambda: f64) -> Poisson {
         assert!(lambda > 0.0);
 
@@ -124,16 +129,16 @@ impl Distribution for Poisson {
         if !(0.0..=1.0).contains(&p) {
             return f64::NAN;
         }
-        if p == 1.0 {
+        if (p - 1.0).abs() < f64::EPSILON {
             return f64::INFINITY;
         }
         let mut sum = 0.0;
         let mut k = 0;
         while sum < p {
-            sum += self.pmf(k as f64);
+            sum += self.pmf(f64::from(k));
             k += 1;
         }
-        (k - 1) as f64
+        f64::from(k - 1)
     }
 
     /// Returns the mean of the Poisson distribution.
@@ -277,55 +282,58 @@ mod tests {
     use super::*;
     use crate::assert_approx_equal;
 
+    use std::f64::EPSILON as EPS;
+
+    #[allow(clippy::similar_names)]
     #[test]
     fn test_poisson_distribution() -> Result<(), DistributionError> {
         let dist: Poisson = Poisson::new(1.0);
 
         // Characteristic function
         let cf = dist.cf(1.0);
-        assert_approx_equal!(cf.re, 0.42079361743, 1e-10);
-        assert_approx_equal!(cf.im, 0.47084264330, 1e-10);
+        assert_approx_equal!(cf.re, 0.420_793_617_430_045_7, EPS);
+        assert_approx_equal!(cf.im, 0.470_842_643_309_935_9, EPS);
 
         // Probability mass function
         let pmf = dist.pmf(1.);
-        assert_approx_equal!(pmf, 0.367879441171, 1e-10);
+        assert_approx_equal!(pmf, 0.367_879_441_171_442_33, EPS);
         // Probability density function is same as pmf
-        assert_eq!(dist.pdf(1.), pmf);
+        assert_approx_equal!(dist.pdf(1.), pmf, EPS);
 
         // Distribution function
         let cdf = dist.cdf(1.);
-        assert_approx_equal!(cdf, 0.640859085770, 1e-10);
+        assert_approx_equal!(cdf, 0.640_859_085_770_477_5, EPS);
 
         // Inverse distribution function
         let icdf = dist.inv_cdf(0.5);
-        assert_approx_equal!(icdf, 1.0, 1e-10);
+        assert_approx_equal!(icdf, 1.0, EPS);
         // p needs to be in [0, 1]
         assert!(dist.inv_cdf(1.1).is_nan());
         assert!(dist.inv_cdf(-0.1).is_nan());
         // p =1 => x = inf
-        assert_eq!(dist.inv_cdf(1.0), f64::INFINITY);
+        assert!(dist.inv_cdf(1.0).is_infinite() && dist.inv_cdf(1.0).is_sign_positive());
 
         // Mean
-        assert_approx_equal!(dist.mean(), 1.0, 1e-10);
+        assert_approx_equal!(dist.mean(), 1.0, EPS);
 
         // Median
-        assert_approx_equal!(dist.median(), 1.0, 1e-10);
+        assert_approx_equal!(dist.median(), 1.0, EPS);
 
         // Mode
-        assert_approx_equal!(dist.mode(), 1.0, 1e-10);
+        assert_approx_equal!(dist.mode(), 1.0, EPS);
 
         // Variance
-        assert_approx_equal!(dist.variance(), 1.0, 1e-10);
+        assert_approx_equal!(dist.variance(), 1.0, EPS);
 
         // Skewness
-        assert_approx_equal!(dist.skewness(), 1.0, 1e-10);
+        assert_approx_equal!(dist.skewness(), 1.0, EPS);
 
         // Kurtosis
-        assert_approx_equal!(dist.kurtosis(), 1.0, 1e-10);
+        assert_approx_equal!(dist.kurtosis(), 1.0, EPS);
 
         // Moment generating function
         let mgf = dist.mgf(1.0);
-        assert_approx_equal!(mgf, 5.5749415, 1e-7);
+        assert_approx_equal!(mgf, 5.574_941_5, 1e-7);
 
         // Sample
         let sample = dist.sample(1000)?;

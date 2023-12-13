@@ -159,7 +159,10 @@ impl<'v> Max<Variable<'v>> for f64 {
 
 #[cfg(test)]
 mod test_overloading_minmax {
+    use crate::assert_approx_equal;
     use crate::autodiff::*;
+
+    use std::f64::EPSILON as EPS;
 
     #[test]
     fn test_values() {
@@ -186,15 +189,15 @@ mod test_overloading_minmax {
         let y = g.var(2.0);
 
         // GRADIENTS
-        assert!(Min::min(&x, y).accumulate().wrt(&x) == 1.0);
-        assert!(Min::min(&x, y).accumulate().wrt(&y) == 0.0);
-        assert!(Max::max(&x, y).accumulate().wrt(&x) == 0.0);
-        assert!(Max::max(&x, y).accumulate().wrt(&y) == 1.0);
+        assert_approx_equal!(Min::min(&x, y).accumulate().wrt(&x), 1.0, EPS);
+        assert_approx_equal!(Min::min(&x, y).accumulate().wrt(&y), 0.0, EPS);
+        assert_approx_equal!(Max::max(&x, y).accumulate().wrt(&x), 0.0, EPS);
+        assert_approx_equal!(Max::max(&x, y).accumulate().wrt(&y), 1.0, EPS);
 
-        assert!(Min::min(&x, 2_f64).accumulate().wrt(&x) == 1.0);
-        assert!(Max::max(&x, 2_f64).accumulate().wrt(&x) == 0.0);
+        assert_approx_equal!(Min::min(&x, 2_f64).accumulate().wrt(&x), 1.0, EPS);
+        assert_approx_equal!(Max::max(&x, 2_f64).accumulate().wrt(&x), 0.0, EPS);
 
-        assert!(Min::min(&2_f64, x).accumulate().wrt(&x) == 0.0);
-        assert!(Max::max(&2_f64, x).accumulate().wrt(&x) == 1.0);
+        assert_approx_equal!(Min::min(&2_f64, x).accumulate().wrt(&x), 0.0, EPS);
+        assert_approx_equal!(Max::max(&2_f64, x).accumulate().wrt(&x), 1.0, EPS);
     }
 }

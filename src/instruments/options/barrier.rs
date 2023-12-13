@@ -7,7 +7,7 @@
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use crate::statistics::distributions::{gaussian::*, Distribution};
+use crate::statistics::distributions::{gaussian::Gaussian, Distribution};
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // BARRIER OPTION STRUCT
@@ -15,6 +15,7 @@ use crate::statistics::distributions::{gaussian::*, Distribution};
 
 /// Barrier Option struct for parameters and pricing methods.
 #[derive(Debug, Clone, Copy)]
+#[allow(clippy::module_name_repetitions)]
 pub struct BarrierOption {
     /// * `S` - Initial underlying price.
     pub initial_price: f64,
@@ -36,6 +37,7 @@ pub struct BarrierOption {
 
 /// Barrier option type enum.
 #[derive(Debug, Clone, Copy)]
+#[allow(clippy::module_name_repetitions)]
 pub enum BarrierType {
     /// Call (up-and-in)
     /// Payoff: `max(S_T - X, 0) * I(max(S_t) > H)`
@@ -78,6 +80,7 @@ impl BarrierOption {
     ///
     /// # Note:
     /// * `b = r - q` - The cost of carry.
+    #[must_use]
     pub fn price(&self, type_flag: BarrierType) -> f64 {
         let S = self.initial_price;
         let X = self.strike_price;
@@ -204,6 +207,8 @@ mod tests {
     use super::*;
     use crate::assert_approx_equal;
 
+    use std::f64::EPSILON as EPS;
+
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // Initial underlying price ABOVE the barrier.
     //
@@ -223,6 +228,7 @@ mod tests {
         dividend_yield: 0.01,
     };
 
+    #[allow(clippy::similar_names)]
     #[test]
     fn test_S_above_H() {
         let cdi = S_ABOVE_H.price(BarrierType::CDI);
@@ -230,31 +236,31 @@ mod tests {
         let pdi = S_ABOVE_H.price(BarrierType::PDI);
         let pdo = S_ABOVE_H.price(BarrierType::PDO);
 
-        assert_approx_equal!(cdi, 9.504815, 0.000001);
-        assert_approx_equal!(cdo, 7.295022, 0.000001);
-        assert_approx_equal!(pdi, 3.017298, 0.000001);
-        assert_approx_equal!(pdo, 0.000000, 0.000001);
+        assert_approx_equal!(cdi, 9.504_815_211_050_698, EPS);
+        assert_approx_equal!(cdo, 7.295_021_649_666_765, EPS);
+        assert_approx_equal!(pdi, 3.017_297_598_380_377_4, EPS);
+        assert_approx_equal!(pdo, 0.000_000, EPS);
     }
 
     #[test]
     #[should_panic(expected = "Barrier touched - check barrier and type flag.")]
     fn cui_panic() {
-        S_ABOVE_H.price(BarrierType::CUI);
+        let _ = S_ABOVE_H.price(BarrierType::CUI);
     }
     #[test]
     #[should_panic(expected = "Barrier touched - check barrier and type flag.")]
     fn cuo_panic() {
-        S_ABOVE_H.price(BarrierType::CUO);
+        let _ = S_ABOVE_H.price(BarrierType::CUO);
     }
     #[test]
     #[should_panic(expected = "Barrier touched - check barrier and type flag.")]
     fn pui_panic() {
-        S_ABOVE_H.price(BarrierType::PUI);
+        let _ = S_ABOVE_H.price(BarrierType::PUI);
     }
     #[test]
     #[should_panic(expected = "Barrier touched - check barrier and type flag.")]
     fn puo_panic() {
-        S_ABOVE_H.price(BarrierType::PUO);
+        let _ = S_ABOVE_H.price(BarrierType::PUO);
     }
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -276,6 +282,7 @@ mod tests {
         dividend_yield: 0.01,
     };
 
+    #[allow(clippy::similar_names)]
     #[test]
     fn test_S_below_H() {
         let cui = S_BELOW_H.price(BarrierType::CUI);
@@ -283,30 +290,30 @@ mod tests {
         let pui = S_BELOW_H.price(BarrierType::PUI);
         let puo = S_BELOW_H.price(BarrierType::PUO);
 
-        assert_approx_equal!(cui, 4.692603, 0.000001);
-        assert_approx_equal!(cuo, 0.022449, 0.000001);
-        assert_approx_equal!(pui, 1.359553, 0.000001);
-        assert_approx_equal!(puo, 9.373956, 0.000001);
+        assert_approx_equal!(cui, 4.692_603_355_387_815, EPS);
+        assert_approx_equal!(cuo, 0.022_448_676_101_445_74, EPS);
+        assert_approx_equal!(pui, 1.359_553_168_024_573_8, EPS);
+        assert_approx_equal!(puo, 9.373_956_276_110_954, EPS);
     }
 
     #[test]
     #[should_panic(expected = "Barrier touched - check barrier and type flag.")]
     fn cdi_panic() {
-        S_BELOW_H.price(BarrierType::CDI);
+        let _ = S_BELOW_H.price(BarrierType::CDI);
     }
     #[test]
     #[should_panic(expected = "Barrier touched - check barrier and type flag.")]
     fn cdo_panic() {
-        S_BELOW_H.price(BarrierType::CDO);
+        let _ = S_BELOW_H.price(BarrierType::CDO);
     }
     #[test]
     #[should_panic(expected = "Barrier touched - check barrier and type flag.")]
     fn pdi_panic() {
-        S_BELOW_H.price(BarrierType::PDI);
+        let _ = S_BELOW_H.price(BarrierType::PDI);
     }
     #[test]
     #[should_panic(expected = "Barrier touched - check barrier and type flag.")]
     fn pdo_panic() {
-        S_BELOW_H.price(BarrierType::PDO);
+        let _ = S_BELOW_H.price(BarrierType::PDO);
     }
 }
