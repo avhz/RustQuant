@@ -298,7 +298,43 @@ impl YahooFinanceReader for YahooFinanceData {
     }
 
     fn get_latest_quote(&mut self) -> Result<(), YahooFinanceError> {
-        todo!()
+        let provider = yahoo::YahooConnector::new();
+        let response = tokio_test::block_on(
+            provider.get_latest_quotes(
+                self.ticker
+                    .as_ref()
+                    .ok_or(YahooFinanceError::MissingInput(
+                        "No ticker provided.".to_string(),
+                    ))?
+                    .as_str(),
+                "1d",
+            ),
+        )
+        .unwrap();
+        let quote = response.last_quote().unwrap();
+        // Check if the timestamp is within the acceptable range
+
+        let timestamp = vec![quote.timestamp];
+        let open = vec![quote.open];
+        let high = vec![quote.high];
+        let low = vec![quote.low];
+        let close = vec![quote.close];
+        let volume = vec![quote.volume as f64];
+        let adjclose = vec![quote.adjclose];
+
+        let df = df!(
+            "timestamp" => timestamp,
+            "open" => open,
+            "high" => high,
+            "low" => low,
+            "close" => close,
+            "volume" => volume,
+            "adjusted" => adjclose
+        );
+
+        self.latest_quote = Some(df?);
+
+        Ok(())
     }
 }
 
@@ -334,6 +370,14 @@ mod test_yahoo {
         let _ = yfd.compute_returns(ReturnsType::Logarithmic);
 
         println!("Apple's returns: {:?}", yfd.returns)
+    }
+    #[test]
+    fn test_get_latest_quote() {
+        let mut yfd = YahooFinanceData::new("AAPL".to_string());
+
+        let _ = yfd.get_latest_quote();
+
+        println!("Apple's latest quote: {:?}", yfd.latest_quote)
     }
 
     #[test]
