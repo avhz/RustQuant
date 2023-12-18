@@ -98,8 +98,8 @@ impl BarrierOption {
         let lambda: f64 = (mu * mu + 2. * r / (v * v)).sqrt();
         let z: f64 = (H / S).ln() / (v * t.sqrt()) + lambda * v * t.sqrt();
 
-        let x1: f64 = (S / X).ln() / v * t.sqrt() + (1. + mu) * v * t.sqrt();
-        let x2: f64 = (S / H).ln() / v * t.sqrt() + (1. + mu) * v * t.sqrt();
+        let x1: f64 = (S / X).ln() / (v * t.sqrt()) + (1. + mu) * v * t.sqrt();
+        let x2: f64 = (S / H).ln() / (v * t.sqrt()) + (1. + mu) * v * t.sqrt();
 
         let y1: f64 = (H * H / (S * X)).ln() / (v * t.sqrt()) + (1. + mu) * v * t.sqrt();
         let y2: f64 = (H / S).ln() / (v * t.sqrt()) + (1. + mu) * v * t.sqrt();
