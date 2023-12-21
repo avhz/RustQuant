@@ -13,14 +13,14 @@ use rayon::prelude::*;
 /// Struct containing the Ornstein-Uhlenbeck process parameters.
 pub struct FractionalCoxIngersollRoss {
     /// The long-run mean ($\mu$).
-    pub mu: f64,
+    pub mu: TimeDependent,
 
     /// The diffusion, or instantaneous volatility ($\sigma$).
-    pub sigma: f64,
+    pub sigma: TimeDependent,
 
     /// Mean reversion parameter ($\theta$).
     /// Defines the speed at which the process reverts to the long-run mean.
-    pub theta: f64,
+    pub theta: TimeDependent,
 
     /// Hurst parameter of the process.
     /// The Hurst parameter is a measure of the long-term memory of the process.
@@ -33,18 +33,17 @@ pub struct FractionalCoxIngersollRoss {
 impl FractionalCoxIngersollRoss {
     /// Create a new Ornstein-Uhlenbeck process.
     pub fn new(
-        mu: f64,
-        sigma: f64,
-        theta: f64,
+        mu: impl Into<TimeDependent>,
+        sigma: impl Into<TimeDependent>,
+        theta: impl Into<TimeDependent>,
         hurst: f64,
         method: FractionalProcessGeneratorMethod,
     ) -> Self {
-        assert!(sigma >= 0.0);
         assert!((0.0..=1.0).contains(&hurst));
         Self {
-            mu,
-            sigma,
-            theta,
+            mu: mu.into(),
+            sigma: sigma.into(),
+            theta: theta.into(),
             hurst,
             method,
         }
@@ -52,16 +51,16 @@ impl FractionalCoxIngersollRoss {
 }
 
 impl StochasticProcess for FractionalCoxIngersollRoss {
-    fn drift(&self, x: f64, _t: f64) -> f64 {
-        self.theta * (self.mu - x)
+    fn drift(&self, x: f64, t: f64) -> f64 {
+        self.theta.0(t) * (self.mu.0(t) - x)
     }
 
-    fn diffusion(&self, _x: f64, _t: f64) -> f64 {
-        self.sigma * _x.sqrt()
+    fn diffusion(&self, x: f64, t: f64) -> f64 {
+        self.sigma.0(t) * x.sqrt()
     }
 
-    fn jump(&self, _x: f64, _t: f64) -> f64 {
-        0.0
+    fn jump(&self, _x: f64, _t: f64) -> Option<f64> {
+        Some(0.0)
     }
 
     fn euler_maruyama(

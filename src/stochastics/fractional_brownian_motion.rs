@@ -15,6 +15,7 @@ use num_complex::Complex;
 use rand::Rng;
 use rand_distr::StandardNormal;
 use rayon::prelude::*;
+use statrs::statistics::Statistics;
 
 /// Method used to generate the Fractional Brownian Motion.
 #[derive(Debug)]
@@ -310,7 +311,7 @@ mod test_fractional_brownian_motion {
 
     #[test]
     fn test_brownian_motion() {
-        let fbm = FractionalBrownianMotion::new(0.7);
+        let fbm = FractionalBrownianMotion::new(0.7, FractionalProcessGeneratorMethod::FFT);
         let output_serial = fbm.euler_maruyama(0.0, 0.0, 0.5, 100, 1000, false);
         // let output_parallel = (&bm).euler_maruyama(10.0, 0.0, 0.5, 100, 10, true);
 
@@ -322,8 +323,8 @@ mod test_fractional_brownian_motion {
             .collect();
 
         // E[X_T] = 0
-        assert_approx_equal!(X_T.mean(), 0.0, 0.5);
+        assert_approx_equal!(X_T.clone().mean(), 0.0, 0.5);
         // V[X_T] = T
-        assert_approx_equal!(X_T.variance(), 0.5, 0.5);
+        assert_approx_equal!(X_T.clone().variance(), 0.5, 0.5);
     }
 }
