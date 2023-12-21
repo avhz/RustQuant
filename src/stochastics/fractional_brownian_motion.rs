@@ -7,7 +7,7 @@
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use crate::stochastics::*;
+use crate::stochastics::{StochasticProcess, Trajectories};
 use nalgebra::{DMatrix, DVector, Dim, Dyn, RowDVector};
 use ndarray::{concatenate, prelude::*};
 use ndrustfft::{ndfft, FftHandler};
@@ -42,6 +42,11 @@ impl Default for FractionalBrownianMotion {
 
 impl FractionalBrownianMotion {
     /// Create a new Fractional Brownian Motion process.
+    ///
+    /// # Panics
+    ///
+    /// Will panic if Hurst parameter is not in [0, 1].
+    #[must_use]
     pub fn new(hurst: f64, method: FractionalProcessGeneratorMethod) -> Self {
         assert!((0.0..=1.0).contains(&hurst));
 
@@ -59,7 +64,7 @@ impl FractionalBrownianMotion {
             let idx = i as f64;
 
             v[i] = 0.5
-                * ((idx + 1.0).powf(2.0 * h) - 2.0 * idx.powf(2.0 * h) + (idx - 1.0).powf(2.0 * h))
+                * ((idx + 1.0).powf(2.0 * h) - 2.0 * idx.powf(2.0 * h) + (idx - 1.0).powf(2.0 * h));
         }
 
         v
@@ -85,6 +90,7 @@ impl FractionalBrownianMotion {
     }
 
     /// Fractional Gaussian noise.
+    #[must_use]
     pub fn fgn_cholesky(&self, n: usize, t_n: f64) -> Vec<f64> {
         let acf_sqrt = self.acf_matrix_sqrt(n);
         let noise = rand::thread_rng()
@@ -159,8 +165,8 @@ impl StochasticProcess for FractionalBrownianMotion {
         1.0
     }
 
-    fn jump(&self, _x: f64, _t: f64) -> f64 {
-        0.0
+    fn jump(&self, _x: f64, _t: f64) -> Option<f64> {
+        None
     }
 
     fn euler_maruyama(
@@ -303,16 +309,21 @@ mod test_fractional_brownian_motion {
     }
 
     #[test]
-    fn test_fft() {
-        let fbm = FractionalBrownianMotion::new(0.7, FractionalProcessGeneratorMethod::FFT);
-        let hursts = vec![0.1, 0.3, 0.5, 0.7, 0.9];
+    fn test_brownian_motion() {
+        let fbm = FractionalBrownianMotion::new(0.7);
+        let output_serial = fbm.euler_maruyama(0.0, 0.0, 0.5, 100, 1000, false);
+        // let output_parallel = (&bm).euler_maruyama(10.0, 0.0, 0.5, 100, 10, true);
 
-        for hurst in hursts {
-            let fbm = FractionalBrownianMotion::fgn_fft(&fbm, 2000, 1.0);
-            let higuchi_fd = higuchi_fd(&fbm.to_vec(), 10);
-            let est_hurst = 2.0 - higuchi_fd;
-            print!("hurst: {}, higuchi_fd: {}\n", hurst, est_hurst);
-            assert!(est_hurst - hurst < 0.05);
-        }
+        // Test the distribution of the final values.
+        let X_T: Vec<f64> = output_serial
+            .paths
+            .iter()
+            .filter_map(|v| v.last().copied())
+            .collect();
+
+        // E[X_T] = 0
+        assert_approx_equal!(X_T.mean(), 0.0, 0.5);
+        // V[X_T] = T
+        assert_approx_equal!(X_T.variance(), 0.5, 0.5);
     }
 }

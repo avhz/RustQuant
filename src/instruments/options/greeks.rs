@@ -9,7 +9,7 @@
 
 use time::OffsetDateTime;
 
-use crate::instruments::options::european::*;
+use crate::instruments::options::european::EuropeanOption;
 use crate::statistics::distributions::{Distribution, Gaussian};
 use crate::time::{DayCountConvention, DayCounter};
 
@@ -50,6 +50,7 @@ impl Greeks {
     ///
     /// # Arguments:
     /// * `option` - A `EuropeanOption` struct containing the parameters.
+    #[must_use]
     pub fn compute(option: EuropeanOption) -> Self {
         let S = option.initial_price;
         let K = option.strike_price;
@@ -150,7 +151,7 @@ mod tests_greeks {
         for strike in 1..=100 {
             let option = EuropeanOption {
                 initial_price: 100.0,
-                strike_price: strike as f64,
+                strike_price: f64::from(strike),
                 risk_free_rate: 0.05,
                 volatility: 0.2,
                 dividend_rate: 0.03,

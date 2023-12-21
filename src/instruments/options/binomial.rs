@@ -14,6 +14,7 @@
 use super::{ExerciseFlag, TypeFlag};
 
 /// Struct containing the parameters to price an option via binomial tree method.
+#[allow(clippy::module_name_repetitions)]
 #[derive(Debug, Clone, Copy)]
 pub struct BinomialOption {
     initial_price: f64,
@@ -43,6 +44,7 @@ impl BinomialOption {
     /// # Note:
     ///
     /// * `b = r - q` - The cost of carry.
+    #[must_use]
     pub fn price_CoxRossRubinstein(
         &self,
         output_flag: &str,
@@ -76,15 +78,16 @@ impl BinomialOption {
         Df = (-r * dt).exp();
 
         for i in 0..option_value.capacity() {
-            option_value
-                .push((z as f64 * (S * u.powi(i as i32) * d.powi((n - i) as i32) - K)).max(0.0));
+            option_value.push(
+                (f64::from(z) * (S * u.powi(i as i32) * d.powi((n - i) as i32) - K)).max(0.0),
+            );
         }
 
         for j in (0..n).rev() {
             for i in 0..=j {
                 match ame_eur_flag {
                     ExerciseFlag::American => {
-                        option_value[i] = (z as f64
+                        option_value[i] = (f64::from(z)
                             * (S * u.powi(i as i32) * d.powi(j as i32 - i as i32) - K))
                             .max(Df * (p * (option_value[i + 1]) + (1.0 - p) * option_value[i]));
                     }

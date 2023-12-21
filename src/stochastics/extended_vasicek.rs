@@ -7,40 +7,46 @@
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use crate::stochastics::*;
+use crate::stochastics::{StochasticProcess, TimeDependent};
 
 /// Struct containing the extended Vasicek process parameters.
 pub struct ExtendedVasicek {
     /// Mean function ($\mu(t)$)
-    pub alpha_t: fn(f64) -> f64,
+    pub alpha: TimeDependent,
+
     /// Non-negative diffusion, or instantaneous time-varying volatility ($\sigma$).
-    pub sigma: f64,
+    pub sigma: TimeDependent,
+
     /// Mean reversion function ($\theta(t)$)
-    pub theta_t: fn(f64) -> f64,
+    pub theta: TimeDependent,
 }
 
 impl ExtendedVasicek {
     /// Create a new Hull-White process.
-    pub fn new(alpha_t: fn(f64) -> f64, sigma: f64, theta_t: fn(f64) -> f64) -> Self {
+    pub fn new(
+        alpha: impl Into<TimeDependent>,
+        sigma: impl Into<TimeDependent>,
+        theta: impl Into<TimeDependent>,
+    ) -> Self {
         Self {
-            alpha_t,
-            sigma,
-            theta_t,
+            alpha: alpha.into(),
+            sigma: sigma.into(),
+            theta: theta.into(),
         }
     }
 }
 
 impl StochasticProcess for ExtendedVasicek {
     fn drift(&self, x: f64, t: f64) -> f64 {
-        (self.theta_t)(t) - (self.alpha_t)(t) * x
+        self.theta.0(t) - (self.alpha.0(t) * x)
     }
 
-    fn diffusion(&self, _x: f64, _t: f64) -> f64 {
-        self.sigma
+    fn diffusion(&self, _x: f64, t: f64) -> f64 {
+        self.sigma.0(t)
     }
 
-    fn jump(&self, _x: f64, _t: f64) -> f64 {
-        0.0
+    fn jump(&self, _x: f64, _t: f64) -> Option<f64> {
+        None
     }
 }
 
@@ -53,19 +59,20 @@ mod tests_extended_vasicek {
     use super::*;
     use crate::{assert_approx_equal, statistics::*};
 
-    fn alpha_t(_t: f64) -> f64 {
-        2.0
-    }
-    fn theta_t(_t: f64) -> f64 {
-        0.5
-    }
-    #[test]
-    fn test_extended_vasicek() -> Result<(), Box<dyn std::error::Error>> {
-        let sig = 2.0;
-        let alpha = alpha_t(1.0);
-        let theta = theta_t(1.0);
+    // fn alpha_t(_t: f64) -> f64 {
+    //     2.0
+    // }
+    // fn theta_t(_t: f64) -> f64 {
+    //     0.5
+    // }
 
-        let ev = ExtendedVasicek::new(alpha_t, sig, theta_t);
+    #[test]
+    fn test_extended_vasicek() {
+        let sigma = 2.0;
+        let alpha = 2.0;
+        let theta = 0.5;
+
+        let ev = ExtendedVasicek::new(alpha, sigma, theta);
 
         let output = ev.euler_maruyama(10.0, 0.0, 1.0, 150, 1000, false);
 
@@ -73,7 +80,7 @@ mod tests_extended_vasicek {
         let X_T: Vec<f64> = output
             .paths
             .iter()
-            .filter_map(|v| v.last().cloned())
+            .filter_map(|v| v.last().copied())
             .collect();
 
         let E_XT = X_T.mean();
@@ -85,7 +92,5 @@ mod tests_extended_vasicek {
             (-alpha * 1.0_f64).exp() * 10.0 + (theta / alpha) * (1.0 - alpha * 1.0_f64).exp(),
             0.25
         );
-
-        std::result::Result::Ok(())
     }
 }

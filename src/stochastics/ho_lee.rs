@@ -7,36 +7,40 @@
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use crate::stochastics::*;
+use crate::stochastics::{StochasticProcess, TimeDependent};
 
 /// Struct containing the Ho-Lee process parameters.
 pub struct HoLee {
     /// The diffusion, or instantaneous volatility ($\sigma$).
-    pub sigma: f64,
+    pub sigma: TimeDependent,
+
     /// Non-negative time-varying mean reversion function ($\theta_t$)
-    pub theta_t: fn(f64) -> f64,
+    pub theta: TimeDependent,
 }
 
 impl HoLee {
     /// Create a new Ho-Lee process.
-    pub fn new(sigma: f64, theta_t: fn(f64) -> f64) -> Self {
-        assert!(sigma >= 0.0);
-        // TODO assert theta_t is non-negative function
-        Self { sigma, theta_t }
+    pub fn new(sigma: impl Into<TimeDependent>, theta: impl Into<TimeDependent>) -> Self {
+        Self {
+            sigma: sigma.into(),
+            theta: theta.into(),
+        }
     }
 }
 
 impl StochasticProcess for HoLee {
     fn drift(&self, _x: f64, t: f64) -> f64 {
-        (self.theta_t)(t)
+        assert!(self.theta.0(t) >= 0.0);
+        (self.theta.0)(t)
     }
 
-    fn diffusion(&self, _x: f64, _t: f64) -> f64 {
-        self.sigma
+    fn diffusion(&self, _x: f64, t: f64) -> f64 {
+        assert!(self.sigma.0(t) >= 0.0);
+        self.sigma.0(t)
     }
 
-    fn jump(&self, _x: f64, _t: f64) -> f64 {
-        0.0
+    fn jump(&self, _x: f64, _t: f64) -> Option<f64> {
+        None
     }
 }
 
@@ -51,12 +55,13 @@ mod tests_ho_lee {
 
     // Test a simple case where theta_t is constant
     // Should add tests of simple analytically tractable case
-    fn theta_t(_t: f64) -> f64 {
-        2.0
-    }
+    // fn theta_t(_t: f64) -> f64 {
+    //     2.0
+    // }
+
     #[test]
-    fn test_ho_lee() -> Result<(), Box<dyn std::error::Error>> {
-        let hl = HoLee::new(1.6, theta_t);
+    fn test_ho_lee() {
+        let hl = HoLee::new(1.6, 2.0);
 
         // X_0 = 10.0
         // T = 1.0
@@ -66,7 +71,7 @@ mod tests_ho_lee {
         let X_T: Vec<f64> = output
             .paths
             .iter()
-            .filter_map(|v| v.last().cloned())
+            .filter_map(|v| v.last().copied())
             .collect();
 
         let E_XT = X_T.mean();
@@ -78,7 +83,5 @@ mod tests_ho_lee {
         // Same here
         // V[X_T] = sigma^2 * T
         assert_approx_equal!(V_XT, 1.6 * 1.6 * 1.0, 0.5);
-
-        std::result::Result::Ok(())
     }
 }

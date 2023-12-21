@@ -31,6 +31,7 @@ pub struct Vertex {
 ///     - A binary operation has two parents.
 ///     - A unary operation has one parent.
 ///     - A nullary operation has no parents.
+#[derive(Copy, Clone, Debug)]
 pub enum Arity {
     /// Nullary operation (e.g. a constant).
     /// This has no parents.
@@ -66,17 +67,25 @@ enum Operation {
 
 impl Vertex {
     /// Get the partials of the vertex.
-    pub fn get_partials(&self) -> [f64; 2] {
+    #[must_use]
+    pub const fn get_partials(&self) -> [f64; 2] {
         self.partials
     }
 
     /// Get the parents of the vertex.
-    pub fn get_parents(&self) -> [usize; 2] {
+    #[must_use]
+    pub const fn get_parents(&self) -> [usize; 2] {
         self.parents
     }
 
     /// Instantiate a new vertex from a binary operation.
-    pub fn new_binary(partial_x: f64, parent_x: usize, partial_y: f64, parent_y: usize) -> Self {
+    #[must_use]
+    pub const fn new_binary(
+        partial_x: f64,
+        parent_x: usize,
+        partial_y: f64,
+        parent_y: usize,
+    ) -> Self {
         Self {
             partials: [partial_x, partial_y],
             parents: [parent_x, parent_y],
@@ -84,7 +93,8 @@ impl Vertex {
     }
 
     /// Instantiate a new vertex from a unary operation.
-    pub fn new_unary(partial_x: f64, parent_x: usize) -> Self {
+    #[must_use]
+    pub const fn new_unary(partial_x: f64, parent_x: usize) -> Self {
         Self {
             partials: [partial_x, 0.0],
             parents: [parent_x, 0],
@@ -92,7 +102,8 @@ impl Vertex {
     }
 
     /// Instantiate a new vertex from a nullary operation.
-    pub fn new_nullary() -> Self {
+    #[must_use]
+    pub const fn new_nullary() -> Self {
         Self {
             partials: [0.0; 2],
             parents: [0; 2],

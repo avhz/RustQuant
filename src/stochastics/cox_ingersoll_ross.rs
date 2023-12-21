@@ -7,41 +7,49 @@
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use crate::stochastics::*;
+use crate::stochastics::{StochasticProcess, TimeDependent};
 
 /// Struct containing the Ornstein-Uhlenbeck process parameters.
 #[derive(Debug)]
 pub struct CoxIngersollRoss {
     /// The long-run mean ($\mu$).
-    pub mu: f64,
+    pub mu: TimeDependent,
 
     /// The diffusion, or instantaneous volatility ($\sigma$).
-    pub sigma: f64,
+    pub sigma: TimeDependent,
 
     /// Mean reversion parameter ($\theta$).
     /// Defines the speed at which the process reverts to the long-run mean.
-    pub theta: f64,
+    pub theta: TimeDependent,
 }
 
 impl CoxIngersollRoss {
     /// Create a new Cox-Ingersoll-Ross process.
-    pub fn new(mu: f64, sigma: f64, theta: f64) -> Self {
-        assert!(sigma >= 0.0);
-        Self { mu, sigma, theta }
+    pub fn new(
+        mu: impl Into<TimeDependent>,
+        sigma: impl Into<TimeDependent>,
+        theta: impl Into<TimeDependent>,
+    ) -> Self {
+        Self {
+            mu: mu.into(),
+            sigma: sigma.into(),
+            theta: theta.into(),
+        }
     }
 }
 
 impl StochasticProcess for CoxIngersollRoss {
-    fn drift(&self, x: f64, _t: f64) -> f64 {
-        self.theta * (self.mu - x)
+    fn drift(&self, x: f64, t: f64) -> f64 {
+        self.theta.0(t) * (self.mu.0(t) - x)
     }
 
-    fn diffusion(&self, x: f64, _t: f64) -> f64 {
-        self.sigma * x.sqrt()
+    fn diffusion(&self, x: f64, t: f64) -> f64 {
+        assert!(self.sigma.0(t) >= 0.0);
+        self.sigma.0(t) * x.sqrt()
     }
 
-    fn jump(&self, _x: f64, _t: f64) -> f64 {
-        0.0
+    fn jump(&self, _x: f64, _t: f64) -> Option<f64> {
+        None
     }
 }
 
@@ -55,7 +63,7 @@ mod tests_cir {
     use crate::{assert_approx_equal, statistics::*};
 
     #[test]
-    fn test_cox_ingersoll_ross() -> Result<(), Box<dyn std::error::Error>> {
+    fn test_cox_ingersoll_ross() {
         let cir = CoxIngersollRoss::new(0.15, 0.45, 0.01);
 
         let output = cir.euler_maruyama(10.0, 0.0, 0.5, 100, 100, false);
@@ -64,7 +72,7 @@ mod tests_cir {
         let X_T: Vec<f64> = output
             .paths
             .iter()
-            .filter_map(|v| v.last().cloned())
+            .filter_map(|v| v.last().copied())
             .collect();
 
         let E_XT = X_T.mean();
@@ -87,7 +95,5 @@ mod tests_cir {
         // plot_vector((&output.trajectories[0]).clone(), file1).unwrap();
         // let file2 = "./images/CIR2.png";
         // plot_vector((&output.trajectories[1]).clone(), file2)
-
-        std::result::Result::Ok(())
     }
 }

@@ -2,7 +2,7 @@ use nalgebra::{DMatrix, DVector};
 
 use RustQuant::ml::*;
 
-fn main() -> Result<(), LinearRegressionError>{
+fn main() -> Result<(), LinearRegressionError> {
     // TEST DATA GENERATED FROM THE FOLLOWING R CODE:
     //
     // set.seed(2023)

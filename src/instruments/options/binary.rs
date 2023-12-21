@@ -9,7 +9,7 @@
 
 //! This module contains various 'binary', or 'digital', option types.
 
-use crate::statistics::distributions::{gaussian::*, Distribution};
+use crate::statistics::distributions::{gaussian::Gaussian, Distribution};
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // STRUCTS
@@ -63,8 +63,9 @@ pub struct CashOrNothingOption {
 
 impl GapOption {
     /// Gap option pricer.
-    /// The payoff from a call is 0 if S < K_1 and S — K_2 if S > K_1.
-    /// Similarly, the payoff from a put is 0 if S > K_1 and K_2 — S if S < K_1.
+    /// The payoff from a call is $0$ if $S < K_1$ and $S — K_2$ if $S > K_1$.
+    /// Similarly, the payoff from a put is $0$ if $S > K_1$ and $K_2 — S$ if $S < K_1$.
+    #[must_use]
     pub fn price(&self) -> (f64, f64) {
         let S = self.initial_price;
         let K_1 = self.strike_1;
@@ -90,6 +91,7 @@ impl CashOrNothingOption {
     /// Cah-or-Nothing option pricer.
     /// The payoff from a call is 0 if S < X and K if S > X.
     /// The payoff from a put is 0 if S > X and K if S < X.
+    #[must_use]
     pub fn price(&self) -> (f64, f64) {
         let S = self.initial_price;
         let X = self.strike_price;
@@ -118,6 +120,7 @@ impl CashOrNothingOption {
 mod tests {
     use super::*;
     use crate::assert_approx_equal;
+    use std::f64::EPSILON as EPS;
 
     #[test]
     fn test_gap_option() {
@@ -134,7 +137,7 @@ mod tests {
         let prices = gap.price();
 
         // Value from Haug's book (note: gap option payoffs can be negative).
-        assert_approx_equal!(prices.0, -0.0053, 0.0001);
+        assert_approx_equal!(prices.0, -0.005_252_489_258_779_747, EPS);
     }
 
     #[test]
@@ -152,6 +155,6 @@ mod tests {
         let prices = CON.price();
 
         // Value from Haug's book.
-        assert_approx_equal!(prices.1, 2.6710, 0.0001);
+        assert_approx_equal!(prices.1, 2.671_045_684_461_347, EPS);
     }
 }

@@ -7,11 +7,12 @@
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-//! RustQuant error handling module.
+//! `RustQuant` error handling module.
 //! A custom error type `RustQuantError` is defined, along with a macro to create an error,
 //! that propagates a `RustQuantError` with the text to include in the output.
 
-/// Error type for RustQuant.
+/// Error type for `RustQuant`.
+#[allow(clippy::module_name_repetitions)]
 #[derive(Debug, thiserror::Error)]
 pub enum RustQuantError {
     /// This error indicates that an problem occurred in the computation.
@@ -38,7 +39,8 @@ pub enum RustQuantError {
 
 /// Create a `RustQuantError` with the text to include in the output.
 /// You would use it as follows:
-/// ```
+///
+/// ```ignore
 /// return Err(
 ///     error!(
 ///         ComputationError,

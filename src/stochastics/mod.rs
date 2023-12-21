@@ -30,29 +30,30 @@
 //! ```rust
 //! use RustQuant::stochastics::*;
 //!
-//! fn main() {
-//!     // Create new GBM with mu and sigma.
-//!     let gbm = GeometricBrownianMotion::new(0.05, 0.9);
+//! // Create new GBM with mu and sigma.
+//! let gbm = GeometricBrownianMotion::new(0.05, 0.9);
 //!
-//!     // Generate path using Euler-Maruyama scheme.
-//!     // Parameters: x_0, t_0, t_n, n, sims, parallel.
-//!     let output = (&gbm).euler_maruyama(10.0, 0.0, 0.5, 10, 1, false);
+//! // Generate path using Euler-Maruyama scheme.
+//! // Parameters: x_0, t_0, t_n, n, sims, parallel.
+//! let output = (&gbm).euler_maruyama(10.0, 0.0, 0.5, 10, 1, false);
 //!
-//!     println!("GBM = {:?}", output.paths);
-//! }
+//! println!("GBM = {:?}", output.paths);
 //! ```
 
 pub use arithmetic_brownian_motion::*;
 pub use black_derman_toy::*;
 pub use brownian_motion::*;
+pub use constant_elasticity_of_variance::*;
 pub use cox_ingersoll_ross::*;
 pub use extended_vasicek::*;
 pub use fractional_brownian_motion::*;
 pub use fractional_cox_ingersoll_ross::*;
 pub use fractional_ornstein_uhlenbeck::*;
+pub use geometric_brownian_bridge::*;
 pub use geometric_brownian_motion::*;
 pub use ho_lee::*;
 pub use hull_white::*;
+pub use merton_jump_diffusion::*;
 pub use ornstein_uhlenbeck::*;
 pub use process::*;
 
@@ -62,6 +63,8 @@ pub mod arithmetic_brownian_motion;
 pub mod black_derman_toy;
 /// Standard Brownian Motion.
 pub mod brownian_motion;
+/// Constant Elasticity of Variance process.
+pub mod constant_elasticity_of_variance;
 /// Cox-Ingersoll-Ross process.
 pub mod cox_ingersoll_ross;
 /// Extended Vasicek process.
@@ -72,12 +75,16 @@ pub mod fractional_brownian_motion;
 pub mod fractional_cox_ingersoll_ross;
 /// Fractional Ornstein-Uhlenbeck process.
 pub mod fractional_ornstein_uhlenbeck;
+/// Geometric brownian bridge process.
+pub mod geometric_brownian_bridge;
 /// Geometric Brownian Motion.
 pub mod geometric_brownian_motion;
 /// Ho-Lee process.
 pub mod ho_lee;
 /// Hull-White model process.
 pub mod hull_white;
+/// Merton jump diffusion process.
+pub mod merton_jump_diffusion;
 /// Ornstein-Uhlenbeck process.
 pub mod ornstein_uhlenbeck;
 /// Defines `Trajectories` and `StochasticProcess`.

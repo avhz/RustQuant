@@ -11,14 +11,30 @@
 // IMPORTS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+use crate::time::{DayCountConvention, DayCounter};
 use std::{collections::BTreeMap, time::Duration};
 use time::OffsetDateTime;
-
-use crate::time::{DayCountConvention, DayCounter};
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Structs, enums, and traits
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+/// A trait for curve models.
+#[allow(clippy::module_name_repetitions)]
+pub trait CurveModel {
+    /// Returns the forward rate for a given date.
+    fn forward_rate(&self, date: OffsetDateTime) -> f64;
+
+    /// Returns the spot rate for a given date.
+    fn spot_rate(&self, date: OffsetDateTime) -> f64;
+
+    /// Returns the discount factor for a given date.
+    fn discount_factor(&self, date: OffsetDateTime) -> f64;
+
+    /// Calibrates the model to a set of market rates.
+    #[must_use]
+    fn calibrate<C: Curve>(&self, curve: C) -> Self;
+}
 
 /// Base trait for all curves to implement.
 pub trait Curve {
@@ -68,7 +84,7 @@ pub trait Curve {
     fn rate(&self, date: OffsetDateTime) -> f64;
 
     /// Returns the discount factor for the given date.
-    /// This is a convenience function that calls [rate] to get the rate for
+    /// This is a convenience function that calls [`rate`](Curve::rate) to get the rate for
     /// the given date, and then calculates the discount factor using the
     /// formula:
     /// $$
@@ -82,7 +98,7 @@ pub trait Curve {
     }
 
     /// Returns multiple discount factors for the given dates.
-    /// This is a convenience function that calls [discount_factor] for each
+    /// This is a convenience function that calls [`discount_factor`](Curve::discount_factor) for each
     /// date.
     fn discount_factors(&self, dates: &[OffsetDateTime]) -> Vec<f64> {
         dates
@@ -92,6 +108,7 @@ pub trait Curve {
     }
 }
 
+#[allow(clippy::module_name_repetitions)]
 /// Yield curve struct.
 pub struct YieldCurve {
     /// Map of dates and rates.
@@ -99,9 +116,12 @@ pub struct YieldCurve {
     /// The reason for using a [BTreeMap] is that it is sorted by date,
     /// which makes sense for a term structure.
     pub rates: BTreeMap<OffsetDateTime, f64>,
+    // /// A model for the curve.
+    // pub model: Option<M>,
 }
 
 /// Curve error enum.
+#[allow(clippy::module_name_repetitions)]
 #[derive(Debug, Clone, Copy)]
 pub enum CurveError {
     /// The date is outside the curve's range.
@@ -117,6 +137,7 @@ pub enum CurveError {
 
 impl YieldCurve {
     /// Creates a new yield curve.
+    #[must_use]
     pub fn new(rates: BTreeMap<OffsetDateTime, f64>) -> Self {
         Self { rates }
     }
@@ -131,10 +152,12 @@ impl Curve for YieldCurve {
         *self.rates.keys().max().unwrap()
     }
 
+    #[allow(clippy::similar_names)]
     fn update_rate(&mut self, date: OffsetDateTime, rate: f64) {
         self.rates.insert(date, rate);
     }
 
+    #[allow(clippy::similar_names)]
     fn from_dates_and_rates(dates: &[OffsetDateTime], rates: &[f64]) -> Self {
         let mut rates_map = BTreeMap::new();
 
@@ -145,6 +168,7 @@ impl Curve for YieldCurve {
         Self { rates: rates_map }
     }
 
+    #[allow(clippy::similar_names)]
     fn from_initial_date_rates_and_durations(
         initial_date: OffsetDateTime,
         rates: &[f64],
@@ -152,7 +176,7 @@ impl Curve for YieldCurve {
     ) -> Self {
         let mut dates = vec![initial_date];
 
-        for duration in durations.iter() {
+        for duration in durations {
             dates.push(*dates.last().unwrap() + *duration);
         }
 
@@ -256,6 +280,7 @@ mod tests_curves {
         assert_eq!(interval3, (date3, date3));
     }
 
+    #[allow(clippy::similar_names)]
     #[test]
     fn test_yield_curve_discount_factor() {
         // Initial date of the curve.
@@ -293,6 +318,6 @@ mod tests_curves {
 
         assert!(df1 > 0.0 && df1 < 1.0 && df2 > 0.0 && df2 < 1.0 && df3 > 0.0 && df3 < 1.0);
 
-        assert!(df1 < df2 && df2 < df3);
+        assert!(df1 > df2 && df2 > df3);
     }
 }

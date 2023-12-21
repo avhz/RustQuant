@@ -18,7 +18,7 @@ fn main() {
 pub(crate) fn calibrate() {
     let graph = Graph::new();
 
-    let gd = GradientDescent::new(0.001, 1000, std::f64::EPSILON.sqrt());
+    let gd = GradientDescent::new(0.001, 1000, None);
 
     let start = Instant::now();
     let result = gd.optimize(mse, &[0.1], true);

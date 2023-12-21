@@ -17,7 +17,7 @@
 // IMPORTS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use crate::autodiff::*;
+use crate::autodiff::{Arity, Variable, Vertex};
 use std::cell::RefCell;
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -42,15 +42,17 @@ impl Default for Graph {
 /// Implementation for the `Graph` struct.
 impl Graph {
     /// Instantiate a new graph.
+    #[must_use]
     #[inline]
-    pub fn new() -> Self {
-        Graph {
+    pub const fn new() -> Self {
+        Self {
             vertices: RefCell::new(Vec::new()),
             // vertices: RefCell::new(Rc::new([])),
         }
     }
 
     /// Instantiate a new graph with a capacity.
+    #[must_use]
     #[inline]
     pub fn with_capacity(capacity: usize) -> Self {
         Graph {
@@ -60,6 +62,7 @@ impl Graph {
     }
 
     /// Join two graphs together.
+    #[must_use]
     #[inline]
     pub fn join(&self, other: &Self) -> Self {
         let graph = self.clone();

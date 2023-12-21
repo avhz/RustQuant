@@ -75,6 +75,7 @@ impl fmt::Display for NonExistingIdError {
 
 impl Book {
     /// Returns new empty book
+    #[must_use]
     pub fn new() -> Self {
         Self {
             buy_limits: BTreeMap::new(),
@@ -89,7 +90,10 @@ impl Book {
     /// `shares` number of shares in order.
     /// `limit_value` value of shares. Typically `$ x 1000` (NASDAQ default). e.g. $4.50 -> 45000
     /// `timestamp` timestamp of order.
-    /// returns error if book contains `order_id`
+    ///
+    /// # Errors
+    ///
+    /// `ExistingIdError` when order book already contains order with `order_id`
     pub fn add_order(
         &mut self,
         order_id: u64,
@@ -111,13 +115,12 @@ impl Book {
             &mut self.sell_limits
         };
 
-        match limit_tree.get_mut(&limit_value) {
-            Some(l) => l.add(order_id),
-            None => {
-                let mut limit = Limit::new(limit_value);
-                limit.add(order_id);
-                let _ = limit_tree.insert(limit_value, limit);
-            }
+        if let Some(l) = limit_tree.get_mut(&limit_value) {
+            l.add(order_id);
+        } else {
+            let mut limit = Limit::new(limit_value);
+            limit.add(order_id);
+            let _ = limit_tree.insert(limit_value, limit);
         };
 
         Ok(())
@@ -125,7 +128,14 @@ impl Book {
 
     /// Cancels order in book
     /// `order_id` order id to cancel.
-    /// returns error if book does not contain `order_id`.
+    ///
+    /// # Errors
+    ///
+    /// `NonExistingIdError` when `order_id` is not found in the `order_map`
+    ///
+    /// # Panics
+    ///
+    /// Panics if limit is not in `limit_tree`.
     pub fn cancel_order(&mut self, order_id: u64) -> Result<(), NonExistingIdError> {
         match self.order_map.remove(&order_id) {
             Some(o) => {
@@ -136,7 +146,7 @@ impl Book {
                 };
 
                 let is_empty = match limit_tree.get_mut(&o.limit) {
-                    Some(l) => l.cancel(&o.order_id),
+                    Some(l) => l.cancel(o.order_id),
                     None => panic!(""),
                 };
 
@@ -175,12 +185,11 @@ impl Book {
                 limit_tree.values_mut().last()
             };
 
-            let limit = match limit_key_value {
-                Some(l) => l,
-                None => return (false, result),
+            let Some(limit) = limit_key_value else {
+                return (false, result);
             };
 
-            let (shares_executed, is_empty) = limit.execute(&shares_left, &mut self.order_map);
+            let (shares_executed, is_empty) = limit.execute(shares_left, &mut self.order_map);
 
             shares_left -= shares_executed;
             result.push((limit.limit_price, shares_executed));

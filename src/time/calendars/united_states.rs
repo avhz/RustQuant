@@ -7,7 +7,7 @@
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use crate::time::{is_weekend, Calendar};
+use crate::time::Calendar;
 use time::{Month, OffsetDateTime, Weekday};
 
 /// United States settlement calendar.
@@ -42,13 +42,18 @@ impl Calendar for UnitedStates {
         "United States"
     }
 
-    fn is_business_day(&self, date: OffsetDateTime) -> bool {
-        let w = date.weekday();
-        let d = date.day();
-        let m = date.month();
-        let y = date.year();
+    fn country_code(&self) -> crate::iso::ISO_3166 {
+        crate::iso::UNITED_STATES_OF_AMERICA
+    }
 
-        if is_weekend(date)
+    fn market_identifier_code(&self) -> crate::iso::ISO_10383 {
+        crate::iso::XNYS
+    }
+
+    fn is_business_day(&self, date: OffsetDateTime) -> bool {
+        let (w, d, m, y, _) = self.unpack_date(date);
+
+        if Self::is_weekend(date)
             || ((d == 1 || (d == 2 && w == Weekday::Monday)) && m == Month::January)
             || (d == 31 && w == Weekday::Friday && m == Month::December)
             || ((15..=21).contains(&d) && w == Weekday::Monday && m == Month::January && y >= 1983)

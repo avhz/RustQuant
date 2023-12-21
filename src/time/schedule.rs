@@ -55,6 +55,7 @@ pub struct Schedule {
 impl Schedule {
     /// Creates a new schedule from a given start date, period length, and number
     /// of periods in the schedule.
+    #[must_use]
     pub fn new_from_start(start: OffsetDateTime, period: Duration, num_periods: i64) -> Schedule {
         let mut payments = Vec::with_capacity(num_periods as usize + 1);
         let mut current_time = start;
@@ -76,6 +77,7 @@ impl Schedule {
 
     /// Creates a new schedule from a given end date, period length, and number
     /// of periods in the schedule.
+    #[must_use]
     pub fn new_from_end(end: OffsetDateTime, period: Duration, num_periods: i64) -> Schedule {
         let mut payments = Vec::with_capacity(num_periods as usize + 1);
 
@@ -100,7 +102,8 @@ impl Schedule {
 
     /// Creates a new schedule from a vector of dates.
     /// Dates must be in ascending order.
-    pub fn new_from_dates(dates: Vec<OffsetDateTime>) -> Schedule {
+    #[must_use]
+    pub fn new_from_dates(dates: &Vec<OffsetDateTime>) -> Schedule {
         assert!(&dates.windows(2).all(|window| window[0] < window[1]));
 
         Schedule {
@@ -183,7 +186,7 @@ mod test_schedule {
             datetime!(2023-07-01 0:0:0 UTC),
             datetime!(2023-08-01 0:0:0 UTC),
         ];
-        let schedule = Schedule::new_from_dates(dates.clone());
+        let schedule = Schedule::new_from_dates(&dates);
         assert_eq!(schedule.dates, dates);
     }
 
@@ -194,7 +197,7 @@ mod test_schedule {
             datetime!(2023-07-01 0:0:0 UTC),
             datetime!(2023-06-01 0:0:0 UTC),
         ];
-        Schedule::new_from_dates(dates);
+        let _ = Schedule::new_from_dates(&dates);
     }
 
     #[test]

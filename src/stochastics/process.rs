@@ -15,21 +15,47 @@
 //! do not explicitly depend on the time `t`.
 
 use rand::prelude::Distribution;
-use rayon::prelude::*;
-use statrs::distribution::Normal;
-
 #[cfg(feature = "seedable")]
 use rand::{rngs::StdRng, SeedableRng};
+use rayon::prelude::*;
+use statrs::distribution::Normal;
+use std::fmt::{self, Formatter};
+
+/// A struct that wraps constants and functions into a single type in order to allow for all processes to have time-dependent parameters.
+pub struct TimeDependent(pub Box<dyn Fn(f64) -> f64 + Send + Sync>);
+
+impl fmt::Debug for TimeDependent {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        write!(f, "TimeDependent")
+    }
+}
+
+impl From<f64> for TimeDependent {
+    fn from(x: f64) -> Self {
+        Self(Box::new(move |_| x))
+    }
+}
+
+impl<F> From<F> for TimeDependent
+where
+    F: Fn(f64) -> f64 + 'static + Send + Sync,
+{
+    fn from(func: F) -> Self {
+        Self(Box::new(func))
+    }
+}
 
 /// Struct to contain the time points and path values of the process.
 pub struct Trajectories {
     /// Vector of time points.
     pub times: Vec<f64>,
+
     /// Vector of process trajectories.
     pub paths: Vec<Vec<f64>>,
 }
 
 /// Trait to implement stochastic processes.
+#[allow(clippy::module_name_repetitions)]
 pub trait StochasticProcess: Sync {
     /// Base method for the process' drift.
     fn drift(&self, x: f64, t: f64) -> f64;
@@ -38,7 +64,7 @@ pub trait StochasticProcess: Sync {
     fn diffusion(&self, x: f64, t: f64) -> f64;
 
     /// Base method for the process' jump term (if applicable).
-    fn jump(&self, x: f64, t: f64) -> f64;
+    fn jump(&self, x: f64, t: f64) -> Option<f64>;
 
     /// Euler-Maruyama discretisation scheme.
     ///

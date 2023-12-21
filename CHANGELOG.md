@@ -1,4 +1,74 @@
+# Changelog
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [Unreleased]
+
+## [0.0.42](https://github.com/avhz/RustQuant/compare/v0.0.41...v0.0.42) - 2023-12-21
+
+### Fixed
+- update barrier pricing
+
+## [0.0.41](https://github.com/avhz/RustQuant/compare/v0.0.40...v0.0.41) - 2023-12-16
+
+### Other
+- implemented get quote for yahoo finance api
+
+## [0.0.40](https://github.com/avhz/RustQuant/compare/v0.0.39...v0.0.40) - 2023-12-13
+
+### Other
+- Merge branch 'main' into interpolation
+
+## [0.0.39](https://github.com/avhz/RustQuant/compare/v0.0.38...v0.0.39) - 2023-11-26
+
+### Fixed
+- denmark calender: general prayer day is no longer a public holiday from 2024
+
+### Other
+- Merge pull request [#159](https://github.com/avhz/RustQuant/pull/159) from robertchristensen/docs/fix-warnings
+- [#142](https://github.com/avhz/RustQuant/pull/142) - tests for denmark calendar
+- [#142](https://github.com/avhz/RustQuant/pull/142) - tests for calendars & update Hong Kong calendar
+- [#142](https://github.com/avhz/RustQuant/pull/142) - tests for calendars
+
+## [0.0.38](https://github.com/avhz/RustQuant/compare/v0.0.37...v0.0.38) - 2023-11-14
+
+### Other
+- [#142](https://github.com/avhz/RustQuant/pull/142) - Add more calendars (Czech Rep., Denmark, Finland, France, Germany, Hong Kong)
+- Fix some clippy lints.
+- Add ISO code implementations (ISO-4217, ISO-3166, ISO-10383)
+- [#142](https://github.com/avhz/RustQuant/pull/142) - Add calendar boilerplate
+- [#142](https://github.com/avhz/RustQuant/pull/142) - Add calendars (Argentina, Botswana, Brazil, Chile, China)
+
+## [0.0.37](https://github.com/avhz/RustQuant/compare/v0.0.36...v0.0.37) - 2023-11-12
+
+### Other
+- *(https://github.com/avhz/RustQuant/pull/150)* Fix gitignore problem.
+- *(https://github.com/avhz/RustQuant/pull/150)* Re-added correct logo.
+- *(https://github.com/avhz/RustQuant/pull/150)* Added `Release-plz` workflow.
+- *(https://github.com/avhz/RustQuant/pull/150)* Added `Release-plz` workflow.
 # Change Log
+
+## October 26 2023
+
+- @avhz: Added Constant Elasticity of Variance (CEV) model process generator.
+
+## October 24 2023
+
+- @kinrezC: Added Merton Jump Diffusion and Brownian Bridge process generators.
+
+## October 23 2023
+
+- @autoparallel: Added `TimeDependent` parameters for all stochastic processes.
+
+## October 17 2023
+
+- @dancixx: Fractional Ornstein-Uhlenbeck process generator.
+
+## October 9 2023
+
+- @aatmunbaxi: KNN classifier.
 
 ## 4 October 2023
 

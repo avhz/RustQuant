@@ -7,20 +7,24 @@
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use crate::stochastics::*;
+use crate::stochastics::{
+    FractionalBrownianMotion, StochasticProcess, TimeDependent, Trajectories,
+};
 use rayon::prelude::*;
+
+use super::FractionalProcessGeneratorMethod;
 
 /// Struct containing the Ornstein-Uhlenbeck process parameters.
 pub struct FractionalOrnsteinUhlenbeck {
     /// The long-run mean ($\mu$).
-    pub mu: f64,
+    pub mu: TimeDependent,
 
     /// The diffusion, or instantaneous volatility ($\sigma$).
-    pub sigma: f64,
+    pub sigma: TimeDependent,
 
     /// Mean reversion parameter ($\theta$).
     /// Defines the speed at which the process reverts to the long-run mean.
-    pub theta: f64,
+    pub theta: TimeDependent,
 
     /// Hurst parameter of the process.
     /// The Hurst parameter is a measure of the long-term memory of the process.
@@ -33,18 +37,17 @@ pub struct FractionalOrnsteinUhlenbeck {
 impl FractionalOrnsteinUhlenbeck {
     /// Create a new Ornstein-Uhlenbeck process.
     pub fn new(
-        mu: f64,
-        sigma: f64,
-        theta: f64,
+        mu: impl Into<TimeDependent>,
+        sigma: impl Into<TimeDependent>,
+        theta: impl Into<TimeDependent>,
         hurst: f64,
         method: FractionalProcessGeneratorMethod,
     ) -> Self {
-        assert!(sigma >= 0.0);
         assert!((0.0..=1.0).contains(&hurst));
         Self {
-            mu,
-            sigma,
-            theta,
+            mu: mu.into(),
+            sigma: sigma.into(),
+            theta: theta.into(),
             hurst,
             method,
         }
@@ -52,16 +55,17 @@ impl FractionalOrnsteinUhlenbeck {
 }
 
 impl StochasticProcess for FractionalOrnsteinUhlenbeck {
-    fn drift(&self, x: f64, _t: f64) -> f64 {
-        self.theta * (self.mu - x)
+    fn drift(&self, x: f64, t: f64) -> f64 {
+        self.theta.0(t) * (self.mu.0(t) - x)
     }
 
-    fn diffusion(&self, _x: f64, _t: f64) -> f64 {
-        self.sigma
+    fn diffusion(&self, _x: f64, t: f64) -> f64 {
+        assert!(self.sigma.0(t) >= 0.0);
+        self.sigma.0(t)
     }
 
-    fn jump(&self, _x: f64, _t: f64) -> f64 {
-        0.0
+    fn jump(&self, _x: f64, _t: f64) -> Option<f64> {
+        None
     }
 
     fn euler_maruyama(
@@ -124,7 +128,7 @@ mod tests_fractional_ornstein_uhlenbeck {
 
     #[test]
     #[ignore = "Hard to test."]
-    fn test_fractional_ornstein_uhlenbeck() -> Result<(), Box<dyn std::error::Error>> {
+    fn test_fractional_ornstein_uhlenbeck() {
         let fou = FractionalOrnsteinUhlenbeck::new(
             0.15,
             0.45,
@@ -135,7 +139,5 @@ mod tests_fractional_ornstein_uhlenbeck {
 
         #[allow(dead_code)]
         let _output = fou.euler_maruyama(10.0, 0.0, 0.5, 100, 100, false);
-
-        std::result::Result::Ok(())
     }
 }

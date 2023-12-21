@@ -48,6 +48,7 @@ impl<'v> Variable<'v> {
     /// assert!((z2.value - 1.0).abs() <= 1e-15);
     /// assert!((grad2.wrt(&x2) - (-1.0)).abs() <= 1e-15);
     /// ```
+    #[must_use]
     #[inline]
     pub fn abs(self) -> Self {
         Variable {
@@ -73,6 +74,7 @@ impl<'v> Variable<'v> {
     /// assert!((z1.value - 1.5707963267948966).abs() <= 1e-15);
     /// assert!((grad1.wrt(&x1) - (-1.0)).abs() <= 1e-15);
     /// ```
+    #[must_use]
     #[inline]
     pub fn acos(self) -> Self {
         Variable {
@@ -100,6 +102,7 @@ impl<'v> Variable<'v> {
     /// assert!((z.value - 2.2924316695611777).abs() <= 1e-15);
     /// assert!((grad.wrt(&x) - 0.20412414523193150818).abs() <= 1e-15);
     /// ```
+    #[must_use]
     #[inline]
     pub fn acosh(self) -> Self {
         Variable {
@@ -129,6 +132,7 @@ impl<'v> Variable<'v> {
     /// assert_eq!(z.value, 0.0);
     /// assert_eq!(grad.wrt(&x), 1.0);
     /// ```
+    #[must_use]
     #[inline]
     pub fn asin(self) -> Self {
         Variable {
@@ -161,6 +165,7 @@ impl<'v> Variable<'v> {
     /// assert_eq!(z.value, 0.0);
     /// assert_eq!(grad.wrt(&x), 1.0);
     /// ```
+    #[must_use]
     #[inline]
     pub fn asinh(self) -> Self {
         Variable {
@@ -189,6 +194,7 @@ impl<'v> Variable<'v> {
     /// assert_eq!(z.value, 0.0);
     /// assert_eq!(grad.wrt(&x), 1.0);
     /// ```
+    #[must_use]
     #[inline]
     pub fn atan(self) -> Self {
         Variable {
@@ -218,6 +224,7 @@ impl<'v> Variable<'v> {
     /// assert_approx_equal!(z.value,      0.00000000000, 1e-10);
     /// assert_approx_equal!(grad.wrt(&x), 1.00000000000, 1e-10);
     /// ```
+    #[must_use]
     #[inline]
     pub fn atanh(self) -> Self {
         Variable {
@@ -247,6 +254,7 @@ impl<'v> Variable<'v> {
     /// assert_approx_equal!(z.value,      1.00000000000, 1e-10);
     /// assert_approx_equal!(grad.wrt(&x), 0.33333333333, 1e-10);
     /// ```
+    #[must_use]
     #[inline]
     pub fn cbrt(self) -> Self {
         Variable {
@@ -276,6 +284,7 @@ impl<'v> Variable<'v> {
     /// assert_approx_equal!(z.value,       0.54030230586, 1e-10);
     /// assert_approx_equal!(grad.wrt(&x), -0.84147098480, 1e-10);
     /// ```
+    #[must_use]
     #[inline]
     pub fn cos(self) -> Self {
         Variable {
@@ -304,6 +313,7 @@ impl<'v> Variable<'v> {
     /// assert_approx_equal!(z.value,      1.54308063481, 1e-10);
     /// assert_approx_equal!(grad.wrt(&x), 1.17520119364, 1e-10);
     /// ```
+    #[must_use]
     #[inline]
     pub fn cosh(self) -> Self {
         Variable {
@@ -330,6 +340,7 @@ impl<'v> Variable<'v> {
     /// assert_eq!(z.value, std::f64::consts::E);
     /// assert_eq!(grad.wrt(&x), std::f64::consts::E);
     /// ```
+    #[must_use]
     #[inline]
     pub fn exp(self) -> Self {
         Variable {
@@ -357,6 +368,7 @@ impl<'v> Variable<'v> {
     /// assert_approx_equal!(z.value,      2.00000000000, 1e-10);
     /// assert_approx_equal!(grad.wrt(&x), 1.38629436111, 1e-10);
     /// ```
+    #[must_use]
     #[inline]
     pub fn exp2(self) -> Self {
         Variable {
@@ -386,6 +398,7 @@ impl<'v> Variable<'v> {
     /// assert_approx_equal!(z.value,      1.71828182845, 1e-10);
     /// assert_approx_equal!(grad.wrt(&x), 2.71828182845, 1e-10);
     /// ```
+    #[must_use]
     #[inline]
     pub fn exp_m1(self) -> Self {
         Variable {
@@ -413,6 +426,7 @@ impl<'v> Variable<'v> {
     /// assert_eq!(z.value, 1.0);
     /// assert_eq!(grad.wrt(&x), 0.36787944117144233);
     /// ```
+    #[must_use]
     #[inline]
     pub fn ln(self) -> Self {
         Variable {
@@ -440,6 +454,7 @@ impl<'v> Variable<'v> {
     /// assert_approx_equal!(z.value,      0.69314718055, 1e-10);
     /// assert_approx_equal!(grad.wrt(&x), 0.50000000000, 1e-10);
     /// ```
+    #[must_use]
     #[inline]
     pub fn ln_1p(self) -> Self {
         Variable {
@@ -467,6 +482,7 @@ impl<'v> Variable<'v> {
     /// assert_approx_equal!(z.value,      0.00000000000, 1e-10);
     /// assert_approx_equal!(grad.wrt(&x), 1.00000000000, 1e-10);
     /// ```
+    #[must_use]
     #[inline]
     pub fn log10(self) -> Self {
         Variable {
@@ -494,6 +510,7 @@ impl<'v> Variable<'v> {
     /// assert_approx_equal!(z.value,      0.00000000000, 1e-10);
     /// assert_approx_equal!(grad.wrt(&x), 1.00000000000, 1e-10);
     /// ```
+    #[must_use]
     #[inline]
     pub fn log2(self) -> Self {
         Variable {
@@ -532,6 +549,7 @@ impl<'v> Variable<'v> {
     /// assert_eq!(z.value, 1.0);
     /// assert_eq!(grad.wrt(&x), -1.0);
     /// ```
+    #[must_use]
     #[inline]
     pub fn recip(self) -> Self {
         Variable {
@@ -561,6 +579,7 @@ impl<'v> Variable<'v> {
     /// assert_approx_equal!(z.value,      0.84147098480, 1e-10);
     /// assert_approx_equal!(grad.wrt(&x), 0.54030230586, 1e-10);
     /// ```
+    #[must_use]
     #[inline]
     pub fn sin(self) -> Self {
         Variable {
@@ -588,6 +607,7 @@ impl<'v> Variable<'v> {
     /// assert_approx_equal!(z.value,      1.17520119364, 1e-10);
     /// assert_approx_equal!(grad.wrt(&x), 1.54308063481, 1e-10);
     /// ```
+    #[must_use]
     #[inline]
     pub fn sinh(self) -> Self {
         Variable {
@@ -614,6 +634,7 @@ impl<'v> Variable<'v> {
     /// assert_eq!(z.value, std::f64::consts::SQRT_2);
     /// assert_eq!(grad.wrt(&x), 1.0 / (2.0 * std::f64::consts::SQRT_2));
     /// ```
+    #[must_use]
     #[inline]
     pub fn sqrt(self) -> Self {
         Variable {
@@ -643,6 +664,7 @@ impl<'v> Variable<'v> {
     /// assert_approx_equal!(z.value,      1.55740772465, 1e-10);
     /// assert_approx_equal!(grad.wrt(&x), 3.42551882081, 1e-10);
     /// ```
+    #[must_use]
     #[inline]
     pub fn tan(self) -> Self {
         Variable {
@@ -672,6 +694,7 @@ impl<'v> Variable<'v> {
     /// assert_approx_equal!(z.value,      0.7615941559, 1e-10);
     /// assert_approx_equal!(grad.wrt(&x), 0.4199743416, 1e-10);
     /// ```
+    #[must_use]
     #[inline]
     pub fn tanh(self) -> Self {
         Variable {
@@ -694,6 +717,7 @@ impl<'v> Variable<'v> {
 mod test_overloading_f64 {
     use crate::assert_approx_equal;
     use crate::autodiff::*;
+    use std::f64::EPSILON as EPS;
 
     #[test]
     fn test_values() {
@@ -702,30 +726,30 @@ mod test_overloading_f64 {
         let x = g.var(1.0);
 
         // VALUES
-        assert_approx_equal!((-x).value, -1.0, 1e-10);
-        assert_approx_equal!(x.log2().value, 0.0, 1e-10);
-        assert_approx_equal!(x.exp2().value, 2.0, 1e-10);
-        assert_approx_equal!(x.exp_m1().value, 1.718281828459045, 1e-10);
-        assert_approx_equal!(x.ln().value, 0.0, 1e-10);
-        assert_approx_equal!(x.ln_1p().value, std::f64::consts::LN_2, 1e-10);
-        assert_approx_equal!(x.log10().value, 0.0, 1e-10);
-        assert_approx_equal!(x.log2().value, 0.0, 1e-10);
-        assert_approx_equal!(x.recip().value, 1.0, 1e-10);
-        assert_approx_equal!(x.sqrt().value, 1.0, 1e-10);
-        assert_approx_equal!(x.cbrt().value, 1.0, 1e-10);
-        assert_approx_equal!(x.sin().value, 0.8414709848078965, 1e-10);
-        assert_approx_equal!(x.cos().value, 0.5403023058681398, 1e-10);
-        assert_approx_equal!(x.tan().value, 1.5574077246549023, 1e-10);
-        assert_approx_equal!(x.asin().value, std::f64::consts::FRAC_PI_2, 1e-10);
-        assert_approx_equal!(x.acos().value, 0.0, 1e-10);
-        assert_approx_equal!(x.atan().value, std::f64::consts::FRAC_PI_4, 1e-10);
-        assert_approx_equal!(x.sinh().value, 1.1752011936438014, 1e-10);
-        assert_approx_equal!(x.cosh().value, 1.5430806348152437, 1e-10);
-        assert_approx_equal!(x.tanh().value, 0.7615941559557649, 1e-10);
-        assert_approx_equal!(x.asinh().value, 0.881373587019543, 1e-10);
-        assert_approx_equal!(x.acosh().value, 0.0, 1e-10);
-        assert_eq!(x.atanh().value, std::f64::INFINITY);
-        assert_approx_equal!(x.abs().value, 1.0, 1e-10);
+        assert_approx_equal!((-x).value, -1.0, EPS);
+        assert_approx_equal!(x.log2().value, 0.0, EPS);
+        assert_approx_equal!(x.exp2().value, 2.0, EPS);
+        assert_approx_equal!(x.exp_m1().value, 1.718_281_828_459_045, EPS);
+        assert_approx_equal!(x.ln().value, 0.0, EPS);
+        assert_approx_equal!(x.ln_1p().value, std::f64::consts::LN_2, EPS);
+        assert_approx_equal!(x.log10().value, 0.0, EPS);
+        assert_approx_equal!(x.log2().value, 0.0, EPS);
+        assert_approx_equal!(x.recip().value, 1.0, EPS);
+        assert_approx_equal!(x.sqrt().value, 1.0, EPS);
+        assert_approx_equal!(x.cbrt().value, 1.0, EPS);
+        assert_approx_equal!(x.sin().value, 0.841_470_984_807_896_5, EPS);
+        assert_approx_equal!(x.cos().value, 0.540_302_305_868_139_8, EPS);
+        assert_approx_equal!(x.tan().value, 1.557_407_724_654_902_3, EPS);
+        assert_approx_equal!(x.asin().value, std::f64::consts::FRAC_PI_2, EPS);
+        assert_approx_equal!(x.acos().value, 0.0, EPS);
+        assert_approx_equal!(x.atan().value, std::f64::consts::FRAC_PI_4, EPS);
+        assert_approx_equal!(x.sinh().value, 1.175_201_193_643_801_4, EPS);
+        assert_approx_equal!(x.cosh().value, 1.543_080_634_815_243_7, EPS);
+        assert_approx_equal!(x.tanh().value, 0.761_594_155_955_764_9, EPS);
+        assert_approx_equal!(x.asinh().value, 0.881_373_587_019_543, EPS);
+        assert_approx_equal!(x.acosh().value, 0.0, EPS);
+        assert!(x.atanh().is_infinite() && x.atanh().is_positive());
+        assert_approx_equal!(x.abs().value, 1.0, EPS);
     }
 
     #[test]
@@ -735,26 +759,27 @@ mod test_overloading_f64 {
         let x = g.var(1.0);
 
         // GRADIENTS
-        assert_approx_equal!((-x).accumulate().wrt(&x), -1.0, 1e-10);
-        assert_approx_equal!(x.log2().accumulate().wrt(&x), 1.0, 1e-10);
-        assert_approx_equal!(x.exp2().accumulate().wrt(&x), 1.3862943611198906, 1e-10);
-        assert_approx_equal!(x.exp_m1().accumulate().wrt(&x), std::f64::consts::E, 1e-10);
-        assert_approx_equal!(x.ln().accumulate().wrt(&x), 1.0, 1e-10);
-        assert_approx_equal!(x.ln_1p().accumulate().wrt(&x), 0.5, 1e-10);
-        assert_approx_equal!(x.log10().accumulate().wrt(&x), 1.0, 1e-10);
-        assert_approx_equal!(x.log2().accumulate().wrt(&x), 1.0, 1e-10);
-        assert_approx_equal!(x.recip().accumulate().wrt(&x), -1.0, 1e-10);
-        assert_approx_equal!(x.sqrt().accumulate().wrt(&x), 0.5, 1e-10);
-        assert_approx_equal!(x.cbrt().accumulate().wrt(&x), 0.3333333333333333, 1e-10);
-        assert_approx_equal!(x.sin().accumulate().wrt(&x), 0.5403023058681398, 1e-10);
-        assert_approx_equal!(x.cos().accumulate().wrt(&x), -0.8414709848078965, 1e-10);
-        assert_approx_equal!(x.tan().accumulate().wrt(&x), 3.4255188208149777, 1e-10);
-        assert_approx_equal!(x.sinh().accumulate().wrt(&x), 1.5430806348152437, 1e-10);
-        assert_approx_equal!(x.atan().accumulate().wrt(&x), 0.5, 1e-10);
-        assert_approx_equal!(x.cosh().accumulate().wrt(&x), 1.1752011936438014, 1e-10);
-        assert_approx_equal!(x.tanh().accumulate().wrt(&x), 0.41997434161402614, 1e-10);
-        assert_approx_equal!(x.asinh().accumulate().wrt(&x), 1.0 / 2_f64.sqrt(), 1e-10);
-        assert_approx_equal!(x.abs().accumulate().wrt(&x), 1.0, 1e-10);
+        assert_approx_equal!((-x).accumulate().wrt(&x), -1.0, EPS);
+        assert_approx_equal!(x.log2().accumulate().wrt(&x), 1.0, EPS);
+        assert_approx_equal!(x.exp2().accumulate().wrt(&x), 1.386_294_361_119_890_6, EPS);
+        assert_approx_equal!(x.exp_m1().accumulate().wrt(&x), std::f64::consts::E, EPS);
+        assert_approx_equal!(x.ln().accumulate().wrt(&x), 1.0, EPS);
+        assert_approx_equal!(x.ln().accumulate().wrt(&x), 1.0, EPS);
+        assert_approx_equal!(x.ln_1p().accumulate().wrt(&x), 0.5, EPS);
+        assert_approx_equal!(x.log10().accumulate().wrt(&x), 1.0, EPS);
+        assert_approx_equal!(x.log2().accumulate().wrt(&x), 1.0, EPS);
+        assert_approx_equal!(x.recip().accumulate().wrt(&x), -1.0, EPS);
+        assert_approx_equal!(x.sqrt().accumulate().wrt(&x), 0.5, EPS);
+        assert_approx_equal!(x.cbrt().accumulate().wrt(&x), 0.333_333_333_333_333_3, EPS);
+        assert_approx_equal!(x.sin().accumulate().wrt(&x), 0.540_302_305_868_139_8, EPS);
+        assert_approx_equal!(x.cos().accumulate().wrt(&x), -0.841_470_984_807_896_5, EPS);
+        assert_approx_equal!(x.tan().accumulate().wrt(&x), 3.425_518_820_814_759, EPS);
+        assert_approx_equal!(x.sinh().accumulate().wrt(&x), 1.543_080_634_815_243_7, EPS);
+        assert_approx_equal!(x.atan().accumulate().wrt(&x), 0.5, EPS);
+        assert_approx_equal!(x.cosh().accumulate().wrt(&x), 1.175_201_193_643_801_4, EPS);
+        assert_approx_equal!(x.tanh().accumulate().wrt(&x), 0.419_974_341_614_026_14, EPS);
+        assert_approx_equal!(x.asinh().accumulate().wrt(&x), 1.0 / 2_f64.sqrt(), EPS);
+        assert_approx_equal!(x.abs().accumulate().wrt(&x), 1.0, EPS);
         assert!(x.atanh().accumulate().wrt(&x).is_nan());
         assert!(x.acosh().accumulate().wrt(&x).is_nan());
         assert!(x.asin().accumulate().wrt(&x).is_nan());

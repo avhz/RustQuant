@@ -16,12 +16,17 @@
 pub mod curve;
 pub use curve::*;
 
-/// Curve models.
-pub mod models;
-pub use models::*;
-
 /// Surface implementations.
 /// Surfaces are simply [Curve]s with an additional dimension.
 /// For example, a volatility surface is a function of time and strike/moneyness.
 pub mod surface;
 pub use surface::*;
+
+/// Nelson-Siegel curve model.
+pub mod nelson_siegel;
+pub use nelson_siegel::*;
+
+/// Nelson-Siegel-Svensson curve model.
+/// This model is an extension of the Nelson-Siegel model.
+pub mod nelson_siegel_svensson;
+pub use nelson_siegel_svensson::*;

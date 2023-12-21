@@ -7,7 +7,7 @@
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use crate::time::{is_weekend, Calendar};
+use crate::time::Calendar;
 use time::{Month, OffsetDateTime};
 
 /// Austrian settlement calendar.
@@ -18,15 +18,19 @@ impl Calendar for Austria {
         "Austria"
     }
 
+    fn country_code(&self) -> crate::iso::ISO_3166 {
+        crate::iso::AUSTRIA
+    }
+
+    fn market_identifier_code(&self) -> crate::iso::ISO_10383 {
+        crate::iso::EXAA
+    }
+
     fn is_business_day(&self, date: OffsetDateTime) -> bool {
-        let d = date.day();
-        let m = date.month();
-        let y = date.year();
-        let dd = date.ordinal(); // Day of the year
+        let (_, d, m, y, dd) = self.unpack_date(date);
+        let em = Self::easter_monday(y as usize, false);
 
-        let em = crate::time::easter_monday(y as usize, false);
-
-        if is_weekend(date)
+        if Self::is_weekend(date)
                 // New Year's Day
                 || (d == 1 && m == Month::January)
                 // Epiphany

@@ -69,7 +69,7 @@ where
     let mut integral = 0.0;
 
     for i in 0..100 {
-        integral += WEIGHTS[i] * f(ABSCISSAE[i])
+        integral += WEIGHTS[i] * f(ABSCISSAE[i]);
     }
 
     integral
@@ -298,6 +298,7 @@ pub const WEIGHTS: [f64; 100] = [
 mod tests_integration {
     use super::*;
     use crate::assert_approx_equal;
+    use std::f64::EPSILON as EPS;
 
     #[test]
     fn test_quadrature() {
@@ -307,6 +308,6 @@ mod tests_integration {
 
         let integral = integrate(f, 0.0, 5.0);
 
-        assert_approx_equal!(integral, 7.189119253631, 1e-8);
+        assert_approx_equal!(integral, 7.189_119_252_343_784, EPS);
     }
 }
