@@ -52,8 +52,9 @@ csv = "1.3.0"                # https://docs.rs/csv/latest/csv/
 nalgebra = "0.32.2"          # https://docs.rs/nalgebra/latest/nalgebra/
 ndarray = "0.15.6"           # https://docs.rs/ndarray/latest/ndarray/
 ndrustfft = "0.4.1"   # https://docs.rs/ndrustfft/latest/ndrustfft/
+ndarray-rand = "0.14.0"
 num = "0.4.1"                # https://docs.rs/num/latest/num/
-num-complex = "0.4.2"        # https://docs.rs/num-complex/latest/num_complex/
+num-complex = {version = "0.4.2", features = ["rand"]}       # https://docs.rs/num-complex/latest/num_complex/
 num-traits = "0.2.16"        # https://docs.rs/num-traits/latest/num_traits/
 plotters = "0.3.4"           # https://docs.rs/plotters/latest/plotters/
 rand = "0.8.5"               # https://docs.rs/rand/latest/rand/
