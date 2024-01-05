@@ -1,4 +1,13 @@
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// RustQuant: A Rust library for quantitative finance tools.
+// Copyright (C) 2023 https://github.com/avhz
+// Dual licensed under Apache 2.0 and MIT.
+// See:
+//      - LICENSE-APACHE.md
+//      - LICENSE-MIT.md
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // INSTRUMENTS MODULE
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -87,7 +96,7 @@ pub mod options {
     pub use crate::instruments::options::{
         american::*, asian::*, bachelier::*, barrier::*, binary::*, binomial::*,
         black_scholes_merton::*, european::*, forward_start::*, greeks::*, heston::*, lookback::*,
-        option::*, power::*,
+        merton_jump_diffusion::*, option::*, power::*,
     };
 
     /// American option pricers.
@@ -114,6 +123,8 @@ pub mod options {
     pub mod heston;
     /// Lookback option pricers.
     pub mod lookback;
+    /// Merton (1976) jump diffusion model.
+    pub mod merton_jump_diffusion;
     /// Base option traits.
     pub mod option;
     /// Power option pricers.

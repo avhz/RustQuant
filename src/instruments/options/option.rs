@@ -7,6 +7,18 @@
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+/// Option contract data.
+struct OptionContract {
+    /// The option's type flag (call or put).
+    type_flag: TypeFlag,
+
+    /// The option's strike type (fixed or floating).
+    strike_flag: StrikeFlag,
+
+    /// The option's exercise type (European, American, Bermudan).
+    exercise_flag: ExerciseFlag,
+}
+
 /// Option type enum.
 #[derive(Debug, Clone, Copy)]
 pub enum TypeFlag {
@@ -20,11 +32,11 @@ pub enum TypeFlag {
 /// American/European option type enum.
 #[derive(Debug, Clone, Copy)]
 pub enum ExerciseFlag {
-    /// American option (can be exercised at any time before expiry).
-    American,
-
     /// European option (can only be exercised at expiry).
     European,
+
+    /// American option (can be exercised at any time before expiry).
+    American,
 
     /// Bermudan option (can be exercised at specific dates before expiry).
     Bermudan,
