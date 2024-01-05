@@ -144,13 +144,14 @@ impl Distribution for Gaussian {
     ///
     /// let gaussian = Gaussian::new(0.0, 1.0);
     ///
-    /// assert_eq!(gaussian.inv_cdf(0.5), INFINITY);
-    /// assert_approx_equal!(gaussian.inv_cdf(0.8413447), 0.4087960, 1e-7);
+    /// assert_eq!(gaussian.inv_cdf(0.5), 0.0);
+    /// assert_approx_equal!(gaussian.inv_cdf(0.001), -3.090232306167813, f64::EPSILON);
+    /// assert_approx_equal!(gaussian.inv_cdf(0.997), 2.747781385444993, f64::EPSILON);
     /// ```
     fn inv_cdf(&self, p: f64) -> f64 {
         assert!(self.variance > 0.0);
 
-        self.mean + SQRT_2 * self.variance.sqrt() * erf::erfc_inv(2.0 * p - 1.0)
+        self.mean + SQRT_2 * self.variance.sqrt() * erf::erf_inv(2.0 * p - 1.0)
     }
 
     /// Returns the mean of the Gaussian distribution.
