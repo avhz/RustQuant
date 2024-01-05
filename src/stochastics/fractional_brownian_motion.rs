@@ -106,6 +106,7 @@ impl FractionalBrownianMotion {
     }
 
     #[cfg(feature = "seedable")]
+    /// Seedable Fractional Gaussian noise.
     pub fn seedable_fgn_cholesky(&self, n: usize, t_n: f64, seed: u64) -> Vec<f64> {
         let acf_sqrt = self.acf_matrix_sqrt(n);
         let noise = StdRng::seed_from_u64(seed)
