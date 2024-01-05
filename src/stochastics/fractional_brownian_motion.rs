@@ -14,9 +14,10 @@ use ndarray_rand::RandomExt;
 use ndrustfft::{ndfft_par, FftHandler};
 use num_complex::{Complex, ComplexDistribution};
 use rand::Rng;
+#[cfg(feature = "seedable")]
+use rand::{rngs::StdRng, SeedableRng};
 use rand_distr::StandardNormal;
 use rayon::prelude::*;
-use statrs::statistics::Statistics;
 
 /// Method used to generate the Fractional Brownian Motion.
 #[derive(Debug)]
@@ -92,10 +93,22 @@ impl FractionalBrownianMotion {
     }
 
     /// Fractional Gaussian noise.
-    #[must_use]
     pub fn fgn_cholesky(&self, n: usize, t_n: f64) -> Vec<f64> {
         let acf_sqrt = self.acf_matrix_sqrt(n);
         let noise = rand::thread_rng()
+            .sample_iter::<f64, StandardNormal>(StandardNormal)
+            .take(n)
+            .collect();
+        let noise = DVector::<f64>::from_vec(noise);
+        let noise = (acf_sqrt * noise).transpose() * (1.0 * t_n / n as f64).powf(self.hurst);
+
+        noise.data.as_vec().clone()
+    }
+
+    #[cfg(feature = "seedable")]
+    pub fn seedable_fgn_cholesky(&self, n: usize, t_n: f64, seed: u64) -> Vec<f64> {
+        let acf_sqrt = self.acf_matrix_sqrt(n);
+        let noise = StdRng::seed_from_u64(seed)
             .sample_iter::<f64, StandardNormal>(StandardNormal)
             .take(n)
             .collect();
@@ -249,7 +262,10 @@ mod test_fractional_brownian_motion {
     // use std::time::Instant;
 
     use super::*;
-    use crate::ml::{Decomposition, LinearRegressionInput};
+    use crate::{
+        ml::{Decomposition, LinearRegressionInput},
+        statistics::Statistic,
+    };
 
     fn higuchi_fd(x: &Vec<f64>, kmax: usize) -> f64 {
         let n_times = x.len();
