@@ -72,7 +72,7 @@
 //! f(x,y) = (x^2 + y - 11)^2 + (x + y^2 - 7)^2
 //! $$
 
-use crate::autodiff::*;
+use crate::autodiff::{Accumulate, Gradient, Graph, Variable};
 use time::{Duration, Instant};
 // use ::log::{info, max_level, warn, Level};
 
@@ -96,6 +96,7 @@ pub struct GradientDescent {
 }
 
 /// Result of the gradient descent optimization.
+#[allow(clippy::module_name_repetitions)]
 pub struct GradientDescentResult {
     /// Minimizer of the function.
     pub minimizer: Vec<f64>,
@@ -112,6 +113,11 @@ pub struct GradientDescentResult {
 
 impl GradientDescent {
     /// Returns a new instance of the gradient descent optimizer.
+    ///
+    /// # Panics
+    ///
+    /// Panics if tolerance is not positive.
+    #[must_use]
     pub fn new(learning_rate: f64, max_iterations: usize, tolerance: Option<f64>) -> Self {
         if tolerance.is_some() {
             assert!(tolerance.unwrap() > 0.0);
@@ -214,7 +220,7 @@ impl GradientDescent {
 #[cfg(test)]
 mod test_gradient_descent {
     use super::*;
-    use crate::autodiff::Variable;
+    use crate::autodiff::{Powf, Variable};
 
     // Test the creation of a new GradientDescent optimizer.
     #[test]
@@ -251,7 +257,7 @@ mod test_gradient_descent {
         }
 
         // GradientDescent::new(learning_rate, max_iterations, tolerance)
-        let gd = GradientDescent::new(0.1, 1000, Some(0.000001));
+        let gd = GradientDescent::new(0.1, 1000, Some(0.000_001));
         let result = gd.optimize(f, &[10.0], false);
 
         println!("Minimum: {:?}", result.minimum);
@@ -275,7 +281,7 @@ mod test_gradient_descent {
         }
 
         // GradientDescent::new(learning_rate, max_iterations, tolerance)
-        let gd = GradientDescent::new(0.1, 1000, Some(0.000001));
+        let gd = GradientDescent::new(0.1, 1000, Some(0.000_001));
         let result = gd.optimize(f, &[5.0, 5.0], false);
 
         println!("Minimum: {:?}", result.minimum);
@@ -298,7 +304,7 @@ mod test_gradient_descent {
         }
 
         // GradientDescent::new(learning_rate, max_iterations, tolerance)
-        let gd = GradientDescent::new(0.001, 10000, Some(0.000001));
+        let gd = GradientDescent::new(0.001, 10000, Some(0.000_001));
         let result = gd.optimize(f, &[0.0, 5.0], false);
 
         println!("Minimum: {:?}", result.minimum);

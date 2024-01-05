@@ -20,6 +20,7 @@ use time::OffsetDateTime;
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 /// A trait for curve models.
+#[allow(clippy::module_name_repetitions)]
 pub trait CurveModel {
     /// Returns the forward rate for a given date.
     fn forward_rate(&self, date: OffsetDateTime) -> f64;
@@ -31,6 +32,7 @@ pub trait CurveModel {
     fn discount_factor(&self, date: OffsetDateTime) -> f64;
 
     /// Calibrates the model to a set of market rates.
+    #[must_use]
     fn calibrate<C: Curve>(&self, curve: C) -> Self;
 }
 
@@ -106,6 +108,7 @@ pub trait Curve {
     }
 }
 
+#[allow(clippy::module_name_repetitions)]
 /// Yield curve struct.
 pub struct YieldCurve {
     /// Map of dates and rates.
@@ -118,6 +121,7 @@ pub struct YieldCurve {
 }
 
 /// Curve error enum.
+#[allow(clippy::module_name_repetitions)]
 #[derive(Debug, Clone, Copy)]
 pub enum CurveError {
     /// The date is outside the curve's range.
@@ -133,6 +137,7 @@ pub enum CurveError {
 
 impl YieldCurve {
     /// Creates a new yield curve.
+    #[must_use]
     pub fn new(rates: BTreeMap<OffsetDateTime, f64>) -> Self {
         Self { rates }
     }
@@ -147,10 +152,12 @@ impl Curve for YieldCurve {
         *self.rates.keys().max().unwrap()
     }
 
+    #[allow(clippy::similar_names)]
     fn update_rate(&mut self, date: OffsetDateTime, rate: f64) {
         self.rates.insert(date, rate);
     }
 
+    #[allow(clippy::similar_names)]
     fn from_dates_and_rates(dates: &[OffsetDateTime], rates: &[f64]) -> Self {
         let mut rates_map = BTreeMap::new();
 
@@ -161,6 +168,7 @@ impl Curve for YieldCurve {
         Self { rates: rates_map }
     }
 
+    #[allow(clippy::similar_names)]
     fn from_initial_date_rates_and_durations(
         initial_date: OffsetDateTime,
         rates: &[f64],
@@ -168,7 +176,7 @@ impl Curve for YieldCurve {
     ) -> Self {
         let mut dates = vec![initial_date];
 
-        for duration in durations.iter() {
+        for duration in durations {
             dates.push(*dates.last().unwrap() + *duration);
         }
 
@@ -272,6 +280,7 @@ mod tests_curves {
         assert_eq!(interval3, (date3, date3));
     }
 
+    #[allow(clippy::similar_names)]
     #[test]
     fn test_yield_curve_discount_factor() {
         // Initial date of the curve.

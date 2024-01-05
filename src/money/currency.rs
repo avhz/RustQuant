@@ -14,7 +14,7 @@
 //! same underlying currency.
 
 use crate::instruments::Instrument;
-use crate::iso::*;
+use crate::iso::ISO_4217;
 use std::fmt::{self, Formatter};
 use time::OffsetDateTime;
 
@@ -128,6 +128,7 @@ impl fmt::Display for ISO_4217 {
 
 impl Currency {
     /// Create a new currency.
+    #[must_use]
     pub fn new(
         name: &'static str,
         symbol: &'static str,
@@ -145,26 +146,31 @@ impl Currency {
     }
 
     /// Get the currency name.
+    #[must_use]
     pub fn name(&self) -> &str {
         self.name
     }
 
     /// Get the currency symbol.
+    #[must_use]
     pub fn symbol(&self) -> &str {
         self.symbol
     }
 
     /// Get the currency code.
+    #[must_use]
     pub fn code(&self) -> ISO_4217 {
         self.code
     }
 
     /// Get the minor unit.
+    #[must_use]
     pub fn minor(&self) -> usize {
         self.minor
     }
 
     /// Get the fractions per unit.
+    #[must_use]
     pub fn fractions(&self) -> usize {
         self.fractions
     }
@@ -172,16 +178,19 @@ impl Currency {
 
 impl Money {
     /// Create a new money instance.
+    #[must_use]
     pub fn new(currency: Currency, amount: f64) -> Self {
         Self { currency, amount }
     }
 
     /// Get the currency.
+    #[must_use]
     pub fn currency(&self) -> Currency {
         self.currency
     }
 
     /// Get the amount.
+    #[must_use]
     pub fn amount(&self) -> f64 {
         self.amount
     }
@@ -189,6 +198,7 @@ impl Money {
 
 impl ISO_4217 {
     /// Create a new ISO 4217 code.
+    #[must_use]
     pub fn new(alphabetic: &'static str, numeric: &'static str) -> Self {
         Self {
             alphabetic,
@@ -197,11 +207,13 @@ impl ISO_4217 {
     }
 
     /// Get the ISO 4217 alphabetic code.
+    #[must_use]
     pub fn alphabetic(&self) -> &str {
         self.alphabetic
     }
 
     /// Get the ISO 4217 numeric code.
+    #[must_use]
     pub fn numeric(&self) -> &str {
         self.numeric
     }
@@ -275,6 +287,9 @@ impl std::ops::Div for Money {
 mod test_currencies {
     use super::*;
 
+    use crate::assert_approx_equal;
+    use std::f64::EPSILON as EPS;
+
     // Setup some example currencies and money for testing
     const USD: Currency = Currency {
         name: "United States Dollar",
@@ -344,7 +359,7 @@ mod test_currencies {
         let money1 = Money::new(USD, 20.5);
         let money2 = Money::new(USD, 10.5);
         let result = money1 + money2;
-        assert_eq!(result.amount(), 31.0);
+        assert_approx_equal!(result.amount(), 31.0, EPS);
     }
 
     #[test]
@@ -360,7 +375,7 @@ mod test_currencies {
         let money1 = Money::new(USD, 20.5);
         let money2 = Money::new(USD, 10.5);
         let result = money1 - money2;
-        assert_eq!(result.amount(), 10.0);
+        assert_approx_equal!(result.amount(), 10.0, EPS);
     }
 
     #[test]
@@ -376,7 +391,7 @@ mod test_currencies {
         let money1 = Money::new(USD, 20.0);
         let money2 = Money::new(USD, 2.0);
         let result = money1 * money2;
-        assert_eq!(result.amount(), 40.0);
+        assert_approx_equal!(result.amount(), 40.0, EPS);
     }
 
     #[test]
@@ -392,7 +407,7 @@ mod test_currencies {
         let money1 = Money::new(USD, 40.0);
         let money2 = Money::new(USD, 2.0);
         let result = money1 / money2;
-        assert_eq!(result.amount(), 20.0);
+        assert_approx_equal!(result.amount(), 20.0, EPS);
     }
 
     #[test]

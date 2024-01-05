@@ -44,7 +44,7 @@ impl Calendar for Finland {
             // Labour Day
             || (d == 1 && m == Month::May)
             // Midsummer Eve (Friday between June 18-24)
-            || (w == Weekday::Friday && (d >= 18 && d <= 24) && m == Month::June)
+            || (w == Weekday::Friday && (18..=24).contains(&d) && m == Month::June)
             // Independence Day
             || (d == 6 && m == Month::December)
             // Christmas Eve

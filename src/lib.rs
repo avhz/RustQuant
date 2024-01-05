@@ -13,8 +13,13 @@
 //! I'm particularly interested in hearing from people with strong experience
 //! in implementing quantitative software in a professional setting.
 
+// Increase the amount of detail Clippy searches for.
+#![warn(clippy::pedantic)]
 // Strictly enforce documentation.
 #![forbid(missing_docs)]
+// When writing mathematical equations in documentation, Clippy suggests to
+// put backticks inside the LaTeX block. This suppresses that behavior.
+#![allow(clippy::doc_markdown)]
 // Allow snake case.
 // This is because much of this library is based on mathematics, so I
 // want to adhere to the standard mathematical notation.
@@ -23,6 +28,18 @@
 // There is no unsafe code currently, but for anyone to add any, it must be
 // documented with a SAFETY comment.
 #![forbid(clippy::undocumented_unsafe_blocks)]
+// I will add changes from clippy::nursery in coming commits.
+// #![warn(clippy::nursery)]
+// General miscellaneous clippy tunings.
+#![allow(
+    clippy::many_single_char_names,
+    // Temporary setting, as currently, `usize` is being used in places that
+    // don't deal with indexing.
+    clippy::cast_precision_loss,
+    // Awkward format strings. It seems to improve clarity to keep parameters
+    // grouped at the end.
+    clippy::uninlined_format_args
+)]
 
 pub mod autodiff;
 pub mod curves;

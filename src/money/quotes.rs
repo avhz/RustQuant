@@ -22,6 +22,7 @@ pub struct SimpleQuote {
 
 impl SimpleQuote {
     /// Create a new simple quote.
+    #[must_use]
     pub fn new(value: Option<f64>) -> Self {
         SimpleQuote { value }
     }

@@ -15,7 +15,7 @@ use std::ops::{Div, DivAssign};
 /// d/dx x/y = 1/y
 /// d/dy x/y = -x/y^2
 
-/// DivAssign: Variable<'v> /= Variable<'v>
+/// `DivAssign`: Variable<'v> /= Variable<'v>
 impl<'v> DivAssign<Variable<'v>> for Variable<'v> {
     #[inline]
     fn div_assign(&mut self, other: Variable<'v>) {
@@ -25,7 +25,7 @@ impl<'v> DivAssign<Variable<'v>> for Variable<'v> {
     }
 }
 
-/// DivAssign: Variable<'v> /= f64
+/// `DivAssign`: Variable<'v> /= f64
 impl<'v> DivAssign<f64> for Variable<'v> {
     #[inline]
     fn div_assign(&mut self, other: f64) {
@@ -33,7 +33,7 @@ impl<'v> DivAssign<f64> for Variable<'v> {
     }
 }
 
-/// DivAssign: f64 /= Variable<'v>
+/// `DivAssign`: f64 /= Variable<'v>
 impl<'v> DivAssign<Variable<'v>> for f64 {
     #[inline]
     fn div_assign(&mut self, other: Variable<'v>) {
@@ -131,7 +131,9 @@ impl<'v> Div<Variable<'v>> for f64 {
 
 #[cfg(test)]
 mod test_overload {
+    use crate::assert_approx_equal;
     use crate::autodiff::{Accumulate, Gradient, Graph};
+    use std::f64::EPSILON as EPS;
 
     #[test]
     fn test_div() {
@@ -143,9 +145,9 @@ mod test_overload {
         let z = x / y;
         let grad = z.accumulate();
 
-        assert_eq!(z.value, 0.5);
-        assert_eq!(grad.wrt(&x), 0.5);
-        assert_eq!(grad.wrt(&y), -0.25);
+        assert_approx_equal!(z.value, 0.5, EPS);
+        assert_approx_equal!(grad.wrt(&x), 0.5, EPS);
+        assert_approx_equal!(grad.wrt(&y), -0.25, EPS);
 
         // Variable / f64
         let g = Graph::new();
@@ -155,8 +157,8 @@ mod test_overload {
         let z = x / y;
         let grad = z.accumulate();
 
-        assert_eq!(z.value, 0.5);
-        assert_eq!(grad.wrt(&x), 0.5);
+        assert_approx_equal!(z.value, 0.5, EPS);
+        assert_approx_equal!(grad.wrt(&x), 0.5, EPS);
 
         // f64 / Variable
         let g = Graph::new();
@@ -166,7 +168,7 @@ mod test_overload {
         let z = x / y;
         let grad = z.accumulate();
 
-        assert_eq!(z.value, 0.5);
-        assert_eq!(grad.wrt(&y), -0.25);
+        assert_approx_equal!(z.value, 0.5, EPS);
+        assert_approx_equal!(grad.wrt(&y), -0.25, EPS);
     }
 }

@@ -15,7 +15,7 @@
 //! language. At the moment, I'm simply trying to make a function that outputs
 //! `dot` code for a given graph.
 
-use crate::autodiff::*;
+use crate::autodiff::{Graph, Variable};
 
 // impl std::fmt::Display for Graph {
 //     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
@@ -80,6 +80,8 @@ pub fn graphviz(graph: &Graph, vars: &[Variable]) -> String {
 
 #[cfg(test)]
 mod test_graphviz {
+    use crate::autodiff::{Accumulate, Gradient, Powf};
+
     use super::*;
 
     // RUN THESE TESTS VIA: cargo t test_graphviz -- --nocapture

@@ -7,7 +7,7 @@
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use crate::stochastics::*;
+use crate::stochastics::{StochasticProcess, TimeDependent};
 
 /// Struct containing the Ornstein-Uhlenbeck process parameters.
 #[derive(Debug)]
@@ -63,7 +63,7 @@ mod tests_cir {
     use crate::{assert_approx_equal, statistics::*};
 
     #[test]
-    fn test_cox_ingersoll_ross() -> Result<(), Box<dyn std::error::Error>> {
+    fn test_cox_ingersoll_ross() {
         let cir = CoxIngersollRoss::new(0.15, 0.45, 0.01);
 
         let output = cir.euler_maruyama(10.0, 0.0, 0.5, 100, 100, false);
@@ -72,7 +72,7 @@ mod tests_cir {
         let X_T: Vec<f64> = output
             .paths
             .iter()
-            .filter_map(|v| v.last().cloned())
+            .filter_map(|v| v.last().copied())
             .collect();
 
         let E_XT = X_T.mean();
@@ -95,7 +95,5 @@ mod tests_cir {
         // plot_vector((&output.trajectories[0]).clone(), file1).unwrap();
         // let file2 = "./images/CIR2.png";
         // plot_vector((&output.trajectories[1]).clone(), file2)
-
-        std::result::Result::Ok(())
     }
 }

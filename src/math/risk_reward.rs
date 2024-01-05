@@ -43,6 +43,7 @@ impl PortfolioMeasures {
     /// * `r_p` is the average return of the portfolio.
     /// * `r` is the risk-free return over the same period.
     /// * `beta_p` is the beta of the portfolio.
+    #[must_use]
     pub fn treynors_ratio(&self) -> f64 {
         (self.r_p - self.r) / self.beta_p
     }
@@ -56,6 +57,7 @@ impl PortfolioMeasures {
     /// * `r_p` is the average return of the portfolio.
     /// * `r` is the risk-free return over the same period.
     /// * `sigma_p` is the standard deviation of the portfolio returns.
+    #[must_use]
     pub fn sharpe_ratio(&self) -> f64 {
         (self.r_p - self.r) / self.sigma_p
     }
@@ -69,6 +71,7 @@ impl PortfolioMeasures {
     /// * `r_p` is the average return of the portfolio.
     /// * `r` is the risk-free return over the same period.
     /// * `sigma_down` is the *downside* standard deviation of the portfolio returns, also known as semistandard deviation.
+    #[must_use]
     pub fn sortino_ratio(&self) -> f64 {
         (self.r_p - self.r) / self.sigma_down
     }
@@ -82,6 +85,7 @@ impl PortfolioMeasures {
     /// * `r_p` is the average return of the portfolio.
     /// * `r` is the risk-free return over the same period.
     /// * `ss_drawdowns` is the sum of the squared drawdowns.
+    #[must_use]
     pub fn burke_ratio(&self, drawdowns: &[f64]) -> f64 {
         let ss_drawdowns = drawdowns.iter().map(|x| x.powi(2)).sum::<f64>();
 
@@ -96,6 +100,7 @@ impl PortfolioMeasures {
     ///
     /// * `r_p` is the average return of the portfolio.
     /// * `var` is the Value-at-Risk.
+    #[must_use]
     pub fn return_on_var(&self) -> f64 {
         self.r_p / self.var
     }
@@ -110,6 +115,7 @@ impl PortfolioMeasures {
     /// * `r` is the risk-free return over the same period.
     /// * `beta_p` is the beta of the portfolio.
     /// * `r_m` is the expected market return.
+    #[must_use]
     pub fn jensens_alpha(&self) -> f64 {
         self.r_p - (self.r + self.beta_p * (self.r_m - self.r))
     }
@@ -123,6 +129,8 @@ impl PortfolioMeasures {
 mod tests_risk_reward {
     use super::*;
 
+    use std::f64::EPSILON as EPS;
+
     static PORTFOLIO: PortfolioMeasures = PortfolioMeasures {
         r_p: 0.12,
         r: 0.05,
@@ -135,39 +143,41 @@ mod tests_risk_reward {
 
     #[test]
     fn test_treynors_ratio() {
-        assert_eq!(PORTFOLIO.treynors_ratio(), (0.12 - 0.05) / 1.2);
+        assert_approx_equal!(PORTFOLIO.treynors_ratio(), (0.12 - 0.05) / 1.2, EPS);
     }
 
     #[test]
     fn test_sharpe_ratio() {
-        assert_eq!(PORTFOLIO.sharpe_ratio(), (0.12 - 0.05) / 0.2);
+        assert_approx_equal!(PORTFOLIO.sharpe_ratio(), (0.12 - 0.05) / 0.2, EPS);
     }
 
     #[test]
     fn test_sortino_ratio() {
-        assert_eq!(PORTFOLIO.sortino_ratio(), (0.12 - 0.05) / 0.1);
+        assert_approx_equal!(PORTFOLIO.sortino_ratio(), (0.12 - 0.05) / 0.1, EPS);
     }
 
     #[test]
     fn test_burke_ratio() {
         let drawdowns = vec![0.05, 0.10, 0.20];
         let ss_drawdowns = drawdowns.iter().map(|x| x * x).sum::<f64>();
-        assert_eq!(
+        assert_approx_equal!(
             PORTFOLIO.burke_ratio(&drawdowns),
-            (0.12 - 0.05) / ss_drawdowns
+            (0.12 - 0.05) / ss_drawdowns,
+            EPS
         );
     }
 
     #[test]
     fn test_return_on_var() {
-        assert_eq!(PORTFOLIO.return_on_var(), 0.12 / 0.15);
+        assert_approx_equal!(PORTFOLIO.return_on_var(), 0.12 / 0.15, EPS);
     }
 
     #[test]
     fn test_jensens_alpha() {
-        assert_eq!(
+        assert_approx_equal!(
             PORTFOLIO.jensens_alpha(),
-            0.12 - (0.05 + 1.2 * (0.1 - 0.05))
+            0.12 - (0.05 + 1.2 * (0.1 - 0.05)),
+            EPS
         );
     }
 }

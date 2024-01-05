@@ -67,6 +67,7 @@ impl MonthNumeric for time::Month {
 
 impl DayCounter {
     /// New day counter.
+    #[must_use]
     pub fn new(start: OffsetDateTime, end: OffsetDateTime, convention: DayCountConvention) -> Self {
         let day_count_factor = Self::day_count_factor(start, end, &convention);
         let day_count_business = Self::day_count_business(start, end);
@@ -95,6 +96,7 @@ impl DayCounter {
     /// * `start` - The start date (optional and defaults to today).
     /// * `end` - The end date.
     /// * `convention` - The day count convention.
+    #[must_use]
     pub fn day_count_factor(
         start: OffsetDateTime,
         end: OffsetDateTime,
@@ -109,15 +111,15 @@ impl DayCounter {
 
         let days = (end - start).whole_days() as f64;
         let months = (end_month - start_month) as f64;
-        let years = (end.year() - start.year()) as f64;
+        let years = f64::from(end.year() - start.year());
 
         match convention {
             DayCountConvention::Actual365 => days / 365.0,
             DayCountConvention::Actual364 => days / 364.0,
             DayCountConvention::Actual360 => days / 360.0,
             DayCountConvention::Thirty360 => {
-                ((30 - start.day()).max(0) as f64
-                    + (end.day()).min(30) as f64
+                (f64::from((30 - start.day()).max(0))
+                    + f64::from((end.day()).min(30))
                     + 360.0 * years
                     + 30.0 * (months - 1.0))
                     / 360.0
@@ -137,6 +139,7 @@ impl DayCounter {
     /// This is the number of days between two dates, excluding weekends.
     /// Obviously, for this to be really useful, we need to have a calendar
     /// that tells us which days are weekends, and also which are holidays.
+    #[must_use]
     pub fn day_count_business(mut start: OffsetDateTime, end: OffsetDateTime) -> i64 {
         let mut count = 0;
         while start <= end {
@@ -151,6 +154,7 @@ impl DayCounter {
 
     /// Compute the calendar day count between two dates.
     /// This is the number of days between two dates.
+    #[must_use]
     pub fn day_count_calendar(start: OffsetDateTime, end: OffsetDateTime) -> i64 {
         (end - start).whole_days()
     }
@@ -166,6 +170,8 @@ mod test_daycount {
     use crate::assert_approx_equal;
     use time::macros::datetime;
 
+    use std::f64::EPSILON as EPS;
+
     #[test]
     fn test_daycount_factor() {
         let mut dc = DayCounter::new(
@@ -174,19 +180,19 @@ mod test_daycount {
             DayCountConvention::Actual365,
         );
 
-        assert_approx_equal!(dc.day_count_factor, 1.416438, 1e-6);
+        assert_approx_equal!(dc.day_count_factor, 1.416_438_356_164_383_6, EPS);
 
         dc.change_convention(DayCountConvention::Actual360);
 
-        assert_approx_equal!(dc.day_count_factor, 1.436111, 1e-6);
+        assert_approx_equal!(dc.day_count_factor, 1.436_111_111_111_111_1, EPS);
 
         dc.change_convention(DayCountConvention::Actual364);
 
-        assert_approx_equal!(dc.day_count_factor, 1.420329, 1e-6);
+        assert_approx_equal!(dc.day_count_factor, 1.420_329_670_329_670_4, EPS);
 
         dc.change_convention(DayCountConvention::Thirty360);
 
-        assert_approx_equal!(dc.day_count_factor, 1.419444, 1e-6);
+        assert_approx_equal!(dc.day_count_factor, 1.419_444_444_444_444_5, EPS);
     }
 
     #[test]
@@ -204,7 +210,7 @@ mod test_daycount {
         let start_date = datetime!(2022-02-15 0:00 UTC);
         let end_date = datetime!(2023-02-15 0:00 UTC);
         let result = DayCounter::new(start_date, end_date, DayCountConvention::Thirty360);
-        assert_approx_equal!(result.day_count_factor, 1.0, 1e-6);
+        assert_approx_equal!(result.day_count_factor, 1.0, EPS);
     }
 
     #[test]
@@ -212,7 +218,7 @@ mod test_daycount {
         let start_date = datetime!(2023-05-15 0:00 UTC);
         let end_date = datetime!(2023-11-15 0:00 UTC);
         let result = DayCounter::new(start_date, end_date, DayCountConvention::Thirty360);
-        assert_approx_equal!(result.day_count_factor, 0.5, 1e-6);
+        assert_approx_equal!(result.day_count_factor, 0.5, EPS);
     }
 
     #[test]
@@ -220,7 +226,7 @@ mod test_daycount {
         let start_date = datetime!(2023-09-15 0:00 UTC);
         let end_date = datetime!(2023-09-30 0:00 UTC);
         let result = DayCounter::new(start_date, end_date, DayCountConvention::Thirty360);
-        assert_approx_equal!(result.day_count_factor, 0.041667, 1e-6);
+        assert_approx_equal!(result.day_count_factor, 0.041_666_666_666_666_664, EPS);
     }
 
     #[test]
@@ -228,7 +234,7 @@ mod test_daycount {
         let start_date = datetime!(2023-10-15 0:00 UTC);
         let end_date = datetime!(2023-10-31 0:00 UTC);
         let result = DayCounter::new(start_date, end_date, DayCountConvention::Thirty360);
-        assert_approx_equal!(result.day_count_factor, 0.041667, 1e-6);
+        assert_approx_equal!(result.day_count_factor, 0.041_666_666_666_666_664, EPS);
     }
 
     #[test]
@@ -236,7 +242,7 @@ mod test_daycount {
         let start_date = datetime!(2023-03-15 0:00 UTC);
         let end_date = datetime!(2023-08-31 0:00 UTC);
         let result = DayCounter::new(start_date, end_date, DayCountConvention::Thirty360);
-        assert_approx_equal!(result.day_count_factor, 0.458333, 1e-6);
+        assert_approx_equal!(result.day_count_factor, 0.458_333_333_333_333_3, EPS);
     }
 
     #[test]
@@ -244,7 +250,7 @@ mod test_daycount {
         let start_date = datetime!(2023-07-30 0:00 UTC);
         let end_date = datetime!(2023-07-15 0:00 UTC);
         let result = DayCounter::new(start_date, end_date, DayCountConvention::Thirty360);
-        assert_approx_equal!(result.day_count_factor, -0.041667, 1e-6);
+        assert_approx_equal!(result.day_count_factor, -0.041_666_666_666_666_664, EPS);
     }
 
     #[test]
@@ -252,7 +258,7 @@ mod test_daycount {
         let start_date = datetime!(2023-07-30 0:00 UTC);
         let end_date = datetime!(2023-12-15 0:00 UTC);
         let result = DayCounter::new(start_date, end_date, DayCountConvention::Thirty360);
-        assert_approx_equal!(result.day_count_factor, 0.375, 1e-6);
+        assert_approx_equal!(result.day_count_factor, 0.375, EPS);
     }
 
     #[test]
@@ -260,6 +266,6 @@ mod test_daycount {
         let start_date = datetime!(2023-06-30 0:00 UTC);
         let end_date = datetime!(2023-04-15 0:00 UTC);
         let result = DayCounter::new(start_date, end_date, DayCountConvention::Thirty360);
-        assert_approx_equal!(result.day_count_factor, -0.208333, 1e-6);
+        assert_approx_equal!(result.day_count_factor, -0.208_333_333_333_333_34, EPS);
     }
 }

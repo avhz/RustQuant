@@ -71,18 +71,20 @@ impl<'v> Product<Variable<'v>> for Variable<'v> {
 
 #[cfg(test)]
 mod test_overload {
+    use crate::assert_approx_equal;
     use crate::autodiff::{Accumulate, Gradient, Graph, Variable};
+    use std::f64::EPSILON as EPS;
 
     #[test]
     fn test_sum() {
         let g = Graph::new();
 
-        let params = (0..100).map(|x| g.var(x as f64)).collect::<Vec<_>>();
+        let params = (0..100).map(|x| g.var(f64::from(x))).collect::<Vec<_>>();
         let sum = params.iter().copied().sum::<Variable>();
         let derivs = sum.accumulate();
 
         for i in derivs.wrt(&params) {
-            assert_eq!(i, 1.0);
+            assert_approx_equal!(i, 1.0, EPS);
         }
     }
 
@@ -90,7 +92,7 @@ mod test_overload {
     fn test_product() {
         let g = Graph::new();
 
-        let params = (1..=5).map(|x| g.var(x as f64)).collect::<Vec<_>>();
+        let params = (1..=5).map(|x| g.var(f64::from(x))).collect::<Vec<_>>();
         let prod = params.iter().copied().product::<Variable>();
 
         let derivs = prod.accumulate();
@@ -102,7 +104,7 @@ mod test_overload {
         assert_eq!(n, m);
 
         for (&expect, &gradient) in expects.iter().zip(true_gradient.iter()) {
-            assert_eq!(expect, gradient);
+            assert_approx_equal!(expect, gradient, EPS);
         }
     }
 }

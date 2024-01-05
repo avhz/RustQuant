@@ -44,6 +44,11 @@ impl Bernoulli {
     /// assert_eq!(bernoulli.mean(), 0.5);
     /// assert_approx_equal!(bernoulli.cf(1.0).re, 0.7701511, 1e-7);
     /// ```
+    ///
+    /// # Panics
+    ///
+    /// Panics if `probability` is not between 0 and 1.
+    #[must_use]
     pub fn new(probability: f64) -> Bernoulli {
         assert!((0.0..=1.0).contains(&probability));
 
@@ -286,7 +291,7 @@ impl Distribution for Bernoulli {
         let mut variates: Vec<f64> = Vec::with_capacity(n);
 
         for _ in 0..variates.capacity() {
-            variates.push(dist.sample(&mut rng) as usize as f64);
+            variates.push(usize::from(dist.sample(&mut rng)) as f64);
         }
 
         Ok(variates)
@@ -302,44 +307,46 @@ mod tests_bernoulli {
     use super::*;
     use crate::assert_approx_equal;
 
+    use std::f64::EPSILON as EPS;
+
     #[test]
     fn test_bernoulli_functions() {
         let dist = Bernoulli::new(1.0);
 
         // Characteristic function
         let cf = dist.cf(1.0);
-        assert_approx_equal!(cf.re, 0.54030230586, 1e-10);
-        assert_approx_equal!(cf.im, 0.84147098480, 1e-10);
+        assert_approx_equal!(cf.re, 0.540_302_305_868_139_8, EPS);
+        assert_approx_equal!(cf.im, 0.841_470_984_807_896_5, EPS);
 
         let bernoulli = Bernoulli::new(0.5);
 
         // Probability mass function
         let pmf = dist.pmf(1.0);
-        assert_approx_equal!(pmf, 1.0, 1e-10);
+        assert_approx_equal!(pmf, 1.0, EPS);
         // Test pmf for k = 0.0 and 1.0
         let pmf_zero = bernoulli.pmf(0.0);
         let pmf_one = bernoulli.pmf(1.0);
-        assert_eq!(pmf_zero, 0.5);
-        assert_eq!(pmf_one, 0.5);
+        assert_approx_equal!(pmf_zero, 0.5, EPS);
+        assert_approx_equal!(pmf_one, 0.5, EPS);
 
         // Distribution function
         let cdf = dist.cdf(1.0);
-        assert_approx_equal!(cdf, 1.0, 1e-10);
+        assert_approx_equal!(cdf, 1.0, EPS);
         // Test cdf for k = -1.0, 0.0, 0.5, 1.0 and 2.0
         let cdf_neg = bernoulli.cdf(-1.0);
         let cdf_zero = bernoulli.cdf(0.0);
         let cdf_half = bernoulli.cdf(0.5);
         let cdf_one = bernoulli.cdf(1.0);
         let cdf_two = bernoulli.cdf(2.0);
-        assert_eq!(cdf_neg, 0.0);
-        assert_eq!(cdf_zero, 0.5);
-        assert_eq!(cdf_half, 0.5);
-        assert_eq!(cdf_one, 1.0);
-        assert_eq!(cdf_two, 1.0);
+        assert_approx_equal!(cdf_neg, 0.0, EPS);
+        assert_approx_equal!(cdf_zero, 0.5, EPS);
+        assert_approx_equal!(cdf_half, 0.5, EPS);
+        assert_approx_equal!(cdf_one, 1.0, EPS);
+        assert_approx_equal!(cdf_two, 1.0, EPS);
 
         // Test moment generating function for t = 1.0
         let mgf = bernoulli.mgf(1.0);
-        assert_eq!(mgf, 1.0 - 0.5 + 0.5 * 1_f64.exp());
+        assert_approx_equal!(mgf, 1.0 - 0.5 + 0.5 * 1_f64.exp(), EPS);
 
         // Test characteristic function for t = 1.0
         let cf = bernoulli.cf(1.0);
@@ -354,12 +361,12 @@ mod tests_bernoulli {
         let bernoulli = Bernoulli::new(0.5);
 
         // Test mean and variance
-        assert_eq!(bernoulli.mean(), 0.5);
-        assert_eq!(bernoulli.variance(), 0.25);
+        assert_approx_equal!(bernoulli.mean(), 0.5, EPS);
+        assert_approx_equal!(bernoulli.variance(), 0.25, EPS);
 
         // Test skewness and kurtosis
-        assert_eq!(bernoulli.skewness(), 0.0);
-        assert_eq!(bernoulli.kurtosis(), -2.0);
+        assert_approx_equal!(bernoulli.skewness(), 0.0, EPS);
+        assert_approx_equal!(bernoulli.kurtosis(), -2.0, EPS);
     }
 
     #[test]
@@ -367,32 +374,33 @@ mod tests_bernoulli {
         let bernoulli = Bernoulli::new(0.5);
 
         // Test entropy
-        assert_eq!(
+        assert_approx_equal!(
             bernoulli.entropy(),
-            -(0.5f64.ln() * 0.5 + (1.0 - 0.5_f64).ln() * (1.0 - 0.5))
+            -(0.5f64.ln() * 0.5 + (1.0 - 0.5_f64).ln() * (1.0 - 0.5)),
+            EPS
         );
     }
 
     #[test]
     fn test_default() {
         let bernoulli = Bernoulli::default();
-        assert_eq!(bernoulli.p, 0.5);
+        assert_approx_equal!(bernoulli.p, 0.5, EPS);
     }
 
     #[test]
-    #[should_panic]
+    #[should_panic(expected = "assertion failed: (0.0..=1.0).contains(&probability)")]
     fn test_new_invalid_probability_low() {
-        Bernoulli::new(-0.5);
+        let _ = Bernoulli::new(-0.5);
     }
 
     #[test]
-    #[should_panic]
+    #[should_panic(expected = "assertion failed: (0.0..=1.0).contains(&probability)")]
     fn test_new_invalid_probability_high() {
-        Bernoulli::new(1.5);
+        let _ = Bernoulli::new(1.5);
     }
 
     #[test]
-    #[should_panic]
+    #[should_panic(expected = "assertion failed: k == 0.0 || k == 1.0")]
     fn test_pmf_invalid_input() {
         let bernoulli = Bernoulli::new(0.5);
         bernoulli.pmf(2.0);
@@ -402,7 +410,7 @@ mod tests_bernoulli {
     fn test_cdf_negative_input() {
         let bernoulli = Bernoulli::new(0.5);
         let cdf_neg = bernoulli.cdf(-1.0);
-        assert_eq!(cdf_neg, 0.0);
+        assert_approx_equal!(cdf_neg, 0.0, EPS);
     }
 
     #[test]
@@ -410,8 +418,8 @@ mod tests_bernoulli {
         let bernoulli = Bernoulli::new(0.5);
         let cdf_one = bernoulli.cdf(1.0);
         let cdf_two = bernoulli.cdf(2.0);
-        assert_eq!(cdf_one, 1.0);
-        assert_eq!(cdf_two, 1.0);
+        assert_approx_equal!(cdf_one, 1.0, EPS);
+        assert_approx_equal!(cdf_two, 1.0, EPS);
     }
 
     #[test]
@@ -419,26 +427,26 @@ mod tests_bernoulli {
         let bernoulli = Bernoulli::new(0.5);
         let inv_cdf_one = bernoulli.inv_cdf(0.5);
         let inv_cdf_two = bernoulli.inv_cdf(0.3);
-        assert_eq!(inv_cdf_one, 1.0);
-        assert_eq!(inv_cdf_two, 0.0);
+        assert_approx_equal!(inv_cdf_one, 1.0, EPS);
+        assert_approx_equal!(inv_cdf_two, 0.0, EPS);
     }
 
     #[test]
     fn test_median() {
         let bernoulli = Bernoulli::new(0.5);
         let median = bernoulli.median();
-        assert_eq!(median, 1.0);
+        assert_approx_equal!(median, 1.0, EPS);
     }
 
     #[test]
     fn test_mode() {
         let bernoulli = Bernoulli::new(0.5);
         let mode = bernoulli.mode();
-        assert_eq!(mode, 0.0);
+        assert_approx_equal!(mode, 0.0, EPS);
     }
 
     #[test]
-    #[should_panic]
+    #[should_panic(expected = "assertion failed: n > 0")]
     fn test_sample_zero_size() {
         let bernoulli = Bernoulli::new(0.5);
         let _ = bernoulli.sample(0);
@@ -449,8 +457,8 @@ mod tests_bernoulli {
         let bernoulli = Bernoulli::new(0.5);
         let sample = bernoulli.sample(100)?;
         assert_eq!(sample.len(), 100);
-        for &value in sample.iter() {
-            assert!(value == 0.0 || value == 1.0);
+        for &value in &sample {
+            assert!(value == 0.0 || (value - 1.0).abs() < EPS);
         }
 
         Ok(())

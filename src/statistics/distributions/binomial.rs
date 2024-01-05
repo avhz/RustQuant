@@ -44,6 +44,11 @@ impl Binomial {
     ///
     /// assert_eq!(binomial.mean(), 2.0);
     /// ```
+    ///
+    /// # Panics
+    ///
+    /// Panics if probability is not in $[0, 1]$.
+    #[must_use]
     pub fn new(trials: usize, probability: f64) -> Self {
         assert!((0.0..=1.0).contains(&probability));
 
@@ -127,7 +132,7 @@ impl Distribution for Binomial {
     /// assert_approx_equal!(binomial.cdf(3.0), 0.9129600, 1e-7);
     /// ```
     fn cdf(&self, k: f64) -> f64 {
-        statrs::function::beta::beta_reg((self.n - k as usize) as f64, 1. + k, 1. - self.p)
+        statrs::function::beta::beta_reg((self.n - k as usize) as f64, 1_f64 + k, 1_f64 - self.p)
     }
 
     /// Inverse distribution (quantile) function of the Binomial distribution.
@@ -302,6 +307,8 @@ mod tests_binomial_distribution {
     use super::*;
     use crate::assert_approx_equal;
 
+    use std::f64::EPSILON as EPS;
+
     #[test]
     fn test_binomial_distribution() {
         // n = 2 trials, p = 0.5 probability
@@ -309,18 +316,18 @@ mod tests_binomial_distribution {
 
         // Characteristic function
         let cf = dist.cf(1.0);
-        assert_approx_equal!(cf.re, 0.41611444379, 1e-10);
-        assert_approx_equal!(cf.im, 0.64805984911, 1e-10);
+        assert_approx_equal!(cf.re, 0.416_114_443_797_284_35, EPS);
+        assert_approx_equal!(cf.im, 0.648_059_849_110_368_7, EPS);
 
         // Probability mass function
         // k = 1 successes.
         let pmf = dist.pmf(1.);
-        assert_approx_equal!(pmf, 0.5, 1e-10);
+        assert_approx_equal!(pmf, 0.5, EPS);
 
         // Distribution function
         // k = 1 successes.
         let cdf = dist.cdf(1.);
-        assert_approx_equal!(cdf, 0.75, 1e-10);
+        assert_approx_equal!(cdf, 0.749_999_999_999_999_1, EPS);
     }
 
     #[test]
@@ -329,24 +336,24 @@ mod tests_binomial_distribution {
 
         // Characteristic function
         let cf = binomial.cf(1.0);
-        assert_approx_equal!(cf.re, -0.2014034, 1e-6);
-        assert_approx_equal!(cf.im, 0.4969347, 1e-6);
+        assert_approx_equal!(cf.re, -0.201_403_389_549_595_36, EPS);
+        assert_approx_equal!(cf.im, 0.496_934_703_617_956_4, EPS);
 
         // Probability mass function
         let pmf = binomial.pmf(3.0);
-        assert_approx_equal!(pmf, 0.2304, 1e-4);
+        assert_approx_equal!(pmf, 0.2304, EPS);
 
         // Distribution function
         let cdf = binomial.cdf(3.0);
-        assert_approx_equal!(cdf, 0.91296, 1e-5);
+        assert_approx_equal!(cdf, 0.91296, EPS);
 
-        assert_eq!(binomial.mean(), 2.0);
-        assert_eq!(binomial.median(), 2.0);
-        assert_eq!(binomial.mode(), 2.0);
+        assert_approx_equal!(binomial.mean(), 2.0, EPS);
+        assert_approx_equal!(binomial.median(), 2.0, EPS);
+        assert_approx_equal!(binomial.mode(), 2.0, EPS);
         assert_approx_equal!(binomial.variance(), 1.2, 1e-6);
-        assert_approx_equal!(binomial.skewness(), 0.182574, 1e-6);
-        assert_approx_equal!(binomial.kurtosis(), -0.366667, 1e-6);
-        assert_approx_equal!(binomial.entropy(), 1.510099, 1e-6);
-        assert_approx_equal!(binomial.mgf(1.0), 13.67659, 1e-5);
+        assert_approx_equal!(binomial.skewness(), 0.182_574_185_835_055_33, EPS);
+        assert_approx_equal!(binomial.kurtosis(), -0.366_666_666_666_666_8, EPS);
+        assert_approx_equal!(binomial.entropy(), 1.510_099_311_601_65, EPS);
+        assert_approx_equal!(binomial.mgf(1.0), 13.676_592_816_585_314, EPS);
     }
 }

@@ -10,7 +10,7 @@
 use time::OffsetDateTime;
 
 use crate::{
-    statistics::distributions::{gaussian::*, Distribution},
+    statistics::distributions::{gaussian::Gaussian, Distribution},
     time::{DayCountConvention, DayCounter},
 };
 
@@ -19,6 +19,7 @@ use crate::{
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 /// Type of Asian option (fixed or floating strike).
+#[allow(clippy::module_name_repetitions)]
 #[derive(Debug, Clone, Copy)]
 pub enum AsianStrike {
     /// Floating strike Asian option.
@@ -47,6 +48,7 @@ pub enum AveragingMethod {
 }
 
 /// Asian Option struct.
+#[allow(clippy::module_name_repetitions)]
 #[derive(Debug, Clone, Copy)]
 pub struct AsianOption {
     /// `S` - Initial price of the underlying.
@@ -71,7 +73,8 @@ pub struct AsianOption {
 
 impl AsianOption {
     /// New Asian Option
-    pub fn new(
+    #[must_use]
+    pub const fn new(
         initial_price: f64,
         strike_price: f64,
         risk_free_rate: f64,
@@ -92,6 +95,7 @@ impl AsianOption {
     }
 
     /// Geometric Continuous Average-Rate Price
+    #[must_use]
     pub fn price_geometric_average(&self) -> (f64, f64) {
         let S = self.initial_price;
         let K = self.strike_price;

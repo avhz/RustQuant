@@ -98,6 +98,8 @@ impl Instrument for BlackScholesMerton {
 
 impl BlackScholesMerton {
     /// New European Option
+    #[allow(clippy::too_many_arguments)]
+    #[must_use]
     pub fn new(
         cost_of_carry: f64,
         underlying_price: f64,
@@ -121,6 +123,7 @@ impl BlackScholesMerton {
     }
 
     /// Generalised Black-Scholes European Option Price.
+    #[must_use]
     pub fn price(&self) -> f64 {
         let (S, K, _, r, b) = self.unpack();
         let T = self.year_fraction();
@@ -136,6 +139,7 @@ impl BlackScholesMerton {
     }
 
     // Compute the year fraction between two dates.
+    #[must_use]
     fn year_fraction(&self) -> f64 {
         DayCounter::day_count_factor(
             self.evaluation_date.unwrap_or(OffsetDateTime::now_utc()),
@@ -145,6 +149,7 @@ impl BlackScholesMerton {
     }
 
     // Compute d1 and d2.
+    #[must_use]
     fn d1_d2(&self) -> (f64, f64) {
         let (S, K, v, _, b) = self.unpack();
 
@@ -158,6 +163,7 @@ impl BlackScholesMerton {
     }
 
     // Unpack struct to get option parameters.
+    #[must_use]
     fn unpack(&self) -> (f64, f64, f64, f64, f64) {
         (
             self.underlying_price,
@@ -169,6 +175,7 @@ impl BlackScholesMerton {
     }
 
     /// Delta of generalised Black-Scholes European Option.
+    #[must_use]
     pub fn delta(&self) -> f64 {
         let (_, _, _, r, b) = self.unpack();
         let T = self.year_fraction();
@@ -183,6 +190,7 @@ impl BlackScholesMerton {
 
     /// Vanna of generalised Black-Scholes European Option.
     /// Also known as DdeltaDvol.
+    #[must_use]
     pub fn vanna(&self) -> f64 {
         let (_, _, v, r, b) = self.unpack();
         let T = self.year_fraction();
@@ -194,6 +202,7 @@ impl BlackScholesMerton {
 
     /// Charm of generalised Black-Scholes European Option.
     /// Also known as DdeltaDtime, delta decay or delta bleed.
+    #[must_use]
     pub fn charm(&self) -> f64 {
         let (_, _, v, r, b) = self.unpack();
         let T = self.year_fraction();
@@ -214,12 +223,14 @@ impl BlackScholesMerton {
 
     /// Lambda of generalised Black-Scholes European Option.
     /// Also known as elasticity or leverage.
+    #[must_use]
     pub fn lambda(&self) -> f64 {
         self.delta() * self.underlying_price / self.price()
     }
 
     /// Gamma of generalised Black-Scholes European Option.
     /// Also known as convexity.
+    #[must_use]
     pub fn gamma(&self) -> f64 {
         let n = Gaussian::default();
         let (S, _, v, r, b) = self.unpack();
@@ -230,24 +241,28 @@ impl BlackScholesMerton {
     }
 
     /// Gamma percent of generalised Black-Scholes European Option.
+    #[must_use]
     pub fn gamma_percent(&self) -> f64 {
         self.gamma() * self.underlying_price / 100.0
     }
 
     /// Zomma of generalised Black-Scholes European Option.
     /// Also known as DgammaDvol.
+    #[must_use]
     pub fn zomma(&self) -> f64 {
         let (d1, d2) = self.d1_d2();
         self.gamma() * ((d1 * d2 - 1.0) / self.volatility)
     }
 
     /// Zomma percent of generalised Black-Scholes European Option.
+    #[must_use]
     pub fn zomma_percent(&self) -> f64 {
         self.zomma() * self.underlying_price / 100.0
     }
 
     /// Speed of generalised Black-Scholes European Option.
     /// Also known as DgammaDspot.
+    #[must_use]
     pub fn speed(&self) -> f64 {
         let (S, _, v, _, _) = self.unpack();
         let T = self.year_fraction();
@@ -260,6 +275,7 @@ impl BlackScholesMerton {
 
     /// Colour of generalised Black-Scholes European Option.
     /// Also known as DgammaDtime.
+    #[must_use]
     pub fn colour(&self) -> f64 {
         let (_, _, v, r, b) = self.unpack();
         let T = self.year_fraction();
@@ -272,6 +288,7 @@ impl BlackScholesMerton {
 
     /// Vega of generalised Black-Scholes European Option.
     /// Also known as zeta.
+    #[must_use]
     pub fn vega(&self) -> f64 {
         let (S, _, _, r, b) = self.unpack();
         let T = self.year_fraction();
@@ -284,6 +301,7 @@ impl BlackScholesMerton {
 
     /// Vomma of generalised Black-Scholes European Option.
     /// Also known as DvegaDvol.
+    #[must_use]
     pub fn vomma(&self) -> f64 {
         let (d1, d2) = self.d1_d2();
 
@@ -292,6 +310,7 @@ impl BlackScholesMerton {
 
     /// Ultima of generalised Black-Scholes European Option.
     /// Also known as DvommaDvol.
+    #[must_use]
     pub fn ultima(&self) -> f64 {
         let (d1, d2) = self.d1_d2();
 
@@ -300,6 +319,7 @@ impl BlackScholesMerton {
 
     /// Vega Bleed of the generalised Black-Scholes European option.
     /// Also known as DvegaDtime.
+    #[must_use]
     pub fn vega_bleed(&self) -> f64 {
         let (_, _, v, r, b) = self.unpack();
         let T = self.year_fraction();
@@ -310,6 +330,7 @@ impl BlackScholesMerton {
 
     /// Theta of the generalised Black-Scholes European option.
     /// Also known as Expected Bleed.
+    #[must_use]
     pub fn theta(&self) -> f64 {
         let (S, K, v, r, b) = self.unpack();
         let T = self.year_fraction();
@@ -332,6 +353,7 @@ impl BlackScholesMerton {
     }
 
     /// Rho of the generalised Black-Scholes European option.
+    #[must_use]
     pub fn rho(&self) -> f64 {
         let T = self.year_fraction();
 
@@ -353,6 +375,7 @@ impl BlackScholesMerton {
 
     /// Phi of the generalised Black-Scholes European option.
     /// Also known as Rho-2.
+    #[must_use]
     pub fn phi(&self) -> f64 {
         let (S, _, _, r, b) = self.unpack();
         let T = self.year_fraction();
@@ -367,6 +390,7 @@ impl BlackScholesMerton {
 
     /// Zeta of the generalised Black-Scholes European option.
     /// Also known as the in-the-money probability.
+    #[must_use]
     pub fn zeta(&self) -> f64 {
         let n = Gaussian::default();
 
@@ -378,6 +402,7 @@ impl BlackScholesMerton {
 
     /// Strike Delta of the generalised Black-Scholes European option.
     /// Also known as Dual Delta or Discounted Probability.
+    #[must_use]
     pub fn strike_delta(&self) -> f64 {
         let n = Gaussian::default();
 
@@ -390,6 +415,7 @@ impl BlackScholesMerton {
     }
 
     /// Strike Gamma of the generalised Black-Scholes European option.
+    #[must_use]
     pub fn strike_gamma(&self) -> f64 {
         let n = Gaussian::default();
         let T = self.year_fraction();
@@ -407,6 +433,7 @@ impl BlackScholesMerton {
 mod tests_black_scholes_merton {
     use super::*;
     use crate::assert_approx_equal;
+    use std::f64::EPSILON as EPS;
     use time::Duration;
 
     #[test]
@@ -422,7 +449,7 @@ mod tests_black_scholes_merton {
             OffsetDateTime::now_utc() + Duration::days(91),
             TypeFlag::Call,
         );
-        assert_approx_equal!(bsm.price(), 2.1044558953508385, 1e-10);
+        assert_approx_equal!(bsm.price(), 2.104_455_895_350_838_5, EPS);
     }
 
     #[test]
@@ -438,6 +465,6 @@ mod tests_black_scholes_merton {
             OffsetDateTime::now_utc() + Duration::days(182),
             TypeFlag::Put,
         );
-        assert_approx_equal!(bsm.price(), 2.4524152213972776, 1e-10);
+        assert_approx_equal!(bsm.price(), 2.452_415_221_397_277_6, EPS);
     }
 }

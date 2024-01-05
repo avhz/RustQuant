@@ -42,6 +42,7 @@ pub struct SimpleCashflow {
 
 impl SimpleCashflow {
     /// Create a new simple cashflow.
+    #[must_use]
     pub fn new(amount: f64, date: OffsetDateTime) -> Self {
         SimpleCashflow { amount, date }
     }
@@ -68,7 +69,7 @@ impl std::ops::Add for SimpleCashflow {
     type Output = Self;
 
     fn add(self, rhs: Self) -> Self::Output {
-        assert_eq!(self.date, rhs.date);
+        assert_eq!(self.date, rhs.date, "Dates must match.");
         Self {
             amount: self.amount + rhs.amount,
             date: self.date,
@@ -184,11 +185,14 @@ mod test_cashflows {
     use super::*;
     use time::Duration;
 
+    use crate::assert_approx_equal;
+    use std::f64::EPSILON as EPS;
+
     // Test to verify the `amount` method.
     #[test]
     fn test_amount() {
         let cf = SimpleCashflow::new(100.0, OffsetDateTime::now_utc());
-        assert_eq!(cf.amount(), 100.0);
+        assert_approx_equal!(cf.amount(), 100.0, EPS);
     }
 
     // Test to verify the `date` method.
@@ -207,7 +211,7 @@ mod test_cashflows {
 
         // Discount function that reduces value by 10%.
         let df = |date: OffsetDateTime| if date == now { 0.9 } else { 1.0 };
-        assert_eq!(cf.npv(df), 90.0);
+        assert_approx_equal!(cf.npv(df), 90.0, EPS);
     }
 
     // Test to verify the `npv` method with a zero discount rate.
@@ -218,7 +222,7 @@ mod test_cashflows {
 
         // Discount function that keeps value the same.
         let df = |_: OffsetDateTime| 1.0;
-        assert_eq!(cf.npv(df), 100.0);
+        assert_approx_equal!(cf.npv(df), 100.0, EPS);
     }
 
     // Test to verify the `npv` method with future date
@@ -230,7 +234,7 @@ mod test_cashflows {
 
         // Discount function that reduces value by 10% for future_date.
         let df = |date: OffsetDateTime| if date == future_date { 0.9 } else { 1.0 };
-        assert_eq!(cf.npv(df), 90.0);
+        assert_approx_equal!(cf.npv(df), 90.0, EPS);
     }
 
     // Test to verify addition of cashflows with the same date.
@@ -240,7 +244,7 @@ mod test_cashflows {
         let cf1 = SimpleCashflow::new(100.0, date);
         let cf2 = SimpleCashflow::new(50.0, date);
         let result = cf1 + cf2;
-        assert_eq!(result.amount(), 150.0);
+        assert_approx_equal!(result.amount(), 150.0, EPS);
         assert_eq!(result.date(), date);
     }
 
@@ -251,7 +255,7 @@ mod test_cashflows {
         let cf1 = SimpleCashflow::new(100.0, date);
         let cf2 = SimpleCashflow::new(50.0, date);
         let result = cf1 - cf2;
-        assert_eq!(result.amount(), 50.0);
+        assert_approx_equal!(result.amount(), 50.0, EPS);
         assert_eq!(result.date(), date);
     }
 
@@ -260,7 +264,7 @@ mod test_cashflows {
     fn test_negative_cashflow() {
         let date = OffsetDateTime::now_utc();
         let cf = SimpleCashflow::new(-100.0, date);
-        assert_eq!(cf.amount(), -100.0);
+        assert_approx_equal!(cf.amount(), -100.0, EPS);
     }
 
     // Test for zero cashflows.
@@ -268,12 +272,12 @@ mod test_cashflows {
     fn test_zero_cashflow() {
         let date = OffsetDateTime::now_utc();
         let cf = SimpleCashflow::new(0.0, date);
-        assert_eq!(cf.amount(), 0.0);
+        assert_approx_equal!(cf.amount(), 0.0, EPS);
     }
 
     // Test for non-matching dates during addition (should panic).
     #[test]
-    #[should_panic]
+    #[should_panic(expected = "Dates must match.")]
     fn test_non_matching_dates_add() {
         let date1 = OffsetDateTime::now_utc();
         let date2 = date1 + Duration::days(1);

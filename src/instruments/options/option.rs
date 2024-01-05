@@ -44,6 +44,7 @@ pub enum StrikeFlag {
 /// Contains the common parameters (as in Black-Scholes).
 /// Other option types may have additional parameters,
 /// such as lookback options (S_min, S_max).
+#[allow(clippy::module_name_repetitions)]
 #[derive(Debug, Clone)]
 pub struct OptionParameters {
     /// `S` - Initial price of the underlying.
@@ -62,7 +63,8 @@ pub struct OptionParameters {
 
 impl OptionParameters {
     /// New option parameters struct initialiser.
-    pub fn new(
+    #[must_use]
+    pub const fn new(
         initial_price: Vec<f64>,
         strike_price: Vec<f64>,
         risk_free_rate: Vec<f64>,

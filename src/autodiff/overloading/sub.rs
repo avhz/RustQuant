@@ -15,7 +15,7 @@ use std::ops::{Add, Neg, Sub, SubAssign};
 /// d/dx x - y = 1
 /// d/dy x - y = -1
 
-/// SubAssign: Variable<'v> -= Variable<'v>
+/// `SubAssign`: Variable<'v> -= Variable<'v>
 impl<'v> SubAssign<Variable<'v>> for Variable<'v> {
     #[inline]
     fn sub_assign(&mut self, other: Variable<'v>) {
@@ -25,7 +25,7 @@ impl<'v> SubAssign<Variable<'v>> for Variable<'v> {
     }
 }
 
-/// SubAssign: Variable<'v> -= f64
+/// `SubAssign`: Variable<'v> -= f64
 impl<'v> SubAssign<f64> for Variable<'v> {
     #[inline]
     fn sub_assign(&mut self, other: f64) {
@@ -33,7 +33,7 @@ impl<'v> SubAssign<f64> for Variable<'v> {
     }
 }
 
-/// SubAssign: f64 -= Variable<'v>
+/// `SubAssign`: f64 -= Variable<'v>
 impl<'v> SubAssign<Variable<'v>> for f64 {
     #[inline]
     fn sub_assign(&mut self, other: Variable<'v>) {
@@ -140,9 +140,9 @@ mod test_overload {
         let z = x - y;
         let grad = z.accumulate();
 
-        assert_eq!(z.value, -1.0);
-        assert_eq!(grad.wrt(&x), 1.0);
-        assert_eq!(grad.wrt(&y), -1.0);
+        assert!((z.value - -1.0).abs() < f64::EPSILON);
+        assert!((grad.wrt(&x) - 1.0).abs() < f64::EPSILON);
+        assert!((grad.wrt(&y) - -1.0).abs() < f64::EPSILON);
 
         // Variable - f64
         let g = Graph::new();
@@ -152,8 +152,8 @@ mod test_overload {
         let z = x - y;
         let grad = z.accumulate();
 
-        assert_eq!(z.value, -1.0);
-        assert_eq!(grad.wrt(&x), 1.0);
+        assert!((z.value - -1.0).abs() < f64::EPSILON);
+        assert!((grad.wrt(&x) - 1.0).abs() < f64::EPSILON);
 
         // f64 - Variable
         let g = Graph::new();
@@ -163,7 +163,7 @@ mod test_overload {
         let z = x - y;
         let grad = z.accumulate();
 
-        assert_eq!(z.value, -1.0);
-        assert_eq!(grad.wrt(&y), -1.0);
+        assert!((z.value - -1.0).abs() < f64::EPSILON);
+        assert!((grad.wrt(&y) - -1.0).abs() < f64::EPSILON);
     }
 }

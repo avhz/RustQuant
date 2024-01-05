@@ -1,4 +1,4 @@
-use crate::stochastics::*;
+use crate::stochastics::{StochasticProcess, TimeDependent, Trajectories};
 
 use crate::statistics::{Distribution as LocalDistribution, Gaussian, Poisson};
 use rand::prelude::Distribution;
@@ -57,7 +57,7 @@ impl StochasticProcess for MertonJumpDiffusion {
     }
 
     fn jump(&self, _x: f64, _t: f64) -> Option<f64> {
-        self.gaussian.sample(1).unwrap().first().cloned()
+        self.gaussian.sample(1).unwrap().first().copied()
     }
 
     fn euler_maruyama(
@@ -100,7 +100,7 @@ impl StochasticProcess for MertonJumpDiffusion {
                 } else {
                     path[t + 1] = path[t]
                         + self.drift(path[t], times[t]) * dt
-                        + self.diffusion(path[t], times[t]) * dW[t]
+                        + self.diffusion(path[t], times[t]) * dW[t];
                 }
             }
         };
@@ -121,7 +121,7 @@ mod tests_gbm_bridge {
     use crate::{assert_approx_equal, statistics::*};
 
     #[test]
-    fn test_geometric_brownian_motion_bridge() -> Result<(), Box<dyn std::error::Error>> {
+    fn test_geometric_brownian_motion_bridge() {
         let mjd = MertonJumpDiffusion::new(0.05, 0.9, 1.0, 0.0, 0.3);
 
         let output = mjd.euler_maruyama(10.0, 0.0, 0.5, 125, 10000, false);
@@ -130,7 +130,7 @@ mod tests_gbm_bridge {
         let X_T: Vec<f64> = output
             .paths
             .iter()
-            .filter_map(|v| v.last().cloned())
+            .filter_map(|v| v.last().copied())
             .collect();
 
         println!("X_T = {:?}", X_T);
@@ -145,7 +145,5 @@ mod tests_gbm_bridge {
             10. * 10. * (2. * 0.05 * 0.5_f64).exp() * ((0.9 * 0.9 * 0.5_f64).exp() - 1.),
             5.0
         );
-
-        std::result::Result::Ok(())
     }
 }

@@ -7,7 +7,7 @@
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use crate::stochastics::*;
+use crate::stochastics::{StochasticProcess, TimeDependent};
 
 /// Struct containing the CEV process parameters.
 pub struct ConstantElasticityOfVariance {
@@ -65,7 +65,7 @@ mod tests_cev {
     use crate::statistics::*;
 
     #[test]
-    fn test_cev_process() -> Result<(), Box<dyn std::error::Error>> {
+    fn test_cev_process() {
         let cev = ConstantElasticityOfVariance::new(0.05, 0.9, 0.45);
 
         let output = cev.euler_maruyama(10.0, 0.0, 0.5, 100, 100, false);
@@ -74,7 +74,7 @@ mod tests_cev {
         let X_T: Vec<f64> = output
             .paths
             .iter()
-            .filter_map(|v| v.last().cloned())
+            .filter_map(|v| v.last().copied())
             .collect();
 
         let _E_XT = X_T.mean();
@@ -94,7 +94,5 @@ mod tests_cev {
         //         + (0.15 * 0.45 * 0.45 / (2. * 0.01)) * (1. - (-0.01 * 0.5_f64).exp()).powi(2),
         //     0.5
         // );
-
-        std::result::Result::Ok(())
     }
 }
