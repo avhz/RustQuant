@@ -88,8 +88,10 @@ pub mod options {
         american::*, asian::*, bachelier::*, barrier::*, binary::*, binomial::*,
         black_scholes_merton::*, european::*, forward_start::*, greeks::*, heston::*, lookback::*,
         option::*, power::*,
+        implied_volatility::*
     };
-
+    /// Implied volatility functions.
+    pub mod implied_volatility;
     /// American option pricers.
     pub mod american;
     /// Asian option pricers.
