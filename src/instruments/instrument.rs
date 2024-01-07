@@ -63,3 +63,8 @@ pub trait PathDependentPayoff {
     /// Base method for path dependent option payoffs.
     fn payoff(&self, path: &[f64]) -> f64;
 }
+
+trait Payoff {
+    fn path_dependent(&self, path: &[f64]) -> f64;
+    fn path_independent(&self, path: &[f64]) -> f64;
+}

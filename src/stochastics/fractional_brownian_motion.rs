@@ -9,22 +9,37 @@
 
 use crate::stochastics::{StochasticProcess, Trajectories};
 use nalgebra::{DMatrix, DVector, Dim, Dyn, RowDVector};
+use ndarray::{concatenate, prelude::*};
+use ndarray_rand::RandomExt;
+use ndrustfft::{ndfft_par, FftHandler};
+use num_complex::{Complex, ComplexDistribution};
 use rand::Rng;
 #[cfg(feature = "seedable")]
 use rand::{rngs::StdRng, SeedableRng};
 use rand_distr::StandardNormal;
 use rayon::prelude::*;
 
+/// Method used to generate the Fractional Brownian Motion.
+#[derive(Debug)]
+pub enum FractionalProcessGeneratorMethod {
+    /// Chooses the Cholesky decomposition method.
+    CHOLESKY,
+    /// Chooses the Davies-Harte method.
+    FFT,
+}
+
 /// Struct containing the Fractional Brownian Motion parameters.
 #[derive(Debug)]
 pub struct FractionalBrownianMotion {
     /// Hurst parameter of the process.
     pub hurst: f64,
+    /// Method used to generate the process.
+    pub method: FractionalProcessGeneratorMethod,
 }
 
 impl Default for FractionalBrownianMotion {
     fn default() -> Self {
-        Self::new(0.5)
+        Self::new(0.5, FractionalProcessGeneratorMethod::FFT)
     }
 }
 
@@ -35,10 +50,10 @@ impl FractionalBrownianMotion {
     ///
     /// Will panic if Hurst parameter is not in [0, 1].
     #[must_use]
-    pub fn new(hurst: f64) -> Self {
+    pub fn new(hurst: f64, method: FractionalProcessGeneratorMethod) -> Self {
         assert!((0.0..=1.0).contains(&hurst));
 
-        Self { hurst }
+        Self { hurst, method }
     }
 
     /// Autocovariance function (ACF).
@@ -78,29 +93,73 @@ impl FractionalBrownianMotion {
     }
 
     /// Fractional Gaussian noise.
-    #[must_use]
-    pub fn fgn_cholesky(&self, n: usize, t_n: f64) -> RowDVector<f64> {
+    pub fn fgn_cholesky(&self, n: usize, t_n: f64) -> Vec<f64> {
         let acf_sqrt = self.acf_matrix_sqrt(n);
         let noise = rand::thread_rng()
             .sample_iter::<f64, StandardNormal>(StandardNormal)
             .take(n)
             .collect();
         let noise = DVector::<f64>::from_vec(noise);
+        let noise = (acf_sqrt * noise).transpose() * (1.0 * t_n / n as f64).powf(self.hurst);
 
-        (acf_sqrt * noise).transpose() * (1.0 * t_n / n as f64).powf(self.hurst)
+        noise.data.as_vec().clone()
     }
 
     #[cfg(feature = "seedable")]
-    fn seedable_fgn_cholesky(&self, n: usize, t_n: f64, seed: u64) -> RowDVector<f64> {
+    /// Seedable Fractional Gaussian noise.
+    pub fn seedable_fgn_cholesky(&self, n: usize, t_n: f64, seed: u64) -> Vec<f64> {
         let acf_sqrt = self.acf_matrix_sqrt(n);
-        let rng = StdRng::seed_from_u64(seed);
-        let noise = rng
+        let noise = StdRng::seed_from_u64(seed)
             .sample_iter::<f64, StandardNormal>(StandardNormal)
             .take(n)
             .collect();
         let noise = DVector::<f64>::from_vec(noise);
+        let noise = (acf_sqrt * noise).transpose() * (1.0 * t_n / n as f64).powf(self.hurst);
 
-        (acf_sqrt * noise).transpose() * (1.0 * t_n / n as f64).powf(self.hurst)
+        noise.data.as_vec().clone()
+    }
+
+    /// Fractional Gaussian noise via FFT.
+    pub fn fgn_fft(&self, n: usize, t_n: f64) -> Vec<f64> {
+        if !(0.0..=1.0).contains(&self.hurst) {
+            panic!("Hurst parameter must be between 0 and 1");
+        }
+        let mut r = Array1::linspace(0.0, n as f64, n + 1);
+        r.par_mapv_inplace(|x| {
+            if x == 0.0 {
+                1.0
+            } else {
+                0.5 * ((x as f64 + 1.0).powf(2.0 * self.hurst)
+                    - 2.0 * (x as f64).powf(2.0 * self.hurst)
+                    + (x as f64 - 1.0).powf(2.0 * self.hurst))
+            }
+        });
+        let r = concatenate(
+            Axis(0),
+            #[allow(clippy::reversed_empty_ranges)]
+            &[r.view(), r.slice(s![..;-1]).slice(s![1..-1]).view()],
+        )
+        .unwrap();
+        let mut data = Array1::<Complex<f64>>::zeros(r.len());
+        for (i, v) in r.iter().enumerate() {
+            data[i] = Complex::new(*v, 0.0);
+        }
+        let mut r_fft = FftHandler::new(r.len());
+        let mut sqrt_eigenvalues = Array1::<Complex<f64>>::zeros(r.len());
+        ndfft_par(&data, &mut sqrt_eigenvalues, &mut r_fft, 0);
+        sqrt_eigenvalues.par_mapv_inplace(|x| Complex::new((x.re / (2.0 * n as f64)).sqrt(), x.im));
+        let rnd = Array1::<Complex<f64>>::random(
+            2 * n,
+            ComplexDistribution::new(StandardNormal, StandardNormal),
+        );
+        let fgn = &sqrt_eigenvalues * &rnd;
+        let mut fft_handler = FftHandler::new(2 * n);
+        let mut fgn_fft = Array1::<Complex<f64>>::zeros(2 * n);
+        ndfft_par(&fgn, &mut fgn_fft, &mut fft_handler, 0);
+        let fgn = fgn_fft
+            .slice(s![1..n + 1])
+            .mapv(|x: Complex<f64>| (x.re * (n as f64).powf(-self.hurst)) * t_n.powf(self.hurst));
+        fgn.to_vec()
     }
 }
 
@@ -135,7 +194,10 @@ impl StochasticProcess for FractionalBrownianMotion {
         let times: Vec<f64> = (0..=n_steps).map(|t| t_0 + dt * (t as f64)).collect();
 
         let path_generator = |path: &mut Vec<f64>| {
-            let fgn = self.fgn_cholesky(n_steps, t_n);
+            let fgn = match self.method {
+                FractionalProcessGeneratorMethod::FFT => self.fgn_fft(n_steps, t_n),
+                FractionalProcessGeneratorMethod::CHOLESKY => self.fgn_cholesky(n_steps, t_n),
+            };
 
             for t in 0..n_steps {
                 path[t + 1] = path[t]
@@ -201,34 +263,64 @@ mod test_fractional_brownian_motion {
     // use std::time::Instant;
 
     use super::*;
-    use crate::{assert_approx_equal, statistics::*};
+    use crate::{
+        ml::{Decomposition, LinearRegressionInput},
+        statistics::Statistic,
+    };
+
+    fn higuchi_fd(x: &Vec<f64>, kmax: usize) -> f64 {
+        let n_times = x.len();
+
+        let mut lk = vec![0.0; kmax];
+        let mut x_reg = vec![0.0; kmax];
+        let mut y_reg = vec![0.0; kmax];
+
+        for k in 1..=kmax {
+            let mut lm = vec![0.0; k];
+
+            for m in 0..k {
+                let mut ll = 0.0;
+                let n_max = ((n_times - m - 1) as f64 / k as f64).floor() as usize;
+
+                for j in 1..n_max {
+                    ll += (x[m + j * k] - x[m + (j - 1) * k]).abs();
+                }
+
+                ll /= k as f64;
+                ll *= (n_times - 1) as f64 / (k * n_max) as f64;
+                lm[m] = ll;
+            }
+
+            lk[k - 1] = lm.iter().sum::<f64>() / k as f64;
+            x_reg[k - 1] = (1.0 / k as f64).ln();
+            y_reg[k - 1] = lk[k - 1].ln();
+        }
+
+        let x_reg = DMatrix::from_vec(kmax, 1, x_reg);
+        let y_reg = DVector::from_vec(y_reg);
+        let linear_regression = LinearRegressionInput::new(x_reg, y_reg);
+        let regression_result = linear_regression.fit(Decomposition::None).unwrap();
+
+        regression_result.coefficients[0]
+    }
 
     #[test]
     fn test_chol() {
-        let fbm = FractionalBrownianMotion::new(0.7);
-        let n = 3;
-        let hurst = 0.7;
+        let fbm = FractionalBrownianMotion::new(0.7, FractionalProcessGeneratorMethod::FFT);
+        let hursts = vec![0.1, 0.3, 0.5, 0.7, 0.9];
 
-        let acf_vector = fbm.acf_vector(n);
-        let acf_matrix = fbm.acf_matrix_sqrt(n);
-
-        println!("ACF vector = {:?}", acf_vector);
-        println!("ACF matrix = {:?}", acf_matrix);
-
-        let noise = rand::thread_rng()
-            .sample_iter::<f64, StandardNormal>(StandardNormal)
-            .take(n)
-            .collect();
-        let noise = DVector::<f64>::from_vec(noise);
-
-        let fgn = (acf_matrix * noise).transpose() * (n as f64).powf(-hurst);
-
-        println!("{:?}", fgn);
+        for hurst in hursts {
+            let fbm = FractionalBrownianMotion::fgn_cholesky(&fbm, 2000, 1.0);
+            let higuchi_fd = higuchi_fd(&fbm.to_vec(), 10);
+            let est_hurst = 2.0 - higuchi_fd;
+            print!("hurst: {}, higuchi_fd: {}\n", hurst, est_hurst);
+            assert!(est_hurst - hurst < 0.05);
+        }
     }
 
     #[test]
     fn test_brownian_motion() {
-        let fbm = FractionalBrownianMotion::new(0.7);
+        let fbm = FractionalBrownianMotion::new(0.7, FractionalProcessGeneratorMethod::FFT);
         let output_serial = fbm.euler_maruyama(0.0, 0.0, 0.5, 100, 1000, false);
         // let output_parallel = (&bm).euler_maruyama(10.0, 0.0, 0.5, 100, 10, true);
 
@@ -240,8 +332,8 @@ mod test_fractional_brownian_motion {
             .collect();
 
         // E[X_T] = 0
-        assert_approx_equal!(X_T.mean(), 0.0, 0.5);
+        assert_approx_equal!(X_T.clone().mean(), 0.0, 0.5);
         // V[X_T] = T
-        assert_approx_equal!(X_T.variance(), 0.5, 0.5);
+        assert_approx_equal!(X_T.clone().variance(), 0.5, 0.5);
     }
 }

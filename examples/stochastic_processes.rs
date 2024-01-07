@@ -28,7 +28,7 @@ fn main() {
     let hl = HoLee::new(0.2, 0.1);
     let hw = HullWhite::new(0.1, 0.2, 0.1);
     let ou = OrnsteinUhlenbeck::new(0.05, 0.9, 0.1);
-    let fbm = FractionalBrownianMotion::new(0.7);
+    let fbm = FractionalBrownianMotion::new(0.7, FractionalProcessGeneratorMethod::FFT);
     let mjd = MertonJumpDiffusion::new(0.05, 0.5, 30.0, 0.0, 5.0);
     let gbb = GeometricBrownianBridge::new(0.05, 0.9, INITIAL_VALUE, END_TIME);
     let cev = ConstantElasticityOfVariance::new(0.05, 0.9, f64::sin);
