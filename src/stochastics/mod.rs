@@ -47,6 +47,7 @@ pub use constant_elasticity_of_variance::*;
 pub use cox_ingersoll_ross::*;
 pub use extended_vasicek::*;
 pub use fractional_brownian_motion::*;
+pub use fractional_cox_ingersoll_ross::*;
 pub use fractional_ornstein_uhlenbeck::*;
 pub use geometric_brownian_bridge::*;
 pub use geometric_brownian_motion::*;
@@ -70,6 +71,8 @@ pub mod cox_ingersoll_ross;
 pub mod extended_vasicek;
 /// Fractional Brownian Motion.
 pub mod fractional_brownian_motion;
+/// Fractional Cox-Ingersoll-Ross process.
+pub mod fractional_cox_ingersoll_ross;
 /// Fractional Ornstein-Uhlenbeck process.
 pub mod fractional_ornstein_uhlenbeck;
 /// Geometric brownian bridge process.

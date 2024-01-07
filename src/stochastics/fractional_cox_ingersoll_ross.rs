@@ -7,15 +7,11 @@
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use crate::stochastics::{
-    FractionalBrownianMotion, StochasticProcess, TimeDependent, Trajectories,
-};
+use crate::stochastics::*;
 use rayon::prelude::*;
 
-use super::FractionalProcessGeneratorMethod;
-
 /// Struct containing the Ornstein-Uhlenbeck process parameters.
-pub struct FractionalOrnsteinUhlenbeck {
+pub struct FractionalCoxIngersollRoss {
     /// The long-run mean ($\mu$).
     pub mu: TimeDependent,
 
@@ -34,7 +30,7 @@ pub struct FractionalOrnsteinUhlenbeck {
     pub method: FractionalProcessGeneratorMethod,
 }
 
-impl FractionalOrnsteinUhlenbeck {
+impl FractionalCoxIngersollRoss {
     /// Create a new Ornstein-Uhlenbeck process.
     pub fn new(
         mu: impl Into<TimeDependent>,
@@ -54,18 +50,17 @@ impl FractionalOrnsteinUhlenbeck {
     }
 }
 
-impl StochasticProcess for FractionalOrnsteinUhlenbeck {
+impl StochasticProcess for FractionalCoxIngersollRoss {
     fn drift(&self, x: f64, t: f64) -> f64 {
         self.theta.0(t) * (self.mu.0(t) - x)
     }
 
-    fn diffusion(&self, _x: f64, t: f64) -> f64 {
-        assert!(self.sigma.0(t) >= 0.0);
-        self.sigma.0(t)
+    fn diffusion(&self, x: f64, t: f64) -> f64 {
+        self.sigma.0(t) * x.sqrt()
     }
 
     fn jump(&self, _x: f64, _t: f64) -> Option<f64> {
-        None
+        Some(0.0)
     }
 
     fn euler_maruyama(
@@ -123,12 +118,12 @@ impl StochasticProcess for FractionalOrnsteinUhlenbeck {
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 #[cfg(test)]
-mod tests_fractional_ornstein_uhlenbeck {
+mod test_fractional_cir {
     use super::*;
 
     #[test]
     #[ignore = "Hard to test."]
-    fn test_fractional_ornstein_uhlenbeck() {
+    fn test_fractional_cir() -> Result<(), Box<dyn std::error::Error>> {
         let fou = FractionalOrnsteinUhlenbeck::new(
             0.15,
             0.45,
@@ -139,5 +134,7 @@ mod tests_fractional_ornstein_uhlenbeck {
 
         #[allow(dead_code)]
         let _output = fou.euler_maruyama(10.0, 0.0, 0.5, 100, 100, false);
+
+        std::result::Result::Ok(())
     }
 }
