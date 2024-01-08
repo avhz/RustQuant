@@ -772,7 +772,7 @@ mod test_lets_be_rational {
         
         let normalized_intrinsic = normalised_intrinsic(x, q);
         // try beta = -0.1,0, b_l/2.0, b_l + (b_u - b_l)/2, b_u + (b_max - b_u)/2, b_max*1.1
-        let betas = vec![-0.1,0.0, b_l/slider, b_l + (b_u - b_l)/slider, b_u + (b_max - b_u)/slider, b_max*1.1];
+        let betas = vec![-0.1,0.0, b_l/slider, b_l + (b_c - b_l)/slider, b_c + (b_u - b_c)/slider,b_u + (b_max - b_u)/slider, b_max*1.1];
         for beta in betas {
             let s = unchecked_normalised_implied_volatility_from_a_transformed_rational_guess_with_limited_iterations(
                 beta,
@@ -826,7 +826,7 @@ mod test_lets_be_rational {
 
     #[test]
     fn test_implied_volatility() {
-        // test extreme OTM cases
+        // test OTM cases
         // these are unrealistic
         let bs = BlackScholesMerton::new(
             0.05,
