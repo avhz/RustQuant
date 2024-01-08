@@ -121,9 +121,6 @@ fn inverse_f_lower_map(
         return 0.0;
     }
     let N = Gaussian::default();
-    dbg!((f/(TWO_PI_OVER_SQRT_TWENTY_SEVEN* x.abs())).powf(1.0/3.0));
-    dbg!(N.inv_cdf((f/(TWO_PI_OVER_SQRT_TWENTY_SEVEN* x.abs())).powf(1.0/3.0)));
-
     (x / (SQRT_THREE * N.inv_cdf((f/(TWO_PI_OVER_SQRT_TWENTY_SEVEN* x.abs())).powf(1.0/3.0)))).abs()
 }
 #[inline(always)]
@@ -151,7 +148,7 @@ fn normalized_black_call_using_norm_cdf(
     let b_max = (0.5*x).exp();
     let N = Gaussian::default();
     let b = N.cdf(h + t)*b_max - N.cdf(h-t)/b_max;
-    b.max(0.0).abs()
+    b.max(0.0)
 }
 
 
@@ -187,7 +184,7 @@ fn asymptotic_expansion_of_normalized_black_call(
     let q=(h/r)*(h/r);
     let asymptotic_expansion_sum = 2.0+q*(-6.0E0-2.0*e+3.0*q*(1.0E1+e*(2.0E1+2.0*e)+5.0*q*(-1.4E1+e*(-7.0E1+e*(-4.2E1-2.0*e))+7.0*q*(1.8E1+e*(1.68E2+e*(2.52E2+e*(7.2E1+2.0*e)))+9.0*q*(-2.2E1+e*(-3.3E2+e*(-9.24E2+e*(-6.6E2+e*(-1.1E2-2.0*e))))+1.1E1*q*(2.6E1+e*(5.72E2+e*(2.574E3+e*(3.432E3+e*(1.43E3+e*(1.56E2+2.0*e)))))+1.3E1*q*(-3.0E1+e*(-9.1E2+e*(-6.006E3+e*(-1.287E4+e*(-1.001E4+e*(-2.73E3+e*(-2.1E2-2.0*e))))))+1.5E1*q*(3.4E1+e*(1.36E3+e*(1.2376E4+e*(3.8896E4+e*(4.862E4+e*(2.4752E4+e*(4.76E3+e*(2.72E2+2.0*e)))))))+1.7E1*q*(-3.8E1+e*(-1.938E3+e*(-2.3256E4+e*(-1.00776E5+e*(-1.84756E5+e*(-1.51164E5+e*(-5.4264E4+e*(-7.752E3+e*(-3.42E2-2.0*e))))))))+1.9E1*q*(4.2E1+e*(2.66E3+e*(4.0698E4+e*(2.3256E5+e*(5.8786E5+e*(7.05432E5+e*(4.0698E5+e*(1.08528E5+e*(1.197E4+e*(4.2E2+2.0*e)))))))))+2.1E1*q*(-4.6E1+e*(-3.542E3+e*(-6.7298E4+e*(-4.90314E5+e*(-1.63438E6+e*(-2.704156E6+e*(-2.288132E6+e*(-9.80628E5+e*(-2.01894E5+e*(-1.771E4+e*(-5.06E2-2.0*e))))))))))+2.3E1*q*(5.0E1+e*(4.6E3+e*(1.0626E5+e*(9.614E5+e*(4.08595E6+e*(8.9148E6+e*(1.04006E7+e*(6.53752E6+e*(2.16315E6+e*(3.542E5+e*(2.53E4+e*(6.0E2+2.0*e)))))))))))+2.5E1*q*(-5.4E1+e*(-5.85E3+e*(-1.6146E5+e*(-1.77606E6+e*(-9.37365E6+e*(-2.607579E7+e*(-4.01166E7+e*(-3.476772E7+e*(-1.687257E7+e*(-4.44015E6+e*(-5.9202E5+e*(-3.51E4+e*(-7.02E2-2.0*e))))))))))))+2.7E1*q*(5.8E1+e*(7.308E3+e*(2.3751E5+e*(3.12156E6+e*(2.003001E7+e*(6.919458E7+e*(1.3572783E8+e*(1.5511752E8+e*(1.0379187E8+e*(4.006002E7+e*(8.58429E6+e*(9.5004E5+e*(4.7502E4+e*(8.12E2+2.0*e)))))))))))))+2.9E1*q*(-6.2E1+e*(-8.99E3+e*(-3.39822E5+e*(-5.25915E6+e*(-4.032015E7+e*(-1.6934463E8+e*(-4.1250615E8+e*(-6.0108039E8+e*(-5.3036505E8+e*(-2.8224105E8+e*(-8.870433E7+e*(-1.577745E7+e*(-1.472562E6+e*(-6.293E4+e*(-9.3E2-2.0*e))))))))))))))+3.1E1*q*(6.6E1+e*(1.0912E4+e*(4.74672E5+e*(8.544096E6+e*(7.71342E7+e*(3.8707344E8+e*(1.14633288E9+e*(2.07431664E9+e*(2.33360622E9+e*(1.6376184E9+e*(7.0963464E8+e*(1.8512208E8+e*(2.7768312E7+e*(2.215136E6+e*(8.184E4+e*(1.056E3+2.0*e)))))))))))))))+3.3E1*(-7.0E1+e*(-1.309E4+e*(-6.49264E5+e*(-1.344904E7+e*(-1.4121492E8+e*(-8.344518E8+e*(-2.9526756E9+e*(-6.49588632E9+e*(-9.0751353E9+e*(-8.1198579E9+e*(-4.6399188E9+e*(-1.6689036E9+e*(-3.67158792E8+e*(-4.707164E7+e*(-3.24632E6+e*(-1.0472E5+e*(-1.19E3-2.0*e)))))))))))))))))*q))))))))))))))));
     let b = ONE_OVER_SQRT_TWO_PI* (-0.5*(h*h+t*t)).exp() *(t/r)*asymptotic_expansion_sum;
-    b.max(0.0).abs()
+    b.max(0.0)
 
 
 }
@@ -222,7 +219,7 @@ fn small_t_expansion_of_normalized_black_call(
     let h2 = h*h;
     let  expansion = 2.0*t*(a+w*((-1.0+3.0*a+a*h2)/6.0+w*((-7.0+15.0*a+h2*(-1.0+10.0*a+a*h2))/120.0+w*((-57.0+105.0*a+h2*(-18.0+105.0*a+h2*(-1.0+21.0*a+a*h2)))/5040.0+w*((-561.0+945.0*a+h2*(-285.0+1260.0*a+h2*(-33.0+378.0*a+h2*(-1.0+36.0*a+a*h2))))/362880.0+w*((-6555.0+10395.0*a+h2*(-4680.0+17325.0*a+h2*(-840.0+6930.0*a+h2*(-52.0+990.0*a+h2*(-1.0+55.0*a+a*h2)))))/39916800.0+((-89055.0+135135.0*a+h2*(-82845.0+270270.0*a+h2*(-20370.0+135135.0*a+h2*(-1926.0+25740.0*a+h2*(-75.0+2145.0*a+h2*(-1.0+78.0*a+a*h2))))))*w)/6227020800.0))))));
     let b = ONE_OVER_SQRT_TWO_PI*((-0.5*(h*h+t*t))).exp()*expansion;
-    b.max(0.0).abs()
+    b.max(0.0)
 }
 
 
@@ -269,7 +266,7 @@ fn normalised_black_call_using_erfcx(
 
     */
     let b = 0.5*(-0.5*(h*h+t*t)).exp() * ((-ONE_OVER_SQRT_TWO*(h+t)).erfcx() - (-ONE_OVER_SQRT_TWO*(h-t)).erfcx());
-    b.max(0.0).abs()
+    b.max(0.0)
 
 }
 
@@ -286,7 +283,7 @@ fn normalised_intrinsic(
         if q < 0.0 {
             ret = -ret;
         }
-        return ret.max(0.0).abs();
+        return ret.max(0.0);
     }
     let b_max = (0.5*x).exp();
     let one_over_b_max = 1.0 / b_max;
@@ -294,7 +291,7 @@ fn normalised_intrinsic(
     if q < 0.0 {
         ret = -ret;
     }
-    ret.max(0.0).abs()
+    ret.max(0.0)
 }
 
 #[inline(always)]
@@ -381,7 +378,8 @@ fn unchecked_normalised_implied_volatility_from_a_transformed_rational_guess_wit
     let mut x = _x;
     // Subtract intrinsic.
     if q*x >0.0 {
-        beta = (beta - normalised_intrinsic(x, q)).max(0.0).abs();
+        // we allow beta to be under the instrinisc value to then return -INF
+        beta = beta - normalised_intrinsic(x, q);
         q = -q;
     }
     // Map puts to calls
@@ -412,19 +410,15 @@ fn unchecked_normalised_implied_volatility_from_a_transformed_rational_guess_wit
     let s_c = (2.0*x).abs().sqrt();
     let b_c = normalised_black_call(x, s_c);
     let v_c = normalised_vega(x,s_c);
-    dbg!(beta, x,s_c, b_c, v_c);
     // Four branches.
 
     if beta < b_c {
         let s_l = s_c - b_c/v_c;
         let b_l = normalised_black_call(x,s_l);
-        dbg!(s_l, b_l);
         if beta < b_l {
             let (f_lower_map_l, d_f_lower_map_l_d_beta, d2_f_lower_map_l_d_beta2) = compute_f_lower_map_and_first_two_derivatives(x, s_l);
-            dbg!((f_lower_map_l, d_f_lower_map_l_d_beta, d2_f_lower_map_l_d_beta2));
             let r_ll = rational_cubic::convex_rational_cubic_control_parameter_to_fit_second_derivative_at_right_side(0.,b_l,0.,f_lower_map_l,1.,d_f_lower_map_l_d_beta,d2_f_lower_map_l_d_beta2,true);
             f = rational_cubic::rational_cubic_interpolation(beta,0.,b_l,0.,f_lower_map_l,1.,d_f_lower_map_l_d_beta,r_ll);
-            dbg!(r_ll,f);
             // This can happen due to roundoff truncation for extreme values such as |x|>500.
             if !( f > 0.0) {
                 // We switch to quadratic interpolation using f(0)≡0, f(b_l), and f'(0)≡1 to specify the quadratic.
@@ -450,7 +444,6 @@ fn unchecked_normalised_implied_volatility_from_a_transformed_rational_guess_wit
             
             
             */
-            dbg!(s,s_right);
             while iterations < N && ds.abs() > f64::EPSILON * s {
                 if ds*ds_previous < 0.0 {
                     direction_reversal_count+=1;
@@ -507,32 +500,32 @@ fn unchecked_normalised_implied_volatility_from_a_transformed_rational_guess_wit
         
     }
     else {
-        let mut s_h = s_c;
+        let mut s_u = s_c;
         if v_c > f64::EPSILON {
-            s_h = s_c+(b_max-b_c)/v_c;
+            s_u = s_c+(b_max-b_c)/v_c;
         }
-        let b_h = normalised_black_call(x,s_h);
-        if beta <= b_h {
-            let v_h = normalised_vega(x, s_h);
-            let r_hm = rational_cubic::convex_rational_cubic_control_parameter_to_fit_second_derivative_at_left_side(b_c,b_h,s_c,s_h,1.0/v_c,1.0/v_h,0.0,false);
-            s = rational_cubic::rational_cubic_interpolation(beta,b_c,b_h,s_c,s_h,1.0/v_c,1.0/v_h,r_hm);
+        let b_u = normalised_black_call(x,s_u);
+        if beta <= b_u {
+            let v_h = normalised_vega(x, s_u);
+            let r_hm = rational_cubic::convex_rational_cubic_control_parameter_to_fit_second_derivative_at_left_side(b_c,b_u,s_c,s_u,1.0/v_c,1.0/v_h,0.0,false);
+            s = rational_cubic::rational_cubic_interpolation(beta,b_c,b_u,s_c,s_u,1.0/v_c,1.0/v_h,r_hm);
             s_left = s_c;
-            s_right = s_h;
+            s_right = s_u;
         }
         else {
-            let (f_upper_map_h, d_f_upper_map_h_d_beta, d2_f_upper_map_h_d_beta2) = compute_f_upper_map_and_first_two_derivatives(x, s_h);
+            let (f_upper_map_h, d_f_upper_map_h_d_beta, d2_f_upper_map_h_d_beta2) = compute_f_upper_map_and_first_two_derivatives(x, s_u);
             if d2_f_upper_map_h_d_beta2 > -SQRT_DBL_MAX &&  d2_f_upper_map_h_d_beta2 < SQRT_DBL_MAX {
-                let r_hh = rational_cubic::convex_rational_cubic_control_parameter_to_fit_second_derivative_at_left_side(b_h,b_max,f_upper_map_h,0.,d_f_upper_map_h_d_beta,-0.5,d2_f_upper_map_h_d_beta2,true);
-                f = rational_cubic::rational_cubic_interpolation(beta,b_h,b_max,f_upper_map_h,0.,d_f_upper_map_h_d_beta,-0.5,r_hh);
+                let r_hh = rational_cubic::convex_rational_cubic_control_parameter_to_fit_second_derivative_at_left_side(b_u,b_max,f_upper_map_h,0.,d_f_upper_map_h_d_beta,-0.5,d2_f_upper_map_h_d_beta2,true);
+                f = rational_cubic::rational_cubic_interpolation(beta,b_u,b_max,f_upper_map_h,0.,d_f_upper_map_h_d_beta,-0.5,r_hh);
             }
             if f <= 0.0 {
-                let h=b_max-b_h;
-                let t=(beta-b_h)/h;
+                let h=b_max-b_u;
+                let t=(beta-b_u)/h;
                 // We switch to quadratic interpolation using f(b_h), f(b_max)≡0, and f'(b_max)≡-1/2 to specify the quadratic.
                 f = (f_upper_map_h*(1.0-t) + 0.5*h*t) * (1.0-t);
             }
             s = inverse_f_upper_map(f);
-            s_left = s_h;
+            s_left = s_u;
             // Else we better drop through and let the objective function be g(s) = b(x,s)-beta.
             if beta > 0.5*b_max {
                /*
@@ -597,7 +590,7 @@ fn unchecked_normalised_implied_volatility_from_a_transformed_rational_guess_wit
         }
     }
     /*
-    In this branch, which comprises the two middle segments, the objective function is g(s) = b(x,s)-beta, or g(s) = b(s) - beta, for short.
+    In this branch, whunchecked_normalised_implied_volatility_from_a_transformed_rational_guess_with_limited_iterationsich comprises the two middle segments, the objective function is g(s) = b(x,s)-beta, or g(s) = b(s) - beta, for short.
     This makes
                     newton = -g/g'   =  -(b-beta)/b'
                     halley = g''/g'  =    b''/b'    =  x²/s³-s/4
@@ -650,7 +643,7 @@ fn implied_volatility_from_a_transformed_rational_guess_with_limited_iterations(
     q: f64,
 ) -> f64 {
     let mut intrinsic =  if q < 0.0 { K - F } else { F - K };
-    intrinsic = intrinsic.max(0.0).abs();
+    intrinsic = intrinsic.max(0.0);
     if undiscounted_option_price < intrinsic {
         return f64::NEG_INFINITY;
     }
@@ -662,7 +655,7 @@ fn implied_volatility_from_a_transformed_rational_guess_with_limited_iterations(
     let mut new_price = undiscounted_option_price;
     let mut new_q = q;
     if q*x > 0.0 {
-        new_price = (undiscounted_option_price - intrinsic).max(0.0).abs();
+        new_price = (undiscounted_option_price - intrinsic).max(0.0);
         new_q = -q;
     }
     unchecked_normalised_implied_volatility_from_a_transformed_rational_guess_with_limited_iterations(
@@ -674,6 +667,7 @@ fn implied_volatility_from_a_transformed_rational_guess_with_limited_iterations(
 }
 
 /// Implied volatility function to calculate the implied volatility of an option given its market price.
+/// It calcules the IV for machine accuracy only for normalised values of the option price, i.e.
 pub fn implied_volatility(
     price: f64,
     S: f64,
@@ -704,17 +698,94 @@ pub fn implied_volatility(
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #[cfg(test)]
 mod test_rational_cubic {
+    use std::panic;
+
+    use crate::{instruments::BlackScholesMerton, assert_approx_equal, time::constants};
+    use time::{Duration, OffsetDateTime};
+
     use super::*;
+    
+    // 6 decimal places
+    const PRECISION: f64 = 1e-6;
+
+    fn test_iv_region(
+        underlying_price: f64,
+        strike_price: f64,
+        risk_free_rate: f64,
+        days: i64,
+        option_type: TypeFlag,
+        slider: f64,
+    ) {
+        assert!(slider >= 1.0);
+
+        let mut bs = BlackScholesMerton::new(
+            risk_free_rate,
+            underlying_price,
+            strike_price,
+            0.0,
+            risk_free_rate,
+            None,
+            OffsetDateTime::now_utc() + Duration::days(days),
+            option_type,
+        );
+        let T = bs.year_fraction();
+        let F = bs.underlying_price * (bs.risk_free_rate * T).exp();
+        let q = match option_type {
+            TypeFlag::Call => 1.0,
+            TypeFlag::Put => -1.0,
+        };
+        let x = (F/bs.strike_price).ln();
+        // for
+        // normalised_black_call, normalised_vega
+        // we need to use CALL type, so we pass x*q
+
+        let s_c = (2.0*x*q).abs().sqrt();
+        let b_c = normalised_black_call(x*q, s_c);
+        let v_c = normalised_vega(x*q, s_c);
+
+        let s_l = s_c - b_c/v_c;
+        let b_l = normalised_black_call(x*q,s_l);
+        let b_max = (0.5*x*q).exp();
+        let mut s_u = s_c;
+        if v_c > f64::EPSILON {
+            s_u = s_c+(b_max-b_c)/v_c;
+        }
+        let b_u = normalised_black_call(x*q,s_u);
+        // try beta = -0.1,0, b_l/2.0, b_l + (b_u - b_l)/2, b_u + (b_max - b_u)/2, b_max*1.1
+        let betas = vec![-0.1,0.0, b_l/slider, b_l + (b_u - b_l)/slider, b_u + (b_max - b_u)/slider, b_max*1.1];
+        for beta in betas {
+            let s = unchecked_normalised_implied_volatility_from_a_transformed_rational_guess_with_limited_iterations(
+                beta,
+                x,
+                q,
+                IMPLIED_VOLATILITY_MAXIMUM_ITERATIONS
+            )/ T.sqrt();
+            // beta to price
+            let beta_price = beta*(-bs.risk_free_rate*T).exp() * (F.sqrt() * bs.strike_price.sqrt());
+            bs.volatility = s;
+            match beta {
+                temp if (0.0..b_max).contains(&temp) => assert_approx_equal!(beta_price, bs.price(), PRECISION),
+                temp if temp < 0.0 => assert_eq!(s, f64::NEG_INFINITY),
+                temp if temp >= b_max => assert_eq!(s, f64::INFINITY),
+                _ => panic!("Unexpected beta value"),
+            }
+
+        }
+        // beta to price
+
+    }
 
     #[test]
-    fn test_implied_volatility() {
-        dbg!(implied_volatility(
-            0.01,
-            10.0,
-            11.0,
-            0.5,
-            0.1,
-            TypeFlag::Call
-        ));
+    fn test_OTM_calls(){
+        test_iv_region(100.0, 110.0, 0.05, 30, TypeFlag::Call, 1.0001);
+        test_iv_region(100.0, 120.0, 0.05, 745, TypeFlag::Call, 2.0);
+        test_iv_region(100.0, 120.0, 0.05, 180, TypeFlag::Call, 1.0/f64::EPSILON);
+    }
+
+    #[test]
+    fn test_OTM_puts(){
+        test_iv_region(100.0, 90.0, 0.05, 30, TypeFlag::Put, 1.0001);
+        test_iv_region(100.0, 80.0, 0.05, 745, TypeFlag::Put, 10.0);
+        test_iv_region(100.0, 80.0, 0.05, 180, TypeFlag::Put, 1.0/f64::EPSILON);
     }
 }

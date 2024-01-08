@@ -138,9 +138,9 @@ impl BlackScholesMerton {
         }
     }
 
-    // Compute the year fraction between two dates.
+    /// Compute the year fraction between two dates.
     #[must_use]
-    fn year_fraction(&self) -> f64 {
+    pub fn year_fraction(&self) -> f64 {
         DayCounter::day_count_factor(
             self.evaluation_date.unwrap_or(OffsetDateTime::now_utc()),
             self.expiration_date,
