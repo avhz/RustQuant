@@ -18,10 +18,10 @@
 
 // Documentation
 //! Let's Be Rational rust imeplementation based on [py_lets_be_rational](https://github.com/vollib/py_lets_be_rational)
-//! and paper [Let's Be Rational](http://www.jaeckel.org/LetsBeRational.pdf) by Peter Jaeckel.
+//! and paper [Let's Be Rational](http://www.jaeckel.org/LetsBeRational.pdf) by Peter Jaeckel  with some modifications.
+//! If price is below intrinsic value, it returns -INF, if price is above intrinsic value, it returns INF.
 
 mod rational_cubic;
-use core::panic;
 
 use crate::{statistics::distributions::{gaussian::*, Distribution}, instruments::TypeFlag};
 use errorfunctions::RealErrorFunctions;
@@ -669,6 +669,21 @@ fn implied_volatility_from_a_transformed_rational_guess_with_limited_iterations(
 
 /// Implied volatility function to calculate the implied volatility of an option given its market price.
 /// It calcules the IV for machine accuracy only for normalised values of the option price, i.e.
+/// The method is based on lets be rational paper [Let's Be Rational](http://www.jaeckel.org/LetsBeRational.pdf) by Peter Jaeckel with some modifications.
+/// If price is below intrinsic value, it returns -INF, if price is above intrinsic value, it returns INF.
+/// ```
+/// use RustQuant::instruments::options::implied_volatility::lets_be_rational::implied_volatility;
+/// use RustQuant::instruments::options::TypeFlag;
+/// use RustQuant::assert_approx_equal;
+/// let price = 12.3;
+/// let S = 100.0;
+/// let K = 110.0;
+/// let T = 0.89;
+/// let r = 0.03;
+/// let option_type = TypeFlag::Call;
+/// let iv = implied_volatility(price, S, K, T, r, option_type);
+/// assert_approx_equal!(iv,0.40269973285787297,1e-15);
+/// ```
 pub fn implied_volatility(
     price: f64,
     S: f64,
@@ -709,6 +724,9 @@ mod test_lets_be_rational {
     // For normal prices, the precision is even higher, but for extrame cases, we need to be more relaxed
     const PRECISION: f64 = 1e-8;
 
+    // This function generates beta for each region described in the paper
+    // plus it checks behaviour outside of the bounds to return INF or -INF.
+    // Moreover, it checks implied volatility  == 0.0 if price == intrinsic
     fn test_iv_region(
         underlying_price: f64,
         strike_price: f64,
