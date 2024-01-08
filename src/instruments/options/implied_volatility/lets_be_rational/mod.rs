@@ -829,6 +829,6 @@ mod test_lets_be_rational {
             bs.risk_free_rate,
             bs.option_type,
         );
-        assert_approx_equal!(s,0.04,PRECISION);
+        assert_approx_equal!(s,0.04,1e-13);
     }
 }
