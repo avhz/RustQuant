@@ -677,7 +677,8 @@ fn implied_volatility_from_a_transformed_rational_guess_with_limited_iterations(
 /// let iv = implied_volatility(price, S, K, T, r, option_type);
 /// assert_approx_equal!(iv,0.40269973285787297,1e-15);
 /// ```
-#[must_use] pub fn implied_volatility(
+#[must_use]
+pub fn implied_volatility(
     price: f64,
     S: f64,
     K: f64,
