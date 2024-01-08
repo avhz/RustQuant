@@ -75,7 +75,7 @@ time = { version = "0.3.20", features = [
 ## Optional dependencies
 
 # https://docs.rs/polars/latest/polars/
-polars = { version = "0.33.2", optional = true, features = [
+polars = { version = "0.36.2", optional = true, features = [
     "serde",
     "json",
     "parquet",
