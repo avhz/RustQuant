@@ -17,7 +17,7 @@
 
 
 // Documentation
-//! Let's Be Rational rust imeplementation based on [py_lets_be_rational](https://github.com/vollib/py_lets_be_rational)
+//! Let's Be Rational rust implementation based on [py_lets_be_rational](https://github.com/vollib/py_lets_be_rational)
 //! and paper [Let's Be Rational](http://www.jaeckel.org/LetsBeRational.pdf) by Peter Jaeckel  with some modifications.
 //! If price is below intrinsic value, it returns -INF, if price is above intrinsic value, it returns INF.
 
@@ -668,7 +668,6 @@ fn implied_volatility_from_a_transformed_rational_guess_with_limited_iterations(
 }
 
 /// Implied volatility function to calculate the implied volatility of an option given its market price.
-/// It calcules the IV for machine accuracy only for normalised values of the option price, i.e.
 /// The method is based on lets be rational paper [Let's Be Rational](http://www.jaeckel.org/LetsBeRational.pdf) by Peter Jaeckel with some modifications.
 /// If price is below intrinsic value, it returns -INF, if price is above intrinsic value, it returns INF.
 /// ```
