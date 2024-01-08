@@ -23,7 +23,7 @@
 
 //-(1.0 - f64::EPSILON.sqrt());
 // cannot call non-const fn `std::f64::<impl f64>::sqrt` in constants
-const MINIMUM_RATIONAL_CUBIC_CONTROL_PARAMETER_VALUE: f64 = 1.4901161193847656e-8; 
+const MINIMUM_RATIONAL_CUBIC_CONTROL_PARAMETER_VALUE: f64 = 1.490_116_119_384_765_6e-8; 
 const MAXIMUM_RATIONAL_CUBIC_CONTROL_PARAMETER_VALUE: f64 = 2.0/(f64::EPSILON*f64::EPSILON);
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -101,19 +101,15 @@ fn minimum_rational_cubic_control_parameter(
         // (3.18), avoiding division by zero
         if !(is_zero(s_m_d_l) || is_zero(d_r_m_s)) {
             r2 = (d_r_m_d_l / d_r_m_s).abs().max((d_r_m_d_l / s_m_d_l).abs());
-        } else {
-            if preferShapePreservationOverSmoothness {
-                // This value enforces linear interpolation.
-                r2 = MAXIMUM_RATIONAL_CUBIC_CONTROL_PARAMETER_VALUE;
-            }
-        }
-    } else {
-        if monotonic && preferShapePreservationOverSmoothness{
-            // This enforces linear interpolation along segments that are inconsistent with the slopes on the boundaries, e.g., a perfectly horizontal segment that has negative slopes on either edge.
+        } else if preferShapePreservationOverSmoothness {
+            // This value enforces linear interpolation.
             r2 = MAXIMUM_RATIONAL_CUBIC_CONTROL_PARAMETER_VALUE;
         }
+    } else if monotonic && preferShapePreservationOverSmoothness{
+        // This enforces linear interpolation along segments that are inconsistent with the slopes on the boundaries, e.g., a perfectly horizontal segment that has negative slopes on either edge.
+        r2 = MAXIMUM_RATIONAL_CUBIC_CONTROL_PARAMETER_VALUE;
     }
-    return MINIMUM_RATIONAL_CUBIC_CONTROL_PARAMETER_VALUE.max(r1.max(r2));
+    MINIMUM_RATIONAL_CUBIC_CONTROL_PARAMETER_VALUE.max(r1.max(r2))
 }
 
 
@@ -135,7 +131,7 @@ fn rational_cubic_control_parameter_to_fit_second_derivative_at_right_side(
     if is_zero(denominator) {
         return MAXIMUM_RATIONAL_CUBIC_CONTROL_PARAMETER_VALUE;
     }
-    return numerator / denominator;
+    numerator / denominator
 }
 
 
@@ -164,7 +160,7 @@ pub fn convex_rational_cubic_control_parameter_to_fit_second_derivative_at_right
         (y_r - y_l) / (x_r - x_l),
         preferShapePreservationOverSmoothness
     );
-    return r.max(r_min);
+    r.max(r_min)
 }
 
 
@@ -192,7 +188,7 @@ pub fn rational_cubic_interpolation(
         return (y_r * t2 * t + (r * y_r - h * d_r) * t2 * omt + (r * y_l + h * d_l) * t * omt2 + y_l * omt2 * omt) / (1.0 + (r - 3.0) * t * omt);
     }
     // Linear interpolation without over-or underflow.
-    return y_r * t + y_l * (1.0 - t)
+    y_r * t + y_l * (1.0 - t)
 }
 
 pub fn convex_rational_cubic_control_parameter_to_fit_second_derivative_at_left_side(
@@ -220,7 +216,7 @@ pub fn convex_rational_cubic_control_parameter_to_fit_second_derivative_at_left_
         (y_r - y_l) / (x_r - x_l),
         preferShapePreservationOverSmoothness
     );
-    return r.max(r_min);
+    r.max(r_min)
 
 }
 

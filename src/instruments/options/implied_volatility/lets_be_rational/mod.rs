@@ -23,7 +23,7 @@
 
 mod rational_cubic;
 
-use crate::{statistics::distributions::{gaussian::*, Distribution}, instruments::TypeFlag};
+use crate::{statistics::distributions::{gaussian::Gaussian, Distribution}, instruments::TypeFlag};
 use errorfunctions::RealErrorFunctions;
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -34,20 +34,20 @@ use errorfunctions::RealErrorFunctions;
 // IMPLEMENTATIONS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-const SIXTEENTH_ROOT_DBL_EPSILON: f64 = 0.10511205190671433;
-const FOURTH_ROOT_DBL_EPSILON: f64 = 0.0001220703125;
-const SQRT_ONE_OVER_THREE: f64 = 0.577350269189625764509148780501957455647601751270;
-const PI_OVER_SIX: f64 = 0.523598775598298873077107230546583814032861566563;
-const SQRT_THREE: f64 = 1.732050807568877293527446341505872366942805253810;
-const TWO_PI: f64 = 6.283185307179586476925286766559005768394338798750;
-const TWO_PI_OVER_SQRT_TWENTY_SEVEN: f64 = 1.209199576156145233729385505094770488189377498728;
-const SQRT_PI_OVER_TWO: f64 = 1.253314137315500251207882642405522626503493370305;
-const ONE_OVER_SQRT_TWO: f64 = 0.7071067811865475244008443621048490392848359376887;
-const ONE_OVER_SQRT_TWO_PI: f64 = 0.3989422804014326779399460599343818684758586311649;
-const SQRT_TWO_PI: f64 = 2.506628274631000502415765284811045253006986740610;
+const SIXTEENTH_ROOT_DBL_EPSILON: f64 = 0.105_112_051_906_714_33;
+const FOURTH_ROOT_DBL_EPSILON: f64 = 0.000_122_070_312_5;
+const SQRT_ONE_OVER_THREE: f64 = 0.577_350_269_189_625_7;
+const PI_OVER_SIX: f64 = 0.523_598_775_598_298_9;
+const SQRT_THREE: f64 = 1.732_050_807_568_877_2;
+const TWO_PI: f64 = 6.283_185_307_179_586;
+const TWO_PI_OVER_SQRT_TWENTY_SEVEN: f64 = 1.209_199_576_156_145_2;
+const SQRT_PI_OVER_TWO: f64 = 1.253_314_137_315_500_3;
+const ONE_OVER_SQRT_TWO: f64 = 0.707_106_781_186_547_6;
+const ONE_OVER_SQRT_TWO_PI: f64 = 0.398_942_280_401_432_7;
+const SQRT_TWO_PI: f64 = 2.506_628_274_631_000_7;
 
-const SQRT_DBL_MIN: f64 = 1.4916681462400413e-154;
-const SQRT_DBL_MAX: f64 = 1.3407807929942596e154;
+const SQRT_DBL_MIN: f64 = 1.491_668_146_240_041_3e-154;
+const SQRT_DBL_MAX: f64 = 1.340_780_792_994_259_6e154;
 // Set this to 0 if you want positive results for (positive) denormalized inputs, else to DBL_MIN.
 // Note that you cannot achieve full machine accuracy from denormalized inputs!
 const DENORMALIZATION_CUTOFF: f64 = 0.0;
@@ -94,7 +94,7 @@ fn compute_f_lower_map_and_first_two_derivatives(
             f = TWO_PI_OVER_SQRT_TWENTY_SEVEN* ax* (PHI2 * PHI);
         }
     }
-    return (f, fp, fpp);
+    (f, fp, fpp)
 }
 
 fn compute_f_upper_map_and_first_two_derivatives(
@@ -182,7 +182,7 @@ fn asymptotic_expansion_of_normalized_black_call(
     let e=(t/h)*(t/h);
     let r=(h+t)*(h-t);
     let q=(h/r)*(h/r);
-    let asymptotic_expansion_sum = 2.0+q*(-6.0E0-2.0*e+3.0*q*(1.0E1+e*(2.0E1+2.0*e)+5.0*q*(-1.4E1+e*(-7.0E1+e*(-4.2E1-2.0*e))+7.0*q*(1.8E1+e*(1.68E2+e*(2.52E2+e*(7.2E1+2.0*e)))+9.0*q*(-2.2E1+e*(-3.3E2+e*(-9.24E2+e*(-6.6E2+e*(-1.1E2-2.0*e))))+1.1E1*q*(2.6E1+e*(5.72E2+e*(2.574E3+e*(3.432E3+e*(1.43E3+e*(1.56E2+2.0*e)))))+1.3E1*q*(-3.0E1+e*(-9.1E2+e*(-6.006E3+e*(-1.287E4+e*(-1.001E4+e*(-2.73E3+e*(-2.1E2-2.0*e))))))+1.5E1*q*(3.4E1+e*(1.36E3+e*(1.2376E4+e*(3.8896E4+e*(4.862E4+e*(2.4752E4+e*(4.76E3+e*(2.72E2+2.0*e)))))))+1.7E1*q*(-3.8E1+e*(-1.938E3+e*(-2.3256E4+e*(-1.00776E5+e*(-1.84756E5+e*(-1.51164E5+e*(-5.4264E4+e*(-7.752E3+e*(-3.42E2-2.0*e))))))))+1.9E1*q*(4.2E1+e*(2.66E3+e*(4.0698E4+e*(2.3256E5+e*(5.8786E5+e*(7.05432E5+e*(4.0698E5+e*(1.08528E5+e*(1.197E4+e*(4.2E2+2.0*e)))))))))+2.1E1*q*(-4.6E1+e*(-3.542E3+e*(-6.7298E4+e*(-4.90314E5+e*(-1.63438E6+e*(-2.704156E6+e*(-2.288132E6+e*(-9.80628E5+e*(-2.01894E5+e*(-1.771E4+e*(-5.06E2-2.0*e))))))))))+2.3E1*q*(5.0E1+e*(4.6E3+e*(1.0626E5+e*(9.614E5+e*(4.08595E6+e*(8.9148E6+e*(1.04006E7+e*(6.53752E6+e*(2.16315E6+e*(3.542E5+e*(2.53E4+e*(6.0E2+2.0*e)))))))))))+2.5E1*q*(-5.4E1+e*(-5.85E3+e*(-1.6146E5+e*(-1.77606E6+e*(-9.37365E6+e*(-2.607579E7+e*(-4.01166E7+e*(-3.476772E7+e*(-1.687257E7+e*(-4.44015E6+e*(-5.9202E5+e*(-3.51E4+e*(-7.02E2-2.0*e))))))))))))+2.7E1*q*(5.8E1+e*(7.308E3+e*(2.3751E5+e*(3.12156E6+e*(2.003001E7+e*(6.919458E7+e*(1.3572783E8+e*(1.5511752E8+e*(1.0379187E8+e*(4.006002E7+e*(8.58429E6+e*(9.5004E5+e*(4.7502E4+e*(8.12E2+2.0*e)))))))))))))+2.9E1*q*(-6.2E1+e*(-8.99E3+e*(-3.39822E5+e*(-5.25915E6+e*(-4.032015E7+e*(-1.6934463E8+e*(-4.1250615E8+e*(-6.0108039E8+e*(-5.3036505E8+e*(-2.8224105E8+e*(-8.870433E7+e*(-1.577745E7+e*(-1.472562E6+e*(-6.293E4+e*(-9.3E2-2.0*e))))))))))))))+3.1E1*q*(6.6E1+e*(1.0912E4+e*(4.74672E5+e*(8.544096E6+e*(7.71342E7+e*(3.8707344E8+e*(1.14633288E9+e*(2.07431664E9+e*(2.33360622E9+e*(1.6376184E9+e*(7.0963464E8+e*(1.8512208E8+e*(2.7768312E7+e*(2.215136E6+e*(8.184E4+e*(1.056E3+2.0*e)))))))))))))))+3.3E1*(-7.0E1+e*(-1.309E4+e*(-6.49264E5+e*(-1.344904E7+e*(-1.4121492E8+e*(-8.344518E8+e*(-2.9526756E9+e*(-6.49588632E9+e*(-9.0751353E9+e*(-8.1198579E9+e*(-4.6399188E9+e*(-1.6689036E9+e*(-3.67158792E8+e*(-4.707164E7+e*(-3.24632E6+e*(-1.0472E5+e*(-1.19E3-2.0*e)))))))))))))))))*q))))))))))))))));
+    let asymptotic_expansion_sum = 2.0+q*(-6.0E0-2.0*e+3.0*q*(1.0E1+e*(2.0E1+2.0*e)+5.0*q*(-1.4E1+e*(-7.0E1+e*(-4.2E1-2.0*e))+7.0*q*(1.8E1+e*(1.68E2+e*(2.52E2+e*(7.2E1+2.0*e)))+9.0*q*(-2.2E1+e*(-3.3E2+e*(-9.24E2+e*(-6.6E2+e*(-1.1E2-2.0*e))))+1.1E1*q*(2.6E1+e*(5.72E2+e*(2.574E3+e*(3.432E3+e*(1.43E3+e*(1.56E2+2.0*e)))))+1.3E1*q*(-3.0E1+e*(-9.1E2+e*(-6.006E3+e*(-1.287E4+e*(-1.001E4+e*(-2.73E3+e*(-2.1E2-2.0*e))))))+1.5E1*q*(3.4E1+e*(1.36E3+e*(1.2376E4+e*(3.8896E4+e*(4.862E4+e*(2.4752E4+e*(4.76E3+e*(2.72E2+2.0*e)))))))+1.7E1*q*(-3.8E1+e*(-1.938E3+e*(-2.3256E4+e*(-1.00776E5+e*(-1.84756E5+e*(-1.51164E5+e*(-5.4264E4+e*(-7.752E3+e*(-3.42E2-2.0*e))))))))+1.9E1*q*(4.2E1+e*(2.66E3+e*(4.0698E4+e*(2.3256E5+e*(5.8786E5+e*(7.05432E5+e*(4.0698E5+e*(1.08528E5+e*(1.197E4+e*(4.2E2+2.0*e)))))))))+2.1E1*q*(-4.6E1+e*(-3.542E3+e*(-6.7298E4+e*(-4.90314E5+e*(-1.63438E6+e*(-2.704_156E6+e*(-2.288_132E6+e*(-9.80628E5+e*(-2.01894E5+e*(-1.771E4+e*(-5.06E2-2.0*e))))))))))+2.3E1*q*(5.0E1+e*(4.6E3+e*(1.0626E5+e*(9.614E5+e*(4.08595E6+e*(8.9148E6+e*(1.04006E7+e*(6.53752E6+e*(2.16315E6+e*(3.542E5+e*(2.53E4+e*(6.0E2+2.0*e)))))))))))+2.5E1*q*(-5.4E1+e*(-5.85E3+e*(-1.6146E5+e*(-1.77606E6+e*(-9.37365E6+e*(-2.607_579E7+e*(-4.01166E7+e*(-3.476_772E7+e*(-1.687_257E7+e*(-4.44015E6+e*(-5.9202E5+e*(-3.51E4+e*(-7.02E2-2.0*e))))))))))))+2.7E1*q*(5.8E1+e*(7.308E3+e*(2.3751E5+e*(3.12156E6+e*(2.003_001E7+e*(6.919_458E7+e*(1.357_278_3E8+e*(1.551_175_2E8+e*(1.037_918_7E8+e*(4.006_002E7+e*(8.58429E6+e*(9.5004E5+e*(4.7502E4+e*(8.12E2+2.0*e)))))))))))))+2.9E1*q*(-6.2E1+e*(-8.99E3+e*(-3.39822E5+e*(-5.25915E6+e*(-4.032_015E7+e*(-1.693_446_3E8+e*(-4.125_061_5E8+e*(-6.010_803_9E8+e*(-5.303_650_5E8+e*(-2.822_410_5E8+e*(-8.870_433E7+e*(-1.577_745E7+e*(-1.472_562E6+e*(-6.293E4+e*(-9.3E2-2.0*e))))))))))))))+3.1E1*q*(6.6E1+e*(1.0912E4+e*(4.74672E5+e*(8.544_096E6+e*(7.71342E7+e*(3.870_734_4E8+e*(1.146_332_88E9+e*(2.074_316_64E9+e*(2.333_606_22E9+e*(1.637_618_4E9+e*(7.096_346_4E8+e*(1.851_220_8E8+e*(2.776_831_2E7+e*(2.215_136E6+e*(8.184E4+e*(1.056E3+2.0*e)))))))))))))))+3.3E1*(-7.0E1+e*(-1.309E4+e*(-6.49264E5+e*(-1.344_904E7+e*(-1.412_149_2E8+e*(-8.344_518E8+e*(-2.952_675_6E9+e*(-6.495_886_32E9+e*(-9.075_135_3E9+e*(-8.119_857_9E9+e*(-4.639_918_8E9+e*(-1.668_903_6E9+e*(-3.671_587_92E8+e*(-4.707_164E7+e*(-3.24632E6+e*(-1.0472E5+e*(-1.19E3-2.0*e)))))))))))))))))*q))))))))))))))));
     let b = ONE_OVER_SQRT_TWO_PI* (-0.5*(h*h+t*t)).exp() *(t/r)*asymptotic_expansion_sum;
     b.max(0.0)
 
@@ -217,7 +217,7 @@ fn small_t_expansion_of_normalized_black_call(
     let a = 1.0+h*(0.5*SQRT_TWO_PI)*(-ONE_OVER_SQRT_TWO*h).erfcx();
     let w = t*t;
     let h2 = h*h;
-    let  expansion = 2.0*t*(a+w*((-1.0+3.0*a+a*h2)/6.0+w*((-7.0+15.0*a+h2*(-1.0+10.0*a+a*h2))/120.0+w*((-57.0+105.0*a+h2*(-18.0+105.0*a+h2*(-1.0+21.0*a+a*h2)))/5040.0+w*((-561.0+945.0*a+h2*(-285.0+1260.0*a+h2*(-33.0+378.0*a+h2*(-1.0+36.0*a+a*h2))))/362880.0+w*((-6555.0+10395.0*a+h2*(-4680.0+17325.0*a+h2*(-840.0+6930.0*a+h2*(-52.0+990.0*a+h2*(-1.0+55.0*a+a*h2)))))/39916800.0+((-89055.0+135135.0*a+h2*(-82845.0+270270.0*a+h2*(-20370.0+135135.0*a+h2*(-1926.0+25740.0*a+h2*(-75.0+2145.0*a+h2*(-1.0+78.0*a+a*h2))))))*w)/6227020800.0))))));
+    let  expansion = 2.0*t*(a+w*((-1.0+3.0*a+a*h2)/6.0+w*((-7.0+15.0*a+h2*(-1.0+10.0*a+a*h2))/120.0+w*((-57.0+105.0*a+h2*(-18.0+105.0*a+h2*(-1.0+21.0*a+a*h2)))/5040.0+w*((-561.0+945.0*a+h2*(-285.0+1260.0*a+h2*(-33.0+378.0*a+h2*(-1.0+36.0*a+a*h2))))/362_880.0+w*((-6555.0+10395.0*a+h2*(-4680.0+17325.0*a+h2*(-840.0+6930.0*a+h2*(-52.0+990.0*a+h2*(-1.0+55.0*a+a*h2)))))/39_916_800.0+((-89055.0+135_135.0*a+h2*(-82845.0+270_270.0*a+h2*(-20370.0+135_135.0*a+h2*(-1926.0+25740.0*a+h2*(-75.0+2145.0*a+h2*(-1.0+78.0*a+a*h2))))))*w)/6_227_020_800.0))))));
     let b = ONE_OVER_SQRT_TWO_PI*((-0.5*(h*h+t*t))).exp()*expansion;
     b.max(0.0)
 }
@@ -279,7 +279,7 @@ fn normalised_intrinsic(
     }
     let x2 = x*x;
     if x2 < 98.0 * FOURTH_ROOT_DBL_EPSILON {
-        let mut ret = x * (1.0 + x2 * ((1.0 / 24.0) + x2 * ((1.0 / 1920.0) + x2 * ((1.0 / 322560.0) + (1.0 / 92897280.0) * x2))));
+        let mut ret = x * (1.0 + x2 * ((1.0 / 24.0) + x2 * ((1.0 / 1920.0) + x2 * ((1.0 / 322_560.0) + (1.0 / 92_897_280.0) * x2))));
         if q < 0.0 {
             ret = -ret;
         }
@@ -331,7 +331,7 @@ fn normalised_black_call(
         return normalized_black_call_using_norm_cdf(x, s);
     }
     // Region 4.
-    return normalised_black_call_using_erfcx(x / s, 0.5 * s);
+    normalised_black_call_using_erfcx(x / s, 0.5 * s)
 }
 
 fn normalised_vega(
@@ -379,7 +379,7 @@ fn unchecked_normalised_implied_volatility_from_a_transformed_rational_guess_wit
     // Subtract intrinsic.
     if q*x >0.0 {
         // we allow beta to be under the instrinisc value to then return -INF
-        beta = beta - normalised_intrinsic(x, q);
+        beta -= normalised_intrinsic(x, q);
         q = -q;
     }
     // Map puts to calls
@@ -463,10 +463,8 @@ fn unchecked_normalised_implied_volatility_from_a_transformed_rational_guess_wit
                 if b>beta && s<s_right {
                     s_right = s;
                 }
-                else {
-                    if b<beta && s>s_left {
-                        s_left = s // Tighten the bracket if applicable.
-                    }
+                else if b<beta && s>s_left {
+                    s_left = s; // Tighten the bracket if applicable.
                 }
                 if b<=0.0 || bp<=0.0 {
                     //Numerical underflow. Switch to binary nesting for this iteration.
@@ -561,10 +559,8 @@ fn unchecked_normalised_implied_volatility_from_a_transformed_rational_guess_wit
                     if b>beta && s<s_right {
                         s_right = s;
                     }
-                    else {
-                        if b<beta && s>s_left {
-                            s_left = s; // Tighten the bracket if applicable.
-                        }
+                    else if b<beta && s>s_left {
+                        s_left = s; // Tighten the bracket if applicable.
                     }
                     if b >= b_max  || bp <= f64::EPSILON {
                         // Numerical underflow. Switch to binary nesting for this iteration.
@@ -619,10 +615,8 @@ fn unchecked_normalised_implied_volatility_from_a_transformed_rational_guess_wit
         if b>beta && s<s_right {
             s_right = s;
         }
-        else {
-            if b<beta && s>s_left {
-                s_left = s; // Tighten the bracket if applicable.
-            }
+        else if b<beta && s>s_left {
+            s_left = s; // Tighten the bracket if applicable.
         }
         let newton = (beta-b)/bp;
         let halley = (x/s)*(x/s)/s-s/4.0;
@@ -632,7 +626,7 @@ fn unchecked_normalised_implied_volatility_from_a_transformed_rational_guess_wit
         s+=ds;
         iterations+=1;
     }
-    return s;
+    s
 }
 
 
@@ -683,7 +677,7 @@ fn implied_volatility_from_a_transformed_rational_guess_with_limited_iterations(
 /// let iv = implied_volatility(price, S, K, T, r, option_type);
 /// assert_approx_equal!(iv,0.40269973285787297,1e-15);
 /// ```
-pub fn implied_volatility(
+#[must_use] pub fn implied_volatility(
     price: f64,
     S: f64,
     K: f64,
