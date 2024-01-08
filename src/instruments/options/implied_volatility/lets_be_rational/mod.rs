@@ -385,6 +385,7 @@ fn unchecked_normalised_implied_volatility_from_a_transformed_rational_guess_wit
     // Map puts to calls
     if q < 0.0 {
         x = -x;
+        // after this, we do not use q anymore
     }
     // For negative prices we return -INF
     if beta < 0.0 {
@@ -697,16 +698,16 @@ pub fn implied_volatility(
 // TESTS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #[cfg(test)]
-mod test_rational_cubic {
+mod test_lets_be_rational {
     use std::panic;
 
-    use crate::{instruments::BlackScholesMerton, assert_approx_equal, time::constants};
+    use crate::{instruments::BlackScholesMerton, assert_approx_equal};
     use time::{Duration, OffsetDateTime};
 
     use super::*;
     
-    // 6 decimal places
-    const PRECISION: f64 = 1e-6;
+    // For normal prices, the precision is even higher, but for extrame cases, we need to be more relaxed
+    const PRECISION: f64 = 1e-8;
 
     fn test_iv_region(
         underlying_price: f64,
@@ -751,6 +752,8 @@ mod test_rational_cubic {
             s_u = s_c+(b_max-b_c)/v_c;
         }
         let b_u = normalised_black_call(x*q,s_u);
+        
+        let normalized_intrinsic = normalised_intrinsic(x, q);
         // try beta = -0.1,0, b_l/2.0, b_l + (b_u - b_l)/2, b_u + (b_max - b_u)/2, b_max*1.1
         let betas = vec![-0.1,0.0, b_l/slider, b_l + (b_u - b_l)/slider, b_u + (b_max - b_u)/slider, b_max*1.1];
         for beta in betas {
@@ -763,9 +766,10 @@ mod test_rational_cubic {
             // beta to price
             let beta_price = beta*(-bs.risk_free_rate*T).exp() * (F.sqrt() * bs.strike_price.sqrt());
             bs.volatility = s;
+            dbg!((beta, s, beta_price));
             match beta {
-                temp if (0.0..b_max).contains(&temp) => assert_approx_equal!(beta_price, bs.price(), PRECISION),
-                temp if temp < 0.0 => assert_eq!(s, f64::NEG_INFINITY),
+                temp if (normalized_intrinsic..b_max).contains(&temp) => assert_approx_equal!(beta_price, bs.price(), PRECISION),
+                temp if temp < normalized_intrinsic => assert_eq!(s, f64::NEG_INFINITY),
                 temp if temp >= b_max => assert_eq!(s, f64::INFINITY),
                 _ => panic!("Unexpected beta value"),
             }
@@ -787,5 +791,44 @@ mod test_rational_cubic {
         test_iv_region(100.0, 90.0, 0.05, 30, TypeFlag::Put, 1.0001);
         test_iv_region(100.0, 80.0, 0.05, 745, TypeFlag::Put, 10.0);
         test_iv_region(100.0, 80.0, 0.05, 180, TypeFlag::Put, 1.0/f64::EPSILON);
+    }
+
+    #[test]
+    fn test_ITM_calls(){
+        test_iv_region(100.0, 90.0, 0.05, 30, TypeFlag::Call, 1.0001);
+        test_iv_region(100.0, 80.0, 0.05, 745, TypeFlag::Call, 10.0);
+        test_iv_region(100.0, 80.0, 0.05, 180, TypeFlag::Call, 1.0/f64::EPSILON);
+    }
+
+    #[test]
+    fn test_ITM_puts(){
+        test_iv_region(100.0, 110.0, 0.05, 30, TypeFlag::Put, 1.0001);
+        test_iv_region(100.0, 120.0, 0.05, 745, TypeFlag::Put, 10.0);
+        test_iv_region(100.0, 120.0, 0.05, 180, TypeFlag::Put, 1.0/f64::EPSILON);
+    }
+
+    #[test]
+    fn test_implied_volatility() {
+        // test extreme OTM cases
+        // these are unrealistic
+        let bs = BlackScholesMerton::new(
+            0.05,
+            100.0,
+            150.0,
+            0.04,
+            0.05,
+            None,
+            OffsetDateTime::now_utc() + Duration::days(365),
+            TypeFlag::Call,
+        );
+        let s  = implied_volatility(
+            bs.price(), // the price is 1.431485617100085e-19
+            bs.underlying_price,
+            bs.strike_price,
+            bs.year_fraction(),
+            bs.risk_free_rate,
+            bs.option_type,
+        );
+        assert_approx_equal!(s,0.04,PRECISION);
     }
 }
