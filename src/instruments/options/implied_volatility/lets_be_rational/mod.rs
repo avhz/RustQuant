@@ -783,7 +783,6 @@ mod test_lets_be_rational {
             // beta to price
             let beta_price = beta*(-bs.risk_free_rate*T).exp() * (F.sqrt() * bs.strike_price.sqrt());
             bs.volatility = s;
-            dbg!((beta, s, beta_price));
             match beta {
                 temp if (normalized_intrinsic..b_max).contains(&temp) => assert_approx_equal!(beta_price, bs.price(), PRECISION),
                 temp if temp < normalized_intrinsic => assert_eq!(s, f64::NEG_INFINITY),
