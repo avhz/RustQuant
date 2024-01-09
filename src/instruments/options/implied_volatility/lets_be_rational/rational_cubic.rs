@@ -89,17 +89,15 @@ fn minimum_rational_cubic_control_parameter(
             // # (3.8)
             r1 = (d_r + d_l)/s;
         }
-        else {
+        else if preferShapePreservationOverSmoothness {
             // If division by zero would occur, and shape preservation is preferred, set value to enforce linear interpolation.
-            if preferShapePreservationOverSmoothness {
-                // This value enforces linear interpolation.
-                r1 = MAXIMUM_RATIONAL_CUBIC_CONTROL_PARAMETER_VALUE;
-            }
+            // This value enforces linear interpolation.
+            r1 = MAXIMUM_RATIONAL_CUBIC_CONTROL_PARAMETER_VALUE;
         }
     }
     if convex || concave {
         // (3.18), avoiding division by zero
-        if !(is_zero(s_m_d_l) || is_zero(d_r_m_s)) {
+        if !is_zero(s_m_d_l) || is_zero(d_r_m_s) {
             r2 = (d_r_m_d_l / d_r_m_s).abs().max((d_r_m_d_l / s_m_d_l).abs());
         } else if preferShapePreservationOverSmoothness {
             // This value enforces linear interpolation.
@@ -135,35 +133,6 @@ fn rational_cubic_control_parameter_to_fit_second_derivative_at_right_side(
 }
 
 
-pub fn convex_rational_cubic_control_parameter_to_fit_second_derivative_at_right_side(
-    x_l: f64,
-    x_r: f64,
-    y_l: f64,
-    y_r: f64,
-    d_l: f64,
-    d_r: f64,
-    second_derivative_r: f64,
-    preferShapePreservationOverSmoothness: bool,
-) -> f64 {
-    let r = rational_cubic_control_parameter_to_fit_second_derivative_at_right_side(
-        x_l,
-        x_r,
-        y_l,
-        y_r,
-        d_l,
-        d_r,
-        second_derivative_r
-    );
-    let r_min = minimum_rational_cubic_control_parameter(
-        d_l,
-        d_r,
-        (y_r - y_l) / (x_r - x_l),
-        preferShapePreservationOverSmoothness
-    );
-    r.max(r_min)
-}
-
-
 pub fn rational_cubic_interpolation(
     x: f64,
     x_l: f64,
@@ -175,12 +144,12 @@ pub fn rational_cubic_interpolation(
     r: f64,
 ) -> f64 {
     let h = x_r - x_l;
-    if is_zero(h) {
+    if h.abs() <= 0.0 {
         return 0.5 * (y_l + y_r);
     } 
     // r should be greater than -1. We do not use  assert(r > -1)  here in order to allow values such as NaN to be propagated as they should.
     let t = (x - x_l) / h;
-    if r < MAXIMUM_RATIONAL_CUBIC_CONTROL_PARAMETER_VALUE {
+    if !(r >= MAXIMUM_RATIONAL_CUBIC_CONTROL_PARAMETER_VALUE) {
         let omt = 1.0 - t;
         let t2 = t*t;
         let omt2 = omt * omt;
@@ -219,6 +188,37 @@ pub fn convex_rational_cubic_control_parameter_to_fit_second_derivative_at_left_
     r.max(r_min)
 
 }
+
+
+pub fn convex_rational_cubic_control_parameter_to_fit_second_derivative_at_right_side(
+    x_l: f64,
+    x_r: f64,
+    y_l: f64,
+    y_r: f64,
+    d_l: f64,
+    d_r: f64,
+    second_derivative_r: f64,
+    preferShapePreservationOverSmoothness: bool,
+) -> f64 {
+    let r = rational_cubic_control_parameter_to_fit_second_derivative_at_right_side(
+        x_l,
+        x_r,
+        y_l,
+        y_r,
+        d_l,
+        d_r,
+        second_derivative_r
+    );
+    let r_min = minimum_rational_cubic_control_parameter(
+        d_l,
+        d_r,
+        (y_r - y_l) / (x_r - x_l),
+        preferShapePreservationOverSmoothness
+    );
+    r.max(r_min)
+}
+
+
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // TESTS

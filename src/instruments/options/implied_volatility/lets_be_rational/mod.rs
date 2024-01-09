@@ -64,6 +64,11 @@ fn is_below_horizon(x:f64) -> bool {
 }
 
 #[inline(always)]
+fn square(x:f64) -> f64 {
+    x*x
+}
+
+#[inline(always)]
 fn householder_factor(
     newton: f64,
     halley: f64,
@@ -106,7 +111,7 @@ fn compute_f_upper_map_and_first_two_derivatives(
     let mut fp = -0.5;
     let mut fpp = 0.0;
     if !is_below_horizon(x) {
-        let w = (x/s) * (x/s);
+        let w = square(x/s);
         fp = -0.5 * (0.5*w).exp();
         fpp = SQRT_PI_OVER_TWO * (w + 0.125 * s * s).exp() * (w/s);
     }
@@ -278,6 +283,7 @@ fn normalised_intrinsic(
         return 0.0;
     }
     let x2 = x*x;
+    // The factor 98 is computed from last coefficient: √√92897280 = 98.1749
     if x2 < 98.0 * FOURTH_ROOT_DBL_EPSILON {
         let mut ret = x * (1.0 + x2 * ((1.0 / 24.0) + x2 * ((1.0 / 1920.0) + x2 * ((1.0 / 322_560.0) + (1.0 / 92_897_280.0) * x2))));
         if q < 0.0 {
@@ -326,7 +332,7 @@ fn normalised_black_call(
     // When b is more than, say, about 85% of b_max=exp(x/2), then b is dominated by the first of the two terms in the
     // Black formula, and we retain more accuracy by not attempting to combine the two terms in any way. We evaluate
     // the condition h+t>0.85  avoiding any divisions by s.
-    if x + 0.5 * s * s > s * 0.85 {
+    if (x + 0.5 * s * s) > (s * 0.85) {
         // Region 3.
         return normalized_black_call_using_norm_cdf(x, s);
     }
@@ -346,7 +352,7 @@ fn normalised_vega(
         return 0.0;
     }
     ONE_OVER_SQRT_TWO_PI * (-0.5*(
-        (x/s)*(x/s) + 0.25*s*s
+        square(x/s) + square(0.5*s)
     )).exp()
 }
 
@@ -450,6 +456,8 @@ fn unchecked_normalised_implied_volatility_from_a_transformed_rational_guess_wit
                     direction_reversal_count+=1;
                 }
                 if iterations>0 && ( 3==direction_reversal_count || !(s>s_left && s<s_right) ) {
+                    // If looping inefficently, or the forecast step takes us outside the bracket, or onto its edges, switch to binary nesting.
+                    // NOTE that this can only really happen for very extreme values of |x|, such as |x| = |ln(F/K)| > 500.
                     s = 0.5*(s_left+s_right);
                     if (s_right-s_left) <= f64::EPSILON*s {
                         break;
@@ -478,14 +486,13 @@ fn unchecked_normalised_implied_volatility_from_a_transformed_rational_guess_wit
                     let b_halley = h*h/s-s/4.0;
                     let newton = (ln_beta-ln_b)*ln_b/ln_beta/bpob;
                     let halley = b_halley-bpob*(1.0+2.0/ln_b);
-                    let b_hh3 = b_halley*b_halley- 3.0 * (h / s)*(h / s) - 0.25;
-                    let hh3 = b_hh3+ 2.0 * bpob*bpob * (1.0 + 3.0 / ln_b * (1.0 + 1.0 / ln_b)) - 3.0 * b_halley * bpob * (1.0 + 2.0 / ln_b);
+                    let b_hh3 = b_halley*b_halley- 3.0 * square(h/s) - 0.25;
+                    let hh3 = b_hh3+ 2.0 * square(bpob) * (1.0 + 3.0 / ln_b * (1.0 + 1.0 / ln_b)) - 3.0 * b_halley * bpob * (1.0 + 2.0 / ln_b);
                     ds = newton * householder_factor(newton, halley, hh3);
                 }
                 ds = ds.max(-0.5*s);
                 s +=ds;
                 iterations+=1;
-
             }
         return s;
         }
@@ -505,9 +512,9 @@ fn unchecked_normalised_implied_volatility_from_a_transformed_rational_guess_wit
         }
         let b_u = normalised_black_call(x,s_u);
         if beta <= b_u {
-            let v_h = normalised_vega(x, s_u);
-            let r_hm = rational_cubic::convex_rational_cubic_control_parameter_to_fit_second_derivative_at_left_side(b_c,b_u,s_c,s_u,1.0/v_c,1.0/v_h,0.0,false);
-            s = rational_cubic::rational_cubic_interpolation(beta,b_c,b_u,s_c,s_u,1.0/v_c,1.0/v_h,r_hm);
+            let v_u = normalised_vega(x, s_u);
+            let r_hm = rational_cubic::convex_rational_cubic_control_parameter_to_fit_second_derivative_at_left_side(b_c,b_u,s_c,s_u,1.0/v_c,1.0/v_u,0.0,false);
+            s = rational_cubic::rational_cubic_interpolation(beta,b_c,b_u,s_c,s_u,1.0/v_c,1.0/v_u,r_hm);
             s_left = s_c;
             s_right = s_u;
         }
@@ -570,8 +577,8 @@ fn unchecked_normalised_implied_volatility_from_a_transformed_rational_guess_wit
                         let b_max_minus_b = b_max-b;
                         let g = ((b_max-beta)/b_max_minus_b).ln();
                         let gp = bp/b_max_minus_b;
-                        let b_halley = (x/s)*(x/s)/s-s/4.0;
-                        let b_hh3 = b_halley*b_halley-3.0*(x/(s*s))*(x/(s*s))-0.25;
+                        let b_halley = square(x/s)/s-s/4.0;
+                        let b_hh3 = b_halley*b_halley-3.0*square(x/(s*s))-0.25;
                         let newton = -g/gp;
                         let halley = b_halley+gp;
                         let hh3 = b_hh3+gp*(2.0*gp+3.0*b_halley);
@@ -619,8 +626,8 @@ fn unchecked_normalised_implied_volatility_from_a_transformed_rational_guess_wit
             s_left = s; // Tighten the bracket if applicable.
         }
         let newton = (beta-b)/bp;
-        let halley = (x/s)*(x/s)/s-s/4.0;
-        let hh3 = halley*halley-3.0*(x/(s*s))*(x/(s*s))-0.25;
+        let halley = square(x/s)-s/4.0;
+        let hh3 = halley*halley-3.0*square(x/(s*s))-0.25;
         ds = newton * householder_factor(newton,halley,hh3);
         ds = ds.max(-0.5*s);
         s+=ds;
