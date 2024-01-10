@@ -723,7 +723,7 @@ mod test_lets_be_rational {
     use super::*;
     
     // For normal prices, the precision is even higher, but for extrame cases, we need to be more relaxed
-    const PRECISION: f64 = 1e-8;
+    const PRECISION: f64 = 1e-13;
 
     // This function generates beta for each region described in the paper
     // plus it checks behaviour outside of the bounds to return INF or -INF.
@@ -847,6 +847,6 @@ mod test_lets_be_rational {
             bs.risk_free_rate,
             bs.option_type,
         );
-        assert_approx_equal!(s,0.04,1e-13);
+        assert_approx_equal!(s,0.04,1e-15);
     }
 }

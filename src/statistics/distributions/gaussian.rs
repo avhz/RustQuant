@@ -7,6 +7,8 @@
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+use errorfunctions::RealErrorFunctions;
+
 use crate::statistics::DistributionError;
 
 use {
@@ -132,7 +134,7 @@ impl Distribution for Gaussian {
         assert!(self.variance > 0.0);
         // `erfc` (complementary error function) is used instead of `erf` to avoid
         // subtractive cancellation that leads to inaccuracy in the tails.
-        0.5 * erf::erfc(-(x - self.mean) / (SQRT_2 * self.variance.sqrt()))
+        0.5 * (-(x - self.mean) / (SQRT_2 * self.variance.sqrt())).erfc()
     }
 
     /// Inverse distribution (quantile) function of the Gaussian distribution.
