@@ -32,7 +32,7 @@ impl Calendar for Botswana {
 
         if Self::is_weekend(date)
         // New Year's Day (possibly moved to Monday or Tuesday)
-        || ((d == 1 || (d == 2 && w == Weekday::Monday) || (d == 3 && w == Weekday::Tuesday)) 
+        || ((d == 1 || (d == 2 && w == Weekday::Monday) || (d == 3 && w == Weekday::Tuesday))
             && m == Month::January)
         // Good Friday
         || (dd == em - 3)
@@ -49,10 +49,10 @@ impl Calendar for Botswana {
         // Presidents' Day (third Monday of July)
         || ((15..=21).contains(&d) && w == Weekday::Monday && m == Month::July)
         // Independence Day, September 30th (possibly moved to Monday)
-        || ((d == 30 && m == Month::September) || 
+        || ((d == 30 && m == Month::September) ||
             (d == 1  && w == Weekday::Monday && m == Month::October))
         // Botswana Day, October 1st (possibly moved to Monday or Tuesday)
-        || ((d == 1 || (d == 2 && w == Weekday::Monday) || (d == 3 && w == Weekday::Tuesday)) 
+        || ((d == 1 || (d == 2 && w == Weekday::Monday) || (d == 3 && w == Weekday::Tuesday))
             && m == Month::October)
         // Christmas
         || (d == 25 && m == Month::December)

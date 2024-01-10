@@ -144,7 +144,7 @@ impl Calendar for China {
             || (y == 2022 && d == 12 && m == Month::September)
             || (y == 2023 && d == 29 && m == Month::September)
             // National Day
-            || (y <= 2007 && d >= 1 && d <= 7 && m == Month::October) 
+            || (y <= 2007 && d >= 1 && d <= 7 && m == Month::October)
             || (y == 2008 && ((d >= 29 && m == Month::September) ||
                             (d <= 3 && m == Month::October)))
             || (y == 2009 && d >= 1 && d <= 8 && m == Month::October)
