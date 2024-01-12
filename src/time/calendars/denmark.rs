@@ -27,7 +27,7 @@ impl Calendar for Denmark {
     }
 
     /// Denmark holidays:
-    ///     - Maunday Thursday
+    ///     - Maundy Thursday
     ///     - Good Friday
     ///     - Easter Monday
     ///     - General Prayer Day
