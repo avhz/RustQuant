@@ -14,7 +14,7 @@ pub use crate::time::{
     calendars::{
         argentina::*, australia::*, austria::*, botswana::*, brazil::*, canada::*, chile::*,
         china::*, czech_republic::*, denmark::*, finland::*, france::*, germany::*, hong_kong::*,
-        hungary::*, united_kingdom::*, united_states::*,
+        hungary::*, iceland::*, india::*, indonesia::*, united_kingdom::*, united_states::*,
     },
     constants::*,
     conventions::*,
@@ -65,6 +65,12 @@ pub mod calendars {
     pub mod hong_kong;
     /// Hungary settlement calendar.
     pub mod hungary;
+    /// Iceland settlement calendar.
+    pub mod iceland;
+    /// India settlement calendar.
+    pub mod india;
+    /// Indonesia settlement calendar.
+    pub mod indonesia;
     /// Calendar test module.
     mod tests;
     /// UK settlement calendar.

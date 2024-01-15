@@ -96,8 +96,8 @@ mod test_hungary {
         let labour_day = datetime!(2024-05-01 12:00:00 UTC);
         let national_holiday = datetime!(2024-08-20 12:00:00 UTC);
         let revolution_1956_day = datetime!(2024-10-23 12:00:00 UTC);
-        let christmas = datetime!(2023-12-25 12:00:00 UTC);
-        let second_christmas_day = datetime!(2023-12-26 12:00:00 UTC);
+        let christmas = datetime!(2024-12-25 12:00:00 UTC);
+        let second_christmas_day = datetime!(2024-12-26 12:00:00 UTC);
 
         assert!(!calendar.is_business_day(new_years_day));
         assert!(!calendar.is_business_day(revolution_1848_day));
