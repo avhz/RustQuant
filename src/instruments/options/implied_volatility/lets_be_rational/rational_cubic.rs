@@ -33,7 +33,7 @@ const MAXIMUM_RATIONAL_CUBIC_CONTROL_PARAMETER_VALUE: f64 = 2.0/(f64::EPSILON*f6
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // IMPLEMENTATIONS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#[inline(always)]
+#[inline]
 fn is_zero(x: f64) -> bool {
     x.abs() < f64::MIN_POSITIVE
 }
@@ -132,8 +132,8 @@ fn rational_cubic_control_parameter_to_fit_second_derivative_at_right_side(
     numerator / denominator
 }
 
-
-pub fn rational_cubic_interpolation(
+#[allow(clippy::too_many_arguments)]
+pub fn interpolation(
     x: f64,
     x_l: f64,
     x_r: f64,
@@ -160,6 +160,7 @@ pub fn rational_cubic_interpolation(
     y_r * t + y_l * (1.0 - t)
 }
 
+#[allow(clippy::too_many_arguments)]
 pub fn convex_rational_cubic_control_parameter_to_fit_second_derivative_at_left_side(
     x_l: f64,
     x_r: f64,
@@ -189,7 +190,7 @@ pub fn convex_rational_cubic_control_parameter_to_fit_second_derivative_at_left_
 
 }
 
-
+#[allow(clippy::too_many_arguments)]
 pub fn convex_rational_cubic_control_parameter_to_fit_second_derivative_at_right_side(
     x_l: f64,
     x_r: f64,

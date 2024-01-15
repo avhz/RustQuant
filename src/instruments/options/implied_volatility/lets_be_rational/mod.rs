@@ -37,12 +37,9 @@ use errorfunctions::RealErrorFunctions;
 const SIXTEENTH_ROOT_DBL_EPSILON: f64 = 0.105_112_051_906_714_33;
 const FOURTH_ROOT_DBL_EPSILON: f64 = 0.000_122_070_312_5;
 const SQRT_ONE_OVER_THREE: f64 = 0.577_350_269_189_625_7;
-const PI_OVER_SIX: f64 = 0.523_598_775_598_298_9;
 const SQRT_THREE: f64 = 1.732_050_807_568_877_2;
-const TWO_PI: f64 = 6.283_185_307_179_586;
 const TWO_PI_OVER_SQRT_TWENTY_SEVEN: f64 = 1.209_199_576_156_145_2;
 const SQRT_PI_OVER_TWO: f64 = 1.253_314_137_315_500_3;
-const ONE_OVER_SQRT_TWO: f64 = 0.707_106_781_186_547_6;
 const ONE_OVER_SQRT_TWO_PI: f64 = 0.398_942_280_401_432_7;
 const SQRT_TWO_PI: f64 = 2.506_628_274_631_000_7;
 
@@ -58,17 +55,17 @@ const SMALL_T_EXPANSION_OF_NORMALIZED_BLACK_TRERESHOLD: f64 = 2.0 * SIXTEENTH_RO
 
 
 
-#[inline(always)]
+#[inline]
 fn is_below_horizon(x:f64) -> bool {
     x.abs() < DENORMALIZATION_CUTOFF
 }
 
-#[inline(always)]
+#[inline]
 fn square(x:f64) -> f64 {
     x*x
 }
 
-#[inline(always)]
+#[inline]
 fn householder_factor(
     newton: f64,
     halley: f64,
@@ -88,13 +85,13 @@ fn compute_f_lower_map_and_first_two_derivatives(
     let N = Gaussian::default();
     let PHI = N.cdf(-z);
     let phi = N.pdf(z);
-    let fpp =  PI_OVER_SIX * y / (s2 * s) * PHI * (
+    let fpp =  std::f64::consts::FRAC_PI_6 * y / (s2 * s) * PHI * (
         8.0 * SQRT_THREE * s * ax + (3.0 * s2 * (s2 - 8.0) - 8.0 * x * x) * PHI / phi) * (2.0 * y + 0.25 * s2).exp();
     let mut fp = 1.0;
     let mut f = 0.0;
     if !is_below_horizon(s) {
         let PHI2 = PHI*PHI;
-        fp = TWO_PI * y * PHI2 * (y + 0.125 * s * s).exp();
+        fp = std::f64::consts::TAU * y * PHI2 * (y + 0.125 * s * s).exp();
         if !is_below_horizon(x) {
             f = TWO_PI_OVER_SQRT_TWENTY_SEVEN* ax* (PHI2 * PHI);
         }
@@ -128,7 +125,7 @@ fn inverse_f_lower_map(
     let N = Gaussian::default();
     (x / (SQRT_THREE * N.inv_cdf((f/(TWO_PI_OVER_SQRT_TWENTY_SEVEN* x.abs())).powf(1.0/3.0)))).abs()
 }
-#[inline(always)]
+#[inline]
 fn inverse_f_upper_map(
     f: f64
 ) -> f64 {
@@ -219,11 +216,11 @@ fn small_t_expansion_of_normalized_black_call(
     // Y(h) := Φ(h)/φ(h) = √(π/2)·erfcx(-h/√2)
     // a := 1+h·Y(h)  --- Note that due to h<0, and h·Y(h) -> -1 (from above) as h -> -∞, we also have that a>0 and a -> 0 as h -> -∞
     // w := t² , h2 := h²
-    let a = 1.0+h*(0.5*SQRT_TWO_PI)*(-ONE_OVER_SQRT_TWO*h).erfcx();
+    let a = 1.0+h*(0.5*SQRT_TWO_PI)*(-std::f64::consts::FRAC_1_SQRT_2*h).erfcx();
     let w = t*t;
     let h2 = h*h;
     let  expansion = 2.0*t*(a+w*((-1.0+3.0*a+a*h2)/6.0+w*((-7.0+15.0*a+h2*(-1.0+10.0*a+a*h2))/120.0+w*((-57.0+105.0*a+h2*(-18.0+105.0*a+h2*(-1.0+21.0*a+a*h2)))/5040.0+w*((-561.0+945.0*a+h2*(-285.0+1260.0*a+h2*(-33.0+378.0*a+h2*(-1.0+36.0*a+a*h2))))/362_880.0+w*((-6555.0+10395.0*a+h2*(-4680.0+17325.0*a+h2*(-840.0+6930.0*a+h2*(-52.0+990.0*a+h2*(-1.0+55.0*a+a*h2)))))/39_916_800.0+((-89055.0+135_135.0*a+h2*(-82845.0+270_270.0*a+h2*(-20370.0+135_135.0*a+h2*(-1926.0+25740.0*a+h2*(-75.0+2145.0*a+h2*(-1.0+78.0*a+a*h2))))))*w)/6_227_020_800.0))))));
-    let b = ONE_OVER_SQRT_TWO_PI*((-0.5*(h*h+t*t))).exp()*expansion;
+    let b = ONE_OVER_SQRT_TWO_PI*(-0.5*(h*h+t*t)).exp()*expansion;
     b.max(0.0)
 }
 
@@ -270,7 +267,7 @@ fn normalised_black_call_using_erfcx(
     retains the full 16 digits of accuracy (or just a little less than that).
 
     */
-    let b = 0.5*(-0.5*(h*h+t*t)).exp() * ((-ONE_OVER_SQRT_TWO*(h+t)).erfcx() - (-ONE_OVER_SQRT_TWO*(h-t)).erfcx());
+    let b = 0.5*(-0.5*(h*h+t*t)).exp() * ((-std::f64::consts::FRAC_1_SQRT_2*(h+t)).erfcx() - (-std::f64::consts::FRAC_1_SQRT_2*(h-t)).erfcx());
     b.max(0.0)
 
 }
@@ -300,7 +297,7 @@ fn normalised_intrinsic(
     ret.max(0.0)
 }
 
-#[inline(always)]
+#[inline]
 fn normalised_intrinsic_call(
     x:f64,
 ) -> f64 {
@@ -356,11 +353,11 @@ fn normalised_vega(
     )).exp()
 }
 
-
+#[allow(clippy::too_many_lines)]
 fn unchecked_normalised_implied_volatility_from_a_transformed_rational_guess_with_limited_iterations(
-    _beta: f64,
-    _x: f64,
-    _q: f64,
+    mut beta: f64,
+    mut x: f64,
+    mut q: f64,
     N: usize,
 ) -> f64 {
     /*
@@ -379,9 +376,6 @@ fn unchecked_normalised_implied_volatility_from_a_transformed_rational_guess_wit
     
     
     */
-    let mut beta = _beta;
-    let mut q = _q;
-    let mut x = _x;
     // Subtract intrinsic.
     if q*x >0.0 {
         // we allow beta to be under the instrinisc value to then return -INF
@@ -425,7 +419,7 @@ fn unchecked_normalised_implied_volatility_from_a_transformed_rational_guess_wit
         if beta < b_l {
             let (f_lower_map_l, d_f_lower_map_l_d_beta, d2_f_lower_map_l_d_beta2) = compute_f_lower_map_and_first_two_derivatives(x, s_l);
             let r_ll = rational_cubic::convex_rational_cubic_control_parameter_to_fit_second_derivative_at_right_side(0.,b_l,0.,f_lower_map_l,1.,d_f_lower_map_l_d_beta,d2_f_lower_map_l_d_beta2,true);
-            f = rational_cubic::rational_cubic_interpolation(beta,0.,b_l,0.,f_lower_map_l,1.,d_f_lower_map_l_d_beta,r_ll);
+            f = rational_cubic::interpolation(beta,0.,b_l,0.,f_lower_map_l,1.,d_f_lower_map_l_d_beta,r_ll);
             // This can happen due to roundoff truncation for extreme values such as |x|>500.
             if !( f > 0.0) {
                 // We switch to quadratic interpolation using f(0)≡0, f(b_l), and f'(0)≡1 to specify the quadratic.
@@ -496,13 +490,12 @@ fn unchecked_normalised_implied_volatility_from_a_transformed_rational_guess_wit
             }
         return s;
         }
-        else {
-            let v_l = normalised_vega(x, s_l);
-            let r_lm = rational_cubic::convex_rational_cubic_control_parameter_to_fit_second_derivative_at_right_side(b_l,b_c,s_l,s_c,1.0/v_l,1.0/v_c,0.0,false);
-            s = rational_cubic::rational_cubic_interpolation(beta,b_l,b_c,s_l,s_c,1.0/v_l,1.0/v_c,r_lm);
-            s_left = s_l;
-            s_right = s_c;
-        }
+        let v_l = normalised_vega(x, s_l);
+        let r_lm = rational_cubic::convex_rational_cubic_control_parameter_to_fit_second_derivative_at_right_side(b_l,b_c,s_l,s_c,1.0/v_l,1.0/v_c,0.0,false);
+        s = rational_cubic::interpolation(beta,b_l,b_c,s_l,s_c,1.0/v_l,1.0/v_c,r_lm);
+        s_left = s_l;
+        s_right = s_c;
+        
         
     }
     else {
@@ -514,7 +507,7 @@ fn unchecked_normalised_implied_volatility_from_a_transformed_rational_guess_wit
         if beta <= b_u {
             let v_u = normalised_vega(x, s_u);
             let r_hm = rational_cubic::convex_rational_cubic_control_parameter_to_fit_second_derivative_at_left_side(b_c,b_u,s_c,s_u,1.0/v_c,1.0/v_u,0.0,false);
-            s = rational_cubic::rational_cubic_interpolation(beta,b_c,b_u,s_c,s_u,1.0/v_c,1.0/v_u,r_hm);
+            s = rational_cubic::interpolation(beta,b_c,b_u,s_c,s_u,1.0/v_c,1.0/v_u,r_hm);
             s_left = s_c;
             s_right = s_u;
         }
@@ -522,7 +515,7 @@ fn unchecked_normalised_implied_volatility_from_a_transformed_rational_guess_wit
             let (f_upper_map_h, d_f_upper_map_h_d_beta, d2_f_upper_map_h_d_beta2) = compute_f_upper_map_and_first_two_derivatives(x, s_u);
             if d2_f_upper_map_h_d_beta2 > -SQRT_DBL_MAX &&  d2_f_upper_map_h_d_beta2 < SQRT_DBL_MAX {
                 let r_hh = rational_cubic::convex_rational_cubic_control_parameter_to_fit_second_derivative_at_left_side(b_u,b_max,f_upper_map_h,0.,d_f_upper_map_h_d_beta,-0.5,d2_f_upper_map_h_d_beta2,true);
-                f = rational_cubic::rational_cubic_interpolation(beta,b_u,b_max,f_upper_map_h,0.,d_f_upper_map_h_d_beta,-0.5,r_hh);
+                f = rational_cubic::interpolation(beta,b_u,b_max,f_upper_map_h,0.,d_f_upper_map_h_d_beta,-0.5,r_hh);
             }
             if f <= 0.0 {
                 let h=b_max-b_u;
