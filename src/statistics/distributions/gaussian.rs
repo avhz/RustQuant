@@ -353,15 +353,17 @@ mod tests_gaussian {
         let dist: Gaussian = Gaussian::default();
 
         // Values from WolframAlpha
-        assert_approx_equal!(dist.cdf(-4.0), 0.000_031_671_241_835_663_76, EPS);
-        assert_approx_equal!(dist.cdf(-3.0), 0.001_349_898_031_574_464_2, EPS);
-        assert_approx_equal!(dist.cdf(-2.0), 0.022_750_131_947_162_62, EPS);
-        assert_approx_equal!(dist.cdf(-1.0), 0.158_655_253_945_057_25, EPS);
+        assert_approx_equal!(dist.cdf(-5.0), 2.866_515_718_791_939e-7, EPS);
+        assert_approx_equal!(dist.cdf(-4.0), 0.000_031_671_241_833_119_924, EPS);
+        assert_approx_equal!(dist.cdf(-3.0), 0.001_349_898_031_630_094_6, EPS);
+        assert_approx_equal!(dist.cdf(-2.0), 0.022_750_131_948_179_21, EPS);
+        assert_approx_equal!(dist.cdf(-1.0), 0.158_655_253_931_457_05, EPS);
         assert_approx_equal!(dist.cdf(0.0), 0.5, EPS);
-        assert_approx_equal!(dist.cdf(1.0), 0.841_344_746_054_942_8, EPS);
-        assert_approx_equal!(dist.cdf(2.0), 0.977_249_868_052_837_4, EPS);
-        assert_approx_equal!(dist.cdf(3.0), 0.998_650_101_968_425_5, EPS);
-        assert_approx_equal!(dist.cdf(4.0), 0.999_968_328_758_164_3, EPS);
+        assert_approx_equal!(dist.cdf(1.0), 0.841_344_746_068_542_9, EPS);
+        assert_approx_equal!(dist.cdf(2.0), 0.977_249_868_051_820_8, EPS);
+        assert_approx_equal!(dist.cdf(3.0), 0.998_650_101_968_369_9, EPS);
+        assert_approx_equal!(dist.cdf(4.0), 0.999_968_328_758_166_9, EPS);
+        assert_approx_equal!(dist.cdf(5.0), 0.999_999_713_348_428_1, EPS);
     }
 
     #[test]
