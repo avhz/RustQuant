@@ -421,7 +421,7 @@ fn unchecked_normalised_implied_volatility_from_a_transformed_rational_guess_wit
             let r_ll = rational_cubic::convex_rational_cubic_control_parameter_to_fit_second_derivative_at_right_side(0.,b_l,0.,f_lower_map_l,1.,d_f_lower_map_l_d_beta,d2_f_lower_map_l_d_beta2,true);
             f = rational_cubic::interpolation(beta,0.,b_l,0.,f_lower_map_l,1.,d_f_lower_map_l_d_beta,r_ll);
             // This can happen due to roundoff truncation for extreme values such as |x|>500.
-            if !( f > 0.0) {
+            if f <= 0.0 {
                 // We switch to quadratic interpolation using f(0)≡0, f(b_l), and f'(0)≡1 to specify the quadratic.
                 let t = beta/b_l;
                 f = (f_lower_map_l*t + b_l*(1.0-t)) * t;
@@ -841,5 +841,13 @@ mod test_lets_be_rational {
             bs.option_type,
         );
         assert_approx_equal!(s,0.04,1e-15);
+    }
+    #[test]
+    fn test_linear_interpolation(){
+        let x = -4.920739400840902;
+        let beta = 0.005550954806846956;
+        // this values forces r == MAXIMUM_RATIONAL_CUBIC_CONTROL_PARAMETER_VALUE
+        let iv = unchecked_normalised_implied_volatility_from_a_transformed_rational_guess_with_limited_iterations(beta, x, 1.0,2);
+        assert_approx_equal!(iv,2.176983187656187,std::f64::EPSILON);
     }
 }

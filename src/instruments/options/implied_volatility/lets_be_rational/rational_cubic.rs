@@ -149,7 +149,7 @@ pub fn interpolation(
     } 
     // r should be greater than -1. We do not use  assert(r > -1)  here in order to allow values such as NaN to be propagated as they should.
     let t = (x - x_l) / h;
-    if !(r >= MAXIMUM_RATIONAL_CUBIC_CONTROL_PARAMETER_VALUE) {
+    if r < MAXIMUM_RATIONAL_CUBIC_CONTROL_PARAMETER_VALUE {
         let omt = 1.0 - t;
         let t2 = t*t;
         let omt2 = omt * omt;
