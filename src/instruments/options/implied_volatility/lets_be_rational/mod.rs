@@ -844,10 +844,10 @@ mod test_lets_be_rational {
     }
     #[test]
     fn test_linear_interpolation(){
-        let x = -4.920739400840902;
-        let beta = 0.005550954806846956;
+        let x = -4.920_739_400_840_902;
+        let beta = 0.005_550_954_806_846_956;
         // this values forces r == MAXIMUM_RATIONAL_CUBIC_CONTROL_PARAMETER_VALUE
         let iv = unchecked_normalised_implied_volatility_from_a_transformed_rational_guess_with_limited_iterations(beta, x, 1.0,2);
-        assert_approx_equal!(iv,2.176983187656187,std::f64::EPSILON);
+        assert_approx_equal!(iv,2.176_983_187_656_187,std::f64::EPSILON);
     }
 }
