@@ -50,8 +50,8 @@ const SQRT_DBL_MAX: f64 = 1.340_780_792_994_259_6e154;
 const DENORMALIZATION_CUTOFF: f64 = 0.0;
 
 const IMPLIED_VOLATILITY_MAXIMUM_ITERATIONS: usize = 2;
-const ASYMPTOTIC_EXPANSION_ACCURACY_TRERESHOLD: f64 = -10.0;
-const SMALL_T_EXPANSION_OF_NORMALIZED_BLACK_TRERESHOLD: f64 = 2.0 * SIXTEENTH_ROOT_DBL_EPSILON; 
+const ASYMPTOTIC_EXPANSION_ACCURACY_THRESHOLD: f64 = -10.0;
+const SMALL_T_EXPANSION_OF_NORMALIZED_BLACK_THRESHOLD: f64 = 2.0 * SIXTEENTH_ROOT_DBL_EPSILON; 
 
 
 
@@ -318,11 +318,11 @@ fn normalised_black_call(
     // Denote h := x/s and t := s/2. We evaluate the condition |h|>|η|, i.e., h<η  &&  t < τ+|h|-|η|  avoiding any
     // divisions by s , where η = asymptotic_expansion_accuracy_threshold  and τ =
     // small_t_expansion_of_normalized_black_threshold .
-    if x < s * ASYMPTOTIC_EXPANSION_ACCURACY_TRERESHOLD && (0.5*s*s + x ) < s *(SMALL_T_EXPANSION_OF_NORMALIZED_BLACK_TRERESHOLD + ASYMPTOTIC_EXPANSION_ACCURACY_TRERESHOLD) {
+    if x < s * ASYMPTOTIC_EXPANSION_ACCURACY_THRESHOLD && (0.5*s*s + x ) < s *(SMALL_T_EXPANSION_OF_NORMALIZED_BLACK_THRESHOLD + ASYMPTOTIC_EXPANSION_ACCURACY_THRESHOLD) {
         // Region 1.
         return asymptotic_expansion_of_normalized_black_call(x/s, 0.5*s);
     } 
-    if 0.5 * s < SMALL_T_EXPANSION_OF_NORMALIZED_BLACK_TRERESHOLD {
+    if 0.5 * s < SMALL_T_EXPANSION_OF_NORMALIZED_BLACK_THRESHOLD {
         // Region 2.
         return small_t_expansion_of_normalized_black_call(x/s, 0.5*s);
     }
