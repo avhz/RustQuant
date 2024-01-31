@@ -129,9 +129,8 @@ impl FractionalBrownianMotion {
             if x == 0.0 {
                 1.0
             } else {
-                0.5 * ((x as f64 + 1.0).powf(2.0 * self.hurst)
-                    - 2.0 * (x as f64).powf(2.0 * self.hurst)
-                    + (x as f64 - 1.0).powf(2.0 * self.hurst))
+                0.5 * ((x + 1.0).powf(2.0 * self.hurst) - 2.0 * (x).powf(2.0 * self.hurst)
+                    + (x - 1.0).powf(2.0 * self.hurst))
             }
         });
         let r = concatenate(

@@ -26,6 +26,7 @@ impl Calendar for HongKong {
         crate::iso::XHKG
     }
 
+    #[allow(clippy::match_overlapping_arm)]
     fn is_business_day(&self, date: OffsetDateTime) -> bool {
         let (w, d, m, y, dd) = self.unpack_date(date);
         let em = Self::easter_monday(y as usize, false);

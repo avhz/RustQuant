@@ -14,7 +14,7 @@
 //! in implementing quantitative software in a professional setting.
 
 // Increase the amount of detail Clippy searches for.
-#![warn(clippy::pedantic)]
+// #![warn(clippy::pedantic)]
 // Strictly enforce documentation.
 #![forbid(missing_docs)]
 // When writing mathematical equations in documentation, Clippy suggests to

@@ -94,12 +94,11 @@ pub use bonds::*;
 /// Option pricers and sensitivity functions.
 pub mod options {
     pub use crate::instruments::options::{
-        american::*, asian::*, bachelier::*, barrier::*, binary::*, binomial::*,
-        black_scholes_merton::*, european::*, forward_start::*, greeks::*, heston::*,
-        implied_volatility::*, lookback::*, merton_jump_diffusion::*, option::*, power::*,
+        asian::*, bachelier::*, barrier::*, binary::*, binomial::*, black_scholes_merton::*,
+        european::*, forward_start::*, greeks::*, heston::*, implied_volatility::*, lookback::*,
+        merton_jump_diffusion::*, option::*, power::*,
     };
-    /// American option pricers.
-    pub mod american;
+
     /// Asian option pricers.
     pub mod asian;
     /// Bachelier option pricer.

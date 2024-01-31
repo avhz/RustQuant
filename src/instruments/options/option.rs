@@ -8,15 +8,15 @@
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 /// Option contract data.
-struct OptionContract {
+pub struct OptionContract {
     /// The option's type flag (call or put).
-    type_flag: TypeFlag,
+    pub type_flag: TypeFlag,
 
     /// The option's strike type (fixed or floating).
-    strike_flag: StrikeFlag,
+    pub strike_flag: StrikeFlag,
 
     /// The option's exercise type (European, American, Bermudan).
-    exercise_flag: ExerciseFlag,
+    pub exercise_flag: ExerciseFlag,
 }
 
 /// Option type enum.

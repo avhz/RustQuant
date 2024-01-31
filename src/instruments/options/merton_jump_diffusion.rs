@@ -76,19 +76,19 @@ impl Merton1976 {
         let mut price = 0_f64;
 
         for i in 0..20 {
-            bsm.volatility = Self::sigma(&self, i, tau);
+            bsm.volatility = Self::sigma(self, i, tau);
 
-            let factorial: usize = (1..=i).into_iter().product();
+            let factorial: usize = (1..=i).product();
             let numerator = f64::exp(-self.lambda * tau) * f64::powi(self.lambda * tau, i as i32);
 
             price += bsm.price() * numerator / factorial as f64;
         }
 
-        return price;
+        price
     }
 
     fn sigma(&self, i: usize, tau: f64) -> f64 {
-        f64::sqrt(f64::powi(Self::z(&self), 2) + f64::powi(Self::delta(&self), 2) * i as f64 / tau)
+        f64::sqrt(f64::powi(Self::z(self), 2) + f64::powi(Self::delta(self), 2) * i as f64 / tau)
     }
 
     fn delta(&self) -> f64 {
@@ -96,7 +96,7 @@ impl Merton1976 {
     }
 
     fn z(&self) -> f64 {
-        f64::sqrt(f64::powi(self.volatility, 2) - self.lambda * f64::powi(Self::delta(&self), 2))
+        f64::sqrt(f64::powi(self.volatility, 2) - self.lambda * f64::powi(Self::delta(self), 2))
     }
 }
 
