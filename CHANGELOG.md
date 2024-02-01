@@ -6,6 +6,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.0.44](https://github.com/avhz/RustQuant/compare/v0.0.43...v0.0.44) - 2024-02-01
+
+### Added
+- Implied Volatility implementation (Let's Be Rational - Peter Jaeckel)
+
+### Other
+- Merge remote-tracking branch 'refs/remotes/origin/main'
+
 ## [0.0.43](https://github.com/avhz/RustQuant/compare/v0.0.42...v0.0.43) - 2024-01-31
 
 ### Added
