@@ -6,6 +6,40 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.0.43](https://github.com/avhz/RustQuant/compare/v0.0.42...v0.0.43) - 2024-01-31
+
+### Added
+- improve fft fbm generator
+
+### Fixed
+- fix naming THRESHOLD
+- fix Gaussian cdf test, values as sympy and mpmath fix
+- missing docs
+- build error
+- resolve timedependent issues
+
+### Other
+- Slight re-factor of IV module.
+- Merge pull request [#174](https://github.com/avhz/RustQuant/pull/174) from lukaskiss222/feature/implied_volatility
+- separators
+- remove neg before comparator + new test case
+- solve most clippy issues
+- errorfunctions erfc for cdf
+- small fixes
+- must use
+- apply clippy
+- remove dbg
+- Add middle box test
+- documentation fix
+- documentation
+- extreme case precision 1e-13
+- ITM + extreme case price ~ 1e-19
+- OTM passed
+- sync merton jump
+- Merge pull request [#171](https://github.com/avhz/RustQuant/pull/171) from lukaskiss222/fix-inverse-gaussian-cdf
+- Merge pull request [#146](https://github.com/avhz/RustQuant/pull/146) from dancixx/main
+- Merge remote-tracking branch 'upstream'
+
 ## [0.0.42](https://github.com/avhz/RustQuant/compare/v0.0.41...v0.0.42) - 2023-12-21
 
 ### Fixed
