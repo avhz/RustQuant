@@ -120,7 +120,7 @@ impl CashOrNothingOption {
 mod tests {
     use super::*;
     use crate::assert_approx_equal;
-    use std::f64::EPSILON as EPS;
+    use crate::EPS;
 
     #[test]
     fn test_gap_option() {

@@ -59,3 +59,11 @@ pub mod statistics;
 pub mod stochastics;
 pub mod time;
 pub mod trading;
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Epsilon constant for use in testing.
+// It is set to: f64::sqrt(f64::EPSILON)
+// Once `f64::sqrt(f64::EPSILON)` is const, this can be updated.
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+pub(crate) const EPS: f64 = 0.000_000_014_901_161_193_847_656;

@@ -206,8 +206,9 @@ impl BarrierOption {
 mod tests {
     use super::*;
     use crate::assert_approx_equal;
+    use crate::EPS;
 
-    use std::f64::EPSILON as EPS;
+    // use std::f64::EPSILON as EPS;
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // Initial underlying price ABOVE the barrier.

@@ -433,7 +433,7 @@ impl BlackScholesMerton {
 mod tests_black_scholes_merton {
     use super::*;
     use crate::assert_approx_equal;
-    use std::f64::EPSILON as EPS;
+    use crate::EPS;
     use time::Duration;
 
     #[test]
