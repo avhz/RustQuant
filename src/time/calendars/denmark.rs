@@ -10,7 +10,7 @@
 use crate::time::Calendar;
 use time::{Month, OffsetDateTime};
 
-/// Czech Republic calendar.
+/// Kingdom Of Denmark calendar.
 pub struct Denmark;
 
 impl Calendar for Denmark {
