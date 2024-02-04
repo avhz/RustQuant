@@ -28,7 +28,7 @@
 
 A Rust library for quantitative finance.
 
-:dart: I want to hit a stable `v0.1.0` by the end of 2023, so any feedback or contributions are strongly welcomed!
+:dart: If you are an experienced quant developer in any language and would like to help out, feel free to contact me!
 
 <div align="center">
 
@@ -65,18 +65,6 @@ See [/examples](./examples) for various uses of RustQuant. You can run them with
 ```bash
 cargo run --example <example>
 ```
-
-## :book: References
-
-- John C. Hull - *Options, Futures, and Other Derivatives*
-- Damiano Brigo & Fabio Mercurio - *Interest Rate Models - Theory and Practice (With Smile, Inflation and Credit)*
-- Paul Glasserman - *Monte Carlo Methods in Financial Engineering*
-- Andreas Griewank & Andrea Walther - *Evaluating Derivatives - Principles and Techniques of Algorithmic Differentiation*
-- Steven E. Shreve - *Stochastic Calculus for Finance II: Continuous-Time Models*
-- Espen Gaarder Haug - *Option Pricing Formulas*
-- Antoine Savine - *Modern Computational Finance: AAD and Parallel Simulations*
-- Uwe Naumann - *The Art of Differentiating Computer Programs: An Introduction to Algorithmic Differentiation*
-- Jessica James & Nick Webber - *Interest Rate Modelling*
 
 > [!NOTE]  
 > Disclaimer: This is currently a free-time project and not a professional financial software library. Nothing in this library should be taken as financial advice, and I do not recommend you to use it for trading or making financial decisions.
