@@ -7,34 +7,7 @@
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use crate::stochastics::{StochasticProcess, TimeDependent};
-
-/// Struct containing the Hull-White process parameters.
-pub struct HullWhite {
-    /// Long run mean ($\alpha)
-    pub alpha: TimeDependent,
-
-    /// Non-negative diffusion, or instantaneous volatility ($\sigma$).
-    pub sigma: TimeDependent,
-
-    /// Mean reversion function (non-negative) ($\theta(t)$)
-    pub theta: TimeDependent,
-}
-
-impl HullWhite {
-    /// Create a new Hull-White process.
-    pub fn new(
-        alpha: impl Into<TimeDependent>,
-        sigma: impl Into<TimeDependent>,
-        theta: impl Into<TimeDependent>,
-    ) -> Self {
-        Self {
-            alpha: alpha.into(),
-            sigma: sigma.into(),
-            theta: theta.into(),
-        }
-    }
-}
+use crate::{models::hull_white::HullWhite, stochastics::process::StochasticProcess};
 
 impl StochasticProcess for HullWhite {
     fn drift(&self, x: f64, t: f64) -> f64 {

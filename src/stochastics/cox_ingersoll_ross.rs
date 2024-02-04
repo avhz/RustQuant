@@ -7,36 +7,8 @@
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use crate::stochastics::{StochasticProcess, TimeDependent};
-
-/// Struct containing the Ornstein-Uhlenbeck process parameters.
-#[derive(Debug)]
-pub struct CoxIngersollRoss {
-    /// The long-run mean ($\mu$).
-    pub mu: TimeDependent,
-
-    /// The diffusion, or instantaneous volatility ($\sigma$).
-    pub sigma: TimeDependent,
-
-    /// Mean reversion parameter ($\theta$).
-    /// Defines the speed at which the process reverts to the long-run mean.
-    pub theta: TimeDependent,
-}
-
-impl CoxIngersollRoss {
-    /// Create a new Cox-Ingersoll-Ross process.
-    pub fn new(
-        mu: impl Into<TimeDependent>,
-        sigma: impl Into<TimeDependent>,
-        theta: impl Into<TimeDependent>,
-    ) -> Self {
-        Self {
-            mu: mu.into(),
-            sigma: sigma.into(),
-            theta: theta.into(),
-        }
-    }
-}
+use crate::models::cox_ingersoll_ross::CoxIngersollRoss;
+use crate::stochastics::process::StochasticProcess;
 
 impl StochasticProcess for CoxIngersollRoss {
     fn drift(&self, x: f64, t: f64) -> f64 {

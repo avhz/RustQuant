@@ -7,26 +7,8 @@
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use crate::stochastics::{StochasticProcess, TimeDependent};
-
-/// Struct containing the Arithmetic Brownian Motion parameters.
-pub struct ArithmeticBrownianMotion {
-    /// The drift ($\mu$) in percentage.
-    pub mu: TimeDependent,
-
-    /// The volatility ($\sigma$) in percentage.
-    pub sigma: TimeDependent,
-}
-
-impl ArithmeticBrownianMotion {
-    /// Create a new Arithmetic Brownian Motion process.
-    pub fn new(mu: impl Into<TimeDependent>, sigma: impl Into<TimeDependent>) -> Self {
-        Self {
-            mu: mu.into(),
-            sigma: sigma.into(),
-        }
-    }
-}
+use crate::models::arithmetic_brownian_motion::ArithmeticBrownianMotion;
+use crate::stochastics::process::StochasticProcess;
 
 impl StochasticProcess for ArithmeticBrownianMotion {
     fn drift(&self, _x: f64, t: f64) -> f64 {

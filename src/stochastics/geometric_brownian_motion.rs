@@ -7,26 +7,10 @@
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use crate::stochastics::{StochasticProcess, TimeDependent};
-
-/// Struct containing the Geometric Brownian Motion parameters.
-pub struct GeometricBrownianMotion {
-    /// The drift ($\mu$) in percentage.
-    pub mu: TimeDependent,
-
-    /// The volatility ($\sigma$) in percentage.
-    pub sigma: TimeDependent,
-}
-
-impl GeometricBrownianMotion {
-    /// Create a new Geometric Brownian Motion process.
-    pub fn new(mu: impl Into<TimeDependent>, sigma: impl Into<TimeDependent>) -> Self {
-        Self {
-            mu: mu.into(),
-            sigma: sigma.into(),
-        }
-    }
-}
+use crate::{
+    models::geometric_brownian_motion::GeometricBrownianMotion,
+    stochastics::process::StochasticProcess,
+};
 
 impl StochasticProcess for GeometricBrownianMotion {
     fn drift(&self, x: f64, t: f64) -> f64 {

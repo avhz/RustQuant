@@ -7,48 +7,15 @@
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use crate::stochastics::*;
+use super::{
+    fractional_brownian_motion::FractionalProcessGeneratorMethod,
+    process::{StochasticProcess, Trajectories},
+};
+use crate::models::{
+    fractional_brownian_motion::FractionalBrownianMotion,
+    fractional_cox_ingersoll_ross::FractionalCoxIngersollRoss,
+};
 use rayon::prelude::*;
-
-/// Struct containing the Ornstein-Uhlenbeck process parameters.
-pub struct FractionalCoxIngersollRoss {
-    /// The long-run mean ($\mu$).
-    pub mu: TimeDependent,
-
-    /// The diffusion, or instantaneous volatility ($\sigma$).
-    pub sigma: TimeDependent,
-
-    /// Mean reversion parameter ($\theta$).
-    /// Defines the speed at which the process reverts to the long-run mean.
-    pub theta: TimeDependent,
-
-    /// Hurst parameter of the process.
-    /// The Hurst parameter is a measure of the long-term memory of the process.
-    pub hurst: f64,
-
-    /// Method to generate Fractional Gaussian Noise.
-    pub method: FractionalProcessGeneratorMethod,
-}
-
-impl FractionalCoxIngersollRoss {
-    /// Create a new Ornstein-Uhlenbeck process.
-    pub fn new(
-        mu: impl Into<TimeDependent>,
-        sigma: impl Into<TimeDependent>,
-        theta: impl Into<TimeDependent>,
-        hurst: f64,
-        method: FractionalProcessGeneratorMethod,
-    ) -> Self {
-        assert!((0.0..=1.0).contains(&hurst));
-        Self {
-            mu: mu.into(),
-            sigma: sigma.into(),
-            theta: theta.into(),
-            hurst,
-            method,
-        }
-    }
-}
 
 impl StochasticProcess for FractionalCoxIngersollRoss {
     fn drift(&self, x: f64, t: f64) -> f64 {
@@ -120,6 +87,8 @@ impl StochasticProcess for FractionalCoxIngersollRoss {
 #[cfg(test)]
 mod test_fractional_cir {
     use super::*;
+    use crate::models::fractional_cox_ingersoll_ross::FractionalCoxIngersollRoss;
+    use crate::models::fractional_ornstein_uhlenbeck::FractionalOrnsteinUhlenbeck;
 
     #[test]
     #[ignore = "Hard to test."]

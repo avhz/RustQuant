@@ -7,36 +7,8 @@
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use crate::stochastics::{StochasticProcess, TimeDependent};
-
-/// Struct containing the CEV process parameters.
-pub struct ConstantElasticityOfVariance {
-    /// The long-run mean ($\mu$).
-    pub mu: TimeDependent,
-
-    /// The diffusion, or instantaneous volatility ($\sigma$).
-    pub sigma: TimeDependent,
-
-    /// Elasticity parameter.
-    /// Often denoted as $\beta$, $\rho$, or $\gamma$.
-    /// Must be in the unit interval $[0, 1]$.
-    pub elasticity: TimeDependent,
-}
-
-impl ConstantElasticityOfVariance {
-    /// Create a new Cox-Ingersoll-Ross process.
-    pub fn new(
-        mu: impl Into<TimeDependent>,
-        sigma: impl Into<TimeDependent>,
-        elasticity: impl Into<TimeDependent>,
-    ) -> Self {
-        Self {
-            mu: mu.into(),
-            sigma: sigma.into(),
-            elasticity: elasticity.into(),
-        }
-    }
-}
+use crate::models::constant_elasticity_of_variance::ConstantElasticityOfVariance;
+use crate::stochastics::process::StochasticProcess;
 
 impl StochasticProcess for ConstantElasticityOfVariance {
     fn drift(&self, x: f64, t: f64) -> f64 {

@@ -7,35 +7,9 @@
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use crate::stochastics::{StochasticProcess, TimeDependent};
-
-/// Struct containing the Ornstein-Uhlenbeck process parameters.
-pub struct OrnsteinUhlenbeck {
-    /// The long-run mean ($\mu$).
-    pub mu: TimeDependent,
-
-    /// The diffusion, or instantaneous volatility ($\sigma$).
-    pub sigma: TimeDependent,
-
-    /// Mean reversion parameter ($\theta$).
-    /// Defines the speed at which the process reverts to the long-run mean.
-    pub theta: TimeDependent,
-}
-
-impl OrnsteinUhlenbeck {
-    /// Create a new Ornstein-Uhlenbeck process.
-    pub fn new(
-        mu: impl Into<TimeDependent>,
-        sigma: impl Into<TimeDependent>,
-        theta: impl Into<TimeDependent>,
-    ) -> Self {
-        Self {
-            mu: mu.into(),
-            sigma: sigma.into(),
-            theta: theta.into(),
-        }
-    }
-}
+use crate::{
+    models::ornstein_uhlenbeck::OrnsteinUhlenbeck, stochastics::process::StochasticProcess,
+};
 
 impl StochasticProcess for OrnsteinUhlenbeck {
     fn drift(&self, x: f64, t: f64) -> f64 {

@@ -19,31 +19,6 @@ use rand::prelude::Distribution;
 use rand::{rngs::StdRng, SeedableRng};
 use rayon::prelude::*;
 use statrs::distribution::Normal;
-use std::fmt::{self, Formatter};
-
-/// A struct that wraps constants and functions into a single type in order to allow for all processes to have time-dependent parameters.
-pub struct TimeDependent(pub Box<dyn Fn(f64) -> f64 + Send + Sync>);
-
-impl fmt::Debug for TimeDependent {
-    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
-        write!(f, "TimeDependent")
-    }
-}
-
-impl From<f64> for TimeDependent {
-    fn from(x: f64) -> Self {
-        Self(Box::new(move |_| x))
-    }
-}
-
-impl<F> From<F> for TimeDependent
-where
-    F: Fn(f64) -> f64 + 'static + Send + Sync,
-{
-    fn from(func: F) -> Self {
-        Self(Box::new(func))
-    }
-}
 
 /// Struct to contain the time points and path values of the process.
 pub struct Trajectories {
@@ -52,6 +27,79 @@ pub struct Trajectories {
 
     /// Vector of process trajectories.
     pub paths: Vec<Vec<f64>>,
+}
+
+/// Trait to implement stochastic volatility processes.
+pub trait StochasticVolatilityProcess: Sync {
+    /// Base method for the asset's drift.
+    fn drift_1(&self, x: f64, t: f64) -> f64;
+
+    /// Base method for the volatility process' drift.
+    fn drift_2(&self, x: f64, t: f64) -> f64;
+
+    /// Base method for the asset's diffusion.
+    fn diffusion_1(&self, x: f64, t: f64) -> f64;
+
+    /// Base method for the volatility process' diffusion.
+    fn diffusion_2(&self, x: f64, t: f64) -> f64;
+
+    /// Simulate via Euler-Maruyama discretisation scheme.
+    fn euler_maruyama(
+        &self,
+        x_0: f64,
+        y_0: f64,
+        t_0: f64,
+        t_n: f64,
+        n_steps: usize,
+        m_paths: usize,
+        parallel: bool,
+    ) -> Trajectories {
+        assert!(t_0 < t_n);
+
+        let dt: f64 = (t_n - t_0) / (n_steps as f64);
+
+        // Initialise empty paths and fill in the time points.
+        let mut x_paths = vec![vec![x_0; n_steps + 1]; m_paths];
+        let mut y_paths = vec![vec![y_0; n_steps + 1]; m_paths];
+        let times: Vec<f64> = (0..=n_steps).map(|t| t_0 + dt * (t as f64)).collect();
+
+        let path_generator = |(x_path, y_path): (&mut Vec<f64>, &mut Vec<f64>)| {
+            let mut rng = rand::thread_rng();
+            let scale = dt.sqrt();
+            let dW: Vec<f64> = Normal::new(0.0, 1.0)
+                .unwrap()
+                .sample_iter(&mut rng)
+                .take(n_steps)
+                .map(|z| z * scale)
+                .collect();
+
+            for t in 0..n_steps {
+                x_path[t + 1] = x_path[t]
+                    + self.drift_1(x_path[t], times[t]) * dt
+                    + self.diffusion_1(x_path[t], times[t]) * dW[t];
+                y_path[t + 1] = y_path[t]
+                    + self.drift_2(y_path[t], times[t]) * dt
+                    + self.diffusion_2(y_path[t], times[t]) * dW[t];
+            }
+        };
+
+        if parallel {
+            x_paths
+                .par_iter_mut()
+                .zip(y_paths.par_iter_mut())
+                .for_each(path_generator);
+        } else {
+            x_paths
+                .iter_mut()
+                .zip(y_paths.iter_mut())
+                .for_each(path_generator);
+        }
+
+        Trajectories {
+            times: times.clone(),
+            paths: x_paths,
+        }
+    }
 }
 
 /// Trait to implement stochastic processes.
@@ -176,8 +224,8 @@ pub trait StochasticProcess: Sync {
 
 #[cfg(test)]
 mod test_process {
-    use super::*;
-    use crate::stochastics::GeometricBrownianMotion;
+    use crate::models::geometric_brownian_motion::GeometricBrownianMotion;
+    use crate::stochastics::process::StochasticProcess;
     use std::time::Instant;
 
     #[test]

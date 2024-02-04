@@ -7,34 +7,8 @@
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use crate::stochastics::{StochasticProcess, TimeDependent};
-
-/// Struct containing the extended Vasicek process parameters.
-pub struct ExtendedVasicek {
-    /// Mean function ($\mu(t)$)
-    pub alpha: TimeDependent,
-
-    /// Non-negative diffusion, or instantaneous time-varying volatility ($\sigma$).
-    pub sigma: TimeDependent,
-
-    /// Mean reversion function ($\theta(t)$)
-    pub theta: TimeDependent,
-}
-
-impl ExtendedVasicek {
-    /// Create a new Hull-White process.
-    pub fn new(
-        alpha: impl Into<TimeDependent>,
-        sigma: impl Into<TimeDependent>,
-        theta: impl Into<TimeDependent>,
-    ) -> Self {
-        Self {
-            alpha: alpha.into(),
-            sigma: sigma.into(),
-            theta: theta.into(),
-        }
-    }
-}
+use crate::models::extended_vasicek::ExtendedVasicek;
+use crate::stochastics::process::StochasticProcess;
 
 impl StochasticProcess for ExtendedVasicek {
     fn drift(&self, x: f64, t: f64) -> f64 {

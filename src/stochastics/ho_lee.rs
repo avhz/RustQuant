@@ -7,26 +7,7 @@
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use crate::stochastics::{StochasticProcess, TimeDependent};
-
-/// Struct containing the Ho-Lee process parameters.
-pub struct HoLee {
-    /// The diffusion, or instantaneous volatility ($\sigma$).
-    pub sigma: TimeDependent,
-
-    /// Non-negative time-varying mean reversion function ($\theta_t$)
-    pub theta: TimeDependent,
-}
-
-impl HoLee {
-    /// Create a new Ho-Lee process.
-    pub fn new(sigma: impl Into<TimeDependent>, theta: impl Into<TimeDependent>) -> Self {
-        Self {
-            sigma: sigma.into(),
-            theta: theta.into(),
-        }
-    }
-}
+use crate::{models::ho_lee::HoLee, stochastics::process::StochasticProcess};
 
 impl StochasticProcess for HoLee {
     fn drift(&self, _x: f64, t: f64) -> f64 {

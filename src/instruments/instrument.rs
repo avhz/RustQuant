@@ -64,7 +64,26 @@ pub trait PathDependentPayoff {
     fn payoff(&self, path: &[f64]) -> f64;
 }
 
-trait Payoff {
-    fn path_dependent(&self, path: &[f64]) -> f64;
-    fn path_independent(&self, path: &[f64]) -> f64;
-}
+// trait Payoff {
+//     fn path_dependent(&self, path: &[f64]) -> f64;
+//     fn path_independent(&self, path: &[f64]) -> f64;
+// }
+
+// struct MonteCarloPricer<PAYOFF, MODEL>
+// where
+//     PAYOFF: crate::instruments::PathDependentPayoff,
+//     MODEL: crate::stochastics::StochasticProcess,
+// {
+//     payoff: PAYOFF,
+//     model: MODEL,
+// }
+
+// impl PathDependentPayoff for EuropeanOption {
+//     fn payoff(&self, path: &[f64]) -> f64 {
+//         let spot = path.last().unwrap();
+//         match self.option_type {
+//             OptionType::Call => (spot - self.strike_price).max(0.0),
+//             OptionType::Put => (self.strike_price - spot).max(0.0),
+//         }
+//     }
+// }

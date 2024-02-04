@@ -7,25 +7,8 @@
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use crate::stochastics::StochasticProcess;
-
-/// Struct containing the Geometric Brownian Motion parameters.
-#[derive(Debug)]
-pub struct BrownianMotion {}
-
-impl Default for BrownianMotion {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-
-impl BrownianMotion {
-    /// Create a new Geometric Brownian Motion process.
-    #[must_use]
-    pub fn new() -> Self {
-        Self {}
-    }
-}
+use crate::models::brownian_motion::BrownianMotion;
+use crate::stochastics::process::StochasticProcess;
 
 impl StochasticProcess for BrownianMotion {
     fn drift(&self, _x: f64, _t: f64) -> f64 {

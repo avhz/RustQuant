@@ -7,7 +7,10 @@
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use crate::stochastics::{StochasticProcess, Trajectories};
+use crate::{
+    models::fractional_brownian_motion::FractionalBrownianMotion,
+    stochastics::process::{StochasticProcess, Trajectories},
+};
 use nalgebra::{DMatrix, DVector, Dim, Dyn, RowDVector};
 use ndarray::{concatenate, prelude::*};
 use ndarray_rand::RandomExt;
@@ -28,34 +31,7 @@ pub enum FractionalProcessGeneratorMethod {
     FFT,
 }
 
-/// Struct containing the Fractional Brownian Motion parameters.
-#[derive(Debug)]
-pub struct FractionalBrownianMotion {
-    /// Hurst parameter of the process.
-    pub hurst: f64,
-    /// Method used to generate the process.
-    pub method: FractionalProcessGeneratorMethod,
-}
-
-impl Default for FractionalBrownianMotion {
-    fn default() -> Self {
-        Self::new(0.5, FractionalProcessGeneratorMethod::FFT)
-    }
-}
-
 impl FractionalBrownianMotion {
-    /// Create a new Fractional Brownian Motion process.
-    ///
-    /// # Panics
-    ///
-    /// Will panic if Hurst parameter is not in [0, 1].
-    #[must_use]
-    pub fn new(hurst: f64, method: FractionalProcessGeneratorMethod) -> Self {
-        assert!((0.0..=1.0).contains(&hurst));
-
-        Self { hurst, method }
-    }
-
     /// Autocovariance function (ACF).
     fn acf_vector(&self, n: usize) -> RowDVector<f64> {
         let h = self.hurst;
@@ -309,7 +285,7 @@ mod test_fractional_brownian_motion {
         let hursts = vec![0.1, 0.3, 0.5, 0.7, 0.9];
 
         for hurst in hursts {
-            let fbm = FractionalBrownianMotion::fgn_cholesky(&fbm, 2000, 1.0);
+            let fbm = FractionalBrownianMotion::fgn_cholesky(&fbm, 1000, 1.0);
             let higuchi_fd = higuchi_fd(&fbm.to_vec(), 10);
             let est_hurst = 2.0 - higuchi_fd;
             print!("hurst: {}, higuchi_fd: {}\n", hurst, est_hurst);

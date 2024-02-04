@@ -7,26 +7,8 @@
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use crate::stochastics::{StochasticProcess, TimeDependent};
-
-/// Struct containing the Black-Derman-Toy process parameters.
-pub struct BlackDermanToy {
-    /// Instantaneous volatility
-    pub sigma: TimeDependent,
-
-    /// Value of underlying at option expiry
-    pub theta: TimeDependent,
-}
-
-impl BlackDermanToy {
-    /// Create a new Black-Derman-Toy process.
-    pub fn new(sigma: impl Into<TimeDependent>, theta: impl Into<TimeDependent>) -> Self {
-        Self {
-            sigma: sigma.into(),
-            theta: theta.into(),
-        }
-    }
-}
+use crate::models::black_derman_toy::BlackDermanToy;
+use crate::stochastics::process::StochasticProcess;
 
 impl StochasticProcess for BlackDermanToy {
     fn drift(&self, x: f64, t: f64) -> f64 {

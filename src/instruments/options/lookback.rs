@@ -9,9 +9,10 @@
 
 use crate::{
     instruments::options::TypeFlag,
+    models::geometric_brownian_motion::GeometricBrownianMotion,
     statistics::distributions::{Distribution, Gaussian},
     statistics::Statistic,
-    stochastics::{GeometricBrownianMotion, StochasticProcess},
+    stochastics::process::StochasticProcess,
 };
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

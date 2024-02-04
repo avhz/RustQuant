@@ -138,7 +138,8 @@ impl YahooFinanceData {
                         .select(vec![
                             col("date"),
                             col("volume"),
-                            (price_columns() / price_columns().shift(1) - lit(1.))
+                            (price_columns() / price_columns().shift(lit(1)) - lit(1.))
+                                .name()
                                 .suffix("_arithmetic"),
                         ])
                         .collect()?,
@@ -153,7 +154,9 @@ impl YahooFinanceData {
                         .select(vec![
                             col("date"),
                             col("volume"),
-                            (price_columns() - price_columns().shift(1)).suffix("_absolute"),
+                            (price_columns() - price_columns().shift(lit(1)))
+                                .name()
+                                .suffix("_absolute"),
                         ])
                         .collect()?,
                 );
@@ -180,7 +183,9 @@ impl YahooFinanceData {
                         .select(vec![
                             col("date"),
                             col("volume"),
-                            (price_columns() - price_columns().shift(1)).suffix("_logarithmic"),
+                            (price_columns() - price_columns().shift(lit(1)))
+                                .name()
+                                .suffix("_logarithmic"),
                         ])
                         .collect()?,
                 );
