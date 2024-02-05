@@ -86,12 +86,6 @@ pub use fft::*;
 /// Interpolation routines.
 pub mod interpolation;
 pub use interpolation::*;
-// pub mod interpolation {
-//     /// Linear interpolation.
-//     pub mod linear_interpolator;
-//     pub use linear_interpolator::*;
-// }
-// pub use interpolation::*;
 
 /// Simple risk/reward measures.
 pub mod risk_reward;

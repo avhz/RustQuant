@@ -7,6 +7,8 @@
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+use std::collections::HashMap;
+
 use time::{Month, OffsetDateTime, Weekday};
 
 /// Calendar trait.
