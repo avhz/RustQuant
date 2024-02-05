@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.0.45](https://github.com/avhz/RustQuant/compare/v0.0.44...v0.0.45) - 2024-02-04
+
+### Other
+- moved references to separate .md file
+- Merge pull request [#181](https://github.com/avhz/RustQuant/pull/181) from maacl/patch-1
+- moved stochastic process models to `models` module.
+
 ## [0.0.44](https://github.com/avhz/RustQuant/compare/v0.0.43...v0.0.44) - 2024-02-01
 
 ### Added
