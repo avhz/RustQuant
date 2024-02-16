@@ -1,20 +1,24 @@
-use time::{Duration, OffsetDateTime};
+use time::macros::date;
 use RustQuant::instruments::options::*;
 
 fn main() {
-    // Also has a new() method.
-    let vanilla_option = EuropeanOption {
-        initial_price: 100.0,
-        strike_price: 110.0,
-        risk_free_rate: 0.05,
-        volatility: 0.2,
-        dividend_rate: 0.02,
-        evaluation_date: None, // Optional field. Defaults to now.
-        expiration_date: OffsetDateTime::now_utc() + Duration::days(365),
+    let option = BlackScholesMerton {
+        cost_of_carry: 0.05,
+        underlying_price: 100.0,
+        strike_price: 100.0,
+        volatility: 0.3,
+        risk_free_rate: 0.03,
+        evaluation_date: None,
+        expiration_date: date!(2024 - 12 - 31),
+        option_type: TypeFlag::Call,
     };
 
-    let prices = vanilla_option.price();
-
-    println!("Call price = \t {}", prices.0);
-    println!("Put price = \t {}", prices.1);
+    // Print the option price and greeks.
+    // There are more greeks available, but these are the most common.
+    println!("Call price = \t {}", option.price());
+    println!("Call delta = \t {}", option.delta());
+    println!("Call gamma = \t {}", option.gamma());
+    println!("Call theta = \t {}", option.theta());
+    println!("Call vega = \t {}", option.vega());
+    println!("Call rho = \t {}", option.rho());
 }

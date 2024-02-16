@@ -11,11 +11,11 @@
 // FORWARD START OPTION STRUCT
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use time::OffsetDateTime;
+use time::Date;
 
 use crate::{
     statistics::distributions::{Distribution, Gaussian},
-    time::{DayCountConvention, DayCounter},
+    time::{today, DayCountConvention, DayCounter},
 };
 
 /// Forward Start Option parameters struct
@@ -37,12 +37,12 @@ pub struct ForwardStartOption {
     /// `q` - Dividend rate.
     pub dividend_rate: f64,
     /// `valuation_date` - Valuation date.
-    pub valuation_date: Option<OffsetDateTime>,
+    pub valuation_date: Option<Date>,
 
     /// `start` - Time until the start of the option (`T` in most literature).
-    pub start: OffsetDateTime,
+    pub start: Date,
     /// `end` - Time until the end of the option (`t` in most literature).
-    pub end: OffsetDateTime,
+    pub end: Date,
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -63,17 +63,11 @@ impl ForwardStartOption {
         let v = self.volatility;
         let q = self.dividend_rate;
 
-        let T = DayCounter::day_count_factor(
-            self.valuation_date.unwrap_or(OffsetDateTime::now_utc()),
-            self.end,
-            &DayCountConvention::Actual365,
-        );
+        let T = DayCountConvention::default()
+            .day_count_factor(self.valuation_date.unwrap_or(today()), self.end);
 
-        let t = DayCounter::day_count_factor(
-            self.valuation_date.unwrap_or(OffsetDateTime::now_utc()),
-            self.start,
-            &DayCountConvention::Actual365,
-        );
+        let t = DayCountConvention::default()
+            .day_count_factor(self.valuation_date.unwrap_or(today()), self.start);
 
         let b = r - q;
 
@@ -105,14 +99,13 @@ impl ForwardStartOption {
 
 #[cfg(test)]
 mod tests_forward_start {
-    use crate::assert_approx_equal;
-
     use super::*;
+    use crate::assert_approx_equal;
 
     #[test]
     fn TEST_forward_start_option() {
-        let start = OffsetDateTime::now_utc() + time::Duration::days(91);
-        let end = OffsetDateTime::now_utc() + time::Duration::days(365);
+        let start = today() + time::Duration::days(91);
+        let end = today() + time::Duration::days(365);
 
         let ForwardStart = ForwardStartOption {
             initial_price: 60.0,

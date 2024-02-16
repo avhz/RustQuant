@@ -13,9 +13,9 @@
 
 use crate::instruments::options::TypeFlag;
 use crate::statistics::distributions::{Distribution, Gaussian};
-use crate::time::{DayCountConvention, DayCounter};
+use crate::time::{today, DayCountConvention, DayCounter};
 
-use time::OffsetDateTime;
+use time::Date;
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // STRUCTS, ENUMS, AND TRAITS
@@ -31,9 +31,9 @@ pub struct Bachelier {
     pub volatility: f64,
 
     /// Evaluation date (optional, defaults to today t = 0).
-    pub evaluation_date: Option<OffsetDateTime>,
+    pub evaluation_date: Option<Date>,
     /// The options expiration date.
-    pub expiration_date: OffsetDateTime,
+    pub expiration_date: Date,
 
     /// Call or put flag.
     pub option_type: TypeFlag,
@@ -54,9 +54,9 @@ pub struct ModifiedBachelier {
     pub dividend_yield: f64,
 
     /// Evaluation date (optional, defaults to today t = 0).
-    pub evaluation_date: Option<OffsetDateTime>,
+    pub evaluation_date: Option<Date>,
     /// The options expiration date.
-    pub expiration_date: OffsetDateTime,
+    pub expiration_date: Date,
 
     /// Call or put flag.
     pub option_type: TypeFlag,
@@ -73,8 +73,8 @@ impl Bachelier {
         underlying_price: f64,
         strike_price: f64,
         volatility: f64,
-        evaluation_date: Option<OffsetDateTime>,
-        expiration_date: OffsetDateTime,
+        evaluation_date: Option<Date>,
+        expiration_date: Date,
         option_type: TypeFlag,
     ) -> Self {
         Self {
@@ -95,10 +95,9 @@ impl Bachelier {
         let v = self.volatility;
 
         // Compute time to maturity.
-        let T = DayCounter::day_count_factor(
-            self.evaluation_date.unwrap_or(OffsetDateTime::now_utc()),
+        let T = DayCountConvention::default().day_count_factor(
+            self.evaluation_date.unwrap_or(today()),
             self.expiration_date,
-            &DayCountConvention::Actual365,
         );
 
         let d1 = (S - K) / (v * T.sqrt());
@@ -122,8 +121,8 @@ impl ModifiedBachelier {
         volatility: f64,
         risk_free_rate: f64,
         dividend_yield: f64,
-        evaluation_date: Option<OffsetDateTime>,
-        expiration_date: OffsetDateTime,
+        evaluation_date: Option<Date>,
+        expiration_date: Date,
         option_type: TypeFlag,
     ) -> Self {
         Self {
@@ -147,10 +146,9 @@ impl ModifiedBachelier {
         let r = self.risk_free_rate;
 
         // Compute time to maturity.
-        let T = DayCounter::day_count_factor(
-            self.evaluation_date.unwrap_or(OffsetDateTime::now_utc()),
+        let T = DayCountConvention::default().day_count_factor(
+            self.evaluation_date.unwrap_or(today()),
             self.expiration_date,
-            &DayCountConvention::Actual365,
         );
 
         let d1 = (S - K) / (v * T.sqrt());
@@ -181,7 +179,7 @@ mod tests_bachelier {
             100.0,
             0.2,
             None,
-            OffsetDateTime::now_utc() + Duration::days(365),
+            today() + Duration::days(365),
             TypeFlag::Call,
         );
         assert_approx_equal!(bachelier.price(), 0.079_679_081_860_151_37, 1e-10);
@@ -196,7 +194,7 @@ mod tests_bachelier {
             0.05,
             0.0,
             None,
-            OffsetDateTime::now_utc() + Duration::days(365),
+            today() + Duration::days(365),
             TypeFlag::Call,
         );
         assert_approx_equal!(bachelier.price(), 2.511_692_140_521_875, 1e-10);

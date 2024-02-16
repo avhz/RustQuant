@@ -9,10 +9,10 @@
 
 use crate::{
     math::integrate,
-    time::{DayCountConvention, DayCounter},
+    time::{today, DayCountConvention, DayCounter},
 };
 use num_complex::Complex;
-use time::OffsetDateTime;
+use time::{Date, OffsetDateTime};
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // FUNCTIONS
@@ -31,16 +31,13 @@ pub fn heston(
     sigma: f64, // Volatility-of-volatility.
     kappa: f64, // Mean reversion rate in the variance process' drift term.
     theta: f64, // Long run mean of the variance process.
-    evaluation_date: Option<OffsetDateTime>,
-    expiration_date: OffsetDateTime,
+    evaluation_date: Option<Date>,
+    expiration_date: Date,
 ) -> (f64, f64) {
     // Time to expiry.
 
-    let tau = DayCounter::day_count_factor(
-        evaluation_date.unwrap_or(OffsetDateTime::now_utc()),
-        expiration_date,
-        &DayCountConvention::Actual365,
-    );
+    let tau = DayCountConvention::default()
+        .day_count_factor(evaluation_date.unwrap_or(today()), expiration_date);
 
     // Market price of volatility risk (set to 0 for simplicity).
     // Should probably include, though, since for equity options it has been shown
@@ -158,7 +155,7 @@ mod tests {
     #[test]
     fn test_heston_options() {
         // 6 Month expiry.
-        let expiry_date = OffsetDateTime::now_utc() + Duration::days(183);
+        let expiry_date = today() + Duration::days(183);
 
         let heston1 = heston(
             100.0,

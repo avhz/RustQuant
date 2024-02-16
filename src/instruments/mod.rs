@@ -95,38 +95,46 @@ pub use bonds::*;
 pub mod options {
     pub use crate::instruments::options::{
         asian::*, bachelier::*, barrier::*, binary::*, binomial::*, black_scholes_merton::*,
-        european::*, forward_start::*, greeks::*, heston::*, implied_volatility::*, lookback::*,
-        merton_jump_diffusion::*, option::*, power::*,
+        forward_start::*, heston::*, implied_volatility::*, lookback::*, merton_jump_diffusion::*,
+        option::*, power::*,
     };
 
     /// Asian option pricers.
     pub mod asian;
+
     /// Bachelier option pricer.
     pub mod bachelier;
+
     /// Barrier option pricers.
     pub mod barrier;
+
     /// Binary option pricers.
     pub mod binary;
+
     /// Binomial option pricers.
     pub mod binomial;
+
     /// Generalised Black-Scholes-Merton option pricer.
     pub mod black_scholes_merton;
-    /// European option pricers.
-    pub mod european;
+
     /// Forward start options pricers.
     pub mod forward_start;
-    /// European option Greeks/sensitivities.
-    pub mod greeks;
+
     /// Heston model option pricer.
     pub mod heston;
+
     /// Implied volatility functions.
     pub mod implied_volatility;
+
     /// Lookback option pricers.
     pub mod lookback;
+
     /// Merton (1976) jump diffusion model.
     pub mod merton_jump_diffusion;
+
     /// Base option traits.
     pub mod option;
+
     /// Power option pricers.
     pub mod power;
 }

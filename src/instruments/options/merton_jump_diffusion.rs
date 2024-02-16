@@ -13,8 +13,8 @@
 
 use super::TypeFlag;
 use crate::instruments::BlackScholesMerton;
-use crate::time::{DayCountConvention, DayCounter};
-use time::OffsetDateTime;
+use crate::time::{today, DayCountConvention, DayCounter};
+use time::Date;
 
 /// Merton (1976) jump diffusion model parameters.
 #[allow(clippy::module_name_repetitions)]
@@ -42,10 +42,10 @@ pub struct Merton1976 {
     pub type_flag: TypeFlag,
 
     /// `evaluation_date` - Valuation date.
-    pub evaluation_date: Option<OffsetDateTime>,
+    pub evaluation_date: Option<Date>,
 
     /// `expiration_date` - Valuation date.
-    pub expiration_date: OffsetDateTime,
+    pub expiration_date: Date,
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -67,10 +67,9 @@ impl Merton1976 {
             self.type_flag,
         );
 
-        let tau = DayCounter::day_count_factor(
-            self.evaluation_date.unwrap_or(OffsetDateTime::now_utc()),
+        let tau = DayCountConvention::default().day_count_factor(
+            self.evaluation_date.unwrap_or(today()),
             self.expiration_date,
-            &DayCountConvention::Actual365,
         );
 
         let mut price = 0_f64;
@@ -121,7 +120,7 @@ mod tests_merton_1976 {
             gamma: 0.25,
             type_flag: TypeFlag::Call,
             evaluation_date: None,
-            expiration_date: OffsetDateTime::now_utc() + time::Duration::days(36),
+            expiration_date: today() + time::Duration::days(36),
         };
 
         // Price example from Haug's book.

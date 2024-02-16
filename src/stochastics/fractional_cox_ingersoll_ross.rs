@@ -87,7 +87,6 @@ impl StochasticProcess for FractionalCoxIngersollRoss {
 #[cfg(test)]
 mod test_fractional_cir {
     use super::*;
-    use crate::models::fractional_cox_ingersoll_ross::FractionalCoxIngersollRoss;
     use crate::models::fractional_ornstein_uhlenbeck::FractionalOrnsteinUhlenbeck;
 
     #[test]

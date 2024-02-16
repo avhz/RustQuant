@@ -1,12 +1,13 @@
-use time::{Duration, OffsetDateTime};
+use time::{Date, Duration, OffsetDateTime};
 use RustQuant::{
     curves::{Curve, YieldCurve},
     plot_vector,
+    time::today,
 };
 
 fn main() {
     // Initial date of the curve (today).
-    let t0 = OffsetDateTime::now_utc();
+    let t0 = today();
 
     // Create a treasury yield curve with 8 points (3m, 6m, 1y, 2y, 5y, 10y, 30y).
     // Values from Bloomberg: <https://www.bloomberg.com/markets/rates-bonds/government-bonds/us>
@@ -27,7 +28,7 @@ fn main() {
     let dates_to_plot = (91..(30 * 365))
         .step_by(10)
         .map(|i| t0 + Duration::days(i))
-        .collect::<Vec<OffsetDateTime>>();
+        .collect::<Vec<Date>>();
 
     // Compute the discount factors.
     let discount_factors = yield_curve.discount_factors(&dates_to_plot);

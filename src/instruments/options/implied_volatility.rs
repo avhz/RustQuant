@@ -1054,9 +1054,9 @@ pub(crate) fn implied_volatility_from_a_transformed_rational_guess_with_limited_
 #[cfg(test)]
 mod test_lets_be_rational {
     use super::*;
-    use crate::{assert_approx_equal, instruments::BlackScholesMerton};
+    use crate::{assert_approx_equal, instruments::BlackScholesMerton, time::today};
     use std::panic;
-    use time::{Duration, OffsetDateTime};
+    use time::Duration;
 
     // For normal prices, the precision is even higher, but for extrame cases, we need to be more relaxed
     const PRECISION: f64 = 1e-13;
@@ -1081,7 +1081,7 @@ mod test_lets_be_rational {
             0.0,
             risk_free_rate,
             None,
-            OffsetDateTime::now_utc() + Duration::days(days),
+            today() + Duration::days(days),
             option_type,
         );
         let T = bs.year_fraction();
@@ -1181,7 +1181,7 @@ mod test_lets_be_rational {
             0.04,
             0.05,
             None,
-            OffsetDateTime::now_utc() + Duration::days(365),
+            today() + Duration::days(365),
             TypeFlag::Call,
         );
         let s = implied_volatility(

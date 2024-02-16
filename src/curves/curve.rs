@@ -11,9 +11,9 @@
 // IMPORTS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use crate::time::{DayCountConvention, DayCounter};
+use crate::time::DayCountConvention;
 use std::{collections::BTreeMap, time::Duration};
-use time::OffsetDateTime;
+use time::Date;
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Structs, enums, and traits
@@ -23,13 +23,13 @@ use time::OffsetDateTime;
 #[allow(clippy::module_name_repetitions)]
 pub trait CurveModel {
     /// Returns the forward rate for a given date.
-    fn forward_rate(&self, date: OffsetDateTime) -> f64;
+    fn forward_rate(&self, date: Date) -> f64;
 
     /// Returns the spot rate for a given date.
-    fn spot_rate(&self, date: OffsetDateTime) -> f64;
+    fn spot_rate(&self, date: Date) -> f64;
 
     /// Returns the discount factor for a given date.
-    fn discount_factor(&self, date: OffsetDateTime) -> f64;
+    fn discount_factor(&self, date: Date) -> f64;
 
     /// Calibrates the model to a set of market rates.
     #[must_use]
@@ -39,16 +39,16 @@ pub trait CurveModel {
 /// Base trait for all curves to implement.
 pub trait Curve {
     /// Initial date of the curve.
-    fn initial_date(&self) -> OffsetDateTime;
+    fn initial_date(&self) -> Date;
 
     /// Final date of the curve.
-    fn terminal_date(&self) -> OffsetDateTime;
+    fn terminal_date(&self) -> Date;
 
     /// Updates the rate for the given date.
-    fn update_rate(&mut self, date: OffsetDateTime, rate: f64);
+    fn update_rate(&mut self, date: Date, rate: f64);
 
     /// Create a new curve from a set of dates and rates.
-    fn from_dates_and_rates(dates: &[OffsetDateTime], rates: &[f64]) -> Self;
+    fn from_dates_and_rates(dates: &[Date], rates: &[f64]) -> Self;
 
     /// Create a new curve from an initial date, a set of rates, and a set of
     /// durations.
@@ -58,7 +58,7 @@ pub trait Curve {
     /// - n rates
     /// - n-1 durations
     fn from_initial_date_rates_and_durations(
-        initial_date: OffsetDateTime,
+        initial_date: Date,
         rates: &[f64],
         durations: &[Duration],
     ) -> Self;
@@ -66,7 +66,7 @@ pub trait Curve {
     /// Function to find the interval of dates that contains the given date.
     /// The interval is defined by the two dates that are closest to the given
     /// date, just before and just after.
-    fn find_date_interval(&self, date: OffsetDateTime) -> (OffsetDateTime, OffsetDateTime);
+    fn find_date_interval(&self, date: Date) -> (Date, Date);
 
     /// Returns the rate for the given date, using linear interpolation for
     /// dates between the curve's initial and terminal dates.
@@ -81,7 +81,7 @@ pub trait Curve {
     /// Note: there must be at least two points in the curve, otherwise
     /// we consider the curve to be a flat rate, and return the same rate
     /// for all dates.
-    fn rate(&self, date: OffsetDateTime) -> f64;
+    fn rate(&self, date: Date) -> f64;
 
     /// Returns the discount factor for the given date.
     /// This is a convenience function that calls [`rate`](Curve::rate) to get the rate for
@@ -90,9 +90,8 @@ pub trait Curve {
     /// $$
     /// p(t) = e^{- r \cdot t}
     /// $$
-    fn discount_factor(&self, date: OffsetDateTime) -> f64 {
-        let t =
-            DayCounter::day_count_factor(self.initial_date(), date, &DayCountConvention::Actual365);
+    fn discount_factor(&self, date: Date) -> f64 {
+        let t = DayCountConvention::default().day_count_factor(self.initial_date(), date);
 
         f64::exp(-self.rate(date) * t)
     }
@@ -100,7 +99,7 @@ pub trait Curve {
     /// Returns multiple discount factors for the given dates.
     /// This is a convenience function that calls [`discount_factor`](Curve::discount_factor) for each
     /// date.
-    fn discount_factors(&self, dates: &[OffsetDateTime]) -> Vec<f64> {
+    fn discount_factors(&self, dates: &[Date]) -> Vec<f64> {
         dates
             .iter()
             .map(|date| self.discount_factor(*date))
@@ -115,7 +114,7 @@ pub struct YieldCurve {
     /// The dates are the keys and the rates are the values.
     /// The reason for using a [BTreeMap] is that it is sorted by date,
     /// which makes sense for a term structure.
-    pub rates: BTreeMap<OffsetDateTime, f64>,
+    pub rates: BTreeMap<Date, f64>,
     // /// A model for the curve.
     // pub model: Option<M>,
 }
@@ -138,27 +137,27 @@ pub enum CurveError {
 impl YieldCurve {
     /// Creates a new yield curve.
     #[must_use]
-    pub fn new(rates: BTreeMap<OffsetDateTime, f64>) -> Self {
+    pub fn new(rates: BTreeMap<Date, f64>) -> Self {
         Self { rates }
     }
 }
 
 impl Curve for YieldCurve {
-    fn initial_date(&self) -> OffsetDateTime {
+    fn initial_date(&self) -> Date {
         *self.rates.keys().min().unwrap()
     }
 
-    fn terminal_date(&self) -> OffsetDateTime {
+    fn terminal_date(&self) -> Date {
         *self.rates.keys().max().unwrap()
     }
 
     #[allow(clippy::similar_names)]
-    fn update_rate(&mut self, date: OffsetDateTime, rate: f64) {
+    fn update_rate(&mut self, date: Date, rate: f64) {
         self.rates.insert(date, rate);
     }
 
     #[allow(clippy::similar_names)]
-    fn from_dates_and_rates(dates: &[OffsetDateTime], rates: &[f64]) -> Self {
+    fn from_dates_and_rates(dates: &[Date], rates: &[f64]) -> Self {
         let mut rates_map = BTreeMap::new();
 
         for (date, rate) in dates.iter().zip(rates.iter()) {
@@ -170,7 +169,7 @@ impl Curve for YieldCurve {
 
     #[allow(clippy::similar_names)]
     fn from_initial_date_rates_and_durations(
-        initial_date: OffsetDateTime,
+        initial_date: Date,
         rates: &[f64],
         durations: &[Duration],
     ) -> Self {
@@ -183,7 +182,7 @@ impl Curve for YieldCurve {
         Self::from_dates_and_rates(&dates, rates)
     }
 
-    fn rate(&self, date: OffsetDateTime) -> f64 {
+    fn rate(&self, date: Date) -> f64 {
         let n = self.rates.len();
 
         match n {
@@ -198,7 +197,7 @@ impl Curve for YieldCurve {
         }
     }
 
-    fn find_date_interval(&self, date: OffsetDateTime) -> (OffsetDateTime, OffsetDateTime) {
+    fn find_date_interval(&self, date: Date) -> (Date, Date) {
         if date == self.initial_date() || date == self.terminal_date() {
             return (date, date);
         }
@@ -217,14 +216,16 @@ impl Curve for YieldCurve {
 #[cfg(test)]
 mod tests_curves {
     use super::*;
+    use crate::time::today;
     use std::collections::BTreeMap;
     use time::Duration;
+    use time::OffsetDateTime;
 
     #[test]
     fn test_yield_curve_creation() {
         let mut rates = BTreeMap::new();
-        rates.insert(OffsetDateTime::now_utc() + Duration::days(30), 0.025);
-        rates.insert(OffsetDateTime::now_utc() + Duration::days(60), 0.03);
+        rates.insert(today() + Duration::days(30), 0.025);
+        rates.insert(today() + Duration::days(60), 0.03);
 
         let yield_curve = YieldCurve::new(rates.clone());
 
@@ -234,42 +235,54 @@ mod tests_curves {
     #[test]
     fn test_yield_curve_initial_date() {
         let mut rates = BTreeMap::new();
-        rates.insert(OffsetDateTime::UNIX_EPOCH + Duration::days(30), 0.025);
-        rates.insert(OffsetDateTime::UNIX_EPOCH + Duration::days(60), 0.03);
+        rates.insert(
+            OffsetDateTime::UNIX_EPOCH.date() + Duration::days(30),
+            0.025,
+        );
+        rates.insert(OffsetDateTime::UNIX_EPOCH.date() + Duration::days(60), 0.03);
 
         let yield_curve = YieldCurve::new(rates);
         let initial_date = yield_curve.initial_date();
 
         assert_eq!(
             initial_date,
-            OffsetDateTime::UNIX_EPOCH + Duration::days(30)
+            OffsetDateTime::UNIX_EPOCH.date() + Duration::days(30)
         );
     }
 
     #[test]
     fn test_yield_curve_final_date() {
         let mut rates = BTreeMap::new();
-        rates.insert(OffsetDateTime::UNIX_EPOCH + Duration::days(30), 0.025);
-        rates.insert(OffsetDateTime::UNIX_EPOCH + Duration::days(60), 0.03);
+        rates.insert(
+            OffsetDateTime::UNIX_EPOCH.date() + Duration::days(30),
+            0.025,
+        );
+        rates.insert(OffsetDateTime::UNIX_EPOCH.date() + Duration::days(60), 0.03);
 
         let yield_curve = YieldCurve::new(rates);
         let final_date = yield_curve.terminal_date();
 
-        assert_eq!(final_date, OffsetDateTime::UNIX_EPOCH + Duration::days(60));
+        assert_eq!(
+            final_date,
+            OffsetDateTime::UNIX_EPOCH.date() + Duration::days(60)
+        );
     }
 
     #[test]
     fn test_find_date_interval() {
         let mut rates = BTreeMap::new();
 
-        rates.insert(OffsetDateTime::UNIX_EPOCH + Duration::days(30), 0.025);
-        rates.insert(OffsetDateTime::UNIX_EPOCH + Duration::days(60), 0.03);
+        rates.insert(
+            OffsetDateTime::UNIX_EPOCH.date() + Duration::days(30),
+            0.025,
+        );
+        rates.insert(OffsetDateTime::UNIX_EPOCH.date() + Duration::days(60), 0.03);
 
         let yield_curve = YieldCurve::new(rates);
 
-        let date1 = OffsetDateTime::UNIX_EPOCH + Duration::days(30);
-        let date2 = OffsetDateTime::UNIX_EPOCH + Duration::days(45);
-        let date3 = OffsetDateTime::UNIX_EPOCH + Duration::days(60);
+        let date1 = OffsetDateTime::UNIX_EPOCH.date() + Duration::days(30);
+        let date2 = OffsetDateTime::UNIX_EPOCH.date() + Duration::days(45);
+        let date3 = OffsetDateTime::UNIX_EPOCH.date() + Duration::days(60);
 
         let interval1 = yield_curve.find_date_interval(date1);
         let interval2 = yield_curve.find_date_interval(date2);
@@ -284,7 +297,7 @@ mod tests_curves {
     #[test]
     fn test_yield_curve_discount_factor() {
         // Initial date of the curve.
-        let t0 = OffsetDateTime::UNIX_EPOCH;
+        let t0 = OffsetDateTime::UNIX_EPOCH.date();
 
         // Create a yield curve with 8 points.
         let rate_vec = vec![0.025, 0.03, 0.035, 0.04, 0.045, 0.05, 0.055, 0.06];
@@ -304,9 +317,9 @@ mod tests_curves {
         println!("Curve: {:?}", yield_curve.rates);
 
         // Test the discount factor for a dates inside the curve's range.
-        let date1 = OffsetDateTime::UNIX_EPOCH + Duration::days(45);
-        let date2 = OffsetDateTime::UNIX_EPOCH + Duration::days(80);
-        let date3 = OffsetDateTime::UNIX_EPOCH + Duration::days(250);
+        let date1 = OffsetDateTime::UNIX_EPOCH.date() + Duration::days(45);
+        let date2 = OffsetDateTime::UNIX_EPOCH.date() + Duration::days(80);
+        let date3 = OffsetDateTime::UNIX_EPOCH.date() + Duration::days(250);
 
         let df1 = yield_curve.discount_factor(date1);
         let df2 = yield_curve.discount_factor(date2);

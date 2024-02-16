@@ -25,9 +25,9 @@
 
 use crate::{
     instruments::Instrument,
-    time::{DayCountConvention, DayCounter},
+    time::{today, DayCountConvention},
 };
-use time::OffsetDateTime;
+use time::Date;
 
 /// Struct containing the Cox-Ingersoll-Ross model parameters.
 pub struct CoxIngersollRoss {
@@ -37,9 +37,9 @@ pub struct CoxIngersollRoss {
     sigma: f64,
 
     /// `evaluation_date` - Valuation date.
-    pub evaluation_date: Option<OffsetDateTime>,
+    pub evaluation_date: Option<Date>,
     /// `expiration_date` - Expiry date.
-    pub expiration_date: OffsetDateTime,
+    pub expiration_date: Date,
 }
 
 impl Instrument for CoxIngersollRoss {
@@ -50,10 +50,9 @@ impl Instrument for CoxIngersollRoss {
         let r = self.r;
 
         // Compute time to maturity.
-        let tau = DayCounter::day_count_factor(
-            self.evaluation_date.unwrap_or(OffsetDateTime::now_utc()),
+        let tau = DayCountConvention::default().day_count_factor(
+            self.evaluation_date.unwrap_or(today()),
             self.expiration_date,
-            &DayCountConvention::Actual365,
         );
 
         let gamma = (a * a + 2.0 * sigma.powi(2)).sqrt();
@@ -72,8 +71,8 @@ impl Instrument for CoxIngersollRoss {
         None
     }
 
-    fn valuation_date(&self) -> OffsetDateTime {
-        self.evaluation_date.unwrap_or(OffsetDateTime::now_utc())
+    fn valuation_date(&self) -> Date {
+        self.evaluation_date.unwrap_or(today())
     }
 
     fn instrument_type(&self) -> &'static str {
@@ -89,7 +88,7 @@ mod tests {
 
     #[test]
     fn test_cir_zero_coupon_bond() {
-        let expiry = OffsetDateTime::now_utc() + time::Duration::days(365);
+        let expiry = today() + time::Duration::days(365);
 
         let cir = CoxIngersollRoss {
             a: 0.3,

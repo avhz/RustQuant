@@ -7,7 +7,7 @@
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use time::OffsetDateTime;
+use time::Date;
 
 /// Instrument trait
 /// The trait provides a common interface for all instruments.
@@ -25,7 +25,7 @@ pub trait Instrument {
     fn error(&self) -> Option<f64>;
 
     /// Returns the date at which the NPV is calculated.
-    fn valuation_date(&self) -> OffsetDateTime;
+    fn valuation_date(&self) -> Date;
 
     /// Instrument type.
     fn instrument_type(&self) -> &'static str;

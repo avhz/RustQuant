@@ -10,9 +10,9 @@
 use crate::curves::{Curve, YieldCurve};
 use crate::instruments::Instrument;
 use crate::money::Currency;
-use crate::time::{BusinessDayConvention, PaymentFrequency};
+use crate::time::{DateRollingConvention, Frequency};
 use std::collections::BTreeMap;
-use time::{Duration, OffsetDateTime};
+use time::{Date, Duration};
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // STRUCTS, ENUMS, AND TRAITS
@@ -25,10 +25,10 @@ use time::{Duration, OffsetDateTime};
 #[allow(clippy::module_name_repetitions)]
 pub struct ZeroCouponBond {
     /// The date the bond is evaluated (i.e. priced).
-    pub evaluation_date: OffsetDateTime,
+    pub evaluation_date: Date,
 
     /// The date the bond expires (i.e. matures, is redeemed).
-    pub expiration_date: OffsetDateTime,
+    pub expiration_date: Date,
 
     /// The currency of the bond (optional).
     pub currency: Option<Currency>,
@@ -49,10 +49,10 @@ pub struct ZeroCouponBond {
 #[allow(clippy::module_name_repetitions)]
 pub struct CouponBond {
     /// The date the bond is evaluated (i.e. priced).
-    pub evaluation_date: OffsetDateTime,
+    pub evaluation_date: Date,
 
     /// The date the bond expires (i.e. matures, is redeemed).
-    pub expiration_date: OffsetDateTime,
+    pub expiration_date: Date,
 
     /// The currency of the bond (optional).
     pub currency: Option<Currency>,
@@ -61,10 +61,10 @@ pub struct CouponBond {
     pub coupon_rate: f64,
 
     /// The coupon frequency of the bond.
-    pub coupon_frequency: PaymentFrequency,
+    pub coupon_frequency: Frequency,
 
     /// Settlement convention.
-    pub settlement_convention: BusinessDayConvention,
+    pub settlement_convention: DateRollingConvention,
 
     /// Yield curve to use for pricing.
     pub yield_curve: YieldCurve,
@@ -76,13 +76,13 @@ pub struct CouponBond {
     /// The coupons are represented as a map of dates to coupon amounts,
     /// ordered by date.
     /// The final coupon is the face value of the bond.
-    pub coupons: BTreeMap<OffsetDateTime, f64>,
+    pub coupons: BTreeMap<Date, f64>,
 }
 
 /// Coupon bond struct.
 pub struct CouponBond2 {
     /// Portfolio of zero-coupon bonds.
-    pub coupons: BTreeMap<OffsetDateTime, ZeroCouponBond>,
+    pub coupons: BTreeMap<Date, ZeroCouponBond>,
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -92,13 +92,13 @@ pub struct CouponBond2 {
 impl CouponBond {
     /// Constructs the coupons of the bond.
     pub fn construct_coupons(&mut self) {
-        let mut coupons: BTreeMap<OffsetDateTime, f64> = BTreeMap::new();
+        let mut coupons: BTreeMap<Date, f64> = BTreeMap::new();
 
         // Create the coupon dates
         let years = (self.expiration_date - self.evaluation_date).whole_days() / 365;
         let n_coupons = years * self.coupon_frequency as i64;
 
-        let mut coupon_dates: Vec<OffsetDateTime> = Vec::with_capacity(n_coupons as usize);
+        let mut coupon_dates: Vec<Date> = Vec::with_capacity(n_coupons as usize);
 
         for i in 1..=n_coupons {
             let coupon_date =
@@ -136,13 +136,9 @@ impl Instrument for CouponBond {
     /// Returns the price (net present value) of the instrument.
     fn price(&self) -> f64 {
         // Compute the discount factors for the coupons.
-        let discount_factors = self.yield_curve.discount_factors(
-            &self
-                .coupons
-                .keys()
-                .copied()
-                .collect::<Vec<OffsetDateTime>>(),
-        );
+        let discount_factors = self
+            .yield_curve
+            .discount_factors(&self.coupons.keys().copied().collect::<Vec<Date>>());
         // .iter()
         // .enumerate()
         // .map(|(i, df)| (1. + df / self.coupon_frequency as i32 as f64).powi((i + 1) as i32))
@@ -163,7 +159,7 @@ impl Instrument for CouponBond {
     }
 
     /// Returns the date at which the NPV is calculated.
-    fn valuation_date(&self) -> OffsetDateTime {
+    fn valuation_date(&self) -> Date {
         self.evaluation_date
     }
 
@@ -179,7 +175,7 @@ impl CouponBond2 {
     /// we just happen to be treating it as a portfolio of zero-coupon bonds.
     #[must_use]
     pub fn validate_dates(&self) -> bool {
-        let mut evaluation_date: Option<OffsetDateTime> = None;
+        let mut evaluation_date: Option<Date> = None;
 
         for bond in self.coupons.values() {
             if evaluation_date.is_none() {
@@ -201,12 +197,12 @@ impl CouponBond2 {
 mod tests_bond {
     // use time::macros::datetime;
 
-    use crate::{curves::Curve, money::USD};
+    use crate::{curves::Curve, money::USD, time::today};
 
     use super::*;
 
     #[allow(clippy::similar_names)]
-    fn create_test_yield_curve(t0: OffsetDateTime) -> YieldCurve {
+    fn create_test_yield_curve(t0: Date) -> YieldCurve {
         // Create a treasury yield curve with 8 points (3m, 6m, 1y, 2y, 5y, 10y, 30y).
         // Values from Bloomberg: <https://www.bloomberg.com/markets/rates-bonds/government-bonds/us>
         let rate_vec = vec![0.0544, 0.0556, 0.0546, 0.0514, 0.0481, 0.0481, 0.0494];
@@ -225,15 +221,15 @@ mod tests_bond {
 
     #[test]
     fn test_coupon_construction() {
-        let today = OffsetDateTime::now_utc();
+        let today = today();
 
         let mut bond = CouponBond {
             evaluation_date: today,
             expiration_date: today + Duration::days(365 * 2),
             currency: Some(USD),
             coupon_rate: 0.15,
-            coupon_frequency: PaymentFrequency::SemiAnnually,
-            settlement_convention: BusinessDayConvention::Actual,
+            coupon_frequency: Frequency::SemiAnnually,
+            settlement_convention: DateRollingConvention::Actual,
             yield_curve: create_test_yield_curve(today),
             face_value: 1000.0,
             coupons: BTreeMap::new(),

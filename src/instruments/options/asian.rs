@@ -7,12 +7,11 @@
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use time::OffsetDateTime;
-
 use crate::{
     statistics::distributions::{gaussian::Gaussian, Distribution},
-    time::{DayCountConvention, DayCounter},
+    time::{today, DayCountConvention},
 };
+use time::Date;
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // STRUCTS
@@ -62,9 +61,9 @@ pub struct AsianOption {
     /// `q` - Dividend rate.
     pub dividend_rate: f64,
     /// `valuation_date` - Valuation date.
-    pub valuation_date: Option<OffsetDateTime>,
+    pub evaluation_date: Option<Date>,
     /// `expiry_date` - Expiry date.
-    pub expiry_date: OffsetDateTime,
+    pub expiration_date: Date,
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -80,8 +79,8 @@ impl AsianOption {
         risk_free_rate: f64,
         volatility: f64,
         dividend_rate: f64,
-        valuation_date: Option<OffsetDateTime>,
-        expiry_date: OffsetDateTime,
+        evaluation_date: Option<Date>,
+        expiration_date: Date,
     ) -> Self {
         Self {
             initial_price,
@@ -89,8 +88,8 @@ impl AsianOption {
             risk_free_rate,
             volatility,
             dividend_rate,
-            valuation_date,
-            expiry_date,
+            evaluation_date,
+            expiration_date,
         }
     }
 
@@ -105,18 +104,10 @@ impl AsianOption {
         let q = self.dividend_rate;
 
         // Compute time to maturity.
-        let T = match self.valuation_date {
-            Some(valuation_date) => DayCounter::day_count_factor(
-                valuation_date,
-                self.expiry_date,
-                &DayCountConvention::Actual365,
-            ),
-            None => DayCounter::day_count_factor(
-                OffsetDateTime::now_utc(),
-                self.expiry_date,
-                &DayCountConvention::Actual365,
-            ),
-        };
+        let T = DayCountConvention::default().day_count_factor(
+            self.evaluation_date.unwrap_or(today()),
+            self.expiration_date,
+        );
 
         let v_a = v / 3_f64.sqrt();
         let b = r - q;
@@ -147,15 +138,15 @@ mod tests {
 
     #[test]
     fn test_asian_geometric() {
-        let expiry_date = OffsetDateTime::now_utc() + Duration::days(92);
+        let expiry_date = today() + Duration::days(92);
 
         let AsianOption = AsianOption {
             initial_price: 80.0,
             strike_price: 85.0,
             risk_free_rate: 0.05,
             volatility: 0.2,
-            valuation_date: None,
-            expiry_date,
+            evaluation_date: None,
+            expiration_date: expiry_date,
             dividend_rate: -0.03,
         };
 

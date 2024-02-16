@@ -14,12 +14,12 @@
 use super::Curve;
 use num_traits::Float;
 use std::collections::BTreeMap;
-use time::OffsetDateTime;
+use time::Date;
 
 /// Surface trait.
 pub trait Surface {
     /// Returns the value of the surface for a given time and space coordinate.
-    fn value<F: Float>(&self, time: OffsetDateTime, space: F) -> f64;
+    fn value<F: Float>(&self, time: Date, space: F) -> f64;
 }
 
 /// Volatility surface.

@@ -28,9 +28,9 @@
 use crate::instruments::options::TypeFlag;
 use crate::instruments::Instrument;
 use crate::statistics::distributions::{Distribution, Gaussian};
-use crate::time::{DayCountConvention, DayCounter};
+use crate::time::{today, DayCountConvention, DayCounter};
 
-use time::OffsetDateTime;
+use time::Date;
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // STRUCTS, ENUMS, AND TRAITS
@@ -61,9 +61,9 @@ pub struct BlackScholesMerton {
     pub risk_free_rate: f64,
 
     /// Evaluation date (optional, defaults to today t = 0).
-    pub evaluation_date: Option<OffsetDateTime>,
+    pub evaluation_date: Option<Date>,
     /// The options expiration date.
-    pub expiration_date: OffsetDateTime,
+    pub expiration_date: Date,
 
     /// Call or put flag.
     pub option_type: TypeFlag,
@@ -86,8 +86,8 @@ impl Instrument for BlackScholesMerton {
     }
 
     /// Returns the date at which the NPV is calculated.
-    fn valuation_date(&self) -> OffsetDateTime {
-        self.evaluation_date.unwrap_or(OffsetDateTime::now_utc())
+    fn valuation_date(&self) -> Date {
+        self.evaluation_date.unwrap_or(today())
     }
 
     /// Instrument type.
@@ -106,8 +106,8 @@ impl BlackScholesMerton {
         strike_price: f64,
         volatility: f64,
         risk_free_rate: f64,
-        evaluation_date: Option<OffsetDateTime>,
-        expiration_date: OffsetDateTime,
+        evaluation_date: Option<Date>,
+        expiration_date: Date,
         option_type: TypeFlag,
     ) -> Self {
         Self {
@@ -141,10 +141,9 @@ impl BlackScholesMerton {
     /// Compute the year fraction between two dates.
     #[must_use]
     pub fn year_fraction(&self) -> f64 {
-        DayCounter::day_count_factor(
-            self.evaluation_date.unwrap_or(OffsetDateTime::now_utc()),
+        DayCountConvention::default().day_count_factor(
+            self.evaluation_date.unwrap_or(today()),
             self.expiration_date,
-            &DayCountConvention::Actual365,
         )
     }
 
@@ -446,7 +445,7 @@ mod tests_black_scholes_merton {
             0.3,
             0.08,
             None,
-            OffsetDateTime::now_utc() + Duration::days(91),
+            today() + Duration::days(91),
             TypeFlag::Call,
         );
         assert_approx_equal!(bsm.price(), 2.104_455_895_350_838_5, EPS);
@@ -462,7 +461,7 @@ mod tests_black_scholes_merton {
             0.2,
             0.1,
             None,
-            OffsetDateTime::now_utc() + Duration::days(182),
+            today() + Duration::days(182),
             TypeFlag::Put,
         );
         assert_approx_equal!(bsm.price(), 2.452_415_221_397_277_6, EPS);

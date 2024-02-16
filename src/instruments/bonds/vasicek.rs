@@ -21,8 +21,8 @@
 //! - `σ`: is the diffusion coefficient.
 
 use crate::instruments::Instrument;
-use crate::time::{DayCountConvention, DayCounter};
-use time::OffsetDateTime;
+use crate::time::{today, DayCountConvention};
+use time::Date;
 
 /// Struct containing the Vasicek model parameters.
 pub struct Vasicek {
@@ -32,9 +32,9 @@ pub struct Vasicek {
     sigma: f64,
 
     /// `evaluation_date` - Valuation date.
-    pub evaluation_date: Option<OffsetDateTime>,
+    pub evaluation_date: Option<Date>,
     /// `expiration_date` - Expiry date.
-    pub expiration_date: OffsetDateTime,
+    pub expiration_date: Date,
 }
 
 impl Instrument for Vasicek {
@@ -45,18 +45,10 @@ impl Instrument for Vasicek {
         let r0 = self.r0;
 
         // Compute time to maturity.
-        let tau = match self.evaluation_date {
-            Some(valuation_date) => DayCounter::day_count_factor(
-                valuation_date,
-                self.expiration_date,
-                &DayCountConvention::Actual365,
-            ),
-            None => DayCounter::day_count_factor(
-                OffsetDateTime::now_utc(),
-                self.expiration_date,
-                &DayCountConvention::Actual365,
-            ),
-        };
+        let tau = DayCountConvention::default().day_count_factor(
+            self.evaluation_date.unwrap_or(today()),
+            self.expiration_date,
+        );
 
         let B = || (1.0 - (-k * tau).exp()) / k;
         let A = || {
@@ -87,8 +79,8 @@ impl Instrument for Vasicek {
         None
     }
 
-    fn valuation_date(&self) -> OffsetDateTime {
-        self.evaluation_date.unwrap_or(OffsetDateTime::now_utc())
+    fn valuation_date(&self) -> Date {
+        self.evaluation_date.unwrap_or(today())
     }
 
     fn instrument_type(&self) -> &'static str {
@@ -104,7 +96,7 @@ mod tests_bond_vasicek {
 
     #[test]
     fn test_vasicek_zero_coupon_bond() {
-        let expiry_date = OffsetDateTime::now_utc() + time::Duration::days(365);
+        let expiry_date = today() + time::Duration::days(365);
 
         let vasicek = Vasicek {
             r0: 0.03,

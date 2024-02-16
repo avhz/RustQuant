@@ -1,14 +1,23 @@
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // RustQuant: A Rust library for quantitative finance tools.
-// Copyright (C) 2023 https://github.com/avhz
+// Copyright (C) 2022-2024 https://github.com/avhz
 // Dual licensed under Apache 2.0 and MIT.
 // See:
 //      - LICENSE-APACHE.md
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-#![allow(dead_code)]
+//! This module defines calendar and holiday related constants.
 
+// Minimum and maximum years for the library
+pub(crate) const MIN_YEAR: i32 = 1901;
+pub(crate) const MAX_YEAR: i32 = 2199;
+
+// Weekend and weekday masks
+pub(crate) const WEEKEND_MASK: &[bool] = &[false, false, false, false, false, true, true];
+pub(crate) const WEEKDAY_MASK: &[bool] = &[true, true, true, true, true, false, false];
+
+// Time related constants
 pub(crate) const DAYS_IN_YEAR: usize = 365; // Or should it be 365.25?
 pub(crate) const DAYS_IN_WEEK: usize = 7;
 pub(crate) const HOURS_IN_DAY: usize = 24;
@@ -21,6 +30,18 @@ pub(crate) const HOURS_IN_WEEK: usize = HOURS_IN_DAY * DAYS_IN_WEEK;
 pub(crate) const MINS_IN_WEEK: usize = HOURS_IN_WEEK * MINS_IN_HOUR;
 pub(crate) const SECS_IN_WEEK: usize = MINS_IN_WEEK * SECS_IN_HOUR;
 pub(crate) const SECS_IN_YEAR: usize = SECS_IN_MIN * MINS_IN_HOUR * HOURS_IN_DAY * DAYS_IN_YEAR;
+
+// Frequency constants
+pub(crate) const ANNUALLY: isize = 1;
+pub(crate) const SEMI_ANNUALLY: isize = 2;
+pub(crate) const TRI_ANNUALLY: isize = 3;
+pub(crate) const QUARTERLY: isize = 4;
+pub(crate) const SEMI_QUARTERLY: isize = 6;
+pub(crate) const MONTHLY: isize = 12;
+pub(crate) const SEMI_MONTHLY: isize = 24;
+pub(crate) const BI_WEEKLY: isize = 26;
+pub(crate) const WEEKLY: isize = 52;
+pub(crate) const DAILY: isize = 252;
 
 /// Easter Mondays for the years 1901-2199.
 /// The first row is for Western Easter, the second for Orthodox Easter.

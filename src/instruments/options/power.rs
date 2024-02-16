@@ -12,8 +12,8 @@
 //! Power contracts are options with the payoff: (S/K)^i
 //! where i is the (fixed) power of the contract.
 
-use crate::time::{DayCountConvention, DayCounter};
-use time::OffsetDateTime;
+use crate::time::{today, DayCountConvention, DayCounter};
+use time::Date;
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // STRUCTS, ENUMS, AND TRAITS
@@ -38,9 +38,9 @@ pub struct PowerOption {
     pub volatility: f64,
 
     /// `valuation_date` - Valuation date.
-    pub evaluation_date: Option<OffsetDateTime>,
+    pub evaluation_date: Option<Date>,
     /// `expiry_date` - Expiry date.
-    pub expiration_date: OffsetDateTime,
+    pub expiration_date: Date,
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -58,8 +58,8 @@ impl PowerOption {
         risk_free_rate: f64,
         cost_of_carry: f64,
         volatility: f64,
-        evaluation_date: Option<OffsetDateTime>,
-        expiration_date: OffsetDateTime,
+        evaluation_date: Option<Date>,
+        expiration_date: Date,
     ) -> Self {
         Self {
             initial_price,
@@ -84,10 +84,9 @@ impl PowerOption {
         let i = self.power;
 
         // Compute time to maturity.
-        let T = DayCounter::day_count_factor(
-            self.evaluation_date.unwrap_or(OffsetDateTime::now_utc()),
+        let T = DayCountConvention::default().day_count_factor(
+            self.evaluation_date.unwrap_or(today()),
             self.expiration_date,
-            &DayCountConvention::Actual365,
         );
 
         (S / K).powf(i) * (((b - 0.5 * v.powi(2)) * i - r + 0.5 * (i * v).powi(2)) * T).exp()
@@ -116,7 +115,7 @@ mod tests_power_contract {
             cost_of_carry: 0.06,
             volatility: 0.25,
             evaluation_date: None,
-            expiration_date: OffsetDateTime::now_utc() + Duration::days(182),
+            expiration_date: today() + Duration::days(182),
         };
 
         assert_approx_equal!(power_option.price(), 0.831_322_640_144_985_4, EPS);

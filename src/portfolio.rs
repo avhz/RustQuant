@@ -219,8 +219,9 @@ mod tests_portfolio {
     use crate::{
         instruments::options::{BlackScholesMerton, TypeFlag},
         money::USD,
+        time::today,
     };
-    use time::{Duration, OffsetDateTime};
+    use time::Duration;
 
     #[test]
     fn test_portfolio() {
@@ -233,7 +234,7 @@ mod tests_portfolio {
                 0.3,
                 0.08,
                 None,
-                OffsetDateTime::now_utc() + Duration::days(91),
+                today() + Duration::days(91),
                 TypeFlag::Call,
             ),
             quantity: 100,
@@ -251,7 +252,7 @@ mod tests_portfolio {
                 0.2,
                 0.1,
                 None,
-                OffsetDateTime::now_utc() + Duration::days(182),
+                today() + Duration::days(182),
                 TypeFlag::Put,
             ),
             quantity: 100,

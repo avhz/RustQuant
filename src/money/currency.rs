@@ -13,8 +13,8 @@
 //! Basic arithmetic operations can be performed  on `Money` instances with the
 //! same underlying currency.
 
-use crate::instruments::Instrument;
 use crate::iso::ISO_4217;
+use crate::{instruments::Instrument, time::today};
 use std::fmt::{self, Formatter};
 use time::OffsetDateTime;
 
@@ -59,8 +59,8 @@ impl Instrument for Currency {
         None
     }
 
-    fn valuation_date(&self) -> time::OffsetDateTime {
-        OffsetDateTime::now_utc()
+    fn valuation_date(&self) -> time::Date {
+        today()
     }
 
     fn instrument_type(&self) -> &'static str {

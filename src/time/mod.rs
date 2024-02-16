@@ -9,72 +9,40 @@
 
 //! Time and date functionality.
 
-pub use crate::time::{
-    calendar::*,
-    calendars::{
-        argentina::*, australia::*, austria::*, botswana::*, brazil::*, canada::*, chile::*,
-        china::*, czech_republic::*, denmark::*, finland::*, france::*, germany::*, hong_kong::*,
-        hungary::*, iceland::*, india::*, indonesia::*, united_kingdom::*, united_states::*,
-    },
-    constants::*,
-    conventions::*,
-    daycount::*,
-    schedule::*,
-};
-
-/// Calendar definitions.
+/// The core `Calendar` trait.
 pub mod calendar;
-/// Date/time constants
-pub mod constants;
-/// Day count and business day conventions.
-pub mod conventions;
-/// Daycount definitions.
-pub mod daycount;
-/// Scheduling definitions.
-pub mod schedule;
+pub use calendar::*;
 
-/// Calendar definitions for settlement purposes.
-pub mod calendars {
-    /// Argentina settlement calendar.
-    pub mod argentina;
-    /// Australian settlement calendar.
-    pub mod australia;
-    /// Austrian settlement calendar.
-    pub mod austria;
-    /// Botswana settlement calendar.
-    pub mod botswana;
-    /// Brazil settlement calendar.
-    pub mod brazil;
-    /// Canadian settlement calendar.
-    pub mod canada;
-    /// Chile settlement calendar.
-    pub mod chile;
-    /// China settlement calendar.
-    pub mod china;
-    /// Czech Republic settlement calendar.
-    pub mod czech_republic;
-    /// Denmark settlement calendar.
-    pub mod denmark;
-    /// Finland settlement calendar.
-    pub mod finland;
-    /// France settlement calendar.
-    pub mod france;
-    /// Germany settlement calendar.
-    pub mod germany;
-    /// Hong Kong settlement calendar.
-    pub mod hong_kong;
-    /// Hungary settlement calendar.
-    pub mod hungary;
-    /// Iceland settlement calendar.
-    pub mod iceland;
-    /// India settlement calendar.
-    pub mod india;
-    /// Indonesia settlement calendar.
-    pub mod indonesia;
-    /// Calendar test module.
-    mod tests;
-    /// UK settlement calendar.
-    pub mod united_kingdom;
-    /// USA settlement calendar.
-    pub mod united_states;
-}
+/// Constants for calendars and holidays.
+#[allow(dead_code)]
+pub mod constants;
+pub use constants::*;
+
+/// Calendars implemented for specific countries.
+#[allow(unused_parens)]
+pub mod countries;
+pub use countries::*;
+
+/// Date rolling conventions and methods.
+pub mod date_rolling;
+pub use date_rolling::*;
+
+/// Day counting conventions and methods.
+pub mod day_counting;
+pub use day_counting::*;
+
+/// Frequency of payments.
+pub mod frequency;
+pub use frequency::*;
+
+/// The `Holiday` trait.
+pub mod holiday;
+pub use holiday::*;
+
+/// Utility functions for working with dates and times.
+pub mod utilities;
+pub use utilities::*;
+
+/// The `Schedule` type.
+pub mod schedule;
+pub use schedule::*;
