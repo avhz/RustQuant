@@ -14,7 +14,7 @@
 // IMPORTS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use crate::autodiff::Variable;
+use crate::autodiff::variables::variable::Variable;
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // GRADIENT TRAIT AND IMPLEMENTATIONS
@@ -77,6 +77,7 @@ impl<'v, const N: usize> Gradient<&[Variable<'v>; N], Vec<f64>> for Vec<f64> {
 
 #[cfg(test)]
 mod test_gradient {
+    use crate::autodiff::variables::variable::Variable;
     use crate::{assert_approx_equal, autodiff::*};
 
     use std::f64::EPSILON as EPS;

@@ -1,4 +1,4 @@
-use time::{Date, Duration, OffsetDateTime};
+use time::{Date, Duration};
 use RustQuant::{
     curves::{Curve, YieldCurve},
     plot_vector,

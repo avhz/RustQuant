@@ -160,6 +160,8 @@ impl<'v> Max<Variable<'v>> for f64 {
 #[cfg(test)]
 mod test_overloading_minmax {
     use crate::assert_approx_equal;
+    use crate::autodiff::overloading::minmax::Max;
+    use crate::autodiff::overloading::minmax::Min;
     use crate::autodiff::*;
 
     use std::f64::EPSILON as EPS;

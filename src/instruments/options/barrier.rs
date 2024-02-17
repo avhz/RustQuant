@@ -206,7 +206,7 @@ impl BarrierOption {
 mod tests {
     use super::*;
     use crate::assert_approx_equal;
-    use crate::EPS;
+    use crate::RUSTQUANT_EPSILON;
 
     // use std::f64::EPSILON as EPS;
 
@@ -237,10 +237,10 @@ mod tests {
         let pdi = S_ABOVE_H.price(BarrierType::PDI);
         let pdo = S_ABOVE_H.price(BarrierType::PDO);
 
-        assert_approx_equal!(cdi, 9.504_815_211_050_698, EPS);
-        assert_approx_equal!(cdo, 7.295_021_649_666_765, EPS);
-        assert_approx_equal!(pdi, 3.017_297_598_380_377_4, EPS);
-        assert_approx_equal!(pdo, 0.000_000, EPS);
+        assert_approx_equal!(cdi, 9.504_815_211_050_698, RUSTQUANT_EPSILON);
+        assert_approx_equal!(cdo, 7.295_021_649_666_765, RUSTQUANT_EPSILON);
+        assert_approx_equal!(pdi, 3.017_297_598_380_377_4, RUSTQUANT_EPSILON);
+        assert_approx_equal!(pdo, 0.000_000, RUSTQUANT_EPSILON);
     }
 
     #[test]
@@ -291,10 +291,10 @@ mod tests {
         let pui = S_BELOW_H.price(BarrierType::PUI);
         let puo = S_BELOW_H.price(BarrierType::PUO);
 
-        assert_approx_equal!(cui, 4.692_603_355_387_815, EPS);
-        assert_approx_equal!(cuo, 0.022_448_676_101_445_74, EPS);
-        assert_approx_equal!(pui, 1.359_553_168_024_573_8, EPS);
-        assert_approx_equal!(puo, 9.373_956_276_110_954, EPS);
+        assert_approx_equal!(cui, 4.692_603_355_387_815, RUSTQUANT_EPSILON);
+        assert_approx_equal!(cuo, 0.022_448_676_101_445_74, RUSTQUANT_EPSILON);
+        assert_approx_equal!(pui, 1.359_553_168_024_573_8, RUSTQUANT_EPSILON);
+        assert_approx_equal!(puo, 9.373_956_276_110_954, RUSTQUANT_EPSILON);
     }
 
     #[test]

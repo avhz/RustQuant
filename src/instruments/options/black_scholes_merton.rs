@@ -28,7 +28,7 @@
 use crate::instruments::options::TypeFlag;
 use crate::instruments::Instrument;
 use crate::statistics::distributions::{Distribution, Gaussian};
-use crate::time::{today, DayCountConvention, DayCounter};
+use crate::time::{today, DayCountConvention};
 
 use time::Date;
 
@@ -432,7 +432,7 @@ impl BlackScholesMerton {
 mod tests_black_scholes_merton {
     use super::*;
     use crate::assert_approx_equal;
-    use crate::EPS;
+    use crate::RUSTQUANT_EPSILON;
     use time::Duration;
 
     #[test]
@@ -448,7 +448,7 @@ mod tests_black_scholes_merton {
             today() + Duration::days(91),
             TypeFlag::Call,
         );
-        assert_approx_equal!(bsm.price(), 2.104_455_895_350_838_5, EPS);
+        assert_approx_equal!(bsm.price(), 2.104_455_895_350_838_5, RUSTQUANT_EPSILON);
     }
 
     #[test]
@@ -464,6 +464,6 @@ mod tests_black_scholes_merton {
             today() + Duration::days(182),
             TypeFlag::Put,
         );
-        assert_approx_equal!(bsm.price(), 2.452_415_221_397_277_6, EPS);
+        assert_approx_equal!(bsm.price(), 2.452_415_221_397_277_6, RUSTQUANT_EPSILON);
     }
 }

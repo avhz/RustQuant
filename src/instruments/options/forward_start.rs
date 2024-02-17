@@ -15,7 +15,7 @@ use time::Date;
 
 use crate::{
     statistics::distributions::{Distribution, Gaussian},
-    time::{today, DayCountConvention, DayCounter},
+    time::{today, DayCountConvention},
 };
 
 /// Forward Start Option parameters struct

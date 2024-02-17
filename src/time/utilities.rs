@@ -99,6 +99,15 @@ pub fn contains_leap_year(start: Date, end: Date) -> bool {
         .any(|&y| is_leap_year(y))
 }
 
+/// Function to compute the number of days between two dates.
+pub fn days_between(start: Date, end: Date) -> i64 {
+    if start > end {
+        return -days_between(end, start);
+    }
+
+    (end - start).whole_days()
+}
+
 /// Function to get the number of leap years in a range of `Dates`.
 ///
 /// ```

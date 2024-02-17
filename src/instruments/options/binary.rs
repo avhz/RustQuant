@@ -120,7 +120,7 @@ impl CashOrNothingOption {
 mod tests {
     use super::*;
     use crate::assert_approx_equal;
-    use crate::EPS;
+    use crate::RUSTQUANT_EPSILON;
 
     #[test]
     fn test_gap_option() {
@@ -137,7 +137,7 @@ mod tests {
         let prices = gap.price();
 
         // Value from Haug's book (note: gap option payoffs can be negative).
-        assert_approx_equal!(prices.0, -0.005_252_489_258_779_747, EPS);
+        assert_approx_equal!(prices.0, -0.005_252_489_258_779_747, RUSTQUANT_EPSILON);
     }
 
     #[test]
@@ -155,6 +155,6 @@ mod tests {
         let prices = CON.price();
 
         // Value from Haug's book.
-        assert_approx_equal!(prices.1, 2.671_045_684_461_347, EPS);
+        assert_approx_equal!(prices.1, 2.671_045_684_461_347, RUSTQUANT_EPSILON);
     }
 }

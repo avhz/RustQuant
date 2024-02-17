@@ -12,7 +12,7 @@ use crate::{
     time::{today, DayCountConvention, DayCounter},
 };
 use num_complex::Complex;
-use time::{Date, OffsetDateTime};
+use time::Date;
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // FUNCTIONS

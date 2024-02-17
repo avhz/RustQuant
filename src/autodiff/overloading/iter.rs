@@ -72,7 +72,8 @@ impl<'v> Product<Variable<'v>> for Variable<'v> {
 #[cfg(test)]
 mod test_overload {
     use crate::assert_approx_equal;
-    use crate::autodiff::{Accumulate, Gradient, Graph, Variable};
+    use crate::autodiff::variables::variable::Variable;
+    use crate::autodiff::{Accumulate, Gradient, Graph};
     use std::f64::EPSILON as EPS;
 
     #[test]

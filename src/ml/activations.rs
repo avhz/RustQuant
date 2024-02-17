@@ -7,7 +7,7 @@
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use crate::autodiff::{Powi, Variable};
+use crate::autodiff::{overloading::pow::Powi, variables::variable::Variable};
 use nalgebra::DVector;
 use statrs::function::erf;
 

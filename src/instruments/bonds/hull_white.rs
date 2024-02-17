@@ -26,7 +26,7 @@
 
 use crate::instruments::Instrument;
 use crate::math::integrate;
-use crate::time::{today, DayCountConvention, DayCounter};
+use crate::time::{today, DayCountConvention};
 use time::Date;
 
 /// Struct containing the Hull-White model parameters.

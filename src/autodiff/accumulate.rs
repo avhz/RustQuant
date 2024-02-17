@@ -17,9 +17,8 @@
 //! - `DVector<Variable<'v>>`       <- Currently not possible due to lifetimes
 //! - `Array<Variable<'v>, Ix2>`    <- Work in progress
 
+use super::{variables::ndarray::VariableArray, variables::variable::Variable};
 use ndarray::Array2;
-
-use super::{Variable, VariableArray};
 
 /// Trait to reverse accumulate the gradient for different types.
 pub trait Accumulate<OUT> {

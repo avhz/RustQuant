@@ -66,4 +66,4 @@ pub mod trading;
 // Once `f64::sqrt()` is `const`, this can be updated.
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-pub(crate) const EPS: f64 = 0.000_000_014_901_161_193_847_656;
+pub(crate) const RUSTQUANT_EPSILON: f64 = 0.000_000_014_901_161_193_847_656;

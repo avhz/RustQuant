@@ -72,7 +72,7 @@
 //! f(x,y) = (x^2 + y - 11)^2 + (x + y^2 - 7)^2
 //! $$
 
-use crate::autodiff::{Accumulate, Gradient, Graph, Variable};
+use crate::autodiff::{variables::variable::Variable, Accumulate, Gradient, Graph};
 use time::{Duration, Instant};
 // use ::log::{info, max_level, warn, Level};
 
@@ -220,7 +220,8 @@ impl GradientDescent {
 #[cfg(test)]
 mod test_gradient_descent {
     use super::*;
-    use crate::autodiff::{Powf, Variable};
+    use crate::autodiff::overloading::pow::Powf;
+    use crate::autodiff::variables::variable::Variable;
 
     // Test the creation of a new GradientDescent optimizer.
     #[test]
