@@ -1,6 +1,6 @@
 ## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ## RustQuant: A Rust library for quantitative finance tools.
-## Copyright (C) 2023 https://github.com/avhz
+## Copyright (C) 2022-2024 https://github.com/avhz
 ## Dual licensed under Apache 2.0 and MIT.
 ## See:
 ##      - LICENSE-APACHE.md
@@ -24,7 +24,7 @@ keywords = [
     "quantitative",
     "finance",
     "option-pricing",
-    "statistics",
+    "monte-carlo",
     "quantlib",
 ]
 categories = ["finance", "mathematics", "science", "algorithms", "simulation"]
@@ -48,65 +48,42 @@ rustdoc-args = ["--html-in-header", "katex_header.html", "--cfg", "docsrs"]
 ## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 [dependencies]
-csv = "1.3.0"                # https://docs.rs/csv/latest/csv/
-derive_builder = "0.20.0"    # https://docs.rs/derive_builder/latest/derive_builder/
-errorfunctions = "0.2.0"     # https://docs.rs/errorfunctions/latest/errorfunctions/
-nalgebra = "0.32.2"          # https://docs.rs/nalgebra/latest/nalgebra/
-ndarray = "0.15.6"           # https://docs.rs/ndarray/latest/ndarray/
-ndrustfft = "0.4.1"          # https://docs.rs/ndrustfft/latest/ndrustfft/
-ndarray-rand = "0.14.0"      # https://docs.rs/ndarray-rand/latest/ndarray_rand/
-num = "0.4.1"                # https://docs.rs/num/latest/num/
-num-traits = "0.2.16"        # https://docs.rs/num-traits/latest/num_traits/
-plotters = "0.3.4"           # https://docs.rs/plotters/latest/plotters/
-rand = "0.8.5"               # https://docs.rs/rand/latest/rand/
-rand_distr = "0.4.3"         # https://docs.rs/rand_distr/latest/rand_distr/
-rayon = "1.6.0"              # https://docs.rs/rayon/latest/rayon/
-rust_decimal = "1.33.1"      # https://docs.rs/rust_decimal/latest/rust_decimal/
-rust_decimal_macros = "1.33" # https://docs.rs/rust_decimal_macros/latest/rust_decimal_macros/
-serde = "1.0.163"            # https://docs.rs/serde/latest/serde
-serde_json = "1.0.96"        # https://docs.rs/serde_json/latest/serde_json
-statrs = "0.16.0"            # https://docs.rs/statrs/latest/statrs/
-thiserror = "1.0.47"         # https://docs.rs/thiserror/latest/thiserror/
-yahoo_finance_api = "2.0.0"  # https://docs.rs/yahoo-finance-api/latest/yahoo_finance_api/
-tokio-test = "0.4.3"         # https://docs.rs/tokio-test/latest/tokio_test/
+derive_builder = "0.20.0"   # https://docs.rs/derive_builder/latest/derive_builder/
+errorfunctions = "0.2.0"    # https://docs.rs/errorfunctions/latest/errorfunctions/
+nalgebra = "0.32.2"         # https://docs.rs/nalgebra/latest/nalgebra/
+ndarray = "0.15.6"          # https://docs.rs/ndarray/latest/ndarray/
+ndrustfft = "0.4.1"         # https://docs.rs/ndrustfft/latest/ndrustfft/
+ndarray-rand = "0.14.0"     # https://docs.rs/ndarray-rand/latest/ndarray_rand/
+num = "0.4.1"               # https://docs.rs/num/latest/num/
+num-traits = "0.2.16"       # https://docs.rs/num-traits/latest/num_traits/
+plotters = "0.3.4"          # https://docs.rs/plotters/latest/plotters/
+rand = "0.8.5"              # https://docs.rs/rand/latest/rand/
+rand_distr = "0.4.3"        # https://docs.rs/rand_distr/latest/rand_distr/
+rayon = "1.6.0"             # https://docs.rs/rayon/latest/rayon/
+rust_decimal = "1.33.1"     # https://docs.rs/rust_decimal/latest/rust_decimal/
+statrs = "0.16.0"           # https://docs.rs/statrs/latest/statrs/
+thiserror = "1.0.47"        # https://docs.rs/thiserror/latest/thiserror/
+yahoo_finance_api = "2.0.0" # https://docs.rs/yahoo-finance-api/latest/yahoo_finance_api/
+tokio-test = "0.4.3"        # https://docs.rs/tokio-test/latest/tokio_test/
 
-tokio = { version = "1.28.1", features = [
-    "full",
-] } # https://docs.rs/tokio/latest/tokio/
+# https://docs.rs/num-complex/latest/num_complex/
+num-complex = { version = "0.4.2", features = ["rand"] }
 
-
-num-complex = { version = "0.4.2", features = [
-    "rand",
-] } # https://docs.rs/num-complex/latest/num_complex/
-
-
-time = { version = "0.3.20", features = [
-    "macros",
-] } # https://docs.rs/time/latest/time/
-
+# https://docs.rs/time/latest/time/
+time = { version = "0.3.20", features = ["macros"] }
 
 # https://docs.rs/polars/latest/polars/
 polars = { version = "0.37.0", features = [
     "serde",
     "json",
     "parquet",
-    "dtype-struct",
-    "dtype-date",
+    "dtype-full",
     "lazy",
 ] }
 
 
 [dev-dependencies]
 finitediff = "0.1.4" # https://docs.rs/finitediff/latest/finitediff/
-
-
-## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-## EXAMPLES
-## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-[[example]]
-name = "yahoo_finance"
-required-features = ["data"]
 
 
 ## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
