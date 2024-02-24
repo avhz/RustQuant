@@ -12,7 +12,7 @@
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 use crate::instruments::options::TypeFlag;
-use crate::statistics::distributions::{Distribution, Gaussian};
+use crate::math::distributions::{Distribution, Gaussian};
 use crate::time::{today, DayCountConvention, DayCounter};
 
 use time::Date;

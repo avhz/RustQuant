@@ -7,7 +7,7 @@
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use crate::curves::{Curve, YieldCurve};
+use crate::data::{Curve, YieldCurve};
 use crate::instruments::Instrument;
 use crate::money::Currency;
 use crate::time::{DateRollingConvention, Frequency};
@@ -195,11 +195,8 @@ impl CouponBond2 {
 
 #[cfg(test)]
 mod tests_bond {
-    // use time::macros::datetime;
-
-    use crate::{curves::Curve, money::USD, time::today};
-
     use super::*;
+    use crate::{data::Curve, money::USD, time::today};
 
     #[allow(clippy::similar_names)]
     fn create_test_yield_curve(t0: Date) -> YieldCurve {

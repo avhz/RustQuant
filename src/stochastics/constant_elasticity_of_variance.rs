@@ -34,7 +34,7 @@ impl StochasticProcess for ConstantElasticityOfVariance {
 #[cfg(test)]
 mod tests_cev {
     use super::*;
-    use crate::statistics::*;
+    use crate::math::*;
 
     #[test]
     fn test_cev_process() {

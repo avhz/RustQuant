@@ -33,7 +33,7 @@ impl StochasticProcess for OrnsteinUhlenbeck {
 #[cfg(test)]
 mod tests_ornstein_uhlenbeck {
     use super::*;
-    use crate::{assert_approx_equal, statistics::*};
+    use crate::{assert_approx_equal, math::*};
 
     #[test]
     fn test_ornstein_uhlenbeck() {

@@ -7,8 +7,8 @@
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+use crate::math::Gaussian;
 use crate::models::model_parameter::ModelParameter;
-use crate::statistics::Gaussian;
 
 /// Struct containing the Merton Jump Diffusion parameters.
 /// The Merton Jump Diffusion is a stochastic process that models a path-dependent option.

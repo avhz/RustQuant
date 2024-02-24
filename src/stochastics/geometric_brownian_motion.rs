@@ -36,7 +36,7 @@ impl StochasticProcess for GeometricBrownianMotion {
 #[cfg(test)]
 mod tests_gbm {
     use super::*;
-    use crate::{assert_approx_equal, statistics::*};
+    use crate::{assert_approx_equal, math::*};
 
     #[test]
     fn test_geometric_brownian_motion() {

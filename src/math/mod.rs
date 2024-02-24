@@ -62,21 +62,17 @@
 //!
 //! - [x] Risk-Reward Measures (Sharpe, Treynor, Sortino, etc)
 
+/// Statistical distributions.
+pub mod distributions;
+pub use distributions::*;
+
 /// Numerical integration routines.
 /// The primary (useful) integrator is the Tanh-Sinh (double exponential) implementation.
 pub mod integration;
 pub use integration::*;
 
 /// Numerical optimization and root-finding routines.
-pub mod optimization {
-    /// Gradient descent optimization.
-    pub mod gradient_descent;
-    pub use gradient_descent::*;
-
-    /// Newton-Raphson method.
-    pub mod newton_raphson;
-    pub use newton_raphson::*;
-}
+pub mod optimization;
 pub use optimization::*;
 
 /// Fast fourier transform.
@@ -94,3 +90,7 @@ pub use risk_reward::*;
 /// Sequences of numbers and associated functions.
 pub mod sequences;
 pub use sequences::*;
+
+/// Statistic trait.
+pub mod statistic;
+pub use statistic::*;

@@ -34,7 +34,7 @@ impl StochasticProcess for GeometricBrownianBridge {
 #[cfg(test)]
 mod tests_gbm_bridge {
     use super::*;
-    use crate::{assert_approx_equal, statistics::*};
+    use crate::{assert_approx_equal, math::*};
 
     /// Test the Geometric Brownian Bridge process.
     #[test]

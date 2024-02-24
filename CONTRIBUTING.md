@@ -5,7 +5,7 @@
 
 If you're reading this, I assume you're interested in contributing to this project.
 
-If so, thank you very much! I would love to grow the project and have a solid, stable library by the end of 2023.
+If so, thank you very much! I would love to grow the project and have a solid, stable library that can be used by many people.
 
 Firstly, this contribution guide is a work in progress, so bare with me.
 

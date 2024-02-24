@@ -32,7 +32,7 @@ impl StochasticProcess for HoLee {
 #[cfg(test)]
 mod tests_ho_lee {
     use super::*;
-    use crate::{assert_approx_equal, statistics::*};
+    use crate::{assert_approx_equal, math::*};
 
     // Test a simple case where theta_t is constant
     // Should add tests of simple analytically tractable case

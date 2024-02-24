@@ -42,7 +42,7 @@ pub(crate) fn diff(f: &(dyn Fn(f64) -> f64 + Send + Sync), t: f64) -> f64 {
 #[cfg(test)]
 mod tests_black_derman_toy {
     use super::*;
-    use crate::statistics::*;
+    use crate::math::*;
 
     // fn theta_t(_t: f64) -> f64 {
     //     1.5

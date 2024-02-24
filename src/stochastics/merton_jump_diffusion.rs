@@ -7,8 +7,8 @@
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+use crate::math::{Distribution as LocalDistribution, Poisson};
 use crate::models::merton_jump_diffusion::MertonJumpDiffusion;
-use crate::statistics::{Distribution as LocalDistribution, Poisson};
 use crate::stochastics::process::{StochasticProcess, Trajectories};
 use rand::prelude::Distribution;
 use rayon::prelude::*;
@@ -86,7 +86,7 @@ impl StochasticProcess for MertonJumpDiffusion {
 #[cfg(test)]
 mod tests_gbm_bridge {
     use super::*;
-    use crate::{assert_approx_equal, statistics::*};
+    use crate::{assert_approx_equal, math::*};
 
     #[test]
     fn test_geometric_brownian_motion_bridge() {

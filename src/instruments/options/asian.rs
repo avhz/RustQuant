@@ -8,7 +8,7 @@
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 use crate::{
-    statistics::distributions::{gaussian::Gaussian, Distribution},
+    math::distributions::{gaussian::Gaussian, Distribution},
     time::{today, DayCountConvention},
 };
 use time::Date;

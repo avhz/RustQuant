@@ -7,7 +7,12 @@
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-//! Data reading and writing utilities.
+//! Data management module.
+//!
+//! 'Data' includes data used for pricing, such as curves and surfaces.
+//!
+//!
+//!
 //! Disabled by default, due to Polars increasing compile times.
 //!
 //! You can:
@@ -107,3 +112,16 @@ pub use io::*;
 /// Yahoo! Finance data reader.
 pub mod yahoo;
 pub use yahoo::*;
+
+/// Curves module.
+/// Curves (in the financial sense) are functions that map
+/// a time to a value, such as a yield curve or a swap curve.
+/// They may also be known as term structures.
+pub mod curves;
+pub use curves::*;
+
+/// Surface implementations.
+/// Surfaces are simply [Curve]s with an additional dimension.
+/// For example, a volatility surface is a function of time and strike/moneyness.
+pub mod surfaces;
+pub use surfaces::*;

@@ -28,7 +28,7 @@
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 use super::TypeFlag;
-use crate::statistics::distributions::{gaussian::Gaussian, Distribution};
+use crate::math::distributions::{gaussian::Gaussian, Distribution};
 use errorfunctions::RealErrorFunctions;
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

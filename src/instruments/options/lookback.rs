@@ -9,9 +9,9 @@
 
 use crate::{
     instruments::options::TypeFlag,
+    math::distributions::{Distribution, Gaussian},
+    math::Statistic,
     models::geometric_brownian_motion::GeometricBrownianMotion,
-    statistics::distributions::{Distribution, Gaussian},
-    statistics::Statistic,
     stochastics::process::StochasticProcess,
 };
 

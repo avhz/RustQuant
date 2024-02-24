@@ -82,6 +82,14 @@ pub use merton_jump_diffusion::*;
 pub mod model_parameter;
 pub use model_parameter::*;
 
+/// Nelson-Siegel model.
+pub mod nelson_siegel;
+pub use nelson_siegel::*;
+
+/// Nelson-Siegel-Svensson model.
+pub mod nelson_siegel_svensson;
+pub use nelson_siegel_svensson::*;
+
 /// Ornstein-Uhlenbeck.
 pub mod ornstein_uhlenbeck;
 pub use ornstein_uhlenbeck::*;

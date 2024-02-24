@@ -31,7 +31,7 @@ impl StochasticProcess for ExtendedVasicek {
 #[cfg(test)]
 mod tests_extended_vasicek {
     use super::*;
-    use crate::{assert_approx_equal, statistics::*};
+    use crate::{assert_approx_equal, math::*};
 
     // fn alpha_t(_t: f64) -> f64 {
     //     2.0

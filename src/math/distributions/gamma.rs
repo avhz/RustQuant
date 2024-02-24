@@ -7,7 +7,7 @@
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use crate::statistics::{distributions::Distribution, DistributionError};
+use crate::math::{distributions::Distribution, DistributionError};
 use num_complex::Complex;
 use statrs::function::gamma::{gamma, gamma_li};
 

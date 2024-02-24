@@ -32,7 +32,7 @@ impl StochasticProcess for CoxIngersollRoss {
 #[cfg(test)]
 mod tests_cir {
     use super::*;
-    use crate::{assert_approx_equal, statistics::*};
+    use crate::{assert_approx_equal, math::*};
 
     #[test]
     fn test_cox_ingersoll_ross() {

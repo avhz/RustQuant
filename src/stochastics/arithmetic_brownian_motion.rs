@@ -34,7 +34,7 @@ impl StochasticProcess for ArithmeticBrownianMotion {
 #[cfg(test)]
 mod tests_abm {
     use super::*;
-    use crate::{assert_approx_equal, statistics::*};
+    use crate::{assert_approx_equal, math::*};
 
     #[test]
     fn test_arithmetic_brownian_motion() {

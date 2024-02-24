@@ -14,7 +14,7 @@
 use time::Date;
 
 use crate::{
-    statistics::distributions::{Distribution, Gaussian},
+    math::distributions::{Distribution, Gaussian},
     time::{today, DayCountConvention},
 };
 

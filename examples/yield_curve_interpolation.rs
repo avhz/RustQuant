@@ -1,6 +1,6 @@
 use time::{Date, Duration};
 use RustQuant::{
-    curves::{Curve, YieldCurve},
+    data::{Curve, YieldCurve},
     plot_vector,
     time::today,
 };

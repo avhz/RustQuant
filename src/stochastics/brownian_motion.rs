@@ -33,7 +33,7 @@ mod sde_tests {
     // use std::time::Instant;
 
     use super::*;
-    use crate::{assert_approx_equal, statistics::*};
+    use crate::{assert_approx_equal, math::*};
 
     #[test]
     fn test_brownian_motion() {

@@ -7,10 +7,8 @@
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+use crate::math::DistributionError;
 use errorfunctions::RealErrorFunctions;
-
-use crate::statistics::DistributionError;
-
 use {
     super::Distribution,
     num_complex::Complex,

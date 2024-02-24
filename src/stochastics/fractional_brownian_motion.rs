@@ -17,7 +17,6 @@ use ndarray_rand::RandomExt;
 use ndrustfft::{ndfft_par, FftHandler};
 use num_complex::{Complex, ComplexDistribution};
 use rand::Rng;
-#[cfg(feature = "seedable")]
 use rand::{rngs::StdRng, SeedableRng};
 use rand_distr::StandardNormal;
 use rayon::prelude::*;
@@ -81,7 +80,6 @@ impl FractionalBrownianMotion {
         noise.data.as_vec().clone()
     }
 
-    #[cfg(feature = "seedable")]
     /// Seedable Fractional Gaussian noise.
     pub fn seedable_fgn_cholesky(&self, n: usize, t_n: f64, seed: u64) -> Vec<f64> {
         let acf_sqrt = self.acf_matrix_sqrt(n);
@@ -190,7 +188,6 @@ impl StochasticProcess for FractionalBrownianMotion {
         Trajectories { times, paths }
     }
 
-    #[cfg(feature = "seedable")]
     fn seedable_euler_maruyama(
         &self,
         x_0: f64,
@@ -239,8 +236,8 @@ mod test_fractional_brownian_motion {
 
     use super::*;
     use crate::{
+        math::Statistic,
         ml::{Decomposition, LinearRegressionInput},
-        statistics::Statistic,
     };
 
     fn higuchi_fd(x: &Vec<f64>, kmax: usize) -> f64 {

@@ -288,10 +288,8 @@ impl LogisticRegressionOutput<f64> {
 
 #[cfg(test)]
 mod tests_logistic_regression {
-    use crate::statistics::distributions::DistributionClass;
-
     use super::*;
-
+    use crate::math::distributions::DistributionClass;
     use std::time::Instant;
     // use crate::assert_approx_equal;
 
@@ -392,7 +390,7 @@ mod tests_logistic_regression {
         // - For the coefficients of the generating distribution draw K values from surface of the unit sphere S_(K-1)  and a bias from uniform(-0.7,0.7); arrange as DVector "coefs"
         // - compute vector of probabilities(target=1) as sigmoid(X_ext * coefs)
         // - compute target values:for each sample i draw from Bernoulli(prob_i)
-        use crate::statistics::distributions::{Bernoulli, Distribution, Gaussian, Uniform};
+        use crate::math::distributions::{Bernoulli, Distribution, Gaussian, Uniform};
 
         let N_train = 200; //Number of training samples
         let N_test = 40; //Number of test samples

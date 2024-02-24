@@ -30,7 +30,7 @@ impl StochasticProcess for HullWhite {
 #[cfg(test)]
 mod tests_hull_white {
     use super::*;
-    use crate::{assert_approx_equal, statistics::*};
+    use crate::{assert_approx_equal, math::*};
 
     // fn theta_t(_t: f64) -> f64 {
     //     0.5
