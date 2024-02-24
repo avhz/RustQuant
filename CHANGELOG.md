@@ -6,6 +6,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.0.46](https://github.com/avhz/RustQuant/compare/v0.0.45...v0.0.46) - 2024-02-24
+
+### Added
+- added `derive_builder` crate.
+
+### Other
+- remove feature flags, move `curves` into `data` module.
+- day counting submodule split into files.
+- `OffsetDateTime` refactored to `Date`
+- Merge branch 'main' of github.com:avhz/RustQuant
+- working progress: exponential interpolator
+
 ## [0.0.45](https://github.com/avhz/RustQuant/compare/v0.0.44...v0.0.45) - 2024-02-04
 
 ### Other
