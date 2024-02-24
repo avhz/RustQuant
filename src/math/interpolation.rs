@@ -21,9 +21,14 @@ where
     IndexType: InterpolationIndex,
     ValueType: InterpolationValue,
 {
-    xs: Vec<IndexType>,
-    ys: Vec<ValueType>,
-    fitted: bool,
+    /// X-axis values for the interpolator.
+    pub xs: Vec<IndexType>,
+
+    /// Y-axis values for the interpolator.
+    pub ys: Vec<ValueType>,
+
+    /// Whether the interpolator has been fitted.
+    pub fitted: bool,
 }
 
 /// Exponential Interpolator.
@@ -32,9 +37,14 @@ where
     IndexType: InterpolationIndex,
     ValueType: InterpolationValue,
 {
-    xs: Vec<IndexType>,
-    ys: Vec<ValueType>,
-    fitted: bool,
+    /// X-axis values for the interpolator.
+    pub xs: Vec<IndexType>,
+
+    /// Y-axis values for the interpolator.
+    pub ys: Vec<ValueType>,
+
+    /// Whether the interpolator has been fitted.
+    pub fitted: bool,
 }
 
 /// Error for `interpolator`s.
@@ -55,7 +65,7 @@ pub enum InterpolationError {
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 /// Trait describing requirements to be interpolated.
-pub trait InterpolationValue: num_traits::Num + Copy + Clone + Sized {}
+pub trait InterpolationValue: num_traits::Num + std::fmt::Debug + Copy + Clone + Sized {}
 
 /// Trait describing requirements to be an index of interpolation.
 pub trait InterpolationIndex:
@@ -66,7 +76,7 @@ pub trait InterpolationIndex:
         + std::ops::Mul<Self::DeltaDiv, Output = Self::Delta>;
 
     /// Type of `Delta` / `Delta`
-    type DeltaDiv: InterpolationValue; // + num_traits::Num
+    type DeltaDiv: InterpolationValue;
 }
 
 /// Interpolator trait.
@@ -99,7 +109,7 @@ where
 // IMPLEMENTATIONS, FUNCTIONS, AND MACROS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-impl<T> InterpolationValue for T where T: num_traits::Num + Copy + Clone + Sized {}
+impl<T> InterpolationValue for T where T: num_traits::Num + std::fmt::Debug + Copy + Clone + Sized {}
 
 macro_rules! impl_interpolation_index {
     ($a:ty, $b:ty, $c:ty) => {
@@ -134,9 +144,10 @@ impl_interpolation_index!(f64, f64, f64);
 impl_interpolation_index!(Decimal, Decimal, Decimal);
 
 // Implement InterpolationIndex for date/time types.
+impl_interpolation_index!(time::Date, time::Duration, f64);
+impl_interpolation_index!(time::Time, time::Duration, f64);
 impl_interpolation_index!(time::OffsetDateTime, time::Duration, f64);
 impl_interpolation_index!(time::PrimitiveDateTime, time::Duration, f64);
-impl_interpolation_index!(time::Time, time::Duration, f64);
 
 impl<IndexType, ValueType> LinearInterpolator<IndexType, ValueType>
 where
@@ -174,7 +185,7 @@ where
 
 impl<IndexType, ValueType> ExponentialInterpolator<IndexType, ValueType>
 where
-    IndexType: InterpolationIndex,
+    IndexType: InterpolationIndex<DeltaDiv = ValueType>,
     ValueType: InterpolationValue,
 {
     /// Create a new ExponentialInterpolator.
@@ -209,16 +220,15 @@ where
 impl<IndexType, ValueType> Interpolator<IndexType, ValueType>
     for LinearInterpolator<IndexType, ValueType>
 where
-    IndexType: InterpolationIndex<DeltaDiv = ValueType> + std::fmt::Debug,
-    ValueType: InterpolationValue + std::fmt::Debug,
+    IndexType: InterpolationIndex<DeltaDiv = ValueType>,
+    ValueType: InterpolationValue,
 {
     fn fit(&mut self) -> Result<(), InterpolationError> {
         self.fitted = true;
         Ok(())
     }
 
-    fn interpolate(&self, point: IndexType) -> Result<ValueType, InterpolationError>
-where {
+    fn interpolate(&self, point: IndexType) -> Result<ValueType, InterpolationError> {
         let range = self.range();
         if point.partial_cmp(&range.0).unwrap() == std::cmp::Ordering::Less
             || point.partial_cmp(&range.1).unwrap() == std::cmp::Ordering::Greater
@@ -234,9 +244,12 @@ where {
         let idx_r = self.xs.partition_point(|&x| x < point);
         let idx_l = idx_r - 1;
 
-        Ok(self.ys[idx_l]
-            + (self.ys[idx_r] - self.ys[idx_l])
-                * ((point - self.xs[idx_l]) / (self.xs[idx_r] - self.xs[idx_l])))
+        let term_1 = self.ys[idx_r] - self.ys[idx_l];
+        let term_2 = (point - self.xs[idx_l]) / (self.xs[idx_r] - self.xs[idx_l]);
+
+        let result = self.ys[idx_l] + term_1 * term_2;
+
+        Ok(result)
     }
 
     fn range(&self) -> (IndexType, IndexType) {
@@ -253,16 +266,15 @@ where {
 // impl<IndexType, ValueType> Interpolator<IndexType, ValueType>
 //     for ExponentialInterpolator<IndexType, ValueType>
 // where
-//     IndexType: InterpolationIndex<DeltaDiv = ValueType> + std::fmt::Debug,
-//     ValueType: InterpolationValue + std::fmt::Debug,
+//     IndexType: InterpolationIndex<DeltaDiv = ValueType> + std::ops::Div<Output = ValueType>,
+//     ValueType: InterpolationValue + num_traits::Float,
 // {
 //     fn fit(&mut self) -> Result<(), InterpolationError> {
 //         self.fitted = true;
 //         Ok(())
 //     }
 
-//     fn interpolate(&self, point: IndexType) -> Result<ValueType, InterpolationError>
-// where {
+//     fn interpolate(&self, point: IndexType) -> Result<ValueType, InterpolationError> {
 //         let range = self.range();
 
 //         if point.partial_cmp(&range.0).unwrap() == std::cmp::Ordering::Less
@@ -283,13 +295,17 @@ where {
 
 //         let lambda = (self.xs[idx_r] - point) / (self.xs[idx_r] - self.xs[idx_l]);
 
-//         // lambda = (x_r - x) / (x_r - x_l)
-//         // term1  = lambda       * (x - x0) / (x_l - x0)
-//         // term2  = (1 - lambda) * (x - x1) / (x_r - x0)
-//         // out    = y_l^lambda * y_r^(1 - lambda)
+//         let exponent_1 = lambda * (point / self.xs[idx_l]);
+//         let exponent_2 = point / self.xs[idx_r] - lambda * (point / self.xs[idx_r]);
+//         // let exponent_2 = (-lambda + 1.0) * (point / self.xs[idx_r]);
+//         // let exponent_2 = (ValueType::from(1.0).unwrap() - lambda) * (point / self.xs[idx_r]);
 
-//         Ok(self.ys[idx_l].powf(lambda * point / self.xs[idx_l])
-//             * self.ys[idx_r].powf((1.0 - lambda) * point / self.xs[idx_r]))
+//         let term_1 = self.ys[idx_l].powf(exponent_1);
+//         let term_2 = self.ys[idx_r].powf(exponent_2);
+
+//         let result = term_1 * term_2;
+
+//         Ok(result)
 //     }
 
 //     fn range(&self) -> (IndexType, IndexType) {
@@ -298,6 +314,7 @@ where {
 
 //     fn add_point(&mut self, point: (IndexType, ValueType)) {
 //         let idx = self.xs.partition_point(|&x| x < point.0);
+
 //         self.xs.insert(idx, point.0);
 //         self.ys.insert(idx, point.1);
 //     }
@@ -309,10 +326,9 @@ where {
 
 #[cfg(test)]
 mod tests_interpolation {
-
     use super::*;
-    use crate::assert_approx_equal;
-    use std::f64::EPSILON as EPS;
+    use crate::{assert_approx_equal, RUSTQUANT_EPSILON};
+    use time::macros::date;
 
     #[test]
     fn test_linear_interpolation() {
@@ -322,8 +338,16 @@ mod tests_interpolation {
         let mut interpolator = LinearInterpolator::new(xs, ys).unwrap();
         let _ = interpolator.fit();
 
-        assert_approx_equal!(2.5, interpolator.interpolate(2.5).unwrap(), EPS);
-        assert_approx_equal!(3.5, interpolator.interpolate(3.5).unwrap(), EPS);
+        assert_approx_equal!(
+            2.5,
+            interpolator.interpolate(2.5).unwrap(),
+            RUSTQUANT_EPSILON
+        );
+        assert_approx_equal!(
+            3.5,
+            interpolator.interpolate(3.5).unwrap(),
+            RUSTQUANT_EPSILON
+        );
     }
 
     #[test]
@@ -359,7 +383,47 @@ mod tests_interpolation {
             interpolator
                 .interpolate(xs[1] + time::Duration::hours(12))
                 .unwrap(),
-            EPS
+            RUSTQUANT_EPSILON
         );
     }
+
+    #[test]
+    fn test_linear_interpolation_dates_2() {
+        let d_1m = date!(1990 - 06 - 16);
+        let d_2m = date!(1990 - 07 - 17);
+
+        let r_1m = 0.9870;
+        let r_2m = 0.9753;
+
+        let dates = vec![d_1m, d_2m];
+        let rates = vec![r_1m, r_2m];
+
+        let mut interpolator = LinearInterpolator::new(dates, rates).unwrap();
+
+        assert_approx_equal!(
+            0.9855,
+            interpolator.interpolate(date!(1990 - 06 - 20)).unwrap(),
+            RUSTQUANT_EPSILON
+        );
+    }
+
+    // #[test]
+    // fn test_exponential_interpolation_dates() {
+    //     let d_1m = date!(1990 - 06 - 16);
+    //     let d_2m = date!(1990 - 07 - 17);
+
+    //     let r_1m = 0.9870;
+    //     let r_2m = 0.9753;
+
+    //     let dates = vec![d_1m, d_2m];
+    //     let rates = vec![r_1m, r_2m];
+
+    //     let mut interpolator = ExponentialInterpolator::new(dates, rates).unwrap();
+
+    //     assert_approx_equal!(
+    //         0.9854,
+    //         interpolator.interpolate(date!(1990 - 06 - 20)).unwrap(),
+    //         RUSTQUANT_EPSILON
+    //     );
+    // }
 }

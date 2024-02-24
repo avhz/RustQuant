@@ -9,7 +9,7 @@
 
 use crate::{
     math::integrate,
-    time::{today, DayCountConvention, DayCounter},
+    time::{today, DayCountConvention},
 };
 use num_complex::Complex;
 use time::Date;

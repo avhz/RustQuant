@@ -48,7 +48,7 @@ pub enum AveragingMethod {
 
 /// Asian Option struct.
 #[allow(clippy::module_name_repetitions)]
-#[derive(Debug, Clone, Copy)]
+#[derive(derive_builder::Builder, Debug, Clone, Copy)]
 pub struct AsianOption {
     /// `S` - Initial price of the underlying.
     pub initial_price: f64,
@@ -60,8 +60,11 @@ pub struct AsianOption {
     pub volatility: f64,
     /// `q` - Dividend rate.
     pub dividend_rate: f64,
-    /// `valuation_date` - Valuation date.
+
+    /// `evaluation_date` - Valuation date.
+    #[builder(default = "None")]
     pub evaluation_date: Option<Date>,
+
     /// `expiry_date` - Expiry date.
     pub expiration_date: Date,
 }

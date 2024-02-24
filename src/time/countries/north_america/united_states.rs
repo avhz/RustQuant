@@ -86,6 +86,12 @@ impl Calendar for UnitedStatesCalendar {
     }
 }
 
+impl Default for UnitedStatesCalendar {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl UnitedStatesCalendar {
     /// Create a new instance of the United States of America calendar.
     pub fn new() -> Self {
@@ -97,13 +103,11 @@ impl UnitedStatesCalendar {
 
         if (y >= 1971) {
             // third Monday in February
-            return (d >= 15 && d <= 21) && wd == Weekday::Monday && m == Month::February;
+            (d >= 15 && d <= 21) && wd == Weekday::Monday && m == Month::February
         } else {
             // February 22nd, possibly adjusted
-            return (d == 22
-                || (d == 23 && wd == Weekday::Monday)
-                || (d == 21 && wd == Weekday::Friday))
-                && m == Month::February;
+            (d == 22 || (d == 23 && wd == Weekday::Monday) || (d == 21 && wd == Weekday::Friday))
+                && m == Month::February
         }
     }
 
@@ -112,13 +116,11 @@ impl UnitedStatesCalendar {
 
         if (y >= 1971) {
             // last Monday in May
-            return d >= 25 && wd == Weekday::Monday && m == Month::May;
+            d >= 25 && wd == Weekday::Monday && m == Month::May
         } else {
             // May 30th, possibly adjusted
-            return (d == 30
-                || (d == 31 && wd == Weekday::Monday)
-                || (d == 29 && wd == Weekday::Friday))
-                && m == Month::May;
+            (d == 30 || (d == 31 && wd == Weekday::Monday) || (d == 29 && wd == Weekday::Friday))
+                && m == Month::May
         }
     }
 
@@ -126,14 +128,14 @@ impl UnitedStatesCalendar {
         let (_, m, d, wd, _, _) = unpack_date(date, false);
 
         // first Monday in September
-        return d <= 7 && wd == Weekday::Monday && m == Month::September;
+        d <= 7 && wd == Weekday::Monday && m == Month::September
     }
 
     fn is_columbus_day(&self, date: Date) -> bool {
         let (y, m, d, wd, _, _) = unpack_date(date, false);
 
         // second Monday in October
-        return (d >= 8 && d <= 14) && wd == Weekday::Monday && m == Month::October && y >= 1971;
+        (d >= 8 && d <= 14) && wd == Weekday::Monday && m == Month::October && y >= 1971
     }
 
     fn is_veterans_day(&self, date: Date) -> bool {
@@ -141,13 +143,11 @@ impl UnitedStatesCalendar {
 
         if (y <= 1970 || y >= 1978) {
             // November 11th, adjusted
-            return (d == 11
-                || (d == 12 && wd == Weekday::Monday)
-                || (d == 10 && wd == Weekday::Friday))
-                && m == Month::November;
+            (d == 11 || (d == 12 && wd == Weekday::Monday) || (d == 10 && wd == Weekday::Friday))
+                && m == Month::November
         } else {
             // fourth Monday in October
-            return (d >= 22 && d <= 28) && wd == Weekday::Monday && m == Month::October;
+            (d >= 22 && d <= 28) && wd == Weekday::Monday && m == Month::October
         }
     }
 
@@ -155,11 +155,9 @@ impl UnitedStatesCalendar {
         let (y, m, d, wd, _, _) = unpack_date(date, false);
 
         // declared in 2021, but only observed by exchanges since 2022
-        return (d == 19
-            || (d == 20 && wd == Weekday::Monday)
-            || ((d == 18 && wd == Weekday::Friday) && move_to_friday))
+        (d == 19 || (d == 20 && wd == Weekday::Monday) || ((d == 18 && wd == Weekday::Friday) && move_to_friday))
             && m == Month::June
-            && y >= 2022;
+            && y >= 2022
     }
 }
 

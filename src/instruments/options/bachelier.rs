@@ -13,7 +13,7 @@
 
 use crate::instruments::options::TypeFlag;
 use crate::math::distributions::{Distribution, Gaussian};
-use crate::time::{today, DayCountConvention, DayCounter};
+use crate::time::{today, DayCountConvention};
 
 use time::Date;
 
@@ -41,6 +41,7 @@ pub struct Bachelier {
 
 /// Bachelier European Option pricing model.
 #[allow(clippy::module_name_repetitions)]
+#[derive(derive_builder::Builder, Debug, Clone, Copy)]
 pub struct ModifiedBachelier {
     /// The underlying asset price.
     pub underlying_price: f64,
@@ -54,6 +55,7 @@ pub struct ModifiedBachelier {
     pub dividend_yield: f64,
 
     /// Evaluation date (optional, defaults to today t = 0).
+    #[builder(default = "None")]
     pub evaluation_date: Option<Date>,
     /// The options expiration date.
     pub expiration_date: Date,

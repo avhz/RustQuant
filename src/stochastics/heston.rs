@@ -10,15 +10,15 @@
 use crate::{models::Heston, stochastics::StochasticProcess};
 
 impl StochasticProcess for Heston {
-    fn drift(&self, x: f64, t: f64) -> f64 {
+    fn drift(&self, _x: f64, _t: f64) -> f64 {
         todo!()
     }
 
-    fn diffusion(&self, x: f64, t: f64) -> f64 {
+    fn diffusion(&self, _x: f64, _t: f64) -> f64 {
         todo!()
     }
 
-    fn jump(&self, x: f64, t: f64) -> Option<f64> {
+    fn jump(&self, _x: f64, _t: f64) -> Option<f64> {
         todo!()
     }
 }

@@ -37,6 +37,7 @@ use time::Date;
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 /// Generalised Black-Scholes-Merton European Option pricing model.
+#[derive(derive_builder::Builder)]
 pub struct BlackScholesMerton {
     /// The cost of carry factor.
     /// For the generalised Black-Scholes-Merton model there are five options:
@@ -61,6 +62,7 @@ pub struct BlackScholesMerton {
     pub risk_free_rate: f64,
 
     /// Evaluation date (optional, defaults to today t = 0).
+    #[builder(default = "None")]
     pub evaluation_date: Option<Date>,
     /// The options expiration date.
     pub expiration_date: Date,
@@ -136,6 +138,18 @@ impl BlackScholesMerton {
                 -S * ((b - r) * T).exp() * n.cdf(-d1) + K * (-r * T).exp() * n.cdf(-d2)
             }
         }
+    }
+
+    /// Implied volatility.
+    pub fn implied_volatility(&self, price: f64) -> f64 {
+        crate::instruments::options::implied_volatility(
+            price, 
+            self.underlying_price, 
+            self.strike_price, 
+            self.year_fraction(), 
+            self.risk_free_rate, 
+            self.option_type
+        )
     }
 
     /// Compute the year fraction between two dates.

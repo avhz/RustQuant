@@ -49,6 +49,7 @@ rustdoc-args = ["--html-in-header", "katex_header.html", "--cfg", "docsrs"]
 
 [dependencies]
 csv = "1.3.0"                # https://docs.rs/csv/latest/csv/
+derive_builder = "0.20.0"    # https://docs.rs/derive_builder/latest/derive_builder/
 errorfunctions = "0.2.0"     # https://docs.rs/errorfunctions/latest/errorfunctions/
 nalgebra = "0.32.2"          # https://docs.rs/nalgebra/latest/nalgebra/
 ndarray = "0.15.6"           # https://docs.rs/ndarray/latest/ndarray/

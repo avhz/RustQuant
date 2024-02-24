@@ -12,7 +12,7 @@
 //! Power contracts are options with the payoff: (S/K)^i
 //! where i is the (fixed) power of the contract.
 
-use crate::time::{today, DayCountConvention, DayCounter};
+use crate::time::{today, DayCountConvention};
 use time::Date;
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

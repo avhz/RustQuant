@@ -110,9 +110,7 @@ pub mod overloading {
     /// Overload the standard subtraction operator (`-`).
     pub mod sub;
 }
-pub use overloading::{
-    add::*, div::*, f64::*, iter::*, log::*, minmax::*, mul::*, pow::*, statrs::*, sub::*,
-};
+pub use overloading::{log::*, minmax::*, pow::*};
 
 /// `Variable`s for `autodiff`.
 pub mod variables {
@@ -123,4 +121,4 @@ pub mod variables {
     /// Base trait for all `Variable`s.
     pub mod variable;
 }
-pub use variables::{nalgebra::*, ndarray::*, variable::*};
+pub use variables::{ndarray::*, variable::*};

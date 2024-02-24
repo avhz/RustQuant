@@ -13,12 +13,12 @@
 
 use super::TypeFlag;
 use crate::instruments::BlackScholesMerton;
-use crate::time::{today, DayCountConvention, DayCounter};
+use crate::time::{today, DayCountConvention};
 use time::Date;
 
 /// Merton (1976) jump diffusion model parameters.
 #[allow(clippy::module_name_repetitions)]
-#[derive(Debug)]
+#[derive(derive_builder::Builder, Debug)]
 pub struct Merton1976 {
     /// `underlying_price` - Initial price of the underlying.
     pub underlying_price: f64,
@@ -42,6 +42,7 @@ pub struct Merton1976 {
     pub type_flag: TypeFlag,
 
     /// `evaluation_date` - Valuation date.
+    #[builder(default = "None")]
     pub evaluation_date: Option<Date>,
 
     /// `expiration_date` - Valuation date.

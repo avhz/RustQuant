@@ -167,7 +167,7 @@ pub fn date_sequence(start: Date, end: Date) -> Vec<Date> {
 
     while current_date <= end {
         dates.push(current_date);
-        current_date = current_date + Duration::days(1);
+        current_date += Duration::days(1);
     }
 
     dates

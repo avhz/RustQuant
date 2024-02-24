@@ -20,7 +20,7 @@ use crate::{
 
 /// Forward Start Option parameters struct
 #[allow(clippy::module_name_repetitions)]
-#[derive(Debug)]
+#[derive(derive_builder::Builder, Debug)]
 pub struct ForwardStartOption {
     /// `S` - Initial price of the underlying.
     pub initial_price: f64,
@@ -36,7 +36,9 @@ pub struct ForwardStartOption {
     pub volatility: f64,
     /// `q` - Dividend rate.
     pub dividend_rate: f64,
+    
     /// `valuation_date` - Valuation date.
+    #[builder(default = "None")]
     pub valuation_date: Option<Date>,
 
     /// `start` - Time until the start of the option (`T` in most literature).
