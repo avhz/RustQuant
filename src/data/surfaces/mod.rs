@@ -12,7 +12,7 @@
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 use super::Curve;
-use num_traits::Float;
+use num::Float;
 use std::collections::BTreeMap;
 use time::Date;
 

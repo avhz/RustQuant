@@ -7,7 +7,7 @@
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use num_complex::Complex;
+use num::Complex;
 use std::f64::consts::PI;
 
 // pub const i: Complex<f64> = Complex { re: 0.0, im: 1.0 };
@@ -140,7 +140,7 @@ fn split_array<T: Copy>(x: &Vec<T>) -> (Vec<T>, Vec<T>) {
 #[cfg(test)]
 mod test {
     use super::*;
-    use num_complex::Complex;
+    use num::Complex;
 
     const SQRT_20: f64 = 4.472_135_955;
     const REAL_TEST_SEQUENCE: [f64; 4] = [-1.0, 2.0, 3.0, 0.0];

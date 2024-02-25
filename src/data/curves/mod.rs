@@ -10,3 +10,7 @@
 /// Curve data.
 pub mod curve;
 pub use curve::*;
+
+/// Term structure data.
+pub mod term_structure;
+pub use term_structure::*;

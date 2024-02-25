@@ -54,8 +54,6 @@ nalgebra = "0.32.2"         # https://docs.rs/nalgebra/latest/nalgebra/
 ndarray = "0.15.6"          # https://docs.rs/ndarray/latest/ndarray/
 ndrustfft = "0.4.1"         # https://docs.rs/ndrustfft/latest/ndrustfft/
 ndarray-rand = "0.14.0"     # https://docs.rs/ndarray-rand/latest/ndarray_rand/
-num = "0.4.1"               # https://docs.rs/num/latest/num/
-num-traits = "0.2.16"       # https://docs.rs/num-traits/latest/num_traits/
 plotters = "0.3.4"          # https://docs.rs/plotters/latest/plotters/
 rand = "0.8.5"              # https://docs.rs/rand/latest/rand/
 rand_distr = "0.4.3"        # https://docs.rs/rand_distr/latest/rand_distr/
@@ -67,7 +65,7 @@ yahoo_finance_api = "2.0.0" # https://docs.rs/yahoo-finance-api/latest/yahoo_fin
 tokio-test = "0.4.3"        # https://docs.rs/tokio-test/latest/tokio_test/
 
 # https://docs.rs/num-complex/latest/num_complex/
-num-complex = { version = "0.4.2", features = ["rand"] }
+num = { version = "0.4.1", features = ["rand"] }
 
 # https://docs.rs/time/latest/time/
 time = { version = "0.3.20", features = ["macros"] }

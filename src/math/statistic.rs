@@ -7,7 +7,7 @@
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use num_traits::Float;
+use num::Float;
 
 /// Statistics trait for vectors of floating point numbers.
 pub trait Statistic<T: Float> {

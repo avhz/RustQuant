@@ -43,18 +43,17 @@ A Rust library for quantitative finance.
 | Module | Description |
 |--------|-------------|
 | [`autodiff`](https://docs.rs/RustQuant/latest/RustQuant/autodiff/index.html) | Algorithmic adjoint differentiation (AAD) for efficiently computing gradients of scalar output functions $f: \mathbb{R}^n \rightarrow \mathbb{R}$. |
-| [`curves`](https://docs.rs/RustQuant/latest/RustQuant/curves/index.html) | Curves and surfaces, such as the yield curve and volatility surface. |
-| [`data`](https://docs.rs/RustQuant/latest/RustQuant/data/index.html) | Methods for reading and writing data from/to various sources (CSV, JSON, Parquet). Can also download data from Yahoo! Finance. |
+| [`data`](https://docs.rs/RustQuant/latest/RustQuant/data/index.html) | Data types that can be used for pricing and similar tasks (curves, term-structures, surfaces, etc). Methods for reading and writing data from/to various sources (CSV, JSON, Parquet). Can also download data from Yahoo! Finance. |
 | [`error`](https://docs.rs/RustQuant/latest/RustQuant/error/index.html) | RustQuant error handling module. |
 | [`instruments`](https://docs.rs/RustQuant/latest/RustQuant/instruments/index.html) | Various implementations for instruments like `Bonds` and `Options`, and the pricing of them. Others coming in the future (swaps, futures, CDSs, etc). |
 | [`iso`](https://docs.rs/RustQuant/latest/RustQuant/iso/index.html) | A few ISO code implementations. Currently: ISO-4217 (currency codes), ISO-3166 (country codes), ISO-10383 (market identifier codes). |
-| [`math`](https://docs.rs/RustQuant/latest/RustQuant/math/index.html) | Fast Fourier Transform (FFT), numerical integration (double-exponential quadrature), optimisation/root-finding (gradient descent, Newton-Raphson), and risk-reward metrics. Also some sequence methods such as `linspace` and `cumsum`. |
+| [`math`](https://docs.rs/RustQuant/latest/RustQuant/math/index.html) | Statistical distributions and their related functions (PDF, CDF, CF, etc), Fast Fourier Transform (FFT), numerical integration (double-exponential quadrature), optimisation/root-finding (gradient descent, Newton-Raphson), and risk-reward metrics. Also some sequence methods such as `linspace` and `cumsum`. |
 | [`ml`](https://docs.rs/RustQuant/latest/RustQuant/ml/index.html) | Currently only linear and logistic regression, along with k-nearest neighbours classification are implemented. More to come in the future. |
 | [`macros`](https://docs.rs/RustQuant/latest/RustQuant/macros/index.html) | Currently only `plot_vector!()` and `assert_approx_equal!()`. |
+| [`models`](https://docs.rs/RustQuant/latest/RustQuant/models/index.html) | Various models commonly used in quantitative finance, such as the various forms of Brownian Motion, short rate models, curve models, etc. |
 | [`money`](https://docs.rs/RustQuant/latest/RustQuant/money/index.html) | Implementations for `Cashflows`, `Currencies`, and `Quotes`, and similar types. |
 | [`portfolio`](https://docs.rs/RustQuant/latest/RustQuant/portfolio/index.html) | Implementation of a portfolio type, which is a collection (`HashMap`) of `Position`s. |
-| [`statistics`](https://docs.rs/RustQuant/latest/RustQuant/statistics/index.html) | Density, distribution, moment-generating, and characteristic functions, and other distribution related functions for common distributions. |
-| [`stochastics`](https://docs.rs/RustQuant/latest/RustQuant/stochastics/index.html) | Stochastic process generators for Brownian Motion (standard, arithmetic, fractional, and geometric) and various short-rate models (CIR, OU, Vasicek, Hull-White, etc). Multi-factor processes coming shortly. |
+| [`stochastics`](https://docs.rs/RustQuant/latest/RustQuant/stochastics/index.html) | Stochastic process generators for Brownian Motion (standard, arithmetic, fractional, and geometric) and various short-rate models (CIR, OU, Vasicek, Hull-White, etc). |
 | [`time`](https://docs.rs/RustQuant/latest/RustQuant/time/index.html) | Time and date functionality, such as `DayCounter`, calendars, constants, conventions, schedules, etc. |
 | [`trading`](https://docs.rs/RustQuant/latest/RustQuant/trading/index.html) | Currently only a basic limit order book (LOB). Hopefully adding additional trading tools in the future. |
 

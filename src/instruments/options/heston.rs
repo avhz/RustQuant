@@ -11,7 +11,7 @@ use crate::{
     math::integrate,
     time::{today, DayCountConvention},
 };
-use num_complex::Complex;
+use num::Complex;
 use time::Date;
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -15,7 +15,7 @@ use nalgebra::{DMatrix, DVector, Dim, Dyn, RowDVector};
 use ndarray::{concatenate, prelude::*};
 use ndarray_rand::RandomExt;
 use ndrustfft::{ndfft_par, FftHandler};
-use num_complex::{Complex, ComplexDistribution};
+use num::{complex::ComplexDistribution, Complex};
 use rand::Rng;
 use rand::{rngs::StdRng, SeedableRng};
 use rand_distr::StandardNormal;

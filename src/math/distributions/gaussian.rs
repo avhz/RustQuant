@@ -11,7 +11,7 @@ use crate::math::DistributionError;
 use errorfunctions::RealErrorFunctions;
 use {
     super::Distribution,
-    num_complex::Complex,
+    num::Complex,
     statrs::function::erf,
     std::f64::consts::{PI, SQRT_2},
 };

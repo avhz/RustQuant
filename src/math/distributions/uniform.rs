@@ -9,7 +9,7 @@
 
 use super::DistributionClass;
 use crate::math::{distributions::Distribution, DistributionError};
-use num_complex::Complex;
+use num::Complex;
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // STRUCTS
