@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.0.50](https://github.com/avhz/RustQuant/compare/v0.0.49...v0.0.50) - 2024-02-27
+
+### Other
+- Update issue templates
+- Update issue templates
+
 ## [0.0.49](https://github.com/avhz/RustQuant/compare/v0.0.48...v0.0.49) - 2024-02-25
 
 ### Other
