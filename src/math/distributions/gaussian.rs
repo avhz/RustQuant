@@ -83,7 +83,7 @@ impl Distribution for Gaussian {
 
         let i: Complex<f64> = Complex::i();
 
-        (i * self.mean * t - 0.5 * (self.variance).powi(2) * (t).powi(2)).exp()
+        (i * self.mean * t - 0.5 * self.variance * (t).powi(2)).exp()
     }
 
     /// Probability density function of the Gaussian distribution.
@@ -99,7 +99,7 @@ impl Distribution for Gaussian {
     fn pdf(&self, x: f64) -> f64 {
         assert!(self.variance > 0.0);
 
-        (-0.5 * ((x - self.mean) / self.variance).powi(2)).exp() / (2.0 * PI * self.variance).sqrt()
+        (-0.5 * ((x - self.mean).powi(2) / self.variance).exp()) / (2.0 * PI * self.variance).sqrt()
     }
 
     /// Probability mass function for the Gaussian distribution (continuous) is not defined.
