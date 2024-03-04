@@ -50,28 +50,28 @@ rustdoc-args = ["--html-in-header", "katex_header.html", "--cfg", "docsrs"]
 [dependencies]
 derive_builder = "0.20.0"   # https://docs.rs/derive_builder/latest/derive_builder/
 errorfunctions = "0.2.0"    # https://docs.rs/errorfunctions/latest/errorfunctions/
-nalgebra = "0.32.2"         # https://docs.rs/nalgebra/latest/nalgebra/
-ndarray = "0.15.6"          # https://docs.rs/ndarray/latest/ndarray/
-ndrustfft = "0.4.1"         # https://docs.rs/ndrustfft/latest/ndrustfft/
+nalgebra = "0.32.0"         # https://docs.rs/nalgebra/latest/nalgebra/
+ndarray = "0.15.0"          # https://docs.rs/ndarray/latest/ndarray/
+ndrustfft = "0.4.0"         # https://docs.rs/ndrustfft/latest/ndrustfft/
 ndarray-rand = "0.14.0"     # https://docs.rs/ndarray-rand/latest/ndarray_rand/
-plotters = "0.3.4"          # https://docs.rs/plotters/latest/plotters/
+plotters = "0.3.5"          # https://docs.rs/plotters/latest/plotters/
 rand = "0.8.5"              # https://docs.rs/rand/latest/rand/
 rand_distr = "0.4.3"        # https://docs.rs/rand_distr/latest/rand_distr/
-rayon = "1.6.0"             # https://docs.rs/rayon/latest/rayon/
-rust_decimal = "1.33.1"     # https://docs.rs/rust_decimal/latest/rust_decimal/
+rayon = "1.9.0"             # https://docs.rs/rayon/latest/rayon/
+rust_decimal = "1.34.3"     # https://docs.rs/rust_decimal/latest/rust_decimal/
 statrs = "0.16.0"           # https://docs.rs/statrs/latest/statrs/
-thiserror = "1.0.47"        # https://docs.rs/thiserror/latest/thiserror/
-yahoo_finance_api = "2.0.0" # https://docs.rs/yahoo-finance-api/latest/yahoo_finance_api/
+thiserror = "1.0.57"        # https://docs.rs/thiserror/latest/thiserror/
+yahoo_finance_api = "2.1.0" # https://docs.rs/yahoo-finance-api/latest/yahoo_finance_api/
 tokio-test = "0.4.3"        # https://docs.rs/tokio-test/latest/tokio_test/
 
 # https://docs.rs/num-complex/latest/num_complex/
 num = { version = "0.4.1", features = ["rand"] }
 
 # https://docs.rs/time/latest/time/
-time = { version = "0.3.20", features = ["macros"] }
+time = { version = "0.3.34", features = ["macros"] }
 
 # https://docs.rs/polars/latest/polars/
-polars = { version = "0.37.0", features = [
+polars = { version = "0.38.1", features = [
     "serde",
     "json",
     "parquet",
