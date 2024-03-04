@@ -7,7 +7,6 @@
 ##      - LICENSE-MIT.md
 ## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-
 ## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ## GENERAL CONFIGURATION
 ## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -16,7 +15,7 @@
 name = "RustQuant"
 authors = ["avhz <RustQuantContact@gmail.com>"]
 description = "A Rust library for quantitative finance."
-version = "0.0.49"
+version = "0.1.0"
 edition = "2021"
 readme = "README.md"
 repository = "https://github.com/avhz/RustQuant"
@@ -30,7 +29,10 @@ keywords = [
 categories = ["finance", "mathematics", "science", "algorithms", "simulation"]
 license = "MIT OR Apache-2.0"
 
-[profile.release]
+## To compile a release build with debug symbols, use:
+## `cargo build --profile=release-with-debug`
+[profile.release-with-debug]
+inherits = "release"
 debug = true
 
 ## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -64,20 +66,14 @@ thiserror = "1.0.57"        # https://docs.rs/thiserror/latest/thiserror/
 yahoo_finance_api = "2.1.0" # https://docs.rs/yahoo-finance-api/latest/yahoo_finance_api/
 tokio-test = "0.4.3"        # https://docs.rs/tokio-test/latest/tokio_test/
 
-# https://docs.rs/num-complex/latest/num_complex/
+# https://docs.rs/num/latest/num/
 num = { version = "0.4.1", features = ["rand"] }
 
 # https://docs.rs/time/latest/time/
 time = { version = "0.3.34", features = ["macros"] }
 
 # https://docs.rs/polars/latest/polars/
-polars = { version = "0.38.1", features = [
-    "serde",
-    "json",
-    "parquet",
-    "dtype-full",
-    "lazy",
-] }
+polars = { version = "0.38.1", features = ["docs-selection"] }
 
 
 [dev-dependencies]
