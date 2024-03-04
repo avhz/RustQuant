@@ -9,9 +9,7 @@
 
 //! Module containing functionality for interpolation.
 
-use crate::math::interpolation::{
-    InterpolationError, InterpolationIndex, InterpolationValue, Interpolator,
-};
+use crate::math::interpolation::{InterpolationError, InterpolationIndex, InterpolationValue};
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // STRUCTS & ENUMS
