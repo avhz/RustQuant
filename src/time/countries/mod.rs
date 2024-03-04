@@ -25,6 +25,8 @@ pub mod asia {
     pub mod india;
     /// This module defines Indonesia holidays and calendars.
     pub mod indonesia;
+    /// This module defines Singapore holidays and calendars.
+    pub mod singapore;
 }
 
 /// Calendars implemented for European countries.
