@@ -6,6 +6,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.0.50](https://github.com/avhz/RustQuant/compare/v0.0.49...v0.0.50) - 2024-03-04
+
+### Added
+- v0.1.0 release for quality of life.
+
+### Other
+- Merge pull request [#193](https://github.com/avhz/RustQuant/pull/193) from qiweiii/feat/add-sg-calendar
+- Merge pull request [#192](https://github.com/avhz/RustQuant/pull/192) from aatmunbaxi/fix_gaussian_statistics
+- update Cargo.toml
+- Update issue templates
+- Update issue templates
+
 ## [0.0.49](https://github.com/avhz/RustQuant/compare/v0.0.48...v0.0.49) - 2024-02-25
 
 ### Other
