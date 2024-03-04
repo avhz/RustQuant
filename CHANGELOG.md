@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.1](https://github.com/avhz/RustQuant/compare/v0.1.0...v0.1.1) - 2024-03-04
+
+### Other
+- clippy lints.
+
 ## [0.0.49](https://github.com/avhz/RustQuant/compare/v0.0.48...v0.0.49) - 2024-02-25
 
 ### Other
