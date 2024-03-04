@@ -71,6 +71,12 @@ impl Calendar for SingaporeCalendar {
     }
 }
 
+impl Default for SingaporeCalendar {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl SingaporeCalendar {
     /// Create a new instance of the Hong Kong calendar.
     pub fn new() -> Self {

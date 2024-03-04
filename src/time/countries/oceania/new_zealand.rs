@@ -38,7 +38,7 @@ impl Calendar for NewZealandCalendar {
             // Day after New Year's Day (possibly moved to Mon or Tuesday)
             || ((d == 2 || (d == 4 && (wd == Weekday::Monday || wd == Weekday::Tuesday))) && m == Month::January)
             // Anniversary Day, Monday nearest January 22nd
-            || ((d >= 19 && d <= 25) && wd == Weekday::Monday && m == Month::January)
+            || ((19..=25).contains(&d) && wd == Weekday::Monday && m == Month::January)
             // Waitangi Day. February 6th ("Mondayised" since 2013)
             || (d == 6 && m == Month::February)
             || ((d == 7 || d == 8) && wd == Weekday::Monday && m == Month::February && y > 2013)
@@ -52,7 +52,7 @@ impl Calendar for NewZealandCalendar {
             // Queen's Birthday, first Monday in June
             || (d <= 7 && wd == Weekday::Monday && m == Month::June)
             // Labour Day, fourth Monday in October
-            || ((d >= 22 && d <= 28) && wd == Weekday::Monday && m == Month::October)
+            || ((22..=28).contains(&d) && wd == Weekday::Monday && m == Month::October)
             // Christmas, December 25th (possibly Monday or Tuesday)
             || ((d == 25 || (d == 27 && (wd == Weekday::Monday || wd == Weekday::Tuesday))) && m == Month::December)
             // Boxing Day, December 26th (possibly Monday or Tuesday)

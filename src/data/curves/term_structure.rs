@@ -33,8 +33,8 @@ impl TermStructure {
     pub fn new(x_values: &[Date], y_values: &[f64]) -> Self {
         Self {
             nodes: x_values
-                .into_iter()
-                .zip(y_values.into_iter())
+                .iter()
+                .zip(y_values.iter())
                 .map(|(&x, &y)| (x, y))
                 .collect(),
         }
@@ -43,10 +43,10 @@ impl TermStructure {
 
 impl Display for TermStructure {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "Term Structure\n")?;
+        write!(f, "Term Structure")?;
 
         for (x, y) in &self.nodes {
-            write!(f, "\t{}: {}\n", x, y)?;
+            write!(f, "\t{}: {}", x, y)?;
         }
 
         Ok(())

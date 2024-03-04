@@ -47,7 +47,7 @@ impl Calendar for CanadaCalendar {
             ((d == 1 || ((d == 2 || d == 3) && wd == Weekday::Monday)) && m == Month::January)
 
             // Family Day (third Monday in February, since 2008)
-            || ((d >= 15 && d <= 21) && wd == Weekday::Monday && m == Month::February && y >= 2008)
+            || ((15..=21).contains(&d) && wd == Weekday::Monday && m == Month::February && y >= 2008)
 
             // Good Friday
             || (yd == em-3)

@@ -50,7 +50,7 @@ impl Calendar for UnitedStatesCalendar {
             || (d == 31 && wd == Weekday::Friday && m == Month::December)
 
             // Martin Luther King's birthday (third Monday in January)
-            || ((d >= 15 && d <= 21) && wd == Weekday::Monday && m == Month::January && y >= 1983)
+            || ((15..=21).contains(&d) && wd == Weekday::Monday && m == Month::January && y >= 1983)
 
             // Washington's birthday (third Monday in February)
             || self.is_washington_birthday(date)
@@ -74,7 +74,7 @@ impl Calendar for UnitedStatesCalendar {
             || self.is_veterans_day(date)
 
             // Thanksgiving Day (fourth Thursday in November)
-            || ((d >= 22 && d <= 28) && wd == Weekday::Thursday && m == Month::November)
+            || ((22..=28).contains(&d) && wd == Weekday::Thursday && m == Month::November)
 
             // Christmas (Monday if Sunday or Friday if Saturday)
             || ((d == 25 || (d == 26 && wd == Weekday::Monday) || (d == 24 && wd == Weekday::Friday)) && m == Month::December)
@@ -103,7 +103,7 @@ impl UnitedStatesCalendar {
 
         if (y >= 1971) {
             // third Monday in February
-            (d >= 15 && d <= 21) && wd == Weekday::Monday && m == Month::February
+            (15..=21).contains(&d) && wd == Weekday::Monday && m == Month::February
         } else {
             // February 22nd, possibly adjusted
             (d == 22 || (d == 23 && wd == Weekday::Monday) || (d == 21 && wd == Weekday::Friday))
@@ -135,7 +135,7 @@ impl UnitedStatesCalendar {
         let (y, m, d, wd, _, _) = unpack_date(date, false);
 
         // second Monday in October
-        (d >= 8 && d <= 14) && wd == Weekday::Monday && m == Month::October && y >= 1971
+        (8..=14).contains(&d) && wd == Weekday::Monday && m == Month::October && y >= 1971
     }
 
     fn is_veterans_day(&self, date: Date) -> bool {
@@ -147,7 +147,7 @@ impl UnitedStatesCalendar {
                 && m == Month::November
         } else {
             // fourth Monday in October
-            (d >= 22 && d <= 28) && wd == Weekday::Monday && m == Month::October
+            (22..=28).contains(&d) && wd == Weekday::Monday && m == Month::October
         }
     }
 
@@ -155,7 +155,9 @@ impl UnitedStatesCalendar {
         let (y, m, d, wd, _, _) = unpack_date(date, false);
 
         // declared in 2021, but only observed by exchanges since 2022
-        (d == 19 || (d == 20 && wd == Weekday::Monday) || ((d == 18 && wd == Weekday::Friday) && move_to_friday))
+        (d == 19
+            || (d == 20 && wd == Weekday::Monday)
+            || ((d == 18 && wd == Weekday::Friday) && move_to_friday))
             && m == Month::June
             && y >= 2022
     }

@@ -64,7 +64,7 @@ pub fn fft_complex(x: &Vec<Complex<f64>>) -> Vec<Complex<f64>> {
 
 /// Helper function to check if a vector length is a power of 2
 #[must_use]
-pub fn is_valid_length<T>(x: &Vec<T>) -> bool {
+pub fn is_valid_length<T>(x: &[T]) -> bool {
     ((x.len() as f64).log2() % 1.0).abs() < 1e-10
 }
 
@@ -116,7 +116,7 @@ fn fft_complex_calculation(x: &mut Vec<Complex<f64>>) {
     }
 }
 
-fn split_array<T: Copy>(x: &Vec<T>) -> (Vec<T>, Vec<T>) {
+fn split_array<T: Copy>(x: &[T]) -> (Vec<T>, Vec<T>) {
     let n = x.len();
 
     let mut even = Vec::with_capacity(n / 2);
