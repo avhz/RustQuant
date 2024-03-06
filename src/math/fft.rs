@@ -18,21 +18,18 @@ use std::f64::consts::PI;
 
 /// Real FFT inplace,
 /// `x` length must be a power of 2
-#[allow(clippy::module_name_repetitions)]
-pub fn fft_real_inplace(x: &mut Vec<f64>) {
+pub fn fft_real_inplace(x: &mut [f64]) {
     check_vec_length(x);
-
     fft_real_calculation(x);
 }
 
 /// Real FFT and returns a new vector,
 /// `x` length must be a power of 2
-#[allow(clippy::module_name_repetitions)]
 #[must_use]
-pub fn fft_real(x: &Vec<f64>) -> Vec<f64> {
+pub fn fft_real(x: &[f64]) -> Vec<f64> {
     check_vec_length(x);
 
-    let mut result = x.clone();
+    let mut result = x.to_owned();
 
     fft_real_calculation(&mut result);
 
@@ -41,21 +38,18 @@ pub fn fft_real(x: &Vec<f64>) -> Vec<f64> {
 
 /// Complex FFT inplace,
 /// `x` length must be a power of 2
-#[allow(clippy::module_name_repetitions)]
-pub fn fft_complex_inplace(x: &mut Vec<Complex<f64>>) {
+pub fn fft_complex_inplace(x: &mut [Complex<f64>]) {
     check_vec_length(x);
-
     fft_complex_calculation(x);
 }
 
 /// Complex FFT and returns a new vector,
 /// `x` length must be a power of 2
-#[allow(clippy::module_name_repetitions)]
 #[must_use]
-pub fn fft_complex(x: &Vec<Complex<f64>>) -> Vec<Complex<f64>> {
+pub fn fft_complex(x: &[Complex<f64>]) -> Vec<Complex<f64>> {
     check_vec_length(x);
 
-    let mut result = x.clone();
+    let mut result = x.to_owned();
 
     fft_complex_calculation(&mut result);
 
@@ -68,7 +62,8 @@ pub fn is_valid_length<T>(x: &[T]) -> bool {
     ((x.len() as f64).log2() % 1.0).abs() < 1e-10
 }
 
-fn check_vec_length<T>(x: &Vec<T>) {
+#[inline]
+fn check_vec_length<T>(x: &[T]) {
     assert!(
         is_valid_length(x),
         "FFT can only handle vectors which length is a power of 2."
@@ -76,7 +71,7 @@ fn check_vec_length<T>(x: &Vec<T>) {
 }
 
 /// Real fourier transform in place
-fn fft_real_calculation(x: &mut Vec<f64>) {
+fn fft_real_calculation(x: &mut [f64]) {
     let n = x.len();
     if n == 1 {
         return;
@@ -98,7 +93,7 @@ fn fft_real_calculation(x: &mut Vec<f64>) {
 }
 
 /// Complex fourier transform of data in place
-fn fft_complex_calculation(x: &mut Vec<Complex<f64>>) {
+fn fft_complex_calculation(x: &mut [Complex<f64>]) {
     let n = x.len();
     if n == 1 {
         return;

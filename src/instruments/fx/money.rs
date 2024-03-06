@@ -13,28 +13,12 @@
 //! Basic arithmetic operations can be performed  on `Money` instances with the
 //! same underlying currency.
 
-use crate::iso::ISO_4217;
-use crate::{instruments::Instrument, time::today};
+use super::currency::Currency;
 use std::fmt::{self, Formatter};
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // STRUCTS, ENUMS, AND TRAITS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-/// Currency data struct.
-#[derive(Debug, Clone, Copy)]
-pub struct Currency {
-    /// Currency name. e.g. United States Dollar
-    pub name: &'static str,
-    /// Currency symbol. e.g. $
-    pub symbol: &'static str,
-    /// ISO 4217 currency code. e.g. USD = 840
-    pub code: ISO_4217,
-    /// Minor unit: digits after decimal separator. Usually D = 2.
-    pub minor: usize,
-    /// Fractions per unit. e.g. 100 cents = 1 dollar.
-    pub fractions: usize,
-}
 
 /// Money struct.
 #[derive(Debug, Clone, Copy)]
@@ -49,43 +33,11 @@ pub struct Money {
 // IMPLEMENTATIONS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-impl Instrument for Currency {
-    fn price(&self) -> f64 {
-        1.0
-    }
-
-    fn error(&self) -> Option<f64> {
-        None
-    }
-
-    fn valuation_date(&self) -> time::Date {
-        today()
-    }
-
-    fn instrument_type(&self) -> &'static str {
-        self.name
-    }
-}
-
-impl Eq for Currency {}
 impl Eq for Money {}
-impl Eq for ISO_4217 {}
-
-impl PartialEq for Currency {
-    fn eq(&self, other: &Self) -> bool {
-        self.code == other.code
-    }
-}
 
 impl PartialEq for Money {
     fn eq(&self, other: &Self) -> bool {
         self.currency.code == other.currency.code && self.amount == other.amount
-    }
-}
-
-impl PartialEq for ISO_4217 {
-    fn eq(&self, other: &Self) -> bool {
-        self.alphabetic == other.alphabetic && self.numeric == other.numeric
     }
 }
 
@@ -99,12 +51,6 @@ impl PartialOrd for Money {
     }
 }
 
-impl fmt::Display for Currency {
-    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
-        write!(f, "Currency:\t{}\nISO Code:\t{:?}", self.name, self.code)
-    }
-}
-
 impl fmt::Display for Money {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         write!(
@@ -112,66 +58,6 @@ impl fmt::Display for Money {
             "Amount:\t{}\nName:\t{}\nISO:\t{:?}",
             self.amount, self.currency.name, self.currency.code
         )
-    }
-}
-
-impl fmt::Display for ISO_4217 {
-    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
-        write!(
-            f,
-            "Alphabetic: {}, Numeric: {}",
-            self.alphabetic, self.numeric
-        )
-    }
-}
-
-impl Currency {
-    /// Create a new currency.
-    #[must_use]
-    pub fn new(
-        name: &'static str,
-        symbol: &'static str,
-        code: ISO_4217,
-        minor: usize,
-        fractions: usize,
-    ) -> Self {
-        Self {
-            name,
-            symbol,
-            code,
-            minor,
-            fractions,
-        }
-    }
-
-    /// Get the currency name.
-    #[must_use]
-    pub fn name(&self) -> &str {
-        self.name
-    }
-
-    /// Get the currency symbol.
-    #[must_use]
-    pub fn symbol(&self) -> &str {
-        self.symbol
-    }
-
-    /// Get the currency code.
-    #[must_use]
-    pub fn code(&self) -> ISO_4217 {
-        self.code
-    }
-
-    /// Get the minor unit.
-    #[must_use]
-    pub fn minor(&self) -> usize {
-        self.minor
-    }
-
-    /// Get the fractions per unit.
-    #[must_use]
-    pub fn fractions(&self) -> usize {
-        self.fractions
     }
 }
 
@@ -192,29 +78,6 @@ impl Money {
     #[must_use]
     pub fn amount(&self) -> f64 {
         self.amount
-    }
-}
-
-impl ISO_4217 {
-    /// Create a new ISO 4217 code.
-    #[must_use]
-    pub fn new(alphabetic: &'static str, numeric: &'static str) -> Self {
-        Self {
-            alphabetic,
-            numeric,
-        }
-    }
-
-    /// Get the ISO 4217 alphabetic code.
-    #[must_use]
-    pub fn alphabetic(&self) -> &str {
-        self.alphabetic
-    }
-
-    /// Get the ISO 4217 numeric code.
-    #[must_use]
-    pub fn numeric(&self) -> &str {
-        self.numeric
     }
 }
 
@@ -285,7 +148,6 @@ impl std::ops::Div for Money {
 #[cfg(test)]
 mod test_currencies {
     use super::*;
-
     use crate::assert_approx_equal;
     use std::f64::EPSILON as EPS;
 

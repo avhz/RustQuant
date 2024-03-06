@@ -13,11 +13,14 @@ use std::fmt::Display;
 use time::Date;
 
 /// Surface data.
-struct Surface {
+pub struct Surface {
+    /// Nodes of the surface.
     pub nodes: BTreeMap<f64, TermStructure>,
 }
 
-struct TermStructure {
+/// Term structure data.
+pub struct TermStructure {
+    /// Nodes of the term structure.
     pub nodes: BTreeMap<Date, f64>,
     // /// Calendar.
     // pub calendar: C,
@@ -30,6 +33,7 @@ struct TermStructure {
 }
 
 impl TermStructure {
+    /// Create a new term structure.
     pub fn new(x_values: &[Date], y_values: &[f64]) -> Self {
         Self {
             nodes: x_values

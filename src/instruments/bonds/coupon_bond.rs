@@ -1,15 +1,16 @@
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // RustQuant: A Rust library for quantitative finance tools.
-// Copyright (C) 2023 https://github.com/avhz
+// Copyright (C) 2023-2024 https://github.com/avhz
 // Dual licensed under Apache 2.0 and MIT.
 // See:
 //      - LICENSE-APACHE.md
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+use super::zero_coupon_bond::ZeroCouponBond;
 use crate::data::{Curve, YieldCurve};
+use crate::instruments::fx::currency::Currency;
 use crate::instruments::Instrument;
-use crate::money::Currency;
 use crate::time::{DateRollingConvention, Frequency};
 use std::collections::BTreeMap;
 use time::{Date, Duration};
@@ -17,22 +18,6 @@ use time::{Date, Duration};
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // STRUCTS, ENUMS, AND TRAITS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-/// Zero-coupon bond struct.
-/// A zero-coupon bond (aka a pure discount bond or simply a zero) is a
-/// debt security that doesn't pay interest (a coupon) periodically but
-/// instead pays the principal in full at maturity.
-#[allow(clippy::module_name_repetitions)]
-pub struct ZeroCouponBond {
-    /// The date the bond is evaluated (i.e. priced).
-    pub evaluation_date: Date,
-
-    /// The date the bond expires (i.e. matures, is redeemed).
-    pub expiration_date: Date,
-
-    /// The currency of the bond (optional).
-    pub currency: Option<Currency>,
-}
 
 /// Coupon bond struct.
 /// A coupon bond is a debt obligation with coupons attached that represent
@@ -196,7 +181,7 @@ impl CouponBond2 {
 #[cfg(test)]
 mod tests_bond {
     use super::*;
-    use crate::{data::Curve, money::USD, time::today};
+    use crate::{cashflows::USD, data::Curve, time::today};
 
     #[allow(clippy::similar_names)]
     fn create_test_yield_curve(t0: Date) -> YieldCurve {

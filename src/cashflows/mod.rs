@@ -16,20 +16,8 @@
 //! among other things.
 
 /// Cashflow definitions.
-pub mod cashflows;
-pub use cashflows::*;
-
-/// Currency data struct.
-pub mod currency;
-pub use currency::*;
-
-/// Currency exchange rate helpers.
-pub mod exchange;
-pub use exchange::*;
-
-/// Global currencies defined by ISO 4217.
-pub mod iso_currencies;
-pub use iso_currencies::*;
+pub mod cashflow;
+pub use cashflow::*;
 
 /// Legs (sequence of cashflows).
 pub mod legs;

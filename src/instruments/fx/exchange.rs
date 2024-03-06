@@ -7,9 +7,10 @@
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-// use crate::RustQuantError;
-// use crate::money::{iso_currencies::*, Currency, Money};
-use crate::money::{Currency, Money};
+//! FX exchange module.
+
+use crate::instruments::fx::currency::Currency;
+use crate::instruments::fx::money::Money;
 use std::collections::HashMap;
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -32,8 +33,10 @@ pub struct Exchange {
 pub struct ExchangeRate {
     /// From currency
     pub from_currency: Currency,
+
     /// To currency
     pub to_currency: Currency,
+
     /// The actual exchange rate as a ratio from_currency/to_currency
     pub rate: f64,
 }
@@ -213,7 +216,7 @@ mod test_exchange_rate {
     use crate::iso::*;
 
     use crate::assert_approx_equal;
-    use crate::money::{EUR, USD};
+    use crate::cashflows::{EUR, USD};
     use std::f64::EPSILON as EPS;
 
     #[test]

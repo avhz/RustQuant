@@ -76,7 +76,7 @@
 // IMPORTS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use crate::{instruments::Instrument, money::Currency};
+use crate::{instruments::fx::currency::Currency, instruments::Instrument};
 use std::collections::HashMap;
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -217,8 +217,8 @@ where
 mod tests_portfolio {
     use super::*;
     use crate::{
+        cashflows::USD,
         instruments::options::{BlackScholesMerton, TypeFlag},
-        money::USD,
         time::today,
     };
     use time::Duration;

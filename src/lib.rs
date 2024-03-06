@@ -12,6 +12,34 @@
 //!
 //! I'm particularly interested in hearing from people with strong experience
 //! in implementing quantitative software in a professional setting.
+//!
+//! # Installation
+//!
+//! If you haven't already, you obviously need to install Rust.
+//! See here: <https://www.rust-lang.org/tools/install>
+//!
+//! Create a new Rust project:
+//!
+//! ```bash
+//! cargo new my_project && cd my_project
+//! ```
+//!
+//! In your Rust project's root directory, simply run:
+//!
+//! ```bash
+//! cargo add RustQuant
+//! ```
+//!
+//! This will add the latest version to your project.
+//!
+//! If you require a specific version, add the following to your Cargo.toml file:
+//!
+//! ```toml
+//! [dependencies]
+//! RustQuant = "*"
+//! ```
+//!
+//! replacing `"*"` with the version number you require, such as `"0.0.17"`.
 
 // Strictly enforce documentation.
 #![forbid(missing_docs)]
@@ -26,16 +54,6 @@
 // There is no unsafe code currently, but for anyone to add any, it must be
 // documented with a SAFETY comment.
 #![forbid(clippy::undocumented_unsafe_blocks)]
-// General miscellaneous clippy tunings.
-#![allow(
-    clippy::many_single_char_names,
-    // Temporary setting, as currently, `usize` is being used in places that
-    // don't deal with indexing.
-    clippy::cast_precision_loss,
-    // Awkward format strings. It seems to improve clarity to keep parameters
-    // grouped at the end.
-    clippy::uninlined_format_args
-)]
 
 pub mod autodiff;
 pub mod data;
@@ -44,10 +62,10 @@ pub mod instruments;
 pub mod iso;
 #[macro_use]
 pub mod macros;
+pub mod cashflows;
 pub mod math;
 pub mod ml;
 pub mod models;
-pub mod money;
 pub mod portfolio;
 pub mod stochastics;
 pub mod time;
@@ -59,4 +77,5 @@ pub mod trading;
 // Once `f64::sqrt()` is `const`, this can be updated.
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-pub(crate) const RUSTQUANT_EPSILON: f64 = 0.000_000_014_901_161_193_847_656;
+/// Epsilon constant for use in testing.
+pub const RUSTQUANT_EPSILON: f64 = 0.000_000_014_901_161_193_847_656;

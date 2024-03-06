@@ -14,7 +14,7 @@
 
 <p align="center">
     <a href="#build" alt="build">
-        <img alt="GitHub Workflow Status" src="https://img.shields.io/github/actions/workflow/status/avhz/RustQuant/build.yml">
+        <img alt="GitHub Workflow Status" src="https://img.shields.io/github/actions/workflow/status/avhz/RustQuant/cargo_build.yml">
     <a href="#codecov" alt="codecov">
         <img alt="Codecov" src="https://img.shields.io/codecov/c/gh/avhz/RustQuant">
     <a href="#deps" alt="deps">

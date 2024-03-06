@@ -17,6 +17,9 @@ pub struct OptionContract {
 
     /// The option's exercise type (European, American, Bermudan).
     pub exercise_flag: ExerciseFlag,
+
+    /// The option's settlement type (cash or physical).
+    pub settlement_flag: SettlementFlag,
 }
 
 /// Option type enum.
@@ -50,6 +53,16 @@ pub enum StrikeFlag {
 
     /// Strike is floating (e.g. strike = S_max).
     Floating,
+}
+
+/// Instrument settlement flag.
+#[derive(Debug, Clone, Copy)]
+pub enum SettlementFlag {
+    /// Cash settlement.
+    Cash,
+
+    /// Physical settlement.
+    Physical,
 }
 
 /// Generic option parameters struct.

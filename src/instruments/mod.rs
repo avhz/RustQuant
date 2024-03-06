@@ -1,18 +1,15 @@
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // RustQuant: A Rust library for quantitative finance tools.
-// Copyright (C) 2023 https://github.com/avhz
+// Copyright (C) 2023-2024 https://github.com/avhz
 // Dual licensed under Apache 2.0 and MIT.
 // See:
 //      - LICENSE-APACHE.md
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// INSTRUMENTS MODULE
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 //! Financial instrument types and modules (bonds, options, etc).
-//! ### :chart_with_downwards_trend: Bonds <a name="bonds"></a>
+//!
+//! ### Bonds
 //!
 //! - Prices:
 //!   - [x] The Vasicek Model
@@ -25,7 +22,7 @@
 //! - [ ] Duration
 //! - [ ] Convexity
 //!
-//! ### :money_with_wings: Option Pricing <a name="options"></a>
+//! ### Options
 //!
 //! - Closed-form price solutions:
 //!   - [x] Heston Model
@@ -77,65 +74,21 @@ pub mod instrument;
 pub use instrument::*;
 
 /// Bond pricing models.
-pub mod bonds {
-    pub use crate::instruments::bonds::{bond::*, cox_ingersoll_ross::*, vasicek::*};
-
-    /// Base bond traits.
-    pub mod bond;
-    /// Cox-Ingersoll-Ross bond pricing model.
-    pub mod cox_ingersoll_ross;
-    /// One-factor Hull-White bond pricing model.
-    pub mod hull_white;
-    /// Vasicek bond pricing model.
-    pub mod vasicek;
-}
+pub mod bonds;
 pub use bonds::*;
 
 /// Option pricers and sensitivity functions.
-pub mod options {
-    pub use crate::instruments::options::{
-        asian::*, bachelier::*, barrier::*, binary::*, binomial::*, black_scholes_merton::*,
-        forward_start::*, heston::*, implied_volatility::*, lookback::*, merton_jump_diffusion::*,
-        option::*, power::*,
-    };
-
-    /// Asian option pricers.
-    pub mod asian;
-
-    /// Bachelier option pricer.
-    pub mod bachelier;
-
-    /// Barrier option pricers.
-    pub mod barrier;
-
-    /// Binary option pricers.
-    pub mod binary;
-
-    /// Binomial option pricers.
-    pub mod binomial;
-
-    /// Generalised Black-Scholes-Merton option pricer.
-    pub mod black_scholes_merton;
-
-    /// Forward start options pricers.
-    pub mod forward_start;
-
-    /// Heston model option pricer.
-    pub mod heston;
-
-    /// Implied volatility functions.
-    pub mod implied_volatility;
-
-    /// Lookback option pricers.
-    pub mod lookback;
-
-    /// Merton (1976) jump diffusion model.
-    pub mod merton_jump_diffusion;
-
-    /// Base option traits.
-    pub mod option;
-
-    /// Power option pricers.
-    pub mod power;
-}
+pub mod options;
 pub use options::*;
+
+/// FX instruments.
+pub mod fx;
+pub use fx::*;
+
+/// Equity instruments.
+pub mod equities;
+pub use equities::*;
+
+/// Ticker symbol.
+pub mod ticker;
+pub use ticker::*;
