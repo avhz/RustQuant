@@ -87,6 +87,10 @@ pub use interpolation::*;
 pub mod risk_reward;
 pub use risk_reward::*;
 
+/// Root-finding routines.
+pub mod rootfinding;
+pub use rootfinding::*;
+
 /// Sequences of numbers and associated functions.
 pub mod sequences;
 pub use sequences::*;

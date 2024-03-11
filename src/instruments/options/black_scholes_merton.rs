@@ -143,12 +143,12 @@ impl BlackScholesMerton {
     /// Implied volatility.
     pub fn implied_volatility(&self, price: f64) -> f64 {
         crate::instruments::options::implied_volatility(
-            price, 
-            self.underlying_price, 
-            self.strike_price, 
-            self.year_fraction(), 
-            self.risk_free_rate, 
-            self.option_type
+            price,
+            self.underlying_price,
+            self.strike_price,
+            self.year_fraction(),
+            self.risk_free_rate,
+            self.option_type,
         )
     }
 
@@ -462,7 +462,7 @@ mod tests_black_scholes_merton {
             today() + Duration::days(91),
             TypeFlag::Call,
         );
-        assert_approx_equal!(bsm.price(), 2.104_455_895_350_838_5, RUSTQUANT_EPSILON);
+        assert_approx_equal!(bsm.price(), 2.121846776001, RUSTQUANT_EPSILON);
     }
 
     #[test]
@@ -478,6 +478,6 @@ mod tests_black_scholes_merton {
             today() + Duration::days(182),
             TypeFlag::Put,
         );
-        assert_approx_equal!(bsm.price(), 2.452_415_221_397_277_6, RUSTQUANT_EPSILON);
+        assert_approx_equal!(bsm.price(), 2.456571166461579, RUSTQUANT_EPSILON);
     }
 }

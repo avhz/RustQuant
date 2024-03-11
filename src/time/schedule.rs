@@ -11,7 +11,7 @@ use crate::time::date_rolling::{DateRoller, DateRollingConvention};
 use crate::time::day_counting::{DayCountConvention, DayCounter};
 use crate::time::Calendar;
 use std::fmt;
-use time::{Date, OffsetDateTime};
+use time::Date;
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // STRUCTS, ENUMS, AND TRAITS
@@ -71,7 +71,7 @@ where
         date_rolling_convention: DateRollingConvention,
         day_counting_convention: DayCountConvention,
     ) -> Schedule {
-        let today = OffsetDateTime::now_utc().date();
+        let today = crate::time::today();
 
         // First we need to roll the dates according to a given convention.
         let rolled_dates = self.roll_dates(dates, &date_rolling_convention);

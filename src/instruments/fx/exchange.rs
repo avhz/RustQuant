@@ -50,7 +50,7 @@ impl Exchange {
     ///
     /// # Example
     /// ```
-    /// use RustQuant::money::*;
+    /// use RustQuant::instruments::fx::exchange::Exchange;
     ///
     /// let exchange = Exchange::new();
     /// ```
@@ -66,7 +66,8 @@ impl Exchange {
     ///
     /// # Example
     /// ```
-    /// use RustQuant::money::*;
+    /// use RustQuant::instruments::fx::exchange::{Exchange, ExchangeRate};
+    /// use RustQuant::iso::*;
     ///
     /// let mut exchange = Exchange::new();
     ///
@@ -89,7 +90,9 @@ impl Exchange {
     ///
     /// # Example
     /// ```
-    /// use RustQuant::money::*;
+    /// use RustQuant::instruments::fx::exchange::{Exchange, ExchangeRate};
+    /// use RustQuant::instruments::fx::money::Money;
+    /// use RustQuant::iso::{EUR, USD};
     ///
     /// let mut exchange = Exchange::new();
     ///
@@ -124,7 +127,9 @@ impl Exchange {
     ///
     /// # Example
     /// ```
-    /// use RustQuant::money::*;
+    /// use RustQuant::instruments::fx::exchange::{Exchange, ExchangeRate};
+    /// use RustQuant::instruments::fx::money::Money;
+    /// use RustQuant::iso::{EUR, USD};
     ///
     /// let mut exchange = Exchange::new();
     ///
@@ -170,7 +175,9 @@ impl ExchangeRate {
     ///
     /// # Example
     /// ```
-    /// use RustQuant::money::*;
+    /// use RustQuant::instruments::fx::exchange::ExchangeRate;
+    /// use RustQuant::instruments::fx::money::Money;
+    /// use RustQuant::iso::{EUR, USD};
     /// use RustQuant::assert_approx_equal;
     ///
     /// // Use USD and EUR currency constants from the money module.
@@ -185,7 +192,9 @@ impl ExchangeRate {
     /// It panics if the money's currency doesn't match with `from_currency`.
     ///
     /// ```should_panic
-    /// use RustQuant::money::*;
+    /// use RustQuant::iso::{EUR, USD};
+    /// use RustQuant::instruments::fx::money::Money;
+    /// use RustQuant::instruments::exchange::ExchangeRate;
     ///
     /// let usd = Money::new(EUR, 100.0);                       // Notice the wrong currency
     /// let eur_usd = ExchangeRate::new(USD, EUR, 0.9186955);   // 1 USD = 0.9186955 EUR
@@ -216,7 +225,7 @@ mod test_exchange_rate {
     use crate::iso::*;
 
     use crate::assert_approx_equal;
-    use crate::cashflows::{EUR, USD};
+    use crate::iso::{EUR, USD};
     use std::f64::EPSILON as EPS;
 
     #[test]

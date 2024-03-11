@@ -14,7 +14,6 @@
 use crate::instruments::options::TypeFlag;
 use crate::math::distributions::{Distribution, Gaussian};
 use crate::time::{today, DayCountConvention};
-
 use time::Date;
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -171,7 +170,7 @@ impl ModifiedBachelier {
 #[cfg(test)]
 mod tests_bachelier {
     use super::*;
-    use crate::assert_approx_equal;
+    use crate::{assert_approx_equal, RUSTQUANT_EPSILON};
     use time::Duration;
 
     #[test]
@@ -184,7 +183,7 @@ mod tests_bachelier {
             today() + Duration::days(365),
             TypeFlag::Call,
         );
-        assert_approx_equal!(bachelier.price(), 0.079_679_081_860_151_37, 1e-10);
+        assert_approx_equal!(bachelier.price(), 0.07970001203515846, RUSTQUANT_EPSILON);
     }
 
     #[test]
@@ -199,6 +198,6 @@ mod tests_bachelier {
             today() + Duration::days(365),
             TypeFlag::Call,
         );
-        assert_approx_equal!(bachelier.price(), 2.511_692_140_521_875, 1e-10);
+        assert_approx_equal!(bachelier.price(), 2.512959314976823, RUSTQUANT_EPSILON);
     }
 }

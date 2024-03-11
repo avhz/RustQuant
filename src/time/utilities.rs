@@ -76,7 +76,7 @@ pub fn today() -> Date {
 ///
 /// ```
 /// use time::{Date, Month};
-/// use calenda_rs::utilities::get_days_in_years_in_range;
+/// use RustQuant::time::utilities::get_days_in_years_in_range;
 ///
 /// let start = Date::from_calendar_date(2023, Month::July, 1).unwrap();
 /// let end = Date::from_calendar_date(2025, Month::January, 1).unwrap();
@@ -112,7 +112,7 @@ pub fn days_between(start: Date, end: Date) -> i64 {
 ///
 /// ```
 /// use time::{Date, Month};
-/// use calenda_rs::utilities::leap_year_count;
+/// use RustQuant::time::utilities::leap_year_count;
 ///
 /// let start = Date::from_calendar_date(2023, Month::July, 1).unwrap();
 /// let end = Date::from_calendar_date(2025, Month::January, 1).unwrap();
@@ -120,6 +120,7 @@ pub fn days_between(start: Date, end: Date) -> i64 {
 /// let number_of_leap_years = leap_year_count(start, end);
 ///
 /// assert_eq!(number_of_leap_years, 1);
+/// ```
 pub fn leap_year_count(start: Date, end: Date) -> i64 {
     get_years_in_range(start, end)
         .iter()

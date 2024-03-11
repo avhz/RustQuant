@@ -128,29 +128,29 @@ where
 // Unit tests
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-#[cfg(test)]
-mod tests_exponential_interpolation {
-    use super::*;
-    use crate::{assert_approx_equal, RUSTQUANT_EPSILON};
-    use time::macros::date;
+// #[cfg(test)]
+// mod tests_exponential_interpolation {
+//     use super::*;
+//     use crate::{assert_approx_equal, RUSTQUANT_EPSILON};
+//     use time::macros::date;
 
-    // #[test]
-    // fn test_exponential_interpolation_dates() {
-    //     let d_1m = date!(1990 - 06 - 16);
-    //     let d_2m = date!(1990 - 07 - 17);
+//     // #[test]
+//     // fn test_exponential_interpolation_dates() {
+//     //     let d_1m = date!(1990 - 06 - 16);
+//     //     let d_2m = date!(1990 - 07 - 17);
 
-    //     let r_1m = 0.9870;
-    //     let r_2m = 0.9753;
+//     //     let r_1m = 0.9870;
+//     //     let r_2m = 0.9753;
 
-    //     let dates = vec![d_1m, d_2m];
-    //     let rates = vec![r_1m, r_2m];
+//     //     let dates = vec![d_1m, d_2m];
+//     //     let rates = vec![r_1m, r_2m];
 
-    //     let mut interpolator = ExponentialInterpolator::new(dates, rates).unwrap();
+//     //     let mut interpolator = ExponentialInterpolator::new(dates, rates).unwrap();
 
-    //     assert_approx_equal!(
-    //         0.9854,
-    //         interpolator.interpolate(date!(1990 - 06 - 20)).unwrap(),
-    //         RUSTQUANT_EPSILON
-    //     );
-    // }
-}
+//     //     assert_approx_equal!(
+//     //         0.9854,
+//     //         interpolator.interpolate(date!(1990 - 06 - 20)).unwrap(),
+//     //         RUSTQUANT_EPSILON
+//     //     );
+//     // }
+// }

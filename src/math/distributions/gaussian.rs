@@ -47,7 +47,7 @@ impl Gaussian {
     /// # Examples
     /// ```
     /// # use RustQuant::assert_approx_equal;
-    /// # use RustQuant::statistics::distributions::*;
+    /// # use RustQuant::math::distributions::*;
     ///
     /// let gaussian = Gaussian::new(0.0, 1.0);
     ///
@@ -71,7 +71,7 @@ impl Distribution for Gaussian {
     /// # Examples
     /// ```
     /// # use RustQuant::assert_approx_equal;
-    /// # use RustQuant::statistics::distributions::*;
+    /// # use RustQuant::math::distributions::*;
     ///
     /// let gaussian = Gaussian::new(0.0, 1.0);
     ///
@@ -90,7 +90,7 @@ impl Distribution for Gaussian {
     /// # Examples
     /// ```
     /// # use RustQuant::assert_approx_equal;
-    /// # use RustQuant::statistics::distributions::*;
+    /// # use RustQuant::math::distributions::*;
     ///
     /// let gaussian = Gaussian::new(0.0, 1.0);
     ///
@@ -99,7 +99,10 @@ impl Distribution for Gaussian {
     fn pdf(&self, x: f64) -> f64 {
         assert!(self.variance > 0.0);
 
-        (-0.5 * ((x - self.mean).powi(2) / self.variance).exp()) / (2.0 * PI * self.variance).sqrt()
+        let t1 = (2.0 * PI * self.variance).sqrt().recip();
+        let t2 = -0.5 * (x - self.mean).powi(2) / self.variance;
+
+        t1 * t2.exp()
     }
 
     /// Probability mass function for the Gaussian distribution (continuous) is not defined.
@@ -107,7 +110,7 @@ impl Distribution for Gaussian {
     /// # Examples
     /// ```
     /// # use RustQuant::assert_approx_equal;
-    /// # use RustQuant::statistics::distributions::*;
+    /// # use RustQuant::math::distributions::*;
     ///
     /// let gaussian = Gaussian::new(0.0, 1.0);
     ///
@@ -121,7 +124,7 @@ impl Distribution for Gaussian {
     /// # Examples
     /// ```
     /// # use RustQuant::assert_approx_equal;
-    /// # use RustQuant::statistics::distributions::*;
+    /// # use RustQuant::math::distributions::*;
     ///
     /// let gaussian = Gaussian::new(0.0, 1.0);
     ///
@@ -139,7 +142,7 @@ impl Distribution for Gaussian {
     /// # Examples
     /// ```
     /// # use RustQuant::assert_approx_equal;
-    /// # use RustQuant::statistics::distributions::*;
+    /// # use RustQuant::math::distributions::*;
     /// # use std::f64::INFINITY;
     ///
     /// let gaussian = Gaussian::new(0.0, 1.0);
@@ -158,7 +161,7 @@ impl Distribution for Gaussian {
     /// The mean of the Gaussian distribution is equal to its median.
     /// # Examples
     /// ```
-    /// # use RustQuant::statistics::distributions::*;
+    /// # use RustQuant::math::distributions::*;
     ///
     /// let gaussian = Gaussian::new(0.0, 1.0);
     ///
@@ -172,7 +175,7 @@ impl Distribution for Gaussian {
     /// The median of the Gaussian distribution is equal to its mean.
     /// # Examples
     /// ```
-    /// # use RustQuant::statistics::distributions::*;
+    /// # use RustQuant::math::distributions::*;
     ///
     /// let gaussian = Gaussian::new(0.0, 1.0);
     ///
@@ -186,7 +189,7 @@ impl Distribution for Gaussian {
     /// The mode of the Gaussian distribution is equal to its mean.
     /// # Examples
     /// ```
-    /// # use RustQuant::statistics::distributions::*;
+    /// # use RustQuant::math::distributions::*;
     ///
     /// let gaussian = Gaussian::new(0.0, 1.0);
     ///
@@ -199,7 +202,7 @@ impl Distribution for Gaussian {
     /// Returns the variance of the Gaussian distribution.
     /// # Examples
     /// ```
-    /// # use RustQuant::statistics::distributions::*;
+    /// # use RustQuant::math::distributions::*;
     ///
     /// let gaussian = Gaussian::new(0.0, 1.0);
     ///
@@ -213,7 +216,7 @@ impl Distribution for Gaussian {
     /// The skewness of the Gaussian distribution is equal to 0.
     /// # Examples
     /// ```
-    /// # use RustQuant::statistics::distributions::*;
+    /// # use RustQuant::math::distributions::*;
     ///
     /// let gaussian = Gaussian::new(0.0, 1.0);
     ///
@@ -228,7 +231,7 @@ impl Distribution for Gaussian {
     /// # Examples
     /// ```
     /// # use RustQuant::assert_approx_equal;
-    /// # use RustQuant::statistics::distributions::*;
+    /// # use RustQuant::math::distributions::*;
     ///
     /// let gaussian = Gaussian::new(0.0, 1.0);
     ///
@@ -242,7 +245,7 @@ impl Distribution for Gaussian {
     /// # Examples
     /// ```
     /// # use RustQuant::assert_approx_equal;
-    /// # use RustQuant::statistics::distributions::*;
+    /// # use RustQuant::math::distributions::*;
     ///
     /// let gaussian = Gaussian::new(0.0, 1.0);
     ///
@@ -256,7 +259,7 @@ impl Distribution for Gaussian {
     /// # Examples
     /// ```
     /// # use RustQuant::assert_approx_equal;
-    /// # use RustQuant::statistics::distributions::*;
+    /// # use RustQuant::math::distributions::*;
     ///
     /// let gaussian = Gaussian::new(0.0, 1.0);
     ///
@@ -273,7 +276,7 @@ impl Distribution for Gaussian {
     /// # Examples
     /// ```
     /// # use RustQuant::assert_approx_equal;
-    /// # use RustQuant::statistics::distributions::*;
+    /// # use RustQuant::math::distributions::*;
     ///
     /// let gaussian = Gaussian::new(0.0, 1.0);
     ///

@@ -30,7 +30,7 @@ impl Poisson {
     /// # Examples
     /// ```
     /// # use RustQuant::assert_approx_equal;
-    /// # use RustQuant::statistics::distributions::*;
+    /// # use RustQuant::math::distributions::*;
     ///
     /// let poisson = Poisson::new(1.0);
     ///
@@ -54,7 +54,7 @@ impl Distribution for Poisson {
     /// # Examples
     /// ```
     /// # use RustQuant::assert_approx_equal;
-    /// # use RustQuant::statistics::distributions::*;
+    /// # use RustQuant::math::distributions::*;
     ///
     /// let poisson = Poisson::new(1.0);
     ///
@@ -71,7 +71,7 @@ impl Distribution for Poisson {
     /// # Examples
     /// ```
     /// # use RustQuant::assert_approx_equal;
-    /// # use RustQuant::statistics::distributions::*;
+    /// # use RustQuant::math::distributions::*;
     ///
     /// let poisson = Poisson::new(1.0);
     ///
@@ -85,7 +85,7 @@ impl Distribution for Poisson {
     /// # Examples
     /// ```
     /// # use RustQuant::assert_approx_equal;
-    /// # use RustQuant::statistics::distributions::*;
+    /// # use RustQuant::math::distributions::*;
     ///
     /// let poisson = Poisson::new(1.0);
     ///
@@ -100,7 +100,7 @@ impl Distribution for Poisson {
     /// # Examples
     /// ```
     /// # use RustQuant::assert_approx_equal;
-    /// # use RustQuant::statistics::distributions::*;
+    /// # use RustQuant::math::distributions::*;
     ///
     /// let poisson = Poisson::new(1.0);
     ///
@@ -115,7 +115,7 @@ impl Distribution for Poisson {
     /// # Examples
     /// ```
     /// # use RustQuant::assert_approx_equal;
-    /// # use RustQuant::statistics::distributions::*;
+    /// # use RustQuant::math::distributions::*;
     /// # use std::f64::INFINITY;
     /// # use std::f64::NAN;
     ///
@@ -144,7 +144,7 @@ impl Distribution for Poisson {
     /// Returns the mean of the Poisson distribution.
     /// # Examples
     /// ```
-    /// # use RustQuant::statistics::distributions::*;
+    /// # use RustQuant::math::distributions::*;
     ///
     /// let poisson = Poisson::new(1.0);
     ///
@@ -157,7 +157,7 @@ impl Distribution for Poisson {
     /// Returns the median of the Poisson distribution.
     /// # Examples
     /// ```
-    /// # use RustQuant::statistics::distributions::*;
+    /// # use RustQuant::math::distributions::*;
     ///
     /// let poisson = Poisson::new(1.0);
     ///
@@ -170,7 +170,7 @@ impl Distribution for Poisson {
     /// Returns the mode of the Poisson distribution.
     /// # Examples
     /// ```
-    /// # use RustQuant::statistics::distributions::*;
+    /// # use RustQuant::math::distributions::*;
     ///
     /// let poisson = Poisson::new(1.0);
     ///
@@ -183,7 +183,7 @@ impl Distribution for Poisson {
     /// Returns the variance of the Poisson distribution.
     /// # Examples
     /// ```
-    /// # use RustQuant::statistics::distributions::*;
+    /// # use RustQuant::math::distributions::*;
     ///
     /// let poisson = Poisson::new(1.0);
     ///
@@ -197,7 +197,7 @@ impl Distribution for Poisson {
     /// # Examples
     /// ```
     /// # use RustQuant::assert_approx_equal;
-    /// # use RustQuant::statistics::distributions::*;
+    /// # use RustQuant::math::distributions::*;
     ///
     /// let poisson = Poisson::new(2.0);
     ///
@@ -210,7 +210,7 @@ impl Distribution for Poisson {
     /// # Examples
     /// ```
     /// # use RustQuant::assert_approx_equal;
-    /// # use RustQuant::statistics::distributions::*;
+    /// # use RustQuant::math::distributions::*;
     ///
     /// let poisson = Poisson::new(2.0);
     ///
@@ -228,7 +228,7 @@ impl Distribution for Poisson {
     /// # Examples
     /// ```
     /// # use RustQuant::assert_approx_equal;
-    /// # use RustQuant::statistics::distributions::*;
+    /// # use RustQuant::math::distributions::*;
     ///
     /// let poisson = Poisson::new(1.0);
     ///
@@ -242,7 +242,7 @@ impl Distribution for Poisson {
     /// # Examples
     /// ```
     /// # use RustQuant::assert_approx_equal;
-    /// # use RustQuant::statistics::distributions::*;
+    /// # use RustQuant::math::distributions::*;
     ///
     /// let poisson = Poisson::new(1.0);
     ///
