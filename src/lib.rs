@@ -1,10 +1,12 @@
 //! RustQuant: A Rust library for quantitative finance tools.
-//! Copyright (C) 2022 - 2024 <https://github.com/avhz>
+//!
+//! Copyright (C) 2022-2024 <https://github.com/avhz>
 //!
 //! Dual licensed under Apache 2.0 and MIT.
+//!
 //! See:
-//!      - [LICENSE-APACHE.md](https://github.com/avhz/RustQuant/blob/main/LICENSE-APACHE.md)
-//!      - [LICENSE-MIT.md](https://github.com/avhz/RustQuant/blob/main/LICENSE-MIT.md)
+//! - [LICENSE-APACHE.md](https://github.com/avhz/RustQuant/blob/main/LICENSE-APACHE.md)
+//! - [LICENSE-MIT.md](https://github.com/avhz/RustQuant/blob/main/LICENSE-MIT.md)
 //!
 //! Contact me at: <RustQuantContact@gmail.com>
 //!
@@ -14,15 +16,6 @@
 //! in implementing quantitative software in a professional setting.
 //!
 //! # Installation
-//!
-//! If you haven't already, you obviously need to install Rust.
-//! See here: <https://www.rust-lang.org/tools/install>
-//!
-//! Create a new Rust project:
-//!
-//! ```bash
-//! cargo new my_project && cd my_project
-//! ```
 //!
 //! In your Rust project's root directory, simply run:
 //!
@@ -41,19 +34,30 @@
 //!
 //! replacing `"*"` with the version number you require, such as `"0.0.17"`.
 
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// GLOBAL SETTINGS
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 // Strictly enforce documentation.
 #![forbid(missing_docs)]
+//
 // When writing mathematical equations in documentation, Clippy suggests to
 // put backticks inside the LaTeX block. This suppresses that behavior.
 #![allow(clippy::doc_markdown)]
+//
 // Allow snake case.
 // This is because much of this library is based on mathematics, so I
 // want to adhere to the standard mathematical notation.
 #![allow(non_snake_case)]
+//
 // Strictly enforce SAFETY comments.
 // There is no unsafe code currently, but for anyone to add any, it must be
 // documented with a SAFETY comment.
 #![forbid(clippy::undocumented_unsafe_blocks)]
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// RUSTQUANT MODULES
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 pub mod autodiff;
 pub mod data;
