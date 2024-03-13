@@ -1,6 +1,6 @@
 # File Structure Template
 
-This is explained in [CONTRIBUTING.md](./CONTRIBUTING.md), but for ease of finding and copy-pasting, all `.rs` files should use the following template:
+This is explained in [Contributing](./Contributing.md), but for ease of finding and copy-pasting, all `.rs` files should use the following template:
 
 ```rust
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

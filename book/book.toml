@@ -1,0 +1,6 @@
+[book]
+authors = ["avhz"]
+language = "en"
+multilingual = false
+src = "src"
+title = "The RustQuant Book"
