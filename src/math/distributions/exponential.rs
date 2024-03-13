@@ -29,7 +29,7 @@ impl Exponential {
     ///
     /// # Panics
     ///
-    /// Panics if lambda is greater than 0.0
+    /// Panics if lambda is less than 0.0
     #[must_use]
     pub fn new(lambda: f64) -> Self {
         assert!(lambda > 0.0);
