@@ -208,6 +208,21 @@ where
             .unwrap()
             .update_quantity(new_quantity);
     }
+
+    /// Returns the current weights of all positions
+    pub fn position_weights(&self) -> HashMap<String, f32> {
+        let current_value = self.value();
+
+        self.positions
+            .iter()
+            .map(|(instrument_name, position)| {
+                (
+                    instrument_name.to_string(),
+                    position.value() as f32 / current_value as f32,
+                )
+            })
+            .collect()
+    }
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -224,8 +239,7 @@ mod tests_portfolio {
     };
     use time::Duration;
 
-    #[test]
-    fn test_portfolio() {
+    fn setup_test_portfolio() -> Portfolio<BlackScholesMerton> {
         // Create a position of 100 call options.
         let position_1 = Position {
             instrument: BlackScholesMerton::new(
@@ -268,12 +282,31 @@ mod tests_portfolio {
         ]);
 
         // Create a portfolio.
-        let portfolio = Portfolio::new(positions);
+        Portfolio::new(positions)
+    }
+
+    #[test]
+    fn test_portfolio() {
+        // Create a portfolio.
+        let portfolio = setup_test_portfolio();
 
         // Check the value of the portfolio.
         assert_approx_equal!(portfolio.value(), 100.0 * 3.5 + 100.0 * 2.0, 1e-10);
 
         // Check the profit of the portfolio.
         assert_approx_equal!(portfolio.profit(), 550.0 - portfolio.cost(), 1e-10);
+    }
+
+    #[test]
+    fn test_portfolio_weights() {
+        // Create a portfolio.
+        let portfolio = setup_test_portfolio();
+
+        // Grab out the weights
+        let weights = portfolio.position_weights();
+
+        // Assert the weights are correct
+        assert_eq!(weights.get("Put Options"), Some(&0.36363637));
+        assert_eq!(weights.get("Call Options"), Some(&0.6363636));
     }
 }
