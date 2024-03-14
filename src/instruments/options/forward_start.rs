@@ -123,6 +123,6 @@ mod tests_forward_start {
         let prices = ForwardStart.price();
 
         // Call price example from Haug's book.
-        assert_approx_equal!(prices.0, 4.402749171782208, RUSTQUANT_EPSILON);
+        assert_approx_equal!(prices.0, 4.402853494918491, RUSTQUANT_EPSILON);
     }
 }

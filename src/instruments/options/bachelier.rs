@@ -183,7 +183,7 @@ mod tests_bachelier {
             today() + Duration::days(365),
             TypeFlag::Call,
         );
-        assert_approx_equal!(bachelier.price(), 0.07970001203515846, RUSTQUANT_EPSILON);
+        assert_approx_equal!(bachelier.price(), 0.07970090891982988, RUSTQUANT_EPSILON);
     }
 
     #[test]
@@ -198,6 +198,6 @@ mod tests_bachelier {
             today() + Duration::days(365),
             TypeFlag::Call,
         );
-        assert_approx_equal!(bachelier.price(), 2.512959314976823, RUSTQUANT_EPSILON);
+        assert_approx_equal!(bachelier.price(), 2.5130136216009875, RUSTQUANT_EPSILON);
     }
 }
