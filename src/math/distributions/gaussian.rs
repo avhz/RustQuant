@@ -7,8 +7,9 @@
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use crate::math::DistributionError;
+use crate::error::RustQuantError;
 use errorfunctions::RealErrorFunctions;
+
 use {
     super::Distribution,
     num::Complex,
@@ -286,7 +287,7 @@ impl Distribution for Gaussian {
     /// assert_approx_equal!(mean, gaussian.mean(), 0.1);
     /// ```
     ///
-    fn sample(&self, n: usize) -> Result<Vec<f64>, DistributionError> {
+    fn sample(&self, n: usize) -> Result<Vec<f64>, RustQuantError> {
         // IMPORT HERE TO AVOID CLASH WITH
         // `RustQuant::distributions::Distribution`
         use rand::thread_rng;
@@ -314,7 +315,7 @@ impl Distribution for Gaussian {
 mod tests_gaussian {
     use super::*;
     use crate::assert_approx_equal;
-
+    use crate::error::RustQuantError;
     use std::f64::EPSILON as EPS;
 
     #[test]
@@ -368,7 +369,7 @@ mod tests_gaussian {
     }
 
     #[test]
-    fn test_gaussian_variate_generator() -> Result<(), DistributionError> {
+    fn test_gaussian_variate_generator() -> Result<(), RustQuantError> {
         let normal = Gaussian::default();
 
         let v = normal.sample(1000)?;

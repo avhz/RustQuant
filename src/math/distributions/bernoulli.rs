@@ -7,8 +7,10 @@
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+use crate::error::RustQuantError;
+
 use super::Distribution;
-use crate::math::DistributionError;
+// use crate::math::DistributionError;
 use num::Complex;
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -275,7 +277,7 @@ impl Distribution for Bernoulli {
     ///
     /// assert_approx_equal!(mean, bernoulli.mean(), 0.1);
     /// ```
-    fn sample(&self, n: usize) -> Result<Vec<f64>, DistributionError> {
+    fn sample(&self, n: usize) -> Result<Vec<f64>, RustQuantError> {
         // IMPORT HERE TO AVOID CLASH WITH
         // `RustQuant::distributions::Distribution`
         use rand::thread_rng;
@@ -305,7 +307,7 @@ impl Distribution for Bernoulli {
 mod tests_bernoulli {
     use super::*;
     use crate::assert_approx_equal;
-
+    use crate::error::RustQuantError;
     use std::f64::EPSILON as EPS;
 
     #[test]
@@ -452,7 +454,7 @@ mod tests_bernoulli {
     }
 
     #[test]
-    fn test_sample_positive_size() -> Result<(), DistributionError> {
+    fn test_sample_positive_size() -> Result<(), RustQuantError> {
         let bernoulli = Bernoulli::new(0.5);
         let sample = bernoulli.sample(100)?;
         assert_eq!(sample.len(), 100);

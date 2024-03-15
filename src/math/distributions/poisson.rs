@@ -7,7 +7,7 @@
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use crate::math::{distributions::Distribution, DistributionError};
+use crate::{error::RustQuantError, math::distributions::Distribution};
 use num::Complex;
 use statrs::function::gamma::{gamma_li, gamma_ui};
 
@@ -251,7 +251,7 @@ impl Distribution for Poisson {
     ///
     /// assert_approx_equal!(mean, poisson.mean(), 0.1);
     /// ```
-    fn sample(&self, n: usize) -> Result<Vec<f64>, DistributionError> {
+    fn sample(&self, n: usize) -> Result<Vec<f64>, RustQuantError> {
         // IMPORT HERE TO AVOID CLASH WITH
         // `RustQuant::distributions::Distribution`
         use rand::thread_rng;
@@ -286,7 +286,7 @@ mod tests {
 
     #[allow(clippy::similar_names)]
     #[test]
-    fn test_poisson_distribution() -> Result<(), DistributionError> {
+    fn test_poisson_distribution() -> Result<(), RustQuantError> {
         let dist: Poisson = Poisson::new(1.0);
 
         // Characteristic function

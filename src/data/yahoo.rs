@@ -11,10 +11,11 @@
 //! and store it in a Polars DataFrame object.
 
 use polars::prelude::*;
-use thiserror::Error;
 use time::OffsetDateTime;
 use yahoo::YahooError;
 use yahoo_finance_api as yahoo;
+
+use crate::error::RustQuantError;
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // STRUCTS, TRAITS, AND ENUMS
@@ -51,11 +52,11 @@ pub enum ReturnsType {
 /// Yahoo! Finance data reader trait.
 pub trait YahooFinanceReader {
     /// Retrieves the price history from Yahoo! Finance.
-    fn get_price_history(&mut self) -> Result<(), YahooFinanceError>;
+    fn get_price_history(&mut self) -> Result<(), RustQuantError>;
     /// Retrieves the options chain from Yahoo! Finance.
-    fn get_options_chain(&mut self) -> Result<(), YahooFinanceError>;
+    fn get_options_chain(&mut self) -> Result<(), RustQuantError>;
     /// Retrieves the latest quote from Yahoo! Finance.
-    fn get_latest_quote(&mut self) -> Result<(), YahooFinanceError>;
+    fn get_latest_quote(&mut self) -> Result<(), RustQuantError>;
 }
 
 impl Default for YahooFinanceData {
@@ -70,22 +71,6 @@ impl Default for YahooFinanceData {
             latest_quote: None,
         }
     }
-}
-
-/// Yahoo! Finance data error enum that catches errors from the Yahoo! Finance API, Polars, and from potential missing inputs from users.
-#[derive(Debug, Error)]
-pub enum YahooFinanceError {
-    /// Error variant arising from the Yahoo! Finance API.
-    #[error("{0}")]
-    YahooError(#[from] YahooError),
-
-    /// Error variant arising from Polars.
-    #[error("{0}")]
-    PolarsError(#[from] polars::error::PolarsError),
-
-    /// Error variant arising from missing inputs.
-    #[error{"{0}"}]
-    MissingInput(String),
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -118,7 +103,7 @@ impl YahooFinanceData {
     }
 
     /// Computes the returns from the price history.
-    pub fn compute_returns(&mut self, returns_type: ReturnsType) -> Result<(), YahooFinanceError> {
+    pub fn compute_returns(&mut self, returns_type: ReturnsType) -> Result<(), RustQuantError> {
         if self.price_history.is_none() {
             self.get_price_history()?
         }
@@ -196,11 +181,11 @@ impl YahooFinanceData {
 }
 
 impl YahooFinanceReader for YahooFinanceData {
-    fn get_price_history(&mut self) -> Result<(), YahooFinanceError> {
+    fn get_price_history(&mut self) -> Result<(), RustQuantError> {
         let provider = yahoo::YahooConnector::new();
 
         let response = tokio_test::block_on(provider.get_quote_history(
-            self.ticker.as_ref().ok_or(YahooFinanceError::MissingInput(
+            self.ticker.as_ref().ok_or(RustQuantError::MissingInput(
                 "No ticker provided.".to_string(),
             ))?,
             self.start.unwrap_or(OffsetDateTime::UNIX_EPOCH),
@@ -238,10 +223,10 @@ impl YahooFinanceReader for YahooFinanceData {
         Ok(())
     }
 
-    fn get_options_chain(&mut self) -> Result<(), YahooFinanceError> {
+    fn get_options_chain(&mut self) -> Result<(), RustQuantError> {
         let provider = yahoo::YahooConnector::new();
         let response = tokio_test::block_on(provider.search_options(self.ticker.as_ref().ok_or(
-            YahooFinanceError::MissingInput("No ticker provided.".to_string()),
+            RustQuantError::MissingInput("No ticker provided.".to_string()),
         )?))?;
 
         let options = response.options;
@@ -302,13 +287,13 @@ impl YahooFinanceReader for YahooFinanceData {
         Ok(())
     }
 
-    fn get_latest_quote(&mut self) -> Result<(), YahooFinanceError> {
+    fn get_latest_quote(&mut self) -> Result<(), RustQuantError> {
         let provider = yahoo::YahooConnector::new();
         let response = tokio_test::block_on(
             provider.get_latest_quotes(
                 self.ticker
                     .as_ref()
-                    .ok_or(YahooFinanceError::MissingInput(
+                    .ok_or(RustQuantError::MissingInput(
                         "No ticker provided.".to_string(),
                     ))?
                     .as_str(),
