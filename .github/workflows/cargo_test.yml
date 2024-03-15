@@ -26,4 +26,4 @@ jobs:
       # TEST THE LIBRARY
       # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       - name: Run unit tests.
-        run: cargo test --verbose --release
+        run: cargo test # --verbose
