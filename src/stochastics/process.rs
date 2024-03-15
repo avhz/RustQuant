@@ -17,7 +17,7 @@
 use rand::prelude::Distribution;
 use rand::{rngs::StdRng, SeedableRng};
 use rayon::prelude::*;
-use statrs::distribution::Normal;
+// use statrs::distribution::Normal;
 
 /// Struct to contain the time points and path values of the process.
 pub struct Trajectories {
@@ -65,7 +65,7 @@ pub trait StochasticVolatilityProcess: Sync {
         let path_generator = |(x_path, y_path): (&mut Vec<f64>, &mut Vec<f64>)| {
             let mut rng = rand::thread_rng();
             let scale = dt.sqrt();
-            let dW: Vec<f64> = Normal::new(0.0, 1.0)
+            let dW: Vec<f64> = rand_distr::Normal::new(0.0, 1.0)
                 .unwrap()
                 .sample_iter(&mut rng)
                 .take(n_steps)
@@ -142,7 +142,7 @@ pub trait StochasticProcess: Sync {
         let path_generator = |path: &mut Vec<f64>| {
             let mut rng = rand::thread_rng();
             let scale = dt.sqrt();
-            let dW: Vec<f64> = Normal::new(0.0, 1.0)
+            let dW: Vec<f64> = rand_distr::Normal::new(0.0, 1.0)
                 .unwrap()
                 .sample_iter(&mut rng)
                 .take(n_steps)
@@ -196,7 +196,7 @@ pub trait StochasticProcess: Sync {
         let path_generator = |path: &mut Vec<f64>| {
             let mut rng = StdRng::seed_from_u64(seed);
             let scale = dt.sqrt();
-            let dW: Vec<f64> = Normal::new(0.0, 1.0)
+            let dW: Vec<f64> = rand_distr::Normal::new(0.0, 1.0)
                 .unwrap()
                 .sample_iter(&mut rng)
                 .take(n_steps)

@@ -33,11 +33,11 @@ impl<'v> Variable<'v> {
     #[must_use]
     #[inline]
     pub fn erf(self) -> Self {
-        use statrs::function::erf::erf;
+        // use statrs::function::erf::erf;
 
         Variable {
             graph: self.graph,
-            value: erf(self.value),
+            value: errorfunctions::RealErrorFunctions::erf(self.value),
             index: self.graph.push(
                 Arity::Unary,
                 &[self.index],
@@ -65,11 +65,11 @@ impl<'v> Variable<'v> {
     #[must_use]
     #[inline]
     pub fn erfc(self) -> Self {
-        use statrs::function::erf::erfc;
+        // use statrs::function::erf::erfc;
 
         Variable {
             graph: self.graph,
-            value: erfc(self.value),
+            value: errorfunctions::RealErrorFunctions::erfc(self.value),
             index: self.graph.push(
                 Arity::Unary,
                 &[self.index],

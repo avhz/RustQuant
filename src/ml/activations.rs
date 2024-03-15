@@ -9,7 +9,7 @@
 
 use crate::autodiff::{overloading::pow::Powi, variables::variable::Variable};
 use nalgebra::DVector;
-use statrs::function::erf;
+// use statrs::function::erf;
 
 /// Activation functions.
 pub trait ActivationFunction {
@@ -112,7 +112,7 @@ impl ActivationFunction for f64 {
 
     #[inline]
     fn gelu(&self) -> Self {
-        0.5 * self * (1.0 + erf::erf(self / 2_f64.sqrt()))
+        0.5 * self * (1.0 + errorfunctions::RealErrorFunctions::erf(self / 2_f64.sqrt()))
     }
 
     #[inline]
