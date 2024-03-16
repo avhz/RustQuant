@@ -35,6 +35,9 @@ license = "MIT OR Apache-2.0"
 inherits = "release"
 debug = true
 
+[profile.dev]
+debug = 0
+
 ## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ## RUSTDOC CONFIGURATION
 ## Includes KaTeX for math rendering.

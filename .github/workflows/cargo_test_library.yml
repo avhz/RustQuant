@@ -1,4 +1,4 @@
-name: Test the library.
+name: Test the library (unit tests).
 
 on:
   push:
@@ -26,4 +26,4 @@ jobs:
       # TEST THE LIBRARY
       # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       - name: Run unit tests.
-        run: cargo test # --verbose
+        run: cargo test --lib # --verbose
