@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.4](https://github.com/avhz/RustQuant/compare/v0.2.3...v0.2.4) - 2024-03-16
+
+### Other
+- GitHub actions (fix failing tests)
+- GitHub actions (split test actions: unit, doc, examples)
+- GitHub actions (test)
+
 ## [0.2.3](https://github.com/avhz/RustQuant/compare/v0.2.2...v0.2.3) - 2024-03-15
 
 ### Other
