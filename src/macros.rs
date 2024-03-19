@@ -15,7 +15,7 @@ macro_rules! assert_approx_equal {
     ($x:expr, $y:expr, $d:expr) => {
         assert!(
             ($x - $y <= $d) && ($y - $x <= $d),
-            "\nActual: \t{}, \nExpected: \t{}, \nPrecision: \t{}\n",
+            "\nLeft: \t\t{}, \nRight: \t\t{}, \nPrecision: \t{}\n",
             $x,
             $y,
             $d

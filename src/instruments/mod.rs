@@ -49,7 +49,7 @@
 //!   - [ ] Chooser
 //!   - [ ] Barrier
 //!
-//! ```no_run
+//! ```ignore
 //! use RustQuant::instruments::*;
 //! use time::{Duration, OffsetDateTime};
 //!

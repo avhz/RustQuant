@@ -89,10 +89,9 @@ impl<C: Cashflow> Leg<C> {
 mod tests_legs {
     use super::super::SimpleCashflow;
     use super::*;
-    use time::Duration;
-
     use crate::assert_approx_equal;
     use std::f64::EPSILON as EPS;
+    use time::Duration;
 
     // Utility function to generate a simple leg for testing.
     fn generate_simple_leg(now: OffsetDateTime) -> Leg<SimpleCashflow> {

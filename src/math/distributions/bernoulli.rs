@@ -7,8 +7,10 @@
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+use crate::error::RustQuantError;
+
 use super::Distribution;
-use crate::math::DistributionError;
+// use crate::math::DistributionError;
 use num::Complex;
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -36,7 +38,7 @@ impl Bernoulli {
     /// # Examples
     /// ```
     /// # use RustQuant::assert_approx_equal;
-    /// # use RustQuant::statistics::distributions::*;
+    /// # use RustQuant::math::distributions::*;
     ///
     /// let bernoulli = Bernoulli::new(0.5);
     ///
@@ -60,7 +62,7 @@ impl Distribution for Bernoulli {
     /// # Examples
     /// ```
     /// # use RustQuant::assert_approx_equal;
-    /// # use RustQuant::statistics::distributions::*;
+    /// # use RustQuant::math::distributions::*;
     ///
     /// let bernoulli = Bernoulli::new(0.5);
     ///
@@ -78,7 +80,7 @@ impl Distribution for Bernoulli {
     /// Using this method will call `self.pmf()` instead.
     /// # Examples
     /// ```
-    /// # use RustQuant::statistics::distributions::*;
+    /// # use RustQuant::math::distributions::*;
     ///
     /// let bernoulli = Bernoulli::new(0.5);
     ///
@@ -91,7 +93,7 @@ impl Distribution for Bernoulli {
     /// Probability mass function of the Bernoulli distribution.
     /// # Examples
     /// ```
-    /// # use RustQuant::statistics::distributions::*;
+    /// # use RustQuant::math::distributions::*;
     ///
     /// let bernoulli = Bernoulli::new(0.5);
     ///
@@ -107,7 +109,7 @@ impl Distribution for Bernoulli {
     /// Cumulative distribution function of the Bernoulli distribution.
     /// # Examples
     /// ```
-    /// # use RustQuant::statistics::distributions::*;
+    /// # use RustQuant::math::distributions::*;
     ///
     /// let bernoulli = Bernoulli::new(0.5);
     ///
@@ -129,7 +131,7 @@ impl Distribution for Bernoulli {
     /// Inverse (quantile) distribution function of the Bernoulli distribution.
     /// # Examples
     /// ```
-    /// # use RustQuant::statistics::distributions::*;
+    /// # use RustQuant::math::distributions::*;
     ///
     /// let bernoulli = Bernoulli::new(0.5);
     ///
@@ -148,7 +150,7 @@ impl Distribution for Bernoulli {
     /// Mean of the Bernoulli distribution.
     /// # Examples
     /// ```
-    /// # use RustQuant::statistics::distributions::*;
+    /// # use RustQuant::math::distributions::*;
     ///
     /// let bernoulli = Bernoulli::new(0.5);
     ///
@@ -161,7 +163,7 @@ impl Distribution for Bernoulli {
     /// Median of the Bernoulli distribution.
     /// # Examples
     /// ```
-    /// # use RustQuant::statistics::distributions::*;
+    /// # use RustQuant::math::distributions::*;
     ///
     /// let bernoulli = Bernoulli::new(0.5);
     ///
@@ -178,7 +180,7 @@ impl Distribution for Bernoulli {
     /// Mode of the Bernoulli distribution.
     /// # Examples
     /// ```
-    /// # use RustQuant::statistics::distributions::*;
+    /// # use RustQuant::math::distributions::*;
     ///
     /// let bernoulli = Bernoulli::new(0.5);
     ///
@@ -196,7 +198,7 @@ impl Distribution for Bernoulli {
     /// Variance of the Bernoulli distribution.
     /// # Examples
     /// ```
-    /// # use RustQuant::statistics::distributions::*;
+    /// # use RustQuant::math::distributions::*;
     ///
     /// let bernoulli = Bernoulli::new(0.5);
     ///
@@ -209,7 +211,7 @@ impl Distribution for Bernoulli {
     /// Skewness of the Bernoulli distribution.
     /// # Examples
     /// ```
-    /// # use RustQuant::statistics::distributions::*;
+    /// # use RustQuant::math::distributions::*;
     ///
     /// let bernoulli = Bernoulli::new(0.5);
     ///
@@ -223,7 +225,7 @@ impl Distribution for Bernoulli {
     /// Kurtosis of the Bernoulli distribution.
     /// # Examples
     /// ```
-    /// # use RustQuant::statistics::distributions::*;
+    /// # use RustQuant::math::distributions::*;
     ///
     /// let bernoulli = Bernoulli::new(0.5);
     ///
@@ -238,7 +240,7 @@ impl Distribution for Bernoulli {
     /// # Examples
     /// ```
     /// # use RustQuant::assert_approx_equal;
-    /// # use RustQuant::statistics::distributions::*;
+    /// # use RustQuant::math::distributions::*;
     ///
     /// let bernoulli = Bernoulli::new(0.5);
     ///
@@ -252,7 +254,7 @@ impl Distribution for Bernoulli {
     /// # Examples
     /// ```
     /// # use RustQuant::assert_approx_equal;
-    /// # use RustQuant::statistics::distributions::*;
+    /// # use RustQuant::math::distributions::*;
     ///
     /// let bernoulli = Bernoulli::new(0.5);
     ///
@@ -266,7 +268,7 @@ impl Distribution for Bernoulli {
     /// # Examples
     /// ```
     /// # use RustQuant::assert_approx_equal;
-    /// # use RustQuant::statistics::distributions::*;
+    /// # use RustQuant::math::distributions::*;
     ///
     /// let bernoulli = Bernoulli::new(0.5);
     ///
@@ -275,7 +277,7 @@ impl Distribution for Bernoulli {
     ///
     /// assert_approx_equal!(mean, bernoulli.mean(), 0.1);
     /// ```
-    fn sample(&self, n: usize) -> Result<Vec<f64>, DistributionError> {
+    fn sample(&self, n: usize) -> Result<Vec<f64>, RustQuantError> {
         // IMPORT HERE TO AVOID CLASH WITH
         // `RustQuant::distributions::Distribution`
         use rand::thread_rng;
@@ -305,7 +307,7 @@ impl Distribution for Bernoulli {
 mod tests_bernoulli {
     use super::*;
     use crate::assert_approx_equal;
-
+    use crate::error::RustQuantError;
     use std::f64::EPSILON as EPS;
 
     #[test]
@@ -452,7 +454,7 @@ mod tests_bernoulli {
     }
 
     #[test]
-    fn test_sample_positive_size() -> Result<(), DistributionError> {
+    fn test_sample_positive_size() -> Result<(), RustQuantError> {
         let bernoulli = Bernoulli::new(0.5);
         let sample = bernoulli.sample(100)?;
         assert_eq!(sample.len(), 100);

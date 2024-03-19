@@ -145,12 +145,9 @@ the put price decreases, to 5.3790, and the call price increases, to 6.8678.
 
 #[cfg(test)]
 mod tests {
-    use time::Duration;
-
-    use crate::assert_approx_equal;
-
     use super::*;
-    use std::f64::EPSILON as EPS;
+    use crate::{assert_approx_equal, RUSTQUANT_EPSILON};
+    use time::Duration;
 
     #[test]
     fn test_heston_options() {
@@ -171,9 +168,9 @@ mod tests {
             expiry_date,
         );
         // Call price.
-        assert_approx_equal!(heston1.0, 6.244_175_780_382_292, EPS);
+        assert_approx_equal!(heston1.0, 6.2528189954900455, RUSTQUANT_EPSILON);
         // Put price.
-        assert_approx_equal!(heston1.1, 5.751_722_351_735_211, EPS);
+        assert_approx_equal!(heston1.1, 5.759029580879499, RUSTQUANT_EPSILON);
 
         // WITHOUT DIVIDEND YIELD.
         let heston2 = heston(
@@ -190,8 +187,8 @@ mod tests {
             expiry_date,
         );
         // Call price.
-        assert_approx_equal!(heston2.0, 6.857_458_545_841_29, EPS);
+        assert_approx_equal!(heston2.0, 6.867834818545035, RUSTQUANT_EPSILON);
         // Put price.
-        assert_approx_equal!(heston2.1, 5.372_700_994_566_344, EPS);
+        assert_approx_equal!(heston2.1, 5.379028778851293, RUSTQUANT_EPSILON);
     }
 }

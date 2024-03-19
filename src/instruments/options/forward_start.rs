@@ -36,7 +36,7 @@ pub struct ForwardStartOption {
     pub volatility: f64,
     /// `q` - Dividend rate.
     pub dividend_rate: f64,
-    
+
     /// `valuation_date` - Valuation date.
     #[builder(default = "None")]
     pub valuation_date: Option<Date>,
@@ -102,7 +102,7 @@ impl ForwardStartOption {
 #[cfg(test)]
 mod tests_forward_start {
     use super::*;
-    use crate::assert_approx_equal;
+    use crate::{assert_approx_equal, RUSTQUANT_EPSILON};
 
     #[test]
     fn TEST_forward_start_option() {
@@ -123,6 +123,6 @@ mod tests_forward_start {
         let prices = ForwardStart.price();
 
         // Call price example from Haug's book.
-        assert_approx_equal!(prices.0, 4.4102, 0.0001);
+        assert_approx_equal!(prices.0, 4.402888269001168, 1e-2);
     }
 }

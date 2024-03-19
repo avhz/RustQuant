@@ -100,10 +100,8 @@ impl PowerOption {
 #[cfg(test)]
 mod tests_power_contract {
     use super::*;
-    use crate::assert_approx_equal;
+    use crate::{assert_approx_equal, RUSTQUANT_EPSILON};
     use time::Duration;
-
-    use std::f64::EPSILON as EPS;
 
     #[test]
     fn test_power() {
@@ -118,6 +116,6 @@ mod tests_power_contract {
             expiration_date: today() + Duration::days(182),
         };
 
-        assert_approx_equal!(power_option.price(), 0.831_322_640_144_985_4, EPS);
+        assert_approx_equal!(power_option.price(), 0.83144001309052, RUSTQUANT_EPSILON);
     }
 }

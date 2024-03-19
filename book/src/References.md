@@ -1,6 +1,7 @@
-# :book: References
+# References
 
 ## Quantitative Finance
+
 
 - John C. Hull - *Options, Futures, and Other Derivatives*
 - Damiano Brigo & Fabio Mercurio - *Interest Rate Models - Theory and Practice (With Smile, Inflation and Credit)*

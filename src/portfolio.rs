@@ -16,10 +16,11 @@
 //! ```
 //! # use RustQuant::portfolio::{Portfolio, Position};
 //! # use RustQuant::instruments::options::{BlackScholesMerton, TypeFlag};
-//! # use RustQuant::money::USD;
+//! # use RustQuant::iso::USD;
 //! # use time::{Duration, OffsetDateTime};
 //! # use std::collections::HashMap;
 //! # use RustQuant::assert_approx_equal;
+//! # use RustQuant::time::today;
 //!
 //! // Create a position of 100 call options.
 //! let position_1 = Position {
@@ -30,7 +31,7 @@
 //!         0.3,
 //!         0.08,
 //!         None,
-//!         OffsetDateTime::now_utc() + Duration::days(91),
+//!         today() + Duration::days(91),
 //!         TypeFlag::Call,
 //!     ),
 //!     quantity: 100,
@@ -48,7 +49,7 @@
 //!         0.2,
 //!         0.1,
 //!         None,
-//!         OffsetDateTime::now_utc() + Duration::days(182),
+//!         today() + Duration::days(182),
 //!         TypeFlag::Put,
 //!     ),
 //!     quantity: 100,
@@ -217,8 +218,8 @@ where
 mod tests_portfolio {
     use super::*;
     use crate::{
-        cashflows::USD,
         instruments::options::{BlackScholesMerton, TypeFlag},
+        iso::USD,
         time::today,
     };
     use time::Duration;

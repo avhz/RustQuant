@@ -14,29 +14,12 @@
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 use nalgebra::{DMatrix, DVector};
-use thiserror::Error;
+
+use crate::error::RustQuantError;
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // STRUCTS, ENUMS, AND TRAITS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-#[derive(Error, Debug)]
-
-///For better error handling
-#[allow(clippy::module_name_repetitions)]
-pub enum LinearRegressionError {
-    /// failed to invert matrix
-    #[error("Matrix inversion failed")]
-    MatrixInversionFailed,
-
-    /// failed to perform SVD decomposition
-    #[error("SVD decomposition failed: v_t is likely wrong type")]
-    SvdDecompositionFailed,
-
-    /// failed to compute u
-    #[error("SVD decomposition failed: u is likely wrong type")]
-    SvdDecompositionFailedOnU,
-}
 
 /// Struct to hold the input data for a linear regression.
 #[allow(clippy::module_name_repetitions)]
@@ -106,7 +89,7 @@ impl LinearRegressionInput<f64> {
     pub fn fit(
         &self,
         method: Decomposition,
-    ) -> Result<LinearRegressionOutput<f64>, LinearRegressionError> {
+    ) -> Result<LinearRegressionOutput<f64>, RustQuantError> {
         // Insert a column of 1s to the input data matrix,
         // to account for the intercept.
         let x = self.x.clone().insert_column(0, 1.);
@@ -118,7 +101,7 @@ impl LinearRegressionInput<f64> {
                 let x_t_x = x_t.clone() * x;
                 let x_t_x_inv = x_t_x
                     .try_inverse()
-                    .ok_or(LinearRegressionError::MatrixInversionFailed)?;
+                    .ok_or(RustQuantError::MatrixInversionFailed)?;
                 let x_t_y = x_t * y;
 
                 let coefficients = x_t_x_inv * x_t_y;
@@ -136,7 +119,7 @@ impl LinearRegressionInput<f64> {
 
                 let coefficients = r
                     .try_inverse()
-                    .ok_or(LinearRegressionError::MatrixInversionFailed)?
+                    .ok_or(RustQuantError::MatrixInversionFailed)?
                     * q.transpose()
                     * y;
                 let intercept = coefficients[0];
@@ -150,12 +133,10 @@ impl LinearRegressionInput<f64> {
                 let svd = x.svd(true, true);
                 let v = svd
                     .v_t
-                    .ok_or(LinearRegressionError::SvdDecompositionFailed)?
+                    .ok_or(RustQuantError::SvdDecompositionFailed)?
                     .transpose();
                 let s_inv = DMatrix::from_diagonal(&svd.singular_values.map(|x| 1.0 / x));
-                let u = svd
-                    .u
-                    .ok_or(LinearRegressionError::SvdDecompositionFailedOnU)?;
+                let u = svd.u.ok_or(RustQuantError::SvdDecompositionFailedOnU)?;
 
                 let pseudo_inverse = v * s_inv * u.transpose();
                 let coefficients = &pseudo_inverse * y;
@@ -175,7 +156,7 @@ impl LinearRegressionInput<f64> {
 
 impl LinearRegressionOutput<f64> {
     /// Predicts the output for the given input data.
-    pub fn predict(&self, input: DMatrix<f64>) -> Result<DVector<f64>, LinearRegressionError> {
+    pub fn predict(&self, input: DMatrix<f64>) -> Result<DVector<f64>, RustQuantError> {
         let intercept = DVector::from_element(input.nrows(), self.intercept);
         let coefficients = self.coefficients.clone().remove_row(0);
 
@@ -199,7 +180,7 @@ mod tests_linear_regression {
     use std::f64::EPSILON as EPS;
 
     #[test]
-    fn test_linear_regression() -> Result<(), LinearRegressionError> {
+    fn test_linear_regression() -> Result<(), RustQuantError> {
         // TEST DATA GENERATED FROM THE FOLLOWING R CODE:
         //
         // set.seed(2023)

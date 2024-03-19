@@ -36,15 +36,6 @@ pub struct Currency {
     pub fractions: usize,
 }
 
-/// Money struct.
-#[derive(Debug, Clone, Copy)]
-pub struct Money {
-    /// The underlying currency.
-    pub currency: Currency,
-    /// The amount.
-    pub amount: f64,
-}
-
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // IMPLEMENTATIONS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -68,18 +59,11 @@ impl Instrument for Currency {
 }
 
 impl Eq for Currency {}
-impl Eq for Money {}
 impl Eq for ISO_4217 {}
 
 impl PartialEq for Currency {
     fn eq(&self, other: &Self) -> bool {
         self.code == other.code
-    }
-}
-
-impl PartialEq for Money {
-    fn eq(&self, other: &Self) -> bool {
-        self.currency.code == other.currency.code && self.amount == other.amount
     }
 }
 
@@ -89,29 +73,9 @@ impl PartialEq for ISO_4217 {
     }
 }
 
-impl PartialOrd for Money {
-    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
-        if self.currency == other.currency {
-            self.amount.partial_cmp(&other.amount)
-        } else {
-            None
-        }
-    }
-}
-
 impl fmt::Display for Currency {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         write!(f, "Currency:\t{}\nISO Code:\t{:?}", self.name, self.code)
-    }
-}
-
-impl fmt::Display for Money {
-    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
-        write!(
-            f,
-            "Amount:\t{}\nName:\t{}\nISO:\t{:?}",
-            self.amount, self.currency.name, self.currency.code
-        )
     }
 }
 
@@ -175,86 +139,6 @@ impl Currency {
     }
 }
 
-impl Money {
-    /// Create a new money instance.
-    #[must_use]
-    pub fn new(currency: Currency, amount: f64) -> Self {
-        Self { currency, amount }
-    }
-
-    /// Get the currency.
-    #[must_use]
-    pub fn currency(&self) -> Currency {
-        self.currency
-    }
-
-    /// Get the amount.
-    #[must_use]
-    pub fn amount(&self) -> f64 {
-        self.amount
-    }
-}
-
-impl std::ops::Add for Money {
-    type Output = Self;
-
-    fn add(self, other: Self) -> Self::Output {
-        if self.currency == other.currency {
-            Self {
-                currency: self.currency,
-                amount: self.amount + other.amount,
-            }
-        } else {
-            panic!("Cannot add two different currencies.")
-        }
-    }
-}
-
-impl std::ops::Sub for Money {
-    type Output = Self;
-
-    fn sub(self, other: Self) -> Self::Output {
-        if self.currency == other.currency {
-            Self {
-                currency: self.currency,
-                amount: self.amount - other.amount,
-            }
-        } else {
-            panic!("Cannot subtract two different currencies.")
-        }
-    }
-}
-
-impl std::ops::Mul for Money {
-    type Output = Self;
-
-    fn mul(self, other: Self) -> Self::Output {
-        if self.currency == other.currency {
-            Self {
-                currency: self.currency,
-                amount: self.amount * other.amount,
-            }
-        } else {
-            panic!("Cannot multiply two different currencies.")
-        }
-    }
-}
-
-impl std::ops::Div for Money {
-    type Output = Self;
-
-    fn div(self, other: Self) -> Self::Output {
-        if self.currency == other.currency {
-            Self {
-                currency: self.currency,
-                amount: self.amount / other.amount,
-            }
-        } else {
-            panic!("Cannot divide two different currencies.")
-        }
-    }
-}
-
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // UNIT TESTS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -262,8 +146,8 @@ impl std::ops::Div for Money {
 #[cfg(test)]
 mod test_currencies {
     use super::*;
-
     use crate::assert_approx_equal;
+    use crate::instruments::fx::money::Money;
     use std::f64::EPSILON as EPS;
 
     // Setup some example currencies and money for testing

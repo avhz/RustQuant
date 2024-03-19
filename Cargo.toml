@@ -15,7 +15,7 @@
 name = "RustQuant"
 authors = ["avhz <RustQuantContact@gmail.com>"]
 description = "A Rust library for quantitative finance."
-version = "0.1.1"
+version = "0.2.3"
 edition = "2021"
 readme = "README.md"
 repository = "https://github.com/avhz/RustQuant"
@@ -34,6 +34,9 @@ license = "MIT OR Apache-2.0"
 [profile.release-with-debug]
 inherits = "release"
 debug = true
+
+[profile.dev]
+debug = 0
 
 ## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ## RUSTDOC CONFIGURATION

@@ -9,7 +9,6 @@
 
 use super::{order::Order, order_side::OrderSide};
 use std::collections::VecDeque;
-// use time::OffsetDateTime;
 
 /// Orderbook struct containing the two 'half-books' (bid and ask sides).
 ///

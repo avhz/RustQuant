@@ -186,8 +186,8 @@ where
     ///
     /// ```
     /// use time::macros::date;
-    /// use calenda_rs::day_counting::DayCounter;
-    /// use calenda_rs::countries::oceania::australia::AustraliaCalendar;
+    /// use RustQuant::time::day_counting::DayCounter;
+    /// use RustQuant::time::countries::oceania::australia::AustraliaCalendar;
     ///
     /// let date1 = date!(2023-01-01);
     /// let date2 = date!(2025-01-01);
@@ -211,8 +211,8 @@ where
     ///
     /// ```
     /// use time::macros::date;
-    /// use calenda_rs::day_counting::DayCounter;
-    /// use calenda_rs::countries::oceania::australia::AustraliaCalendar;
+    /// use RustQuant::time::day_counting::DayCounter;
+    /// use RustQuant::time::countries::oceania::australia::AustraliaCalendar;
     ///
     /// let date1 = date!(2023-01-01);
     /// let date2 = date!(2023-02-01);
@@ -247,9 +247,9 @@ where
     ///
     /// ```
     /// use time::macros::date;
-    /// use calenda_rs::day_counting::DayCounter;
-    /// use calenda_rs::countries::oceania::australia::AustraliaCalendar;
-    /// use calenda_rs::day_counting::DayCountConvention;
+    /// use RustQuant::time::day_counting::DayCounter;
+    /// use RustQuant::time::countries::oceania::australia::AustraliaCalendar;
+    /// use RustQuant::time::day_counting::DayCountConvention;
     ///
     /// let date1 = date!(2023-01-01);
     /// let date2 = date!(2024-01-01);
@@ -273,8 +273,8 @@ where
     ///
     /// ```
     /// use time::macros::date;
-    /// use calenda_rs::day_counting::DayCounter;
-    /// use calenda_rs::countries::oceania::australia::AustraliaCalendar;
+    /// use RustQuant::time::day_counting::DayCounter;
+    /// use RustQuant::time::countries::oceania::australia::AustraliaCalendar;
     ///
     /// let date1 = date!(2023-01-01);
     /// let date2 = date!(2024-01-01);
@@ -304,8 +304,8 @@ where
     ///
     /// ```
     /// use time::macros::date;
-    /// use calenda_rs::day_counting::DayCounter;
-    /// use calenda_rs::countries::oceania::australia::AustraliaCalendar;
+    /// use RustQuant::time::day_counting::DayCounter;
+    /// use RustQuant::time::countries::oceania::australia::AustraliaCalendar;
     ///
     /// let date1 = date!(2023-01-01);
     /// let date2 = date!(2023-02-01);
@@ -335,9 +335,9 @@ where
     ///
     /// ```
     /// use time::macros::date;
-    /// use calenda_rs::day_counting::DayCounter;
-    /// use calenda_rs::countries::oceania::australia::AustraliaCalendar;
-    /// use calenda_rs::day_counting::DayCountConvention;
+    /// use RustQuant::time::day_counting::DayCounter;
+    /// use RustQuant::time::countries::oceania::australia::AustraliaCalendar;
+    /// use RustQuant::time::day_counting::DayCountConvention;
     ///
     /// let date1 = date!(2023-01-01);
     /// let date2 = date!(2024-01-01);

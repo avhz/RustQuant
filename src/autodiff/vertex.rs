@@ -19,10 +19,9 @@ use std::fmt;
 pub struct Vertex {
     /// Array that contains the partial derivatives wrt to x and y.
     pub partials: [f64; 2],
+
     /// Array that contains the indices of the parent vertices.
     pub parents: [usize; 2],
-    // /// Operation.
-    // pub operation: Operation,
 }
 
 /// Enumeration for the operation type.
@@ -42,27 +41,6 @@ pub enum Arity {
     /// Binary operation (e.g. x + y).
     /// This has two parents.
     Binary,
-}
-
-/// Enumeration for the operation type.
-#[derive(Clone, Copy, Debug)]
-enum Operation {
-    _ADD,
-    _SUB,
-    _MUL,
-    _DIV,
-    _POW,
-    _SIN,
-    _COS,
-    _TAN,
-    _EXP,
-    _LOG,
-    _SQRT,
-    _ABS,
-    _NEG,
-    _INV,
-    _MAX,
-    _MIN,
 }
 
 impl Vertex {

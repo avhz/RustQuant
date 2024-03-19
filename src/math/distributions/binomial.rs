@@ -7,7 +7,7 @@
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use crate::math::{distributions::Distribution, DistributionError};
+use crate::{error::RustQuantError, math::distributions::Distribution};
 use num::Complex;
 use std::f64::consts::{E, PI};
 
@@ -38,7 +38,7 @@ impl Binomial {
     /// New instance of a Binomial distribution.
     /// # Examples
     /// ```
-    /// # use RustQuant::statistics::distributions::{Binomial, Distribution};
+    /// # use RustQuant::math::distributions::{Binomial, Distribution};
     ///
     /// let binomial = Binomial::new(5, 0.4);
     ///
@@ -64,7 +64,7 @@ impl Distribution for Binomial {
     /// # Examples
     /// ```
     /// # use RustQuant::assert_approx_equal;
-    /// # use RustQuant::statistics::distributions::{Binomial, Distribution};
+    /// # use RustQuant::math::distributions::{Binomial, Distribution};
     ///
     /// let binomial = Binomial::new(5, 0.4);
     /// let cf = binomial.cf(1.0);
@@ -84,7 +84,7 @@ impl Distribution for Binomial {
     /// # Examples
     /// ```
     /// # use RustQuant::assert_approx_equal;
-    /// # use RustQuant::statistics::distributions::{Binomial, Distribution};
+    /// # use RustQuant::math::distributions::{Binomial, Distribution};
     ///
     /// let binomial = Binomial::new(5, 0.4);
     /// let pdf = binomial.pdf(3.0);
@@ -101,7 +101,7 @@ impl Distribution for Binomial {
     /// # Examples
     /// ```
     /// # use RustQuant::assert_approx_equal;
-    /// # use RustQuant::statistics::distributions::{Binomial, Distribution};
+    /// # use RustQuant::math::distributions::{Binomial, Distribution};
     ///
     /// let binomial = Binomial::new(5, 0.4);
     /// let pmf = binomial.pmf(3.0);
@@ -125,7 +125,7 @@ impl Distribution for Binomial {
     /// # Examples
     /// ```
     /// # use RustQuant::assert_approx_equal;
-    /// # use RustQuant::statistics::distributions::{Binomial, Distribution};
+    /// # use RustQuant::math::distributions::{Binomial, Distribution};
     ///
     /// let binomial = Binomial::new(5, 0.4);
     ///
@@ -139,7 +139,7 @@ impl Distribution for Binomial {
     /// # Examples
     /// ```
     /// # use RustQuant::assert_approx_equal;
-    /// # use RustQuant::statistics::distributions::{Binomial, Distribution};
+    /// # use RustQuant::math::distributions::{Binomial, Distribution};
     ///
     /// let binomial = Binomial::new(5, 0.4);
     ///
@@ -160,7 +160,7 @@ impl Distribution for Binomial {
     /// Mean of the Binomial distribution.
     /// # Examples
     /// ```
-    /// # use RustQuant::statistics::distributions::{Binomial, Distribution};
+    /// # use RustQuant::math::distributions::{Binomial, Distribution};
     ///
     /// let binomial = Binomial::new(5, 0.4);
     ///
@@ -172,7 +172,7 @@ impl Distribution for Binomial {
     /// Median of the Binomial distribution.
     /// # Examples
     /// ```
-    /// # use RustQuant::statistics::distributions::{Binomial, Distribution};
+    /// # use RustQuant::math::distributions::{Binomial, Distribution};
     ///
     /// let binomial = Binomial::new(5, 0.4);
     ///
@@ -185,7 +185,7 @@ impl Distribution for Binomial {
     /// Mode of the Binomial distribution.
     /// # Examples
     /// ```
-    /// # use RustQuant::statistics::distributions::{Binomial, Distribution};
+    /// # use RustQuant::math::distributions::{Binomial, Distribution};
     ///
     /// let binomial = Binomial::new(5, 0.4);
     ///
@@ -198,7 +198,7 @@ impl Distribution for Binomial {
     /// Variance of the Binomial distribution.
     /// # Examples
     /// ```
-    /// # use RustQuant::statistics::distributions::{Binomial, Distribution};
+    /// # use RustQuant::math::distributions::{Binomial, Distribution};
     ///
     /// let binomial = Binomial::new(5, 0.4);
     ///
@@ -212,7 +212,7 @@ impl Distribution for Binomial {
     /// # Examples
     /// ```
     /// # use RustQuant::assert_approx_equal;
-    /// # use RustQuant::statistics::distributions::{Binomial, Distribution};
+    /// # use RustQuant::math::distributions::{Binomial, Distribution};
     ///
     /// let binomial = Binomial::new(5, 0.4);
     ///
@@ -226,7 +226,7 @@ impl Distribution for Binomial {
     /// # Examples
     /// ```
     /// # use RustQuant::assert_approx_equal;
-    /// # use RustQuant::statistics::distributions::{Binomial, Distribution};
+    /// # use RustQuant::math::distributions::{Binomial, Distribution};
     ///
     /// let binomial = Binomial::new(5, 0.4);
     ///
@@ -240,7 +240,7 @@ impl Distribution for Binomial {
     /// # Examples
     /// ```
     /// # use RustQuant::assert_approx_equal;
-    /// # use RustQuant::statistics::distributions::{Binomial, Distribution};
+    /// # use RustQuant::math::distributions::{Binomial, Distribution};
     ///
     /// let binomial = Binomial::new(5, 0.4);
     ///
@@ -254,7 +254,7 @@ impl Distribution for Binomial {
     /// # Examples
     /// ```
     /// # use RustQuant::assert_approx_equal;
-    /// # use RustQuant::statistics::distributions::{Binomial, Distribution};
+    /// # use RustQuant::math::distributions::{Binomial, Distribution};
     ///
     /// let binomial = Binomial::new(5, 0.4);
     ///
@@ -268,7 +268,7 @@ impl Distribution for Binomial {
     /// # Examples
     /// ```
     /// # use RustQuant::assert_approx_equal;
-    /// # use RustQuant::statistics::distributions::{Binomial, Distribution};
+    /// # use RustQuant::math::distributions::{Binomial, Distribution};
     ///
     /// let binomial = Binomial::new(100, 0.4);
     /// let sample = binomial.sample(100).unwrap();
@@ -276,7 +276,7 @@ impl Distribution for Binomial {
     ///
     /// assert_approx_equal!(mean, binomial.mean(), 1.0);
     /// ```
-    fn sample(&self, n: usize) -> Result<Vec<f64>, DistributionError> {
+    fn sample(&self, n: usize) -> Result<Vec<f64>, RustQuantError> {
         // IMPORT HERE TO AVOID CLASH WITH
         // `RustQuant::distributions::Distribution`
         use rand::thread_rng;

@@ -1,8 +1,8 @@
 use nalgebra::{DMatrix, DVector};
-
+use RustQuant::error::RustQuantError;
 use RustQuant::ml::*;
 
-fn main() -> Result<(), LinearRegressionError> {
+fn main() -> Result<(), RustQuantError> {
     // TEST DATA GENERATED FROM THE FOLLOWING R CODE:
     //
     // set.seed(2023)

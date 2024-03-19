@@ -7,7 +7,7 @@
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use crate::math::{distributions::Distribution, DistributionError};
+use crate::{error::RustQuantError, math::distributions::Distribution};
 use num::Complex;
 use statrs::function::gamma::{digamma, gamma, gamma_li};
 
@@ -36,7 +36,7 @@ impl ChiSquared {
     /// New instance of a Chi-Squared distribution.
     /// # Examples
     /// ```
-    /// # use RustQuant::statistics::distributions::*;
+    /// # use RustQuant::math::distributions::*;
     ///
     /// let dist = ChiSquared::new(1);
     ///
@@ -58,9 +58,9 @@ impl Distribution for ChiSquared {
     /// Characteristic function of the Chi-Squared distribution.
     /// # Examples
     /// ```
-    /// # use num_complex::Complex;
+    /// # use num::Complex;
     /// # use RustQuant::assert_approx_equal;
-    /// # use RustQuant::statistics::distributions::*;
+    /// # use RustQuant::math::distributions::*;
     ///
     /// let chi = ChiSquared::new(1);
     /// let cf = chi.cf(1.0);
@@ -79,7 +79,7 @@ impl Distribution for ChiSquared {
     /// # Examples
     /// ```
     /// # use RustQuant::assert_approx_equal;
-    /// # use RustQuant::statistics::distributions::*;
+    /// # use RustQuant::math::distributions::*;
     ///
     /// let chi = ChiSquared::new(1);
     ///
@@ -99,7 +99,7 @@ impl Distribution for ChiSquared {
     /// # Examples
     /// ```
     /// # use RustQuant::assert_approx_equal;
-    /// # use RustQuant::statistics::distributions::*;
+    /// # use RustQuant::math::distributions::*;
     ///
     /// let chi = ChiSquared::new(1);
     ///
@@ -114,7 +114,7 @@ impl Distribution for ChiSquared {
     /// # Examples
     /// ```
     /// # use RustQuant::assert_approx_equal;
-    /// # use RustQuant::statistics::distributions::*;
+    /// # use RustQuant::math::distributions::*;
     ///
     /// let chi = ChiSquared::new(1);
     ///
@@ -132,7 +132,7 @@ impl Distribution for ChiSquared {
     /// # Examples
     /// ```
     /// # use RustQuant::assert_approx_equal;
-    /// # use RustQuant::statistics::distributions::*;
+    /// # use RustQuant::math::distributions::*;
     ///
     /// let chi = ChiSquared::new(1);
     ///
@@ -160,7 +160,7 @@ impl Distribution for ChiSquared {
     /// Mean of the Chi-Squared distribution.
     /// # Examples
     /// ```
-    /// # use RustQuant::statistics::distributions::*;
+    /// # use RustQuant::math::distributions::*;
     ///
     /// let chi = ChiSquared::new(1);
     ///
@@ -174,7 +174,7 @@ impl Distribution for ChiSquared {
     /// # Examples
     /// ```
     /// # use RustQuant::assert_approx_equal;
-    /// # use RustQuant::statistics::distributions::*;
+    /// # use RustQuant::math::distributions::*;
     ///
     /// let chi = ChiSquared::new(1);
     ///
@@ -187,7 +187,7 @@ impl Distribution for ChiSquared {
     /// Mode of the Chi-Squared distribution.
     /// # Examples
     /// ```
-    /// # use RustQuant::statistics::distributions::*;
+    /// # use RustQuant::math::distributions::*;
     ///
     /// let chi = ChiSquared::new(1);
     ///
@@ -200,7 +200,7 @@ impl Distribution for ChiSquared {
     /// Variance of the Chi-Squared distribution.
     /// # Examples
     /// ```
-    /// # use RustQuant::statistics::distributions::*;
+    /// # use RustQuant::math::distributions::*;
     ///
     /// let chi = ChiSquared::new(1);
     ///
@@ -214,7 +214,7 @@ impl Distribution for ChiSquared {
     /// # Examples
     /// ```
     /// # use RustQuant::assert_approx_equal;
-    /// # use RustQuant::statistics::distributions::*;
+    /// # use RustQuant::math::distributions::*;
     ///
     /// let chi = ChiSquared::new(1);
     ///
@@ -227,7 +227,7 @@ impl Distribution for ChiSquared {
     /// Kurtosis of the Chi-Squared distribution.
     /// # Examples
     /// ```
-    /// # use RustQuant::statistics::distributions::*;
+    /// # use RustQuant::math::distributions::*;
     ///
     /// let chi = ChiSquared::new(1);
     ///
@@ -240,7 +240,7 @@ impl Distribution for ChiSquared {
     /// # Examples
     /// ```
     /// # use RustQuant::assert_approx_equal;
-    /// # use RustQuant::statistics::distributions::*;
+    /// # use RustQuant::math::distributions::*;
     ///
     /// let chi = ChiSquared::new(1);
     ///
@@ -256,7 +256,7 @@ impl Distribution for ChiSquared {
     /// # Examples
     /// ```
     /// # use RustQuant::assert_approx_equal;
-    /// # use RustQuant::statistics::distributions::*;
+    /// # use RustQuant::math::distributions::*;
     ///
     /// let chi = ChiSquared::new(1);
     ///
@@ -272,7 +272,7 @@ impl Distribution for ChiSquared {
     /// # Examples
     /// ```
     /// # use RustQuant::assert_approx_equal;
-    /// # use RustQuant::statistics::distributions::*;
+    /// # use RustQuant::math::distributions::*;
     ///
     /// let chi = ChiSquared::new(100);
     ///
@@ -281,7 +281,7 @@ impl Distribution for ChiSquared {
     ///
     /// assert_approx_equal!(mean, chi.mean(), 5.0);
     /// ```
-    fn sample(&self, n: usize) -> Result<Vec<f64>, DistributionError> {
+    fn sample(&self, n: usize) -> Result<Vec<f64>, RustQuantError> {
         // IMPORT HERE TO AVOID CLASH WITH
         // `RustQuant::distributions::Distribution`
         use rand::thread_rng;

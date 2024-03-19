@@ -7,7 +7,7 @@
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use crate::math::{distributions::Distribution, DistributionError};
+use crate::{error::RustQuantError, math::distributions::Distribution};
 use num::Complex;
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -29,7 +29,7 @@ impl Exponential {
     ///
     /// # Panics
     ///
-    /// Panics if lambda is greater than 0.0
+    /// Panics if lambda is less than 0.0
     #[must_use]
     pub fn new(lambda: f64) -> Self {
         assert!(lambda > 0.0);
@@ -40,7 +40,7 @@ impl Exponential {
 
 impl Distribution for Exponential {
     /// ```
-    /// use RustQuant::statistics::distributions::*;
+    /// use RustQuant::math::distributions::*;
     ///
     /// let exp = Exponential::new(1.0);
     ///
@@ -54,7 +54,7 @@ impl Distribution for Exponential {
 
     /// ```
     /// use RustQuant::assert_approx_equal;
-    /// use RustQuant::statistics::distributions::*;
+    /// use RustQuant::math::distributions::*;
     ///
     /// let exp = Exponential::new(1.0);
     ///
@@ -68,7 +68,7 @@ impl Distribution for Exponential {
 
     /// ```
     /// use RustQuant::assert_approx_equal;
-    /// use RustQuant::statistics::distributions::*;
+    /// use RustQuant::math::distributions::*;
     ///
     /// let exp = Exponential::new(1.0);
     ///
@@ -80,7 +80,7 @@ impl Distribution for Exponential {
 
     /// ```
     /// use RustQuant::assert_approx_equal;
-    /// use RustQuant::statistics::distributions::*;
+    /// use RustQuant::math::distributions::*;
     ///
     /// let exp = Exponential::new(1.0);
     ///
@@ -94,7 +94,7 @@ impl Distribution for Exponential {
 
     /// ```
     /// use RustQuant::assert_approx_equal;
-    /// use RustQuant::statistics::distributions::*;
+    /// use RustQuant::math::distributions::*;
     ///
     /// let exp = Exponential::new(1.0);
     ///
@@ -106,7 +106,7 @@ impl Distribution for Exponential {
 
     /// ```
     /// use RustQuant::assert_approx_equal;
-    /// use RustQuant::statistics::distributions::*;
+    /// use RustQuant::math::distributions::*;
     ///
     /// let exp = Exponential::new(1.0);
     ///
@@ -118,7 +118,7 @@ impl Distribution for Exponential {
 
     /// ```
     /// use RustQuant::assert_approx_equal;
-    /// use RustQuant::statistics::distributions::*;
+    /// use RustQuant::math::distributions::*;
     ///
     /// let exp = Exponential::new(1.0);
     ///
@@ -130,7 +130,7 @@ impl Distribution for Exponential {
 
     /// ```
     /// use RustQuant::assert_approx_equal;
-    /// use RustQuant::statistics::distributions::*;
+    /// use RustQuant::math::distributions::*;
     ///
     /// let exp = Exponential::new(1.0);
     ///
@@ -142,7 +142,7 @@ impl Distribution for Exponential {
 
     /// ```
     /// use RustQuant::assert_approx_equal;
-    /// use RustQuant::statistics::distributions::*;
+    /// use RustQuant::math::distributions::*;
     ///
     /// let exp = Exponential::new(1.0);
     ///
@@ -154,7 +154,7 @@ impl Distribution for Exponential {
 
     /// ```
     /// use RustQuant::assert_approx_equal;
-    /// use RustQuant::statistics::distributions::*;
+    /// use RustQuant::math::distributions::*;
     ///
     /// let exp = Exponential::new(1.0);
     ///
@@ -166,7 +166,7 @@ impl Distribution for Exponential {
 
     /// ```
     /// use RustQuant::assert_approx_equal;
-    /// use RustQuant::statistics::distributions::*;
+    /// use RustQuant::math::distributions::*;
     ///
     /// let exp = Exponential::new(1.0);
     ///
@@ -178,7 +178,7 @@ impl Distribution for Exponential {
 
     /// ```
     /// use RustQuant::assert_approx_equal;
-    /// use RustQuant::statistics::distributions::*;
+    /// use RustQuant::math::distributions::*;
     ///
     /// let exp = Exponential::new(1.0);
     ///
@@ -190,7 +190,7 @@ impl Distribution for Exponential {
 
     /// ```
     /// use RustQuant::assert_approx_equal;
-    /// use RustQuant::statistics::distributions::*;
+    /// use RustQuant::math::distributions::*;
     ///
     /// let exp = Exponential::new(1.0);
     ///
@@ -202,7 +202,7 @@ impl Distribution for Exponential {
         self.lambda * (self.lambda - t).recip()
     }
 
-    fn sample(&self, n: usize) -> Result<Vec<f64>, DistributionError> {
+    fn sample(&self, n: usize) -> Result<Vec<f64>, RustQuantError> {
         // IMPORT HERE TO AVOID CLASH WITH
         // `RustQuant::distributions::Distribution`
         use rand::thread_rng;

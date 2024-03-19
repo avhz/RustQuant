@@ -7,7 +7,7 @@
 # More details at https://github.com/rust-lang/rust-clippy
 # and https://rust-lang.github.io/rust-clippy/
 
-name: Cargo Clippy
+name: Cargo Clippy.
 
 on:
   push:

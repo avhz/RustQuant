@@ -195,11 +195,12 @@ mod tests_linear_interpolation {
         let dates = vec![d_1m, d_2m];
         let rates = vec![r_1m, r_2m];
 
-        let mut interpolator = LinearInterpolator::new(dates, rates).unwrap();
+        let interpolator = LinearInterpolator::new(dates, rates).unwrap();
 
+        let d = date!(1990 - 06 - 20);
         assert_approx_equal!(
-            0.9855,
-            interpolator.interpolate(date!(1990 - 06 - 20)).unwrap(),
+            interpolator.interpolate(d).unwrap(),
+            0.9854903225806452,
             RUSTQUANT_EPSILON
         );
     }

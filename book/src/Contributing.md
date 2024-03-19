@@ -1,6 +1,5 @@
 # Contributing to RustQuant
 
-> [!NOTE] 
 > I'm particularly interested in hearing from people with strong experience in implementing quantitative software in a real-world/professional setting. This is irrespective of whether you're interested in Rust or not, I would simply love to get feedback and suggestions from experienced people.
 
 If you're reading this, I assume you're interested in contributing to this project.

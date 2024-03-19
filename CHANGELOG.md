@@ -6,6 +6,40 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.3](https://github.com/avhz/RustQuant/compare/v0.2.2...v0.2.3) - 2024-03-15
+
+### Other
+- update plotters dep to GitHub repo (attempt to fix docs building issue [#191](https://github.com/avhz/RustQuant/pull/191))
+- fix some tests
+- minor book edit, CI edits.
+- cargo_build, cargo_test
+- deploy book, again.
+- deploy book, again.
+- deploy book
+- cargo_test
+- Create mdbook.yml
+
+## [0.2.2](https://github.com/avhz/RustQuant/compare/v0.2.1...v0.2.2) - 2024-03-13
+
+### Other
+- fix exponential distribution constructor doc comment
+
+## [0.2.1](https://github.com/avhz/RustQuant/compare/v0.2.0...v0.2.1) - 2024-03-13
+
+### Added
+- started an mdBook
+
+## [0.2.0](https://github.com/avhz/RustQuant/compare/v0.1.1...v0.2.0) - 2024-03-12
+
+### Added
+- Rootfinding routines (Bisection, Brent, Newton-Raphson) and fixed unit/doc-test failures.
+
+### Fixed
+- restructure `Money` module into `Instruments` and `Cashflows`
+
+### Other
+- minor doc edits
+
 ## [0.1.1](https://github.com/avhz/RustQuant/compare/v0.1.0...v0.1.1) - 2024-03-04
 
 ### Other

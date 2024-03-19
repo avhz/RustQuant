@@ -12,7 +12,8 @@
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 use polars::prelude::*;
-use thiserror::Error;
+
+use crate::error::RustQuantError;
 
 /// Data struct.
 /// Contains data format, the file path to the data, and the data itself.
@@ -43,32 +44,20 @@ pub enum DataFormat {
 /// Eagerly reads data from the source.
 pub trait DataReader {
     /// Reads data from the source.
-    fn read(&mut self) -> Result<(), DataError>;
+    fn read(&mut self) -> Result<(), RustQuantError>;
 }
 
 /// Data writer trait.
 pub trait DataWriter {
     /// Writes data to the source.
-    fn write(&mut self) -> Result<(), DataError>;
+    fn write(&mut self) -> Result<(), RustQuantError>;
 }
 
 /// Data scanner trait.
 /// Lazily scans data from the source.
 pub trait DataScanner {
     /// Scans data from the source.
-    fn scan(&mut self) -> Result<LazyFrame, DataError>;
-}
-
-/// Catches errors from the [`Data`] struct that can come from [`std::io`] or [`polars`].
-#[derive(Debug, Error)]
-pub enum DataError {
-    /// Error variant arising from [`std::io`].
-    #[error("IO error: {0}")]
-    Io(#[from] std::io::Error),
-
-    /// Error variant arising from [`polars`].
-    #[error("Polars error: {0}")]
-    Polars(#[from] polars::prelude::PolarsError),
+    fn scan(&mut self) -> Result<LazyFrame, RustQuantError>;
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -88,7 +77,7 @@ impl Data {
 }
 
 impl DataReader for Data {
-    fn read(&mut self) -> Result<(), DataError> {
+    fn read(&mut self) -> Result<(), RustQuantError> {
         match self.format {
             DataFormat::CSV => {
                 let df = CsvReader::from_path(&self.path)?.finish()?;
@@ -115,7 +104,7 @@ impl DataReader for Data {
 }
 
 impl DataWriter for Data {
-    fn write(&mut self) -> Result<(), DataError> {
+    fn write(&mut self) -> Result<(), RustQuantError> {
         match self.format {
             DataFormat::CSV => {
                 let mut file = std::fs::File::create(&self.path)?;
@@ -145,7 +134,7 @@ impl DataWriter for Data {
 }
 
 impl DataScanner for Data {
-    fn scan(&mut self) -> Result<LazyFrame, DataError> {
+    fn scan(&mut self) -> Result<LazyFrame, RustQuantError> {
         match self.format {
             DataFormat::CSV => Ok(LazyCsvReader::new(&self.path).finish()?),
             DataFormat::JSON => Ok(LazyJsonLineReader::new(self.path.clone()).finish()?),
@@ -166,7 +155,7 @@ mod test_io {
     use super::*;
 
     #[test]
-    fn test_read_write_csv() -> Result<(), DataError> {
+    fn test_read_write_csv() -> Result<(), RustQuantError> {
         let mut data = Data {
             format: DataFormat::CSV,
             path: String::from("./src/data/examples/example.csv"),
@@ -185,7 +174,7 @@ mod test_io {
     }
 
     #[test]
-    fn test_read_write_json() -> Result<(), DataError> {
+    fn test_read_write_json() -> Result<(), RustQuantError> {
         let mut data = Data {
             format: DataFormat::JSON,
             path: String::from("./src/data/examples/example.json"),
@@ -204,7 +193,7 @@ mod test_io {
     }
 
     #[test]
-    fn test_read_write_parquet() -> Result<(), DataError> {
+    fn test_read_write_parquet() -> Result<(), RustQuantError> {
         let mut data = Data {
             format: DataFormat::PARQUET,
             path: String::from("./src/data/examples/example.parquet"),

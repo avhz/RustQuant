@@ -1,0 +1,17 @@
+[book]
+authors = ["avhz"]
+language = "en"
+multilingual = false
+src = "src"
+title = "The RustQuant Book"
+
+## NOTE: 
+## For math, the usual delimiters are not yet supported and you need to use the following:
+## 
+## Inline math: \\( ... \\)
+## Block math: \\[ ... \\]
+## 
+## This should be fixed in the future, 
+## and you will be able to use the usual $...$ and $$...$$ delimiters.
+[output.html]
+mathjax-support = true

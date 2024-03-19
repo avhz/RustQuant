@@ -181,7 +181,7 @@ impl CouponBond2 {
 #[cfg(test)]
 mod tests_bond {
     use super::*;
-    use crate::{cashflows::USD, data::Curve, time::today};
+    use crate::{data::Curve, iso::USD, time::today};
 
     #[allow(clippy::similar_names)]
     fn create_test_yield_curve(t0: Date) -> YieldCurve {

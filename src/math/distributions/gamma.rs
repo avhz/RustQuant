@@ -7,7 +7,7 @@
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use crate::math::{distributions::Distribution, DistributionError};
+use crate::{error::RustQuantError, math::distributions::Distribution};
 use num::Complex;
 use statrs::function::gamma::{gamma, gamma_li};
 
@@ -123,7 +123,7 @@ impl Distribution for Gamma {
         (1.0 - t / self.beta).powf(-self.alpha)
     }
 
-    fn sample(&self, n: usize) -> Result<Vec<f64>, DistributionError> {
+    fn sample(&self, n: usize) -> Result<Vec<f64>, RustQuantError> {
         // IMPORT HERE TO AVOID CLASH WITH
         // `RustQuant::distributions::Distribution`
         use rand::thread_rng;
