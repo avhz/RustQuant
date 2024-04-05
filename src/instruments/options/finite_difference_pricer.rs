@@ -256,15 +256,15 @@ impl FiniteDifferencePricer {
         Box::new(function)
     }
 
-    fn get_price_steps(&self) -> u32 {
+    fn price_steps(&self) -> u32 {
         (self.initial_price / 100.00) as u32 * 100 + 100
     }
 
-    fn get_delta_t(&self, time_steps: u32) -> f64 {
+    fn delta_t(&self, time_steps: u32) -> f64 {
         self.time_to_maturity as f64 / ((365 * time_steps) as f64)
     }
 
-    fn get_time_steps(&self) -> u32 {
+    fn time_steps(&self) -> u32 {
         ((self.time_to_maturity / 365) + 1) as u32 * 1000
     }
 
@@ -294,9 +294,9 @@ impl FiniteDifferencePricer {
 
     /// Explicit method
     pub fn explicit(&self) -> f64 {
-        let price_steps: u32 = self.get_price_steps();
-        let time_steps: u32 = self.get_time_steps();
-        let delta_t: f64 = self.get_delta_t(time_steps);
+        let price_steps: u32 = self.price_steps();
+        let time_steps: u32 = self.time_steps();
+        let delta_t: f64 = self.delta_t(time_steps);
     
         let tridiagonal_matrix = self.create_tridiagonal_matrix(
             self.sub_diagonal(delta_t / 2.0), 
@@ -330,9 +330,9 @@ impl FiniteDifferencePricer {
 
     /// Implicit method
     pub fn implicit(&self) -> f64 {
-        let price_steps: u32 = self.get_price_steps();
-        let time_steps: u32 = self.get_time_steps();
-        let delta_t: f64 = self.get_delta_t(time_steps);
+        let price_steps: u32 = self.price_steps();
+        let time_steps: u32 = self.time_steps();
+        let delta_t: f64 = self.delta_t(time_steps);
         
         let inverse_matrix = self.invert_tridiagonal_matrix(
                 self.create_tridiagonal_matrix(
@@ -369,9 +369,9 @@ impl FiniteDifferencePricer {
 
     /// Crank-Nicolson method
     pub fn crank_nicolson(&self) -> f64 {
-        let price_steps: u32 = self.get_price_steps();
-        let time_steps: u32 = self.get_time_steps();
-        let delta_t: f64 = self.get_delta_t(time_steps);
+        let price_steps: u32 = self.price_steps();
+        let time_steps: u32 = self.time_steps();
+        let delta_t: f64 = self.delta_t(time_steps);
 
         let inverse_past_matrix = self.invert_tridiagonal_matrix(
             self.create_tridiagonal_matrix(
