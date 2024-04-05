@@ -112,32 +112,19 @@ impl FiniteDifferencePricer {
     fn tridiagonal_matrix_multiply_vector(&self, A: &Vec<Vec<f64>>, v: Vec<f64>) -> Vec<f64> {
         
         let mut Av: Vec<f64> = Vec::new();
-        let mut value: f64;
-        let mut start: usize;
-        let mut end: usize;
 
         for i in 0..A.len() {
-            value = 0.0;
-            
             match i {
                 0 => {
-                    start = 0;
-                    end = 2;
+                    Av.push(A[0][0] * v[0] + A[0][1] * v[1])
                 },
                 n if n == A.len() - 1 => {
-                    start = n - 1;
-                    end = n + 1;
-                },
+                    Av.push(A[n][0] * v[n - 1] + A[n][1] * v[n])
+                }
                 _ => {
-                    start = i - 1;
-                    end = i + 2;
+                    Av.push(A[i][0] * v[i - 1] + A[i][1] * v[i] + A[i][2] * v[i + 1])
                 }
             }
-
-            for j in start..end {
-                value += A[i][j] * v[j]
-            }
-            Av.push(value)
         }
 
         Av
