@@ -313,7 +313,7 @@ impl FiniteDifferencePricer {
         let time_steps: u32 = self.time_steps();
         let delta_t: f64 = self.delta_t(time_steps);
     
-        let tridiagonal_matrix = self.create_tridiagonal_matrix(
+        let tridiagonal_matrix = self.create_tridiagonal_matrix_without_zeros(
             self.sub_diagonal(delta_t / 2.0), 
             self.diagonal(- delta_t), 
             self.super_diagonal(delta_t / 2.0), 
@@ -397,7 +397,7 @@ impl FiniteDifferencePricer {
             )
         );
         
-        let tridiagonal_future_matrix = self.create_tridiagonal_matrix(
+        let tridiagonal_future_matrix = self.create_tridiagonal_matrix_without_zeros(
             self.sub_diagonal(delta_t / 4.0), 
             self.diagonal(- delta_t / 2.0), 
             self.super_diagonal(delta_t / 4.0),
