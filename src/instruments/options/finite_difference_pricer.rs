@@ -180,6 +180,34 @@ impl FiniteDifferencePricer {
         tridiagonal_matrix
     }
 
+    fn create_tridiagonal_matrix_without_zeros<A, B, C>(&self, sub_diagonal: A, diagonal: B, super_diagonal: C, price_steps: u32) -> Vec<Vec<f64>> 
+    where
+        A: Fn(f64) -> f64,
+        B: Fn(f64) -> f64,
+        C: Fn(f64) -> f64
+    {
+        let mut matrix_row: Vec<f64> = Vec::new();
+        let mut tridiagonal_matrix: Vec<Vec<f64>> = Vec::new();
+
+        for i in 1..(price_steps) {
+            
+            if i != 1 {
+                matrix_row.push(sub_diagonal(i as f64));
+            } 
+
+            matrix_row.push(diagonal(i as f64));
+            
+            if i != price_steps - 1 {
+                matrix_row.push(super_diagonal(i as f64));
+            }
+
+            tridiagonal_matrix.push(matrix_row.clone());
+            matrix_row.clear()
+        }
+
+        tridiagonal_matrix
+    }
+
     fn invert_tridiagonal_matrix(&self, tridiagonal_matrix: Vec<Vec<f64>>) -> Vec<Vec<f64>> {
         
         let last = tridiagonal_matrix.len() - 1;
