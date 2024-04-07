@@ -109,7 +109,7 @@ impl FiniteDifferencePricer {
         Av
     }
 
-    fn tridiagonal_matrix_multiply_vector(&self, A: &Vec<Vec<f64>>, v: Vec<f64>) -> Vec<f64> {
+    fn trimmed_tridiagonal_matrix_multiply_vector(&self, A: &Vec<Vec<f64>>, v: Vec<f64>) -> Vec<f64> {
         
         let mut Av: Vec<f64> = Vec::new();
 
@@ -167,7 +167,7 @@ impl FiniteDifferencePricer {
         tridiagonal_matrix
     }
 
-    fn create_tridiagonal_matrix_without_zeros<A, B, C>(&self, sub_diagonal: A, diagonal: B, super_diagonal: C, price_steps: u32) -> Vec<Vec<f64>> 
+    fn create_trimmed_tridiagonal_matrix<A, B, C>(&self, sub_diagonal: A, diagonal: B, super_diagonal: C, price_steps: u32) -> Vec<Vec<f64>> 
     where
         A: Fn(f64) -> f64,
         B: Fn(f64) -> f64,
@@ -203,7 +203,8 @@ impl FiniteDifferencePricer {
         theta.push(tridiagonal_matrix[0][0]);
         
         for i in 1..(tridiagonal_matrix.len()) {
-            theta.push(tridiagonal_matrix[i][i] * theta[i] 
+            theta.push(
+                tridiagonal_matrix[i][i] * theta[i] 
                 - tridiagonal_matrix[i - 1][i] * tridiagonal_matrix[i][i - 1] * theta[i - 1]);
         }
 
@@ -313,7 +314,7 @@ impl FiniteDifferencePricer {
         let time_steps: u32 = self.time_steps();
         let delta_t: f64 = self.delta_t(time_steps);
     
-        let tridiagonal_matrix = self.create_tridiagonal_matrix_without_zeros(
+        let tridiagonal_matrix = self.create_trimmed_tridiagonal_matrix(
             self.sub_diagonal(delta_t / 2.0), 
             self.diagonal(- delta_t), 
             self.super_diagonal(delta_t / 2.0), 
@@ -323,7 +324,7 @@ impl FiniteDifferencePricer {
         let mut u: Vec<f64> = self.boundary_condition_at_time_n(price_steps);
 
         for t in (1..time_steps).rev() {
-            u = self.tridiagonal_matrix_multiply_vector(&tridiagonal_matrix, u);
+            u = self.trimmed_tridiagonal_matrix_multiply_vector(&tridiagonal_matrix, u);
 
             match self.type_flag {
                 TypeFlag::Call => {
@@ -397,7 +398,7 @@ impl FiniteDifferencePricer {
             )
         );
         
-        let tridiagonal_future_matrix = self.create_tridiagonal_matrix_without_zeros(
+        let tridiagonal_future_matrix = self.create_trimmed_tridiagonal_matrix(
             self.sub_diagonal(delta_t / 4.0), 
             self.diagonal(- delta_t / 2.0), 
             self.super_diagonal(delta_t / 4.0),
@@ -407,7 +408,7 @@ impl FiniteDifferencePricer {
         let mut u: Vec<f64> = self.boundary_condition_at_time_n(price_steps);
 
         for t in (1..time_steps).rev() {
-            u = self.tridiagonal_matrix_multiply_vector(&tridiagonal_future_matrix, u);
+            u = self.trimmed_tridiagonal_matrix_multiply_vector(&tridiagonal_future_matrix, u);
 
             match self.type_flag {
                 TypeFlag::Call => {
