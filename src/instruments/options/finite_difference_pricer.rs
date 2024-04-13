@@ -201,24 +201,39 @@ impl FiniteDifferencePricer {
         let mut theta: Vec<f64> = Vec::new();
         theta.push(1.0);
         theta.push(tridiagonal_matrix[0][0]);
+        theta.push(
+            tridiagonal_matrix[1][1] * theta[1] 
+            - tridiagonal_matrix[0][1] * tridiagonal_matrix[1][0] * theta[0]
+        );
         
-        for i in 1..(tridiagonal_matrix.len()) {
+        for i in 2..(tridiagonal_matrix.len()) {
             theta.push(
-                tridiagonal_matrix[i][i] * theta[i] 
-                - tridiagonal_matrix[i - 1][i] * tridiagonal_matrix[i][i - 1] * theta[i - 1]);
+                tridiagonal_matrix[i][1] * theta[i] 
+                - tridiagonal_matrix[i - 1][2] * tridiagonal_matrix[i][0] * theta[i - 1]
+            )
         }
 
         let mut phi: Vec<f64> = Vec::new();
         phi.push(1.0);
-        phi.push(tridiagonal_matrix[last][last]);
+        phi.push(tridiagonal_matrix[last][1]);
 
-
-        for i in 1..(tridiagonal_matrix.len()) {
+        for i in 1..(tridiagonal_matrix.len() - 1) {
             phi.push(
-                tridiagonal_matrix[last - i][last - i] * phi[i] 
-                - tridiagonal_matrix[last - i][last + 1 - i] * tridiagonal_matrix[last + 1 - i][last - i] * phi[i-1]
+                tridiagonal_matrix[last - i][1]
+                * phi[i] 
+                - tridiagonal_matrix[last - i][2] 
+                * tridiagonal_matrix[last + 1 - i][0] 
+                * phi[i-1]
             )
         }
+
+        phi.push(
+            tridiagonal_matrix[0][0]
+            * phi[last]
+            - tridiagonal_matrix[0][1] 
+            * tridiagonal_matrix[1][0] 
+            * phi[last-1]
+        );
 
         let theta_n = theta.pop().unwrap();
         phi.pop();
@@ -229,12 +244,12 @@ impl FiniteDifferencePricer {
         let mut matrix_row: Vec<f64> = Vec::new();
 
         for i in 0..tridiagonal_matrix.len() {
-            for j in 0..tridiagonal_matrix[0].len() {
+            for j in 0..tridiagonal_matrix.len() {
                 value = (-1.0_f64).powi((i+j) as i32);
                 
                 if i < j {
                     for k in i..j {
-                        value *= tridiagonal_matrix[k][k+1];
+                        value *= tridiagonal_matrix[k].last().unwrap();
                     }
                     value *= theta[i] * phi[j] / theta_n;
 
@@ -242,7 +257,7 @@ impl FiniteDifferencePricer {
                     value *= theta[i] * phi[i] / theta_n
                 } else {
                     for k in j..i {
-                        value *= tridiagonal_matrix[k+1][k]
+                        value *= tridiagonal_matrix[k+1].first().unwrap();
                     }
                     value *= theta[j] * phi[i] / theta_n
                 }
