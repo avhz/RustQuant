@@ -97,77 +97,38 @@ impl FiniteDifferencePricer {
     fn matrix_multiply_vector(&self, A: &Vec<Vec<f64>>, v: Vec<f64>) -> Vec<f64> {
 
         let mut Av: Vec<f64> = Vec::new();
-        let mut value: f64;
-
-        for i in 0..A.len(){
-            value = 0.0;
-            for j in 0..v.len() {
-                value += A[i][j] * v[j]
-            }
-            Av.push(value)
-        }
-        Av
-    }
-
-    fn trimmed_tridiagonal_matrix_multiply_vector(&self, A: &Vec<Vec<f64>>, v: Vec<f64>) -> Vec<f64> {
         
-        let mut Av: Vec<f64> = Vec::new();
-
-        for i in 0..A.len() {
-            match i {
-                0 => {
-                    Av.push(A[0][0] * v[0] + A[0][1] * v[1])
-                },
-                n if n == A.len() - 1 => {
-                    Av.push(A[n][0] * v[n - 1] + A[n][1] * v[n])
+        match A[0].len() {
+            n if n == v.len() => {
+                let mut value: f64;
+                for i in 0..A.len() {
+                    value = 0.0;
+                    for j in 0..v.len() {
+                        value += A[i][j] * v[j]
+                    }
+                    Av.push(value)
                 }
-                _ => {
-                    Av.push(A[i][0] * v[i - 1] + A[i][1] * v[i] + A[i][2] * v[i + 1])
+            },
+            _ => {
+                for i in 0..A.len() {
+                    match i {
+                        0 => {
+                            Av.push(A[0][0] * v[0] + A[0][1] * v[1])
+                        },
+                        n if n == A.len() - 1 => {
+                            Av.push(A[n][0] * v[n - 1] + A[n][1] * v[n])
+                        }
+                        _ => {
+                            Av.push(A[i][0] * v[i - 1] + A[i][1] * v[i] + A[i][2] * v[i + 1])
+                        }
+                    }
                 }
             }
         }
-
         Av
     }
-
+    
     fn create_tridiagonal_matrix<A, B, C>(&self, sub_diagonal: A, diagonal: B, super_diagonal: C, price_steps: u32) -> Vec<Vec<f64>> 
-    where
-        A: Fn(f64) -> f64,
-        B: Fn(f64) -> f64,
-        C: Fn(f64) -> f64
-    {
-        let mut matrix_row: Vec<f64> = Vec::new();
-        let mut tridiagonal_matrix: Vec<Vec<f64>> = Vec::new();
-
-        for i in 1..(price_steps) {
-            if i > 1 {
-                for _j in 0..(i - 2) {
-                    matrix_row.push(0.0)    
-                }
-            }
-            
-            if i != 1 {
-                matrix_row.push(sub_diagonal(i as f64));
-            } 
-
-            matrix_row.push(diagonal(i as f64));
-            
-            if i != price_steps - 1 {
-                matrix_row.push(super_diagonal(i as f64));
-            }
-
-            for _j in i..(price_steps-2) {
-                matrix_row.push(0.0)    
-            }
-
-            tridiagonal_matrix.push(matrix_row.clone());
-            matrix_row.clear()
-        }
-
-        tridiagonal_matrix
-    }
-
-    fn create_trimmed_tridiagonal_matrix<A, B, C>(&self, sub_diagonal: A, diagonal: B, super_diagonal: C, price_steps: u32) -> Vec<Vec<f64>> 
     where
         A: Fn(f64) -> f64,
         B: Fn(f64) -> f64,
