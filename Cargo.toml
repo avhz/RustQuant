@@ -76,7 +76,7 @@ num = { version = "0.4.1", features = ["rand"] }
 time = { version = "0.3.34", features = ["macros"] }
 
 # https://docs.rs/polars/latest/polars/
-polars = { version = "0.38.1", features = ["docs-selection"] }
+polars = { version = "0.39.1", features = ["docs-selection"] }
 
 
 [dev-dependencies]
