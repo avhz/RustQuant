@@ -258,19 +258,11 @@ impl FiniteDifferencePricer {
         Box::new(function)
     }
 
-    fn price_steps(&self) -> u32 {
-        (self.initial_price / 100.00) as u32 * 100 + 100
-    }
-
     fn year_fraction(&self) -> f64 {
         DayCountConvention::default().day_count_factor(
             self.evaluation_date.unwrap_or(today()),
             self.expiration_date,
         )
-    }
-
-    fn time_steps(&self) -> u32 {
-        ((((self.expiration_date - self.evaluation_date.unwrap_or(today())).whole_days() / 365) + 1) * 1000) as u32
     }
 
     fn payoff(&self, s: f64) -> f64 {
