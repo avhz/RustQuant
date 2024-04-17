@@ -26,6 +26,10 @@ pub struct FiniteDifferencePricer {
     pub evaluation_date: Option<Date>,
     /// Maturity date
     pub expiration_date: Date,
+    /// Time steps
+    pub time_steps: u32,
+    /// Price steps
+    pub price_steps: u32,
     /// Option Type
     pub type_flag: TypeFlag,
     /// Option Style
