@@ -22,8 +22,10 @@ pub struct FiniteDifferencePricer {
     pub risk_free_rate: f64, 
     /// Volatility
     pub volatility: f64, 
-    /// Days until maturity
-    pub time_to_maturity: u16, 
+    /// Evaluation date
+    pub evaluation_date: Option<Date>,
+    /// Maturity date
+    pub expiration_date: Date,
     /// Option Type
     pub type_flag: TypeFlag,
     /// Option Style
