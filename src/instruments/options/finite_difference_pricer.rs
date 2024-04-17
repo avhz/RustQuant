@@ -52,43 +52,12 @@ impl FiniteDifferencePricer {
         exercise_flag: ExerciseFlag
     ) -> Self {
 
-        let mut variables_with_error: Vec<&str> = vec![];
-
-        if initial_price <= 0.0 {
-            variables_with_error.push("initial_price")
-        }
-        
-        if strike_price <= 0.0 {
-            variables_with_error.push("strike_price")
-        } 
-        
-        if risk_free_rate <= 0.0 {
-            variables_with_error.push("risk_free_rate")
-        } 
-
-        if volatility <= 0.0 {
-            variables_with_error.push("volatility")
-        } 
-
-        if variables_with_error.len() > 0 {
-            if variables_with_error.len() == 1 {
-                panic!("{} must be greater than 0!", variables_with_error[0])
-            } else if variables_with_error.len() == 2 {
-                panic!("{} and {} must both be greater than 0!", variables_with_error[0], variables_with_error[1])
-            } else {
-                let mut error_message: String = String::from("");
-                for (i, var) in variables_with_error.iter().enumerate() {
-                    if i == variables_with_error.len() - 1 {
-                        error_message += &format!(" and {} must all be greater than 0!", var)
-                    } else if i == variables_with_error.len() - 2 {
-                        error_message += &format!("{}", var)
-                    } else {
-                        error_message += &format!("{}, ", var)
-                    }
-                }
-                panic!("{}", error_message)
-            }
-        }
+        assert!(initial_price > 0.0, "initial_price must be greater than 0!");
+        assert!(strike_price > 0.0, "strike_price must be greater than 0!");
+        assert!(risk_free_rate > 0.0, "risk_free_rate must be greater than 0!");
+        assert!(volatility > 0.0, "volatility must be greater than 0!");
+        assert!(time_steps > 0, "time_steps must be greater than 0!");
+        assert!(price_steps > 0, "price_steps must be greater than 0!");
 
         Self {
             initial_price,
