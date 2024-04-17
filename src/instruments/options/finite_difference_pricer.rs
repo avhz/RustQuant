@@ -46,6 +46,8 @@ impl FiniteDifferencePricer {
         volatility: f64, 
         evaluation_date: Option<Date>,
         expiration_date: Date,
+        time_steps: u32,
+        price_steps: u32,
         type_flag: TypeFlag,
         exercise_flag: ExerciseFlag
     ) -> Self {
@@ -94,7 +96,9 @@ impl FiniteDifferencePricer {
             risk_free_rate, 
             volatility, 
             evaluation_date, 
-            expiration_date, 
+            expiration_date,
+            time_steps,
+            price_steps,
             type_flag,
             exercise_flag
         }
