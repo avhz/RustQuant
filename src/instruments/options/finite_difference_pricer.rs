@@ -276,7 +276,8 @@ impl FiniteDifferencePricer {
 
             match self.type_flag {
                 TypeFlag::Call => {
-                    u[(self.price_steps-2) as usize] += self.super_diagonal(delta_t / 2.0)((self.price_steps - 1) as f64) * self.call_boundary(t, T, delta_t);
+                    u[(self.price_steps-2) as usize] += self.super_diagonal(delta_t / 2.0)((self.price_steps - 1) as f64) 
+                    * self.call_boundary(t, T, delta_t);
                 }
                 TypeFlag::Put => {
                     u[0] += self.sub_diagonal(delta_t / 2.0)(1.0) * self.put_boundary(t, T, delta_t);
@@ -312,7 +313,8 @@ impl FiniteDifferencePricer {
             
             match self.type_flag {
                 TypeFlag::Call => {
-                    u[(self.price_steps-2) as usize] -= self.super_diagonal(- delta_t / 2.0)((self.price_steps - 1) as f64) * self.call_boundary(t, T, delta_t);
+                    u[(self.price_steps-2) as usize] -= self.super_diagonal(- delta_t / 2.0)((self.price_steps - 1) as f64) 
+                    * self.call_boundary(t, T, delta_t);
                 }
                 TypeFlag::Put => {
                     u[0] += self.sub_diagonal(delta_t / 2.0)(1.0) * self.put_boundary(t, T, delta_t);
@@ -358,10 +360,12 @@ impl FiniteDifferencePricer {
 
             match self.type_flag {
                 TypeFlag::Call => {
-                    u[(self.price_steps-2) as usize] += self.super_diagonal(delta_t / 4.0)((self.price_steps - 1) as f64) * (self.call_boundary(t + 1, T, delta_t) - self.call_boundary(t, T, delta_t))
+                    u[(self.price_steps-2) as usize] += self.super_diagonal(delta_t / 4.0)((self.price_steps - 1) as f64) 
+                    * (self.call_boundary(t + 1, T, delta_t) - self.call_boundary(t, T, delta_t))
                 }
                 TypeFlag::Put => {
-                    u[0] += self.sub_diagonal(delta_t / 4.0)(1.0) * (self.put_boundary(t + 1, T, delta_t) - self.put_boundary(t, T, delta_t))
+                    u[0] += self.sub_diagonal(delta_t / 4.0)(1.0) 
+                    * (self.put_boundary(t + 1, T, delta_t) - self.put_boundary(t, T, delta_t))
                 }
             }
 
