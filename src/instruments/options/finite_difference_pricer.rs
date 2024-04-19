@@ -179,8 +179,8 @@ impl FiniteDifferencePricer {
 
     /// Explicit method
     pub fn explicit(&self) -> f64 {
-        let price_steps: u32 = self.price_steps();
-        let time_steps: u32 = self.time_steps();
+        let price_steps: u32 = self.price_steps;
+        let time_steps: u32 = self.time_steps;
         let T: f64 = self.year_fraction();
         let delta_t: f64 = T / (time_steps as f64);
 
@@ -215,8 +215,8 @@ impl FiniteDifferencePricer {
 
     /// Implicit method
     pub fn implicit(&self) -> f64 {
-        let price_steps: u32 = self.price_steps();
-        let time_steps: u32 = self.time_steps();
+        let price_steps: u32 = self.price_steps;
+        let time_steps: u32 = self.time_steps;
         let T: f64 = self.year_fraction();
         let delta_t: f64 = T / (time_steps as f64);
 
@@ -254,8 +254,8 @@ impl FiniteDifferencePricer {
 
     /// Crank-Nicolson method
     pub fn crank_nicolson(&self) -> f64 {
-        let price_steps: u32 = self.price_steps();
-        let time_steps: u32 = self.time_steps();
+        let price_steps: u32 = self.price_steps;
+        let time_steps: u32 = self.time_steps;
         let T: f64 = self.year_fraction();
         let delta_t: f64 = T / (time_steps as f64);
 
