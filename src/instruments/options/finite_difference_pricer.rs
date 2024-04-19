@@ -270,6 +270,7 @@ impl FiniteDifferencePricer {
 #[cfg(test)]
 mod tests_finite_difference_pricer {
     use super::*;
+    use time::Duration;
     use crate::assert_approx_equal;
     use crate::RUSTQUANT_EPSILON;
 
@@ -281,7 +282,10 @@ mod tests_finite_difference_pricer {
             5.43,
             0.1,
             0.3,
-            50,
+            None,
+            today() + Duration::days(50),
+            1000,
+            100,
             TypeFlag::Call,
             ExerciseFlag::European,
         );
@@ -300,12 +304,15 @@ mod tests_finite_difference_pricer {
             137.89,
             0.12,
             0.25,
-            14,
+            None,
+            today() + Duration::days(14),
+            1000,
+            100,
             TypeFlag::Put,
             ExerciseFlag::European,
         );
 
-        let answer = 36.04;
+        let answer: f64 = 36.04;
         assert_approx_equal!(finite_difference_obj.explicit(), answer, RUSTQUANT_EPSILON);
         assert_approx_equal!(finite_difference_obj.implicit(), answer, RUSTQUANT_EPSILON);
         assert_approx_equal!(finite_difference_obj.crank_nicolson(), answer, RUSTQUANT_EPSILON);
@@ -315,16 +322,19 @@ mod tests_finite_difference_pricer {
     fn american_call_option() {
 
         let finite_difference_obj = FiniteDifferencePricer::new(
-            150.66,
-            133.4, 
+            15.66,
+            3.4, 
             0.01, 
             0.2, 
-            365, 
+            None,
+            today() + Duration::days(366),
+            1000,
+            100,
             TypeFlag::Call,
             ExerciseFlag::American,
         );
 
-        let answer = 22.9;
+        let answer: f64 = 12.29;
         assert_approx_equal!(finite_difference_obj.explicit(), answer, RUSTQUANT_EPSILON);
         assert_approx_equal!(finite_difference_obj.implicit(), answer, RUSTQUANT_EPSILON);
         assert_approx_equal!(finite_difference_obj.crank_nicolson(), answer, RUSTQUANT_EPSILON);
@@ -338,12 +348,15 @@ mod tests_finite_difference_pricer {
             12.87, 
             0.02, 
             0.2, 
-            365, 
+            None,
+            today() + Duration::days(365),
+            1000,
+            100,
             TypeFlag::Put,
             ExerciseFlag::American,
         );
 
-        let answer = 9.65;
+        let answer: f64 = 9.65;
         assert_approx_equal!(finite_difference_obj.explicit(), answer, RUSTQUANT_EPSILON);
         assert_approx_equal!(finite_difference_obj.implicit(), answer, RUSTQUANT_EPSILON);
         assert_approx_equal!(finite_difference_obj.crank_nicolson(), answer, RUSTQUANT_EPSILON);
