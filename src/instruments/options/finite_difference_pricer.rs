@@ -41,7 +41,8 @@ impl FiniteDifferencePricer {
             strike_price: f64, 
             risk_free_rate: f64, 
             volatility: f64, 
-            time_to_maturity: u16, 
+            evaluation_date: Option<Date>,
+            expiration_date: Date,
             type_flag: TypeFlag,
             exercise_flag: ExerciseFlag
         ) -> Self {
@@ -63,10 +64,6 @@ impl FiniteDifferencePricer {
             if volatility <= 0.0 {
                 variables_with_error.push("volatility")
             } 
-    
-            if time_to_maturity <= 0 {
-                variables_with_error.push("time_to_maturity")
-            }
     
             if variables_with_error.len() > 0 {
                 if variables_with_error.len() == 1 {
@@ -93,7 +90,8 @@ impl FiniteDifferencePricer {
                 strike_price, 
                 risk_free_rate, 
                 volatility, 
-                time_to_maturity, 
+                evaluation_date,
+                expiration_date, 
                 type_flag,
                 exercise_flag
             }
