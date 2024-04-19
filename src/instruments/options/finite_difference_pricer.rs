@@ -438,7 +438,7 @@ mod tests_finite_difference_pricer {
 
         let finite_difference_obj = FiniteDifferencePricer::new(
             15.66,
-            13.4, 
+            3.4, 
             0.01, 
             0.2, 
             None,
@@ -449,7 +449,7 @@ mod tests_finite_difference_pricer {
             ExerciseFlag::American,
         );
 
-        let answer: f64 = 2.72;
+        let answer: f64 = 12.29;
         assert_approx_equal!(finite_difference_obj.explicit(), answer, RUSTQUANT_EPSILON);
         assert_approx_equal!(finite_difference_obj.implicit(), answer, RUSTQUANT_EPSILON);
         assert_approx_equal!(finite_difference_obj.crank_nicolson(), answer, RUSTQUANT_EPSILON);
