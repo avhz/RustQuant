@@ -198,10 +198,10 @@ impl FiniteDifferencePricer {
             
             match self.type_flag {
                 TypeFlag::Call => {
-                    u[(price_steps-2) as usize] += self.super_diagonal(delta_t / 2.0)((price_steps-1) as f64) * self.call_boundary(time_step, delta_t);
+                    u[(price_steps-2) as usize] += self.super_diagonal(delta_t / 2.0)((price_steps-1) as f64) * self.call_boundary(time_step, T, delta_t);
                 },
                 TypeFlag::Put => {
-                    u[0] += self.sub_diagonal(delta_t / 2.0)(1.0) * self.put_boundary(time_step, delta_t);
+                    u[0] += self.sub_diagonal(delta_t / 2.0)(1.0) * self.put_boundary(time_step, T, delta_t);
                 }
             }
 
@@ -217,7 +217,8 @@ impl FiniteDifferencePricer {
     pub fn implicit(&self) -> f64 {
         let price_steps: u32 = self.price_steps();
         let time_steps: u32 = self.time_steps();
-        let delta_t: f64 = self.delta_t(time_steps);
+        let T: f64 = self.year_fraction();
+        let delta_t: f64 = T / (time_steps as f64);
 
         let inverse_matrix = self.create_tridiagonal_matrix(
             self.sub_diagonal(- delta_t / 2.0), 
@@ -233,10 +234,10 @@ impl FiniteDifferencePricer {
         for time_step in (1..(time_steps)).rev() {
                 match self.type_flag {
                     TypeFlag::Call => {
-                        u[(price_steps-2) as usize] -= self.super_diagonal(- delta_t / 2.0)((price_steps - 1) as f64) * self.call_boundary(time_step, delta_t);
+                        u[(price_steps-2) as usize] -= self.super_diagonal(- delta_t / 2.0)((price_steps - 1) as f64) * self.call_boundary(time_step, T, delta_t);
                     },
                     TypeFlag::Put => {
-                        u[0] -= self.sub_diagonal(- delta_t / 2.0)(1.0) * self.put_boundary(time_step, delta_t);
+                        u[0] -= self.sub_diagonal(- delta_t / 2.0)(1.0) * self.put_boundary(time_step, T, delta_t);
                     }
                 }
                 u = &inverse_matrix * u;
@@ -255,7 +256,8 @@ impl FiniteDifferencePricer {
     pub fn crank_nicolson(&self) -> f64 {
         let price_steps: u32 = self.price_steps();
         let time_steps: u32 = self.time_steps();
-        let delta_t: f64 = self.delta_t(time_steps);
+        let T: f64 = self.year_fraction();
+        let delta_t: f64 = T / (time_steps as f64);
 
         let inverse_past_matrix = self.create_tridiagonal_matrix(
             self.sub_diagonal(- delta_t / 4.0), 
@@ -279,10 +281,10 @@ impl FiniteDifferencePricer {
 
             match self.type_flag {
                 TypeFlag::Call => {
-                    u[(price_steps-2) as usize] += self.super_diagonal(delta_t / 4.0)((price_steps-1) as f64) * (self.call_boundary(t + 1, delta_t) - self.call_boundary(t, delta_t))
+                    u[(price_steps-2) as usize] += self.super_diagonal(delta_t / 4.0)((price_steps-1) as f64) * (self.call_boundary(t + 1, T, delta_t) - self.call_boundary(t, T, delta_t))
                 }
                 TypeFlag::Put => {
-                    u[0] += self.sub_diagonal(delta_t / 4.0)(1.0) * (self.put_boundary(t + 1, delta_t) - self.put_boundary(t, delta_t))
+                    u[0] += self.sub_diagonal(delta_t / 4.0)(1.0) * (self.put_boundary(t + 1, T, delta_t) - self.put_boundary(t, T, delta_t))
                 }
             }
             u = &inverse_past_matrix * u;
