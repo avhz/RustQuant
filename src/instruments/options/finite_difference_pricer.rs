@@ -139,8 +139,11 @@ impl FiniteDifferencePricer {
         (self.initial_price / 100.00) as u32 * 100 + 100
     }
 
-    fn delta_t(&self, time_steps: u32) -> f64 {
-        self.time_to_maturity as f64 / ((365 * time_steps) as f64)
+    fn year_fraction(&self) -> f64 {
+        DayCountConvention::default().day_count_factor(
+            self.evaluation_date.unwrap_or(today()),
+            self.expiration_date,
+        )
     }
 
     fn time_steps(&self) -> u32 {
