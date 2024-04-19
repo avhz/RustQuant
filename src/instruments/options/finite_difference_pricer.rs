@@ -158,30 +158,31 @@ impl FiniteDifferencePricer {
     }
 
     fn american_time_stop_step(&self, u: nalgebra::Matrix<f64, nalgebra::Dyn, nalgebra::Const<1>, nalgebra::VecStorage<f64, nalgebra::Dyn, nalgebra::Const<1>>>, price_steps: u32) -> DVector<f64> {
-        let u = DVector::<f64>::from_fn((price_steps-1) as usize,|i, _| {
-            u[i].max(self.payoff((i + 1) as f64 * (2.0 * self.initial_price) / (price_steps as f64)))});
-        u
+        DVector::<f64>::from_fn((price_steps-1) as usize,|i, _| {
+            u[i].max(self.payoff((i + 1) as f64 * (2.0 * self.initial_price) / (price_steps as f64)))
+        })
     }
 
     fn boundary_condition_at_time_n(&self, price_steps: u32) -> DVector<f64> {
-        let u = DVector::<f64>::from_fn((price_steps-1) as usize,|i, _| {
-            self.payoff(((i + 1) as f64) * (2.0 * self.initial_price / (price_steps as f64)))});
-        u
+        DVector::<f64>::from_fn((price_steps-1) as usize,|i, _| {
+            self.payoff(((i + 1) as f64) * (2.0 * self.initial_price / (price_steps as f64)))
+        })
     }
 
-    fn call_boundary(&self, t: u32, delta_t: f64) -> f64 {
-        2.0 * self.initial_price - self.strike_price * E.powf(-self.risk_free_rate * (((self.time_to_maturity as f64) / 365.0) - (t as f64 * delta_t)))
+    fn call_boundary(&self, t: u32, T: f64, delta_t: f64) -> f64 {
+        2.0 * self.initial_price - self.strike_price * E.powf(-self.risk_free_rate * (((- self.risk_free_rate * T) / 365.0) - (t as f64 * delta_t)))
     }
 
-    fn put_boundary(&self, t: u32, delta_t: f64) -> f64 {
-        self.strike_price * E.powf(-self.risk_free_rate * (self.time_to_maturity as f64) / 365.0 - (t as f64 * delta_t))
+    fn put_boundary(&self, t: u32, T: f64, delta_t: f64) -> f64 {
+        self.strike_price * E.powf(-self.risk_free_rate * (-(self.risk_free_rate * T)) / 365.0 - (t as f64 * delta_t))
     }
 
     /// Explicit method
     pub fn explicit(&self) -> f64 {
         let price_steps: u32 = self.price_steps();
         let time_steps: u32 = self.time_steps();
-        let delta_t: f64 = self.delta_t(time_steps);
+        let T: f64 = self.year_fraction();
+        let delta_t: f64 = T / (time_steps as f64);
 
         let tridiagonal_matrix: DMatrix<f64> = self.create_tridiagonal_matrix(
             self.sub_diagonal(delta_t / 2.0), 
