@@ -80,12 +80,12 @@ impl FiniteDifferencePricer {
         match A[0].len() {
             n if n == v.len() => {
                 let mut value: f64;
-                for i in 0..A.len() {
-                    value = 0.0;
-                    for j in 0..v.len() {
-                        value += A[i][j] * v[j]
+                for row in A {
+                    let mut value = 0.0;
+                    for (a, b) in row.iter().zip(&v) {
+                        value += a * b;
                     }
-                    Av.push(value)
+                    Av.push(value);
                 }
             },
             _ => {
