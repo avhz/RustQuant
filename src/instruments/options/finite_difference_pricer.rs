@@ -73,7 +73,7 @@ impl FiniteDifferencePricer {
         }
     }
 
-    fn matrix_multiply_vector(&self, A: &Vec<Vec<f64>>, v: Vec<f64>) -> Vec<f64> {
+    fn matrix_multiply_vector(&self, A: &[Vec<f64>], v: Vec<f64>) -> Vec<f64> {
 
         let mut Av: Vec<f64> = Vec::new();
         
