@@ -6,6 +6,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.4](https://github.com/avhz/RustQuant/compare/v0.2.3...v0.2.4) - 2024-04-24
+
+### Other
+- Update dependencies.
+- Merge pull request [#205](https://github.com/avhz/RustQuant/pull/205) from y5/portfolio_getweights
+- GitHub actions (fix failing tests)
+- GitHub actions (split test actions: unit, doc, examples)
+- GitHub actions (test)
+
 ## [0.2.3](https://github.com/avhz/RustQuant/compare/v0.2.2...v0.2.3) - 2024-03-15
 
 ### Other
