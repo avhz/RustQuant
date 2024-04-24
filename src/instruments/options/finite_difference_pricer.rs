@@ -285,9 +285,8 @@ impl FiniteDifferencePricer {
                 }
             }
 
-            match self.exercise_flag {
-                ExerciseFlag::American => {u = self.american_time_stop_step(u, self.price_steps)}
-                _ => {}
+            if let ExerciseFlag::American = self.exercise_flag {
+                u = self.american_time_stop_step(u, self.price_steps);
             }
         }
 
@@ -324,9 +323,8 @@ impl FiniteDifferencePricer {
 
             u = self.matrix_multiply_vector(&inverse_matrix, u);
 
-            match self.exercise_flag {
-                ExerciseFlag::American => {u = self.american_time_stop_step(u, self.price_steps)}
-                _ => {}
+            if let ExerciseFlag::American = self.exercise_flag {
+                u = self.american_time_stop_step(u, self.price_steps);
             }
         }
 
@@ -372,9 +370,9 @@ impl FiniteDifferencePricer {
 
             u = self.matrix_multiply_vector(&inverse_past_matrix, u);
 
-            match self.exercise_flag {
-                ExerciseFlag::American => {u = self.american_time_stop_step(u, self.price_steps)}
-                _ => {}
+
+            if let ExerciseFlag::American = self.exercise_flag {
+                u = self.american_time_stop_step(u, self.price_steps);
             }
         }
 
