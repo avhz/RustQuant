@@ -78,11 +78,12 @@ impl FiniteDifferencePricer {
     fn matrix_multiply_vector(&self, A: &[Vec<f64>], v: Vec<f64>) -> Vec<f64> {
 
         let mut Av: Vec<f64> = Vec::new();
+        let mut value: f64;
         
         match A[0].len() {
             n if n == v.len() => {
                 for row in A {
-                    let mut value: f64 = 0.0;
+                    value = 0.0;
                     for (a, b) in row.iter().zip(&v) {
                         value += a * b;
                     }
