@@ -40,6 +40,7 @@ pub struct FiniteDifferencePricer {
 impl FiniteDifferencePricer {
 
     /// Constructor for FiniteDifferencePricer
+    #[allow(clippy::too_many_arguments)]
     pub fn new(
         initial_price: f64,
         strike_price: f64, 
