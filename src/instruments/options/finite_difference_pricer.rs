@@ -9,6 +9,7 @@
 
 use std::f64::consts::E;
 use time::Date;
+use std::cmp::Ordering;
 use crate::time::{today, DayCountConvention};
 use crate::instruments::options::option::{ExerciseFlag, TypeFlag};
 
@@ -188,29 +189,34 @@ impl FiniteDifferencePricer {
             for j in 0..tridiagonal_matrix.len() {
                 value = (-1.0_f64).powi((i+j) as i32);
                 
-                if i < j {
-                    for k in i..j {
-                        value *= tridiagonal_matrix[k].last().unwrap();
+                match i.cmp(&j) {
+                Ordering::Less => {
+                    for item in &tridiagonal_matrix[i..j] {
+                        value *= item.last().unwrap()
                     }
                     value *= theta[i] * phi[j] / theta_n;
 
-                } else if i == j {
+                },
+                Ordering::Equal => {
                     value *= theta[i] * phi[i] / theta_n
-                } else {
-                    for k in j..i {
-                        value *= tridiagonal_matrix[k+1].first().unwrap();
+                },
+                
+                Ordering::Greater => {
+                    for item in &tridiagonal_matrix[(j+1)..(i+1)] {
+                        value *= item.first().unwrap()
                     }
+
                     value *= theta[j] * phi[i] / theta_n
                 }
-                matrix_row.push(value);
             }
+            matrix_row.push(value);
             
-            inverse_matrix.push(matrix_row.clone());
-            matrix_row.clear()
-        }
+        }   
+        inverse_matrix.push(matrix_row.clone());
+        matrix_row.clear()     
+    }
+    inverse_matrix
 
-        inverse_matrix
-        
     }
 
     fn sub_diagonal(&self, scaler: f64) -> Box<dyn Fn(f64) -> f64 + '_> {
