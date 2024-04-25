@@ -295,7 +295,7 @@ impl FiniteDifferencePricer {
             }
         }
 
-        (u[((self.price_steps-1) / 2) as usize] * 10.0_f64.powi(2)).round() / 10.0_f64.powi(2)
+        u[((self.price_steps - 1) / 2) as usize]
     }
 
     /// Implicit method
@@ -333,7 +333,7 @@ impl FiniteDifferencePricer {
             }
         }
 
-        (u[((self.price_steps-1) / 2) as usize] * 10.0_f64.powi(2)).round() / 10.0_f64.powi(2)
+        u[((self.price_steps - 1) / 2) as usize]
     }
 
     /// Crank-Nicolson method
@@ -381,7 +381,7 @@ impl FiniteDifferencePricer {
             }
         }
 
-        (u[((self.price_steps-1) / 2) as usize] * 10.0_f64.powi(2)).round() / 10.0_f64.powi(2)
+        u[((self.price_steps - 1) / 2) as usize]
     }
 }
 
