@@ -190,32 +190,32 @@ impl FiniteDifferencePricer {
                 value = (-1.0_f64).powi((i+j) as i32);
                 
                 match i.cmp(&j) {
-                Ordering::Less => {
-                    for item in &tridiagonal_matrix[i..j] {
-                        value *= item.last().unwrap()
-                    }
-                    value *= theta[i] * phi[j] / theta_n;
+                    Ordering::Less => {
+                        for item in &tridiagonal_matrix[i..j] {
+                            value *= item.last().unwrap()
+                        }
+                        value *= theta[i] * phi[j] / theta_n;
 
-                },
-                Ordering::Equal => {
-                    value *= theta[i] * phi[i] / theta_n
-                },
-                
-                Ordering::Greater => {
-                    for item in &tridiagonal_matrix[(j+1)..(i+1)] {
-                        value *= item.first().unwrap()
-                    }
+                    },
+                    Ordering::Equal => {
+                        value *= theta[i] * phi[i] / theta_n
+                    },
+                    
+                    Ordering::Greater => {
+                        for item in &tridiagonal_matrix[(j+1)..(i+1)] {
+                            value *= item.first().unwrap()
+                        }
 
-                    value *= theta[j] * phi[i] / theta_n
+                        value *= theta[j] * phi[i] / theta_n
+                    }
                 }
-            }
-            matrix_row.push(value);
-            
-        }   
-        inverse_matrix.push(matrix_row.clone());
-        matrix_row.clear()     
-    }
-    inverse_matrix
+                matrix_row.push(value);
+            }   
+            inverse_matrix.push(matrix_row.clone());
+            matrix_row.clear()     
+        }
+        
+        inverse_matrix
 
     }
 
