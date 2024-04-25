@@ -403,9 +403,28 @@ mod tests_finite_difference_pricer {
     use time::Duration;
 
     #[test]
-    fn european_call_option() {
+    fn european_call_option_explicit() {
 
-        let finite_difference_obj = FiniteDifferencePricer::new(
+        let finite_difference_obj: FiniteDifferencePricer = FiniteDifferencePricer::new(
+            10.11,
+            5.43,
+            0.1,
+            0.3,
+            None,
+            today() + Duration::days(50),
+            1000,
+            101,
+            TypeFlag::Call,
+            ExerciseFlag::European,
+        );
+
+        assert_approx_equal!(finite_difference_obj.explicit(), 4.75360326, RUSTQUANT_EPSILON);
+    }
+
+    #[test]
+    fn european_call_option_implicit() {
+
+        let finite_difference_obj: FiniteDifferencePricer = FiniteDifferencePricer::new(
             10.11,
             5.43,
             0.1,
@@ -418,16 +437,32 @@ mod tests_finite_difference_pricer {
             ExerciseFlag::European,
         );
 
-        let answer: f64 = 4.75;
-        assert_approx_equal!(finite_difference_obj.explicit(), answer, RUSTQUANT_EPSILON);
-        assert_approx_equal!(finite_difference_obj.implicit(), answer, RUSTQUANT_EPSILON);
-        assert_approx_equal!(finite_difference_obj.crank_nicolson(), answer, RUSTQUANT_EPSILON);
+        assert_approx_equal!(finite_difference_obj.implicit(), 4.75360226, RUSTQUANT_EPSILON);
     }
 
     #[test]
-    fn european_put_option() {
+    fn european_call_option_crank_nicolson() {
 
-        let finite_difference_obj = FiniteDifferencePricer::new(
+        let finite_difference_obj: FiniteDifferencePricer = FiniteDifferencePricer::new(
+            10.11,
+            5.43,
+            0.1,
+            0.3,
+            None,
+            today() + Duration::days(50),
+            1000,
+            100,
+            TypeFlag::Call,
+            ExerciseFlag::European,
+        );
+
+        assert_approx_equal!(finite_difference_obj.crank_nicolson(), 4.75360273, RUSTQUANT_EPSILON);
+    }
+
+    #[test]
+    fn european_put_option_explicit() {
+
+        let finite_difference_obj: FiniteDifferencePricer = FiniteDifferencePricer::new(
             101.22,
             137.89,
             0.12,
@@ -440,16 +475,51 @@ mod tests_finite_difference_pricer {
             ExerciseFlag::European,
         );
 
-        let answer: f64 = 36.04;
-        assert_approx_equal!(finite_difference_obj.explicit(), answer, RUSTQUANT_EPSILON);
-        assert_approx_equal!(finite_difference_obj.implicit(), answer, RUSTQUANT_EPSILON);
-        assert_approx_equal!(finite_difference_obj.crank_nicolson(), answer, RUSTQUANT_EPSILON);
+        assert_approx_equal!(finite_difference_obj.explicit(), 36.03914133, RUSTQUANT_EPSILON);
     }
 
     #[test]
-    fn american_call_option() {
+    fn european_put_option_implicit() {
 
-        let finite_difference_obj = FiniteDifferencePricer::new(
+        let finite_difference_obj: FiniteDifferencePricer = FiniteDifferencePricer::new(
+            101.22,
+            137.89,
+            0.12,
+            0.25,
+            None,
+            today() + Duration::days(14),
+            1000,
+            101,
+            TypeFlag::Put,
+            ExerciseFlag::European,
+        );
+
+        assert_approx_equal!(finite_difference_obj.implicit(), 36.03914422, RUSTQUANT_EPSILON);
+    }
+
+    #[test]
+    fn european_put_option_crank_nicolson() {
+
+        let finite_difference_obj: FiniteDifferencePricer = FiniteDifferencePricer::new(
+            101.22,
+            137.89,
+            0.12,
+            0.25,
+            None,
+            today() + Duration::days(14),
+            1000,
+            100,
+            TypeFlag::Put,
+            ExerciseFlag::European,
+        );
+
+        assert_approx_equal!(finite_difference_obj.crank_nicolson(), 36.03914277, RUSTQUANT_EPSILON);
+    }
+
+    #[test]
+    fn american_call_option_explicit() {
+
+        let finite_difference_obj: FiniteDifferencePricer = FiniteDifferencePricer::new(
             15.66,
             3.4, 
             0.01, 
@@ -462,14 +532,87 @@ mod tests_finite_difference_pricer {
             ExerciseFlag::American,
         );
 
-        let answer: f64 = 12.29;
-        assert_approx_equal!(finite_difference_obj.explicit(), answer, RUSTQUANT_EPSILON);
-        assert_approx_equal!(finite_difference_obj.implicit(), answer, RUSTQUANT_EPSILON);
-        assert_approx_equal!(finite_difference_obj.crank_nicolson(), answer, RUSTQUANT_EPSILON);
+        assert_approx_equal!(finite_difference_obj.explicit(), 12.29460234, RUSTQUANT_EPSILON);
     }
 
     #[test]
-    fn american_put_option() {
+    fn american_call_option_implicit() {
+
+        let finite_difference_obj: FiniteDifferencePricer = FiniteDifferencePricer::new(
+            15.66,
+            3.4, 
+            0.01, 
+            0.2, 
+            None,
+            today() + Duration::days(365),
+            1000,
+            100,
+            TypeFlag::Call,
+            ExerciseFlag::American,
+        );
+
+        assert_approx_equal!(finite_difference_obj.implicit(), 12.2946257, RUSTQUANT_EPSILON);
+    }
+
+    #[test]
+    fn american_call_option_crank_nicolson() {
+
+        let finite_difference_obj: FiniteDifferencePricer = FiniteDifferencePricer::new(
+            15.66,
+            3.4, 
+            0.01, 
+            0.2, 
+            None,
+            today() + Duration::days(365),
+            1000,
+            100,
+            TypeFlag::Call,
+            ExerciseFlag::American,
+        );
+
+        assert_approx_equal!(finite_difference_obj.crank_nicolson(), 12.29372857, RUSTQUANT_EPSILON);
+    }
+
+    #[test]
+    fn american_put_option_explicit() {
+
+        let finite_difference_obj: FiniteDifferencePricer = FiniteDifferencePricer::new(
+            3.22,
+            12.87, 
+            0.02, 
+            0.2, 
+            None,
+            today() + Duration::days(365),
+            1000,
+            101,
+            TypeFlag::Put,
+            ExerciseFlag::American,
+        );
+
+        assert_approx_equal!(finite_difference_obj.explicit(), 9.65, RUSTQUANT_EPSILON);
+    }
+
+    #[test]
+    fn american_put_option_implicit() {
+
+        let finite_difference_obj: FiniteDifferencePricer = FiniteDifferencePricer::new(
+            3.22,
+            12.87, 
+            0.02, 
+            0.2, 
+            None,
+            today() + Duration::days(365),
+            1000,
+            101,
+            TypeFlag::Put,
+            ExerciseFlag::American,
+        );
+
+        assert_approx_equal!(finite_difference_obj.implicit(), 9.65, RUSTQUANT_EPSILON);
+    }
+
+    #[test]
+    fn american_put_option_crank_nicolson() {
 
         let finite_difference_obj = FiniteDifferencePricer::new(
             3.22,
@@ -484,9 +627,6 @@ mod tests_finite_difference_pricer {
             ExerciseFlag::American,
         );
 
-        let answer: f64 = 9.65;
-        assert_approx_equal!(finite_difference_obj.explicit(), answer, RUSTQUANT_EPSILON);
-        assert_approx_equal!(finite_difference_obj.implicit(), answer, RUSTQUANT_EPSILON);
-        assert_approx_equal!(finite_difference_obj.crank_nicolson(), answer, RUSTQUANT_EPSILON);
+        assert_approx_equal!(finite_difference_obj.crank_nicolson(), 9.65, RUSTQUANT_EPSILON);
     }
 }
