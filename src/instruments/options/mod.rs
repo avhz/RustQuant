@@ -51,3 +51,6 @@ pub mod option;
 
 /// Power option pricers.
 pub mod power;
+
+/// Finite Difference Pricer
+pub mod finite_difference_pricer;
