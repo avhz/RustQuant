@@ -12,6 +12,10 @@ use crate::time::{today, DayCountConvention};
 use std::cmp::Ordering;
 use time::Date;
 
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// STRUCTS, ENUMS, TRAITS
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 /// Finite difference object
 pub struct FiniteDifferencePricer {
     /// Spot Price
@@ -38,6 +42,10 @@ pub struct FiniteDifferencePricer {
     /// Option Style
     pub exercise_flag: ExerciseFlag,
 }
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// IMPLEMENTATIONS
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 impl FiniteDifferencePricer {
     /// Constructor for FiniteDifferencePricer
@@ -404,8 +412,12 @@ impl FiniteDifferencePricer {
     }
 }
 
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// UNIT TESTS: AT THE MONEY
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 #[cfg(test)]
-mod tests_finite_difference_pricer {
+mod tests_finite_difference_pricer_at_the_money {
     use super::*;
     use crate::assert_approx_equal;
     use crate::RUSTQUANT_EPSILON as EPS;
@@ -527,260 +539,262 @@ mod tests_finite_difference_pricer {
     fn european_put_crank_nicolson() {
         assert_approx_equal!(EUROPEAN_PUT.crank_nicolson(), EXPECT_E_PUT, EPS);
     }
+}
 
-    // #[test]
-    // fn european_call_option_explicit() {
-    //     let finite_difference_obj: FiniteDifferencePricer = FiniteDifferencePricer::new(
-    //         10.11,
-    //         5.43,
-    //         0.1,
-    //         0.3,
-    //         None,
-    //         today() + Duration::days(50),
-    //         1000,
-    //         101,
-    //         TypeFlag::Call,
-    //         ExerciseFlag::European,
-    //     );
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// UNIT TESTS: IN THE MONEY
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    //     assert_approx_equal!(
-    //         finite_difference_obj.explicit(),
-    //         4.75360326,
-    //         EPS
-    //     );
-    // }
+#[cfg(test)]
+mod tests_finite_difference_pricer_in_the_money {
+    use super::*;
+    use crate::assert_approx_equal;
+    use crate::RUSTQUANT_EPSILON as EPS;
+    use time::macros::date;
 
-    // #[test]
-    // fn european_call_option_implicit() {
-    //     let finite_difference_obj: FiniteDifferencePricer = FiniteDifferencePricer::new(
-    //         10.11,
-    //         5.43,
-    //         0.1,
-    //         0.3,
-    //         None,
-    //         today() + Duration::days(50),
-    //         1000,
-    //         100,
-    //         TypeFlag::Call,
-    //         ExerciseFlag::European,
-    //     );
+    const EUROPEAN_CALL: FiniteDifferencePricer = FiniteDifferencePricer {
+        initial_price: 15.0,
+        strike_price: 10.0,
+        risk_free_rate: 0.05,
+        volatility: 0.5,
+        evaluation_date: Some(date!(2024 - 01 - 01)),
+        expiration_date: date!(2025 - 01 - 01),
+        time_steps: 1000,
+        price_steps: 100,
+        type_flag: TypeFlag::Call,
+        exercise_flag: ExerciseFlag::European,
+    };
 
-    //     assert_approx_equal!(
-    //         finite_difference_obj.implicit(),
-    //         4.75360226,
-    //         EPS
-    //     );
-    // }
+    const EUROPEAN_PUT: FiniteDifferencePricer = FiniteDifferencePricer {
+        initial_price: 10.0,
+        strike_price: 15.0,
+        risk_free_rate: 0.05,
+        volatility: 0.5,
+        evaluation_date: Some(date!(2024 - 01 - 01)),
+        expiration_date: date!(2025 - 01 - 01),
+        time_steps: 1000,
+        price_steps: 100,
+        type_flag: TypeFlag::Put,
+        exercise_flag: ExerciseFlag::European,
+    };
 
-    // #[test]
-    // fn european_call_option_crank_nicolson() {
-    //     let finite_difference_obj: FiniteDifferencePricer = FiniteDifferencePricer::new(
-    //         10.11,
-    //         5.43,
-    //         0.1,
-    //         0.3,
-    //         None,
-    //         today() + Duration::days(50),
-    //         1000,
-    //         100,
-    //         TypeFlag::Call,
-    //         ExerciseFlag::European,
-    //     );
+    const AMERICAN_CALL: FiniteDifferencePricer = FiniteDifferencePricer {
+        initial_price: 15.0,
+        strike_price: 10.0,
+        risk_free_rate: 0.05,
+        volatility: 0.5,
+        evaluation_date: Some(date!(2024 - 01 - 01)),
+        expiration_date: date!(2025 - 01 - 01),
+        time_steps: 1000,
+        price_steps: 100,
+        type_flag: TypeFlag::Call,
+        exercise_flag: ExerciseFlag::American,
+    };
 
-    //     assert_approx_equal!(
-    //         finite_difference_obj.crank_nicolson(),
-    //         4.75360273,
-    //         EPS
-    //     );
-    // }
+    const AMERICAN_PUT: FiniteDifferencePricer = FiniteDifferencePricer {
+        initial_price: 10.0,
+        strike_price: 15.0,
+        risk_free_rate: 0.05,
+        volatility: 0.5,
+        evaluation_date: Some(date!(2024 - 01 - 01)),
+        expiration_date: date!(2025 - 01 - 01),
+        time_steps: 1000,
+        price_steps: 100,
+        type_flag: TypeFlag::Put,
+        exercise_flag: ExerciseFlag::American,
+    };
 
-    // #[test]
-    // fn european_put_option_explicit() {
-    //     let finite_difference_obj: FiniteDifferencePricer = FiniteDifferencePricer::new(
-    //         101.22,
-    //         137.89,
-    //         0.12,
-    //         0.25,
-    //         None,
-    //         today() + Duration::days(14),
-    //         1000,
-    //         100,
-    //         TypeFlag::Put,
-    //         ExerciseFlag::European,
-    //     );
+    const EXPECT_A_CALL: f64 = 6.0644265045002292425;
+    const EXPECT_A_PUT: f64 = 5.3274412554240626605;
+    const EXPECT_E_CALL: f64 = 6.0644265045002292425;
+    const EXPECT_E_PUT: f64 = 5.0913969604477404829;
 
-    //     assert_approx_equal!(
-    //         finite_difference_obj.explicit(),
-    //         36.03914133,
-    //         EPS
-    //     );
-    // }
+    #[test]
+    fn american_call_explicit() {
+        assert_approx_equal!(AMERICAN_CALL.explicit(), EXPECT_A_CALL, EPS);
+    }
 
-    // #[test]
-    // fn european_put_option_implicit() {
-    //     let finite_difference_obj: FiniteDifferencePricer = FiniteDifferencePricer::new(
-    //         101.22,
-    //         137.89,
-    //         0.12,
-    //         0.25,
-    //         None,
-    //         today() + Duration::days(14),
-    //         1000,
-    //         101,
-    //         TypeFlag::Put,
-    //         ExerciseFlag::European,
-    //     );
+    #[test]
+    fn american_call_implicit() {
+        assert_approx_equal!(AMERICAN_CALL.implicit(), EXPECT_A_CALL, EPS);
+    }
 
-    //     assert_approx_equal!(
-    //         finite_difference_obj.implicit(),
-    //         36.03914422,
-    //         EPS
-    //     );
-    // }
+    #[test]
+    fn american_call_crank_nicolson() {
+        assert_approx_equal!(AMERICAN_CALL.crank_nicolson(), EXPECT_A_CALL, EPS);
+    }
 
-    // #[test]
-    // fn european_put_option_crank_nicolson() {
-    //     let finite_difference_obj: FiniteDifferencePricer = FiniteDifferencePricer::new(
-    //         101.22,
-    //         137.89,
-    //         0.12,
-    //         0.25,
-    //         None,
-    //         today() + Duration::days(14),
-    //         1000,
-    //         100,
-    //         TypeFlag::Put,
-    //         ExerciseFlag::European,
-    //     );
+    #[test]
+    fn american_put_explicit() {
+        assert_approx_equal!(AMERICAN_PUT.explicit(), EXPECT_A_PUT, EPS);
+    }
 
-    //     assert_approx_equal!(
-    //         finite_difference_obj.crank_nicolson(),
-    //         36.03914277,
-    //         EPS
-    //     );
-    // }
+    #[test]
+    fn american_put_implicit() {
+        assert_approx_equal!(AMERICAN_PUT.implicit(), EXPECT_A_PUT, EPS);
+    }
 
-    // #[test]
-    // fn american_call_option_explicit() {
-    //     let finite_difference_obj: FiniteDifferencePricer = FiniteDifferencePricer::new(
-    //         15.66,
-    //         3.4,
-    //         0.01,
-    //         0.2,
-    //         None,
-    //         today() + Duration::days(365),
-    //         1000,
-    //         100,
-    //         TypeFlag::Call,
-    //         ExerciseFlag::American,
-    //     );
+    #[test]
+    fn american_put_crank_nicolson() {
+        assert_approx_equal!(AMERICAN_PUT.crank_nicolson(), EXPECT_A_PUT, EPS);
+    }
 
-    //     assert_approx_equal!(
-    //         finite_difference_obj.explicit(),
-    //         12.29460234,
-    //         EPS
-    //     );
-    // }
+    #[test]
+    fn european_call_explicit() {
+        assert_approx_equal!(EUROPEAN_CALL.explicit(), EXPECT_E_CALL, EPS);
+    }
 
-    // #[test]
-    // fn american_call_option_implicit() {
-    //     let finite_difference_obj: FiniteDifferencePricer = FiniteDifferencePricer::new(
-    //         15.66,
-    //         3.4,
-    //         0.01,
-    //         0.2,
-    //         None,
-    //         today() + Duration::days(365),
-    //         1000,
-    //         100,
-    //         TypeFlag::Call,
-    //         ExerciseFlag::American,
-    //     );
+    #[test]
+    fn european_call_implicit() {
+        assert_approx_equal!(EUROPEAN_CALL.implicit(), EXPECT_E_CALL, EPS);
+    }
 
-    //     assert_approx_equal!(
-    //         finite_difference_obj.implicit(),
-    //         12.2946257,
-    //         EPS
-    //     );
-    // }
+    #[test]
+    fn european_call_crank_nicolson() {
+        assert_approx_equal!(EUROPEAN_CALL.crank_nicolson(), EXPECT_E_CALL, EPS);
+    }
 
-    // #[test]
-    // fn american_call_option_crank_nicolson() {
-    //     let finite_difference_obj: FiniteDifferencePricer = FiniteDifferencePricer::new(
-    //         15.66,
-    //         3.4,
-    //         0.01,
-    //         0.2,
-    //         None,
-    //         today() + Duration::days(365),
-    //         1000,
-    //         100,
-    //         TypeFlag::Call,
-    //         ExerciseFlag::American,
-    //     );
+    #[test]
+    fn european_put_explicit() {
+        assert_approx_equal!(EUROPEAN_PUT.explicit(), EXPECT_E_PUT, EPS);
+    }
 
-    //     assert_approx_equal!(
-    //         finite_difference_obj.crank_nicolson(),
-    //         12.29372857,
-    //         EPS
-    //     );
-    // }
+    #[test]
+    fn european_put_implicit() {
+        assert_approx_equal!(EUROPEAN_PUT.implicit(), EXPECT_E_PUT, EPS);
+    }
 
-    // #[test]
-    // fn american_put_option_explicit() {
-    //     let finite_difference_obj: FiniteDifferencePricer = FiniteDifferencePricer::new(
-    //         3.22,
-    //         12.87,
-    //         0.02,
-    //         0.2,
-    //         None,
-    //         today() + Duration::days(365),
-    //         1000,
-    //         101,
-    //         TypeFlag::Put,
-    //         ExerciseFlag::American,
-    //     );
+    #[test]
+    fn european_put_crank_nicolson() {
+        assert_approx_equal!(EUROPEAN_PUT.crank_nicolson(), EXPECT_E_PUT, EPS);
+    }
+}
 
-    //     assert_approx_equal!(finite_difference_obj.explicit(), 9.65, EPS);
-    // }
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// UNIT TESTS: OUT OF THE MONEY
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    // #[test]
-    // fn american_put_option_implicit() {
-    //     let finite_difference_obj: FiniteDifferencePricer = FiniteDifferencePricer::new(
-    //         3.22,
-    //         12.87,
-    //         0.02,
-    //         0.2,
-    //         None,
-    //         today() + Duration::days(365),
-    //         1000,
-    //         101,
-    //         TypeFlag::Put,
-    //         ExerciseFlag::American,
-    //     );
+#[cfg(test)]
+mod tests_finite_difference_pricer_out_of_the_money {
+    use super::*;
+    use crate::assert_approx_equal;
+    use crate::RUSTQUANT_EPSILON as EPS;
+    use time::macros::date;
 
-    //     assert_approx_equal!(finite_difference_obj.implicit(), 9.65, EPS);
-    // }
+    const EUROPEAN_CALL: FiniteDifferencePricer = FiniteDifferencePricer {
+        initial_price: 1.0,
+        strike_price: 10.0,
+        risk_free_rate: 0.05,
+        volatility: 0.5,
+        evaluation_date: Some(date!(2024 - 01 - 01)),
+        expiration_date: date!(2025 - 01 - 01),
+        time_steps: 1000,
+        price_steps: 100,
+        type_flag: TypeFlag::Call,
+        exercise_flag: ExerciseFlag::European,
+    };
 
-    // #[test]
-    // fn american_put_option_crank_nicolson() {
-    //     let finite_difference_obj = FiniteDifferencePricer::new(
-    //         3.22,
-    //         12.87,
-    //         0.02,
-    //         0.2,
-    //         None,
-    //         today() + Duration::days(365),
-    //         1000,
-    //         100,
-    //         TypeFlag::Put,
-    //         ExerciseFlag::American,
-    //     );
+    const EUROPEAN_PUT: FiniteDifferencePricer = FiniteDifferencePricer {
+        initial_price: 10.0,
+        strike_price: 1.0,
+        risk_free_rate: 0.05,
+        volatility: 0.5,
+        evaluation_date: Some(date!(2024 - 01 - 01)),
+        expiration_date: date!(2025 - 01 - 01),
+        time_steps: 1000,
+        price_steps: 100,
+        type_flag: TypeFlag::Put,
+        exercise_flag: ExerciseFlag::European,
+    };
 
-    //     assert_approx_equal!(
-    //         finite_difference_obj.crank_nicolson(),
-    //         9.65,
-    //         EPS
-    //     );
-    // }
+    const AMERICAN_CALL: FiniteDifferencePricer = FiniteDifferencePricer {
+        initial_price: 1.0,
+        strike_price: 10.0,
+        risk_free_rate: 0.05,
+        volatility: 0.5,
+        evaluation_date: Some(date!(2024 - 01 - 01)),
+        expiration_date: date!(2025 - 01 - 01),
+        time_steps: 1000,
+        price_steps: 100,
+        type_flag: TypeFlag::Call,
+        exercise_flag: ExerciseFlag::American,
+    };
+
+    const AMERICAN_PUT: FiniteDifferencePricer = FiniteDifferencePricer {
+        initial_price: 10.0,
+        strike_price: 1.0,
+        risk_free_rate: 0.05,
+        volatility: 0.5,
+        evaluation_date: Some(date!(2024 - 01 - 01)),
+        expiration_date: date!(2025 - 01 - 01),
+        time_steps: 1000,
+        price_steps: 100,
+        type_flag: TypeFlag::Put,
+        exercise_flag: ExerciseFlag::American,
+    };
+
+    const EXPECT_A_CALL: f64 = 0.0000010140475396182350785;
+    const EXPECT_A_PUT: f64 = 0.000014933019126383249514;
+    const EXPECT_E_CALL: f64 = 0.0000010140475396182350785;
+    const EXPECT_E_PUT: f64 = 0.00000037356944149356531733;
+
+    #[test]
+    fn american_call_explicit() {
+        assert_approx_equal!(AMERICAN_CALL.explicit(), EXPECT_A_CALL, EPS);
+    }
+
+    #[test]
+    fn american_call_implicit() {
+        assert_approx_equal!(AMERICAN_CALL.implicit(), EXPECT_A_CALL, EPS);
+    }
+
+    #[test]
+    fn american_call_crank_nicolson() {
+        assert_approx_equal!(AMERICAN_CALL.crank_nicolson(), EXPECT_A_CALL, EPS);
+    }
+
+    #[test]
+    fn american_put_explicit() {
+        assert_approx_equal!(AMERICAN_PUT.explicit(), EXPECT_A_PUT, EPS);
+    }
+
+    #[test]
+    fn american_put_implicit() {
+        assert_approx_equal!(AMERICAN_PUT.implicit(), EXPECT_A_PUT, EPS);
+    }
+
+    #[test]
+    fn american_put_crank_nicolson() {
+        assert_approx_equal!(AMERICAN_PUT.crank_nicolson(), EXPECT_A_PUT, EPS);
+    }
+
+    #[test]
+    fn european_call_explicit() {
+        assert_approx_equal!(EUROPEAN_CALL.explicit(), EXPECT_E_CALL, EPS);
+    }
+
+    #[test]
+    fn european_call_implicit() {
+        assert_approx_equal!(EUROPEAN_CALL.implicit(), EXPECT_E_CALL, EPS);
+    }
+
+    #[test]
+    fn european_call_crank_nicolson() {
+        assert_approx_equal!(EUROPEAN_CALL.crank_nicolson(), EXPECT_E_CALL, EPS);
+    }
+
+    #[test]
+    fn european_put_explicit() {
+        assert_approx_equal!(EUROPEAN_PUT.explicit(), EXPECT_E_PUT, EPS);
+    }
+
+    #[test]
+    fn european_put_implicit() {
+        assert_approx_equal!(EUROPEAN_PUT.implicit(), EXPECT_E_PUT, EPS);
+    }
+
+    #[test]
+    fn european_put_crank_nicolson() {
+        assert_approx_equal!(EUROPEAN_PUT.crank_nicolson(), EXPECT_E_PUT, EPS);
+    }
 }
