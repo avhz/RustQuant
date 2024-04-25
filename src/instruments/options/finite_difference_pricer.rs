@@ -408,9 +408,8 @@ impl FiniteDifferencePricer {
 mod tests_finite_difference_pricer {
     use super::*;
     use crate::assert_approx_equal;
-    use crate::RUSTQUANT_EPSILON;
+    use crate::RUSTQUANT_EPSILON as EPS;
     use time::macros::date;
-    use time::Duration;
 
     const EUROPEAN_CALL: FiniteDifferencePricer = FiniteDifferencePricer {
         initial_price: 10.0,
@@ -464,40 +463,69 @@ mod tests_finite_difference_pricer {
         exercise_flag: ExerciseFlag::American,
     };
 
-    #[test]
-    fn american_call() {
-        let expect = 2.1792604212866848457;
+    const EXPECT_A_CALL: f64 = 2.179_260_421_286_684_845;
+    const EXPECT_A_PUT: f64 = 1.746_847_694_033_270_004;
+    const EXPECT_E_CALL: f64 = 2.179_260_421_286_684_845;
+    const EXPECT_E_PUT: f64 = 1.691_554_666_293_823_894;
 
-        assert_approx_equal!(AMERICAN_CALL.explicit(), expect, RUSTQUANT_EPSILON);
-        assert_approx_equal!(AMERICAN_CALL.implicit(), expect, RUSTQUANT_EPSILON);
-        assert_approx_equal!(AMERICAN_CALL.crank_nicolson(), expect, RUSTQUANT_EPSILON);
+    #[test]
+    fn american_call_explicit() {
+        assert_approx_equal!(AMERICAN_CALL.explicit(), EXPECT_A_CALL, EPS);
     }
 
     #[test]
-    fn american_put() {
-        let expect = 1.7468476940332700043;
-
-        assert_approx_equal!(AMERICAN_PUT.explicit(), expect, RUSTQUANT_EPSILON);
-        assert_approx_equal!(AMERICAN_PUT.implicit(), expect, RUSTQUANT_EPSILON);
-        assert_approx_equal!(AMERICAN_PUT.crank_nicolson(), expect, RUSTQUANT_EPSILON);
+    fn american_call_implicit() {
+        assert_approx_equal!(AMERICAN_CALL.implicit(), EXPECT_A_CALL, EPS);
     }
 
     #[test]
-    fn european_call() {
-        let expect = 2.1792604212866848457;
-
-        assert_approx_equal!(EUROPEAN_CALL.explicit(), expect, RUSTQUANT_EPSILON);
-        assert_approx_equal!(EUROPEAN_CALL.implicit(), expect, RUSTQUANT_EPSILON);
-        assert_approx_equal!(EUROPEAN_CALL.crank_nicolson(), expect, RUSTQUANT_EPSILON);
+    fn american_call_crank_nicolson() {
+        assert_approx_equal!(AMERICAN_CALL.crank_nicolson(), EXPECT_A_CALL, EPS);
     }
 
     #[test]
-    fn european_put() {
-        let expect = 1.6915546662938238942;
+    fn american_put_explicit() {
+        assert_approx_equal!(AMERICAN_PUT.explicit(), EXPECT_A_PUT, EPS);
+    }
 
-        assert_approx_equal!(EUROPEAN_PUT.explicit(), expect, RUSTQUANT_EPSILON);
-        assert_approx_equal!(EUROPEAN_PUT.implicit(), expect, RUSTQUANT_EPSILON);
-        assert_approx_equal!(EUROPEAN_PUT.crank_nicolson(), expect, RUSTQUANT_EPSILON);
+    #[test]
+    fn american_put_implicit() {
+        assert_approx_equal!(AMERICAN_PUT.implicit(), EXPECT_A_PUT, EPS);
+    }
+
+    #[test]
+    fn american_put_crank_nicolson() {
+        assert_approx_equal!(AMERICAN_PUT.crank_nicolson(), EXPECT_A_PUT, EPS);
+    }
+
+    #[test]
+    fn european_call_explicit() {
+        assert_approx_equal!(EUROPEAN_CALL.explicit(), EXPECT_E_CALL, EPS);
+    }
+
+    #[test]
+    fn european_call_implicit() {
+        assert_approx_equal!(EUROPEAN_CALL.implicit(), EXPECT_E_CALL, EPS);
+    }
+
+    #[test]
+    fn european_call_crank_nicolson() {
+        assert_approx_equal!(EUROPEAN_CALL.crank_nicolson(), EXPECT_E_CALL, EPS);
+    }
+
+    #[test]
+    fn european_put_explicit() {
+        assert_approx_equal!(EUROPEAN_PUT.explicit(), EXPECT_E_PUT, EPS);
+    }
+
+    #[test]
+    fn european_put_implicit() {
+        assert_approx_equal!(EUROPEAN_PUT.implicit(), EXPECT_E_PUT, EPS);
+    }
+
+    #[test]
+    fn european_put_crank_nicolson() {
+        assert_approx_equal!(EUROPEAN_PUT.crank_nicolson(), EXPECT_E_PUT, EPS);
     }
 
     // #[test]
@@ -518,7 +546,7 @@ mod tests_finite_difference_pricer {
     //     assert_approx_equal!(
     //         finite_difference_obj.explicit(),
     //         4.75360326,
-    //         RUSTQUANT_EPSILON
+    //         EPS
     //     );
     // }
 
@@ -540,7 +568,7 @@ mod tests_finite_difference_pricer {
     //     assert_approx_equal!(
     //         finite_difference_obj.implicit(),
     //         4.75360226,
-    //         RUSTQUANT_EPSILON
+    //         EPS
     //     );
     // }
 
@@ -562,7 +590,7 @@ mod tests_finite_difference_pricer {
     //     assert_approx_equal!(
     //         finite_difference_obj.crank_nicolson(),
     //         4.75360273,
-    //         RUSTQUANT_EPSILON
+    //         EPS
     //     );
     // }
 
@@ -584,7 +612,7 @@ mod tests_finite_difference_pricer {
     //     assert_approx_equal!(
     //         finite_difference_obj.explicit(),
     //         36.03914133,
-    //         RUSTQUANT_EPSILON
+    //         EPS
     //     );
     // }
 
@@ -606,7 +634,7 @@ mod tests_finite_difference_pricer {
     //     assert_approx_equal!(
     //         finite_difference_obj.implicit(),
     //         36.03914422,
-    //         RUSTQUANT_EPSILON
+    //         EPS
     //     );
     // }
 
@@ -628,7 +656,7 @@ mod tests_finite_difference_pricer {
     //     assert_approx_equal!(
     //         finite_difference_obj.crank_nicolson(),
     //         36.03914277,
-    //         RUSTQUANT_EPSILON
+    //         EPS
     //     );
     // }
 
@@ -650,7 +678,7 @@ mod tests_finite_difference_pricer {
     //     assert_approx_equal!(
     //         finite_difference_obj.explicit(),
     //         12.29460234,
-    //         RUSTQUANT_EPSILON
+    //         EPS
     //     );
     // }
 
@@ -672,7 +700,7 @@ mod tests_finite_difference_pricer {
     //     assert_approx_equal!(
     //         finite_difference_obj.implicit(),
     //         12.2946257,
-    //         RUSTQUANT_EPSILON
+    //         EPS
     //     );
     // }
 
@@ -694,7 +722,7 @@ mod tests_finite_difference_pricer {
     //     assert_approx_equal!(
     //         finite_difference_obj.crank_nicolson(),
     //         12.29372857,
-    //         RUSTQUANT_EPSILON
+    //         EPS
     //     );
     // }
 
@@ -713,7 +741,7 @@ mod tests_finite_difference_pricer {
     //         ExerciseFlag::American,
     //     );
 
-    //     assert_approx_equal!(finite_difference_obj.explicit(), 9.65, RUSTQUANT_EPSILON);
+    //     assert_approx_equal!(finite_difference_obj.explicit(), 9.65, EPS);
     // }
 
     // #[test]
@@ -731,7 +759,7 @@ mod tests_finite_difference_pricer {
     //         ExerciseFlag::American,
     //     );
 
-    //     assert_approx_equal!(finite_difference_obj.implicit(), 9.65, RUSTQUANT_EPSILON);
+    //     assert_approx_equal!(finite_difference_obj.implicit(), 9.65, EPS);
     // }
 
     // #[test]
@@ -752,7 +780,7 @@ mod tests_finite_difference_pricer {
     //     assert_approx_equal!(
     //         finite_difference_obj.crank_nicolson(),
     //         9.65,
-    //         RUSTQUANT_EPSILON
+    //         EPS
     //     );
     // }
 }
