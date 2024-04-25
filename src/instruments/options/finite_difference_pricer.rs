@@ -80,9 +80,8 @@ impl FiniteDifferencePricer {
         
         match A[0].len() {
             n if n == v.len() => {
-                let mut value: f64;
                 for row in A {
-                    let mut value = 0.0;
+                    let mut value: f64 = 0.0;
                     for (a, b) in row.iter().zip(&v) {
                         value += a * b;
                     }
@@ -214,7 +213,7 @@ impl FiniteDifferencePricer {
             inverse_matrix.push(matrix_row.clone());
             matrix_row.clear()     
         }
-        
+
         inverse_matrix
 
     }
