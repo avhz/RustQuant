@@ -331,25 +331,24 @@ impl FiniteDifferencePricer {
     pub fn implicit(&self) -> f64 {
         let (T, delta_t) = self.time_structure();
 
-        let inverse_matrix = self.invert_tridiagonal_matrix(self.create_tridiagonal_matrix(
-            self.sub_diagonal(-delta_t / 2.0),
-            self.diagonal(delta_t),
-            self.super_diagonal(-delta_t / 2.0),
-            self.price_steps,
+        let inverse_matrix: Vec<Vec<f64>> = self.invert_tridiagonal_matrix(self.create_tridiagonal_matrix(
+                self.sub_diagonal(- delta_t / 2.0),
+                self.diagonal(delta_t),
+                self.super_diagonal(- delta_t / 2.0)
         ));
 
-        let mut u: Vec<f64> = self.boundary_condition_at_time_n(self.price_steps);
+        let mut u: Vec<f64> = self.boundary_condition_at_time_n();
 
-        for t in (1..self.time_steps).rev() {
+        for t in (0..self.time_steps).rev() {
             match self.type_flag {
                 TypeFlag::Call => {
                     u[(self.price_steps - 2) as usize] -=
-                        self.super_diagonal(-delta_t / 2.0)((self.price_steps - 1) as f64)
-                            * self.call_boundary(t, T, delta_t);
+                        self.super_diagonal(- delta_t / 2.0)((self.price_steps - 1) as f64)
+                            * self.call_boundary(t + 1, T, delta_t);
                 }
                 TypeFlag::Put => {
-                    u[0] +=
-                        self.sub_diagonal(delta_t / 2.0)(1.0) * self.put_boundary(t, T, delta_t);
+                    u[0] -=
+                        self.sub_diagonal(delta_t / 2.0)(1.0) * self.put_boundary(t + 1, T, delta_t);
                 }
             }
 
