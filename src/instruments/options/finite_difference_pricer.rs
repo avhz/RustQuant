@@ -296,16 +296,15 @@ impl FiniteDifferencePricer {
     pub fn explicit(&self) -> f64 {
         let (T, delta_t) = self.time_structure();
 
-        let tridiagonal_matrix = self.create_tridiagonal_matrix(
+        let tridiagonal_matrix: Vec<Vec<f64>> = self.create_tridiagonal_matrix(
             self.sub_diagonal(delta_t / 2.0),
             self.diagonal(-delta_t),
-            self.super_diagonal(delta_t / 2.0),
-            self.price_steps,
+            self.super_diagonal(delta_t / 2.0)
         );
 
-        let mut u: Vec<f64> = self.boundary_condition_at_time_n(self.price_steps);
+        let mut u: Vec<f64> = self.boundary_condition_at_time_n();
 
-        for t in (1..self.time_steps).rev() {
+        for t in (0..self.time_steps).rev() {
             u = self.matrix_multiply_vector(&tridiagonal_matrix, u);
 
             match self.type_flag {
