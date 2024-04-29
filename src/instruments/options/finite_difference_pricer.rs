@@ -254,19 +254,19 @@ impl FiniteDifferencePricer {
             .collect()
     }
 
-    fn boundary_condition_at_time_n(&self, price_steps: u32) -> Vec<f64> {
-        (1..(price_steps))
-            .map(|i| self.payoff(((i) as f64) * (2.0 * self.initial_price / (price_steps as f64))))
+    fn boundary_condition_at_time_n(&self) -> Vec<f64> {
+        (1..(self.price_steps))
+            .map(|i: u32| self.payoff((i as f64) * (2.0 * self.initial_price / (self.price_steps as f64))))
             .collect()
     }
 
     fn call_boundary(&self, t: u32, T: f64, delta_t: f64) -> f64 {
         2.0 * self.initial_price
-            - self.strike_price * f64::exp(-(self.risk_free_rate * T) - (t as f64 * delta_t))
+            - self.strike_price * f64::exp(-self.risk_free_rate * (T - (t as f64 * delta_t)))
     }
 
     fn put_boundary(&self, t: u32, T: f64, delta_t: f64) -> f64 {
-        self.strike_price * f64::exp(-(self.risk_free_rate * T) - (t as f64 * delta_t))
+        self.strike_price * f64::exp(-(self.risk_free_rate * (T - t as f64 * delta_t)))
     }
 
     fn year_fraction(&self) -> f64 {
