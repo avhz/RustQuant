@@ -116,7 +116,6 @@ impl FiniteDifferencePricer {
         sub_diagonal: A,
         diagonal: B,
         super_diagonal: C,
-        price_steps: u32,
     ) -> Vec<Vec<f64>>
     where
         A: Fn(f64) -> f64,
