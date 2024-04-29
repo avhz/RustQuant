@@ -125,14 +125,14 @@ impl FiniteDifferencePricer {
         let mut matrix_row: Vec<f64> = Vec::new();
         let mut tridiagonal_matrix: Vec<Vec<f64>> = Vec::new();
 
-        for i in 1..(price_steps) {
+        for i in 1..(self.price_steps) {
             if i != 1 {
                 matrix_row.push(sub_diagonal(i as f64));
             }
 
             matrix_row.push(diagonal(i as f64));
 
-            if i != price_steps - 1 {
+            if i != self.price_steps - 1 {
                 matrix_row.push(super_diagonal(i as f64));
             }
 
