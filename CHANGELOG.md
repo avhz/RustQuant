@@ -6,6 +6,51 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.5](https://github.com/avhz/RustQuant/compare/v0.2.4...v0.2.5) - 2024-06-10
+
+### Other
+- Merge pull request [#223](https://github.com/avhz/RustQuant/pull/223) from avhz/dependabot/cargo/statrs-0.17.1
+- Update README.md (expired Discord link)
+- Finite-Difference Pricer unit tests: ITM and OTM options
+- Finite-Difference Pricer unit tests: ATM options
+- Finite-Difference Pricer unit tests: ATM options
+- Merge pull request [#211](https://github.com/avhz/RustQuant/pull/211) from yfnaji/finite_difference_pricer_with_vec
+- Take variable declaration outside of loop
+- Separate unit tests for each method and amend according to previous changes on the branch
+- Interpolate for odd number price_steps + encapsulate some functions
+- Ignore clippy's "too_many_arguments" warning
+- Remove rounding to 2 decimal places
+- Formatting + add data type annotation
+- Formatting in invert_tridiagonal_matrix()
+- Amend logic for the construction for the inverse of a tridiagonal matrix to use match + avoid indexing
+- Amend for loop in matrix_multiply_vector() to avoid indexing
+- Change match to if statement for american time stop step
+- Amend matrix_multiply_vector to use slice as data type of argument
+- Minor amendment to unit test
+- Amend Unit tests
+- Reformat TypeFlag match
+- Rewrite constructor to use assert macros
+- Amend explicit(), implicit() and crank_nicolson() to utilise time_steps and price_steps attribute + import Duration for unit tests
+- Remove time_steps() and price_steps()
+- Set time_steps and price_steps attributes in constructor
+- Add two attributes: time_steps and price_steps
+- Use T variable in implicit()
+- Introduce T variable to represent time to maturity and amend call/put_boundary functions + minor formatting
+- Introduce year_fraction() function + amend time steps calculation to use Date objects
+- Utilise new arguments in constructor
+- Replace time_to_maturity argument with evaluation_date and expiration_date
+- Import relevant time structs + functions
+- Refactor method names
+- Condense matrix multiplication methods into one method + only have one method to produce tridiagonal matrix
+- Rewrite invert_tridiagonal_matrix() to take "trimmed" tridiagonal matrix data structure
+- Amend function names create_tridiagonal_matrix_without_zeros -> create_trimmed_tridiagonal_matrix and tridiagonal_matrix_multiply_vector -> trimmed_tridiagonal_matrix_multiply_vector + formatting
+- Amend explicit() and crank_nicolson() to utilise create_tridiagonal_matrix_without_zeros()
+- Amend tridiagonal_matrix_multiply_vector() to handle new "no-outer zeros" representation of matrix
+- Create new method to represent tridiagonal matrix without storing outer zeros
+- Remove 'get' from function names
+- Add finite_difference_pricer_mod
+- Code for FiniteDifferencePricer struct + tests
+
 ## [0.2.4](https://github.com/avhz/RustQuant/compare/v0.2.3...v0.2.4) - 2024-04-24
 
 ### Other
