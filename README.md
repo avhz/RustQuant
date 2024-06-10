@@ -32,9 +32,9 @@ A Rust library for quantitative finance.
 
 <div align="center">
 
-| Email                        | Discord                         | Latest Changes              |
-|:----------------------------:|:-------------------------------:|:---------------------------:|
-| <RustQuantContact@gmail.com> | <https://discord.gg/tQcM77h8vr> | [Changelog](./CHANGELOG.md) |
+| Email                        | Discord                       | Latest Changes              |
+|:----------------------------:|:-----------------------------:|:---------------------------:|
+| <RustQuantContact@gmail.com> | <https://discord.gg/DY97CCjF> | [Changelog](./CHANGELOG.md) |
 
 </div>
 
