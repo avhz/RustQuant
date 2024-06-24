@@ -5,7 +5,7 @@
 // Run: cargo run --release --example logistic_regression
 
 use nalgebra::{DMatrix, DVector};
-use time::Instant;
+use std::time::Instant;
 use RustQuant::ml::*;
 
 fn main() {

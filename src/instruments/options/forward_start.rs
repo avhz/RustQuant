@@ -102,7 +102,7 @@ impl ForwardStartOption {
 #[cfg(test)]
 mod tests_forward_start {
     use super::*;
-    use crate::{assert_approx_equal, RUSTQUANT_EPSILON};
+    use crate::{assert_approx_equal};
 
     #[test]
     fn TEST_forward_start_option() {

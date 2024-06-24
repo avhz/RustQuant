@@ -170,7 +170,7 @@ impl ModifiedBachelier {
 #[cfg(test)]
 mod tests_bachelier {
     use super::*;
-    use crate::{assert_approx_equal, RUSTQUANT_EPSILON};
+    use crate::{assert_approx_equal};
     use time::Duration;
 
     #[test]
