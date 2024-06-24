@@ -48,7 +48,6 @@ impl Calendar for ChileCalendar {
 
                 // Good Friday
                 || (yd == em - 3)
-
                 // Easter Saturday
                 || (yd == em - 2)
 
