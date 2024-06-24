@@ -1,7 +1,7 @@
 use time::macros::date;
 use RustQuant::instruments::options::*;
 
-fn main() -> Result<(), Box<dyn std::error::Error>>{
+fn main() -> Result<(), Box<dyn std::error::Error>> {
     let option = BlackScholesMertonBuilder::default()
         .underlying_price(100.0)
         .strike_price(100.0)
@@ -11,7 +11,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>>{
         .expiration_date(date!(2024 - 12 - 31))
         .option_type(TypeFlag::Call)
         .build()?;
-        
+
     // Print the option price and greeks.
     // There are more greeks available, but these are the most common.
     println!("Call price = \t {}", option.price());

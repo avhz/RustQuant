@@ -12,7 +12,6 @@ use std::collections::BTreeMap;
 use std::fmt::Display;
 use time::Date;
 
-
 /// Term structure data.
 pub struct TermStructure {
     /// Nodes of the term structure.

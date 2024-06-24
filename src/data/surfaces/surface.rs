@@ -1,15 +1,8 @@
-/******************************************************************************
-    Author: Joaquín Béjar García
-    Email: jb@taunais.com 
-    Date: 24/6/24
- ******************************************************************************/
-
 use crate::data::TermStructure;
 use std::collections::BTreeMap;
 
-
 /// Surface data.
-#[allow(dead_code)]  // never used
+#[allow(dead_code)] // never used
 pub struct Surface {
     /// Nodes of the surface.
     pub nodes: BTreeMap<u64, TermStructure>,
@@ -37,8 +30,8 @@ impl Surface {
 
 #[cfg(test)]
 mod tests {
-    use time::{Month, Date};
     use super::*;
+    use time::{Date, Month};
 
     #[test]
     fn test_surface_creation() {
@@ -59,8 +52,20 @@ mod tests {
 
         let ts = surface.get_term_structure(1).unwrap();
         assert_eq!(ts.nodes.len(), 3);
-        assert_eq!(ts.nodes.get(&Date::from_calendar_date(2023, Month::January, 1).unwrap()), Some(&0.05));
-        assert_eq!(ts.nodes.get(&Date::from_calendar_date(2023, Month::February, 1).unwrap()), Some(&0.06));
-        assert_eq!(ts.nodes.get(&Date::from_calendar_date(2023, Month::March, 1).unwrap()), Some(&0.07));
+        assert_eq!(
+            ts.nodes
+                .get(&Date::from_calendar_date(2023, Month::January, 1).unwrap()),
+            Some(&0.05)
+        );
+        assert_eq!(
+            ts.nodes
+                .get(&Date::from_calendar_date(2023, Month::February, 1).unwrap()),
+            Some(&0.06)
+        );
+        assert_eq!(
+            ts.nodes
+                .get(&Date::from_calendar_date(2023, Month::March, 1).unwrap()),
+            Some(&0.07)
+        );
     }
 }
