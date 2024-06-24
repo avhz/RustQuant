@@ -6,7 +6,7 @@
 
 use crate::data::TermStructure;
 use std::collections::BTreeMap;
-use time::Date;
+
 
 /// Surface data.
 #[allow(dead_code)]  // never used
@@ -36,7 +36,7 @@ impl Surface {
 
 #[cfg(test)]
 mod tests {
-    use time::Month;
+    use time::{Month, Date};
     use super::*;
 
     #[test]
