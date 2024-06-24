@@ -15,6 +15,7 @@ pub struct Surface {
     pub nodes: BTreeMap<u64, TermStructure>,
 }
 
+#[allow(dead_code)]
 impl Surface {
     /// Create a new surface.
     pub fn new() -> Self {
