@@ -14,9 +14,12 @@ use time::Date;
 /// Holiday type.
 #[derive(Debug, Clone)]
 pub struct Holiday {
-    name: &'static str,
-    date: Date,
-    description: Option<&'static str>,
+    /// Name of the holiday.
+    pub name: &'static str,
+    /// Date of the holiday.
+    pub date: Date,
+    /// Description of the holiday (optional).
+    pub description: Option<&'static str>,
 }
 
 impl Eq for Holiday {}

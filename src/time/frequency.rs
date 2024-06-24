@@ -18,7 +18,7 @@ use crate::time::constants::{
 /// This is important in finance, as it determines the number of times
 /// a cash flow is paid in a year, and thus affects the present value
 /// of the cash flows.
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Frequency {
     /// Daily (252 per year).
     Daily = DAILY,
@@ -49,6 +49,9 @@ pub enum Frequency {
 
     /// Annually.
     Annually = ANNUALLY,
+
+    /// Zero frequency.
+    Zero = 0,
 }
 
 impl Frequency {
@@ -100,6 +103,7 @@ impl Frequency {
             Frequency::TriAnnually => TRI_ANNUALLY,
             Frequency::SemiAnnually => SEMI_ANNUALLY,
             Frequency::Annually => ANNUALLY,
+            Frequency::Zero => 0,
         }
     }
 }

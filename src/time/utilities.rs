@@ -129,6 +129,16 @@ pub fn leap_year_count(start: Date, end: Date) -> i64 {
         .len() as i64
 }
 
+/// Function to check if Date is first day of the month.
+pub fn is_first_day_of_month(date: Date) -> bool {
+    date.day() == 1
+}
+
+/// Function to check if Date is last day of the month.
+pub fn is_last_day_of_month(date: Date) -> bool {
+    date.day() == days_in_year_month(date.year(), date.month())
+}
+
 /// Function to check if date is the last day of February.
 pub fn is_last_day_of_february(date: Date) -> bool {
     let last_day_of_feb_non_leap =

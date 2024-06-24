@@ -80,7 +80,12 @@ impl DataReader for Data {
     fn read(&mut self) -> Result<(), RustQuantError> {
         match self.format {
             DataFormat::CSV => {
-                let df = CsvReader::from_path(&self.path)?.finish()?;
+                // let df = CsvReader::from_path(&self.path)?.finish()?;
+
+                let df = CsvReadOptions::default()
+                    .try_into_reader_with_file_path(Some(self.path.clone().into()))?
+                    .finish()?;
+
                 self.data = df;
 
                 Ok(())

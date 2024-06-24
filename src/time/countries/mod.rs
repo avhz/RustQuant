@@ -9,6 +9,9 @@
 
 //! This module defines calendars and holidays for different countries.
 
+/// This module defines a custom calendar type.
+pub mod custom_calendar;
+
 /// Calendars implemented for African countries.
 pub mod africa {
     /// This module defines Botswana holidays and calendars.
