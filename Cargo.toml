@@ -55,7 +55,7 @@ rustdoc-args = ["--html-in-header", "katex_header.html", "--cfg", "docsrs"]
 [dependencies]
 derive_builder = "0.20.0"   # https://docs.rs/derive_builder/latest/derive_builder/
 errorfunctions = "0.2.0"    # https://docs.rs/errorfunctions/latest/errorfunctions/
-nalgebra = "0.32.0"         # https://docs.rs/nalgebra/latest/nalgebra/
+nalgebra = "0.33.0"         # https://docs.rs/nalgebra/latest/nalgebra/
 ndarray = "0.15.0"          # https://docs.rs/ndarray/latest/ndarray/
 ndrustfft = "0.4.0"         # https://docs.rs/ndrustfft/latest/ndrustfft/
 ndarray-rand = "0.14.0"     # https://docs.rs/ndarray-rand/latest/ndarray_rand/
@@ -76,7 +76,7 @@ num = { version = "0.4.1", features = ["rand"] }
 time = { version = "0.3.34", features = ["macros"] }
 
 # https://docs.rs/polars/latest/polars/
-polars = { version = "0.39.2", features = ["docs-selection"] }
+polars = { version = "0.41.1", features = ["docs-selection"] }
 
 
 [dev-dependencies]
@@ -92,5 +92,6 @@ finitediff = "0.1.4" # https://docs.rs/finitediff/latest/finitediff/
 # crate-type = ["cdylib"]
 
 # [dependencies.pyo3]
-# version = "0.19.0"
+# version = "0.22.0"
+# features = ["extension-module"]
 # features = ["abi3-py37", "extension-module"]

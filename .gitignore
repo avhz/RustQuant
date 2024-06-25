@@ -32,6 +32,7 @@ Cargo.lock
 .idea
 ## PYTHON
 .venv/
+.env/
 venv/
 env/
 ./Bindings/.venv

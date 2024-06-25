@@ -182,7 +182,7 @@ impl YahooFinanceData {
 
 impl YahooFinanceReader for YahooFinanceData {
     fn get_price_history(&mut self) -> Result<(), RustQuantError> {
-        let provider = yahoo::YahooConnector::new();
+        let provider = yahoo::YahooConnector::new()?;
 
         let response = tokio_test::block_on(provider.get_quote_history(
             self.ticker.as_ref().ok_or(RustQuantError::MissingInput(
@@ -224,7 +224,7 @@ impl YahooFinanceReader for YahooFinanceData {
     }
 
     fn get_options_chain(&mut self) -> Result<(), RustQuantError> {
-        let provider = yahoo::YahooConnector::new();
+        let provider = yahoo::YahooConnector::new()?;
         let response = tokio_test::block_on(provider.search_options(self.ticker.as_ref().ok_or(
             RustQuantError::MissingInput("No ticker provided.".to_string()),
         )?))?;
@@ -288,7 +288,7 @@ impl YahooFinanceReader for YahooFinanceData {
     }
 
     fn get_latest_quote(&mut self) -> Result<(), RustQuantError> {
-        let provider = yahoo::YahooConnector::new();
+        let provider = yahoo::YahooConnector::new()?;
         let response = tokio_test::block_on(
             provider.get_latest_quotes(
                 self.ticker
