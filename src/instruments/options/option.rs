@@ -108,6 +108,7 @@ impl OptionParameters {
     }
 }
 
+#[allow(dead_code)]
 trait Payoff<U, S> {
     fn payoff(&self, underlying: U, strike: S) -> f64;
 }

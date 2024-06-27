@@ -73,7 +73,8 @@
 //! $$
 
 use crate::autodiff::{variables::variable::Variable, Accumulate, Gradient, Graph};
-use time::{Duration, Instant};
+use std::time::{Duration, Instant};
+
 // use ::log::{info, max_level, warn, Level};
 
 /// Gradient descent optimizer.

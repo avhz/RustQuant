@@ -7,7 +7,7 @@
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use crate::time::utilities::{contains_leap_year};
+use crate::time::utilities::contains_leap_year;
 use crate::time::{days_between, DayCountConvention};
 use time::util::is_leap_year;
 use time::{Date, Month};

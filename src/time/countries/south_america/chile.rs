@@ -46,57 +46,56 @@ impl Calendar for ChileCalendar {
             // New Year's Day
             (d == 1 && m == Month::January) || (d == 2 && m == Month::January && wd == Weekday::Monday && y > 2016)
 
-            // Good Friday
-            || (yd  == em-3)
-            
-            // Easter Saturday
-            || (yd  == em-2)
-            
-            // Labour Day
-            || (d == 1 && m == Month::May)
-            
-            // Navy Day
-            || (d == 21 && m == Month::May)
-            
-            // Day of Aboriginal People
-            || (d == 21 && m == Month::June && y >= 2021)
+                // Good Friday
+                || (yd == em - 3)
+                // Easter Saturday
+                || (yd == em - 2)
 
-            // St. Peter and St. Paul
-            || ((26..=29).contains(&d) && m == Month::June && wd == Weekday::Monday) 
-            || (d == 2 && m == Month::July && wd == Weekday::Monday)
+                // Labour Day
+                || (d == 1 && m == Month::May)
 
-            // Our Lady of Mount Carmel
-            || (d == 16 && m == Month::July)
+                // Navy Day
+                || (d == 21 && m == Month::May)
 
-            // Assumption Day
-            || (d == 15 && m == Month::August)
+                // Day of Aboriginal People
+                || (d == 21 && m == Month::June && y >= 2021)
 
-            // Independence Day
-            || (d == 17 && m == Month::September && ((wd == Weekday::Monday && y >= 2007) 
-            || (wd == Weekday::Friday && y > 2016)))
-            || (d == 18 && m == Month::September)
+                // St. Peter and St. Paul
+                || ((26..=29).contains(&d) && m == Month::June && wd == Weekday::Monday)
+                || (d == 2 && m == Month::July && wd == Weekday::Monday)
 
-            // Army Day
-            || (d == 19 && m == Month::September)
-            || (d == 20 && m == Month::September && wd == Weekday::Friday && y >= 2007)
+                // Our Lady of Mount Carmel
+                || (d == 16 && m == Month::July)
 
-            // Discovery of Two Worlds
-            || ((9..=12).contains(&d) && m == Month::October && wd == Weekday::Monday)
-            || (d == 15 && m == Month::October && wd == Weekday::Monday)
+                // Assumption Day
+                || (d == 15 && m == Month::August)
 
-            // Reformation Day
-            || (((d == 27 && m == Month::October && wd == Weekday::Friday)
-            || (d == 31 && m == Month::October && wd != Weekday::Tuesday && wd != Weekday::Wednesday)
-            || (d == 2 && m == Month::November && wd == Weekday::Friday)) && y >= 2008)
+                // Independence Day
+                || (d == 17 && m == Month::September && ((wd == Weekday::Monday && y >= 2007)
+                || (wd == Weekday::Friday && y > 2016)))
+                || (d == 18 && m == Month::September)
 
-            // All Saints' Day
-            || (d == 1 && m == Month::November)
+                // Army Day
+                || (d == 19 && m == Month::September)
+                || (d == 20 && m == Month::September && wd == Weekday::Friday && y >= 2007)
 
-            // Immaculate Conception
-            || (d == 8 && m == Month::December)
+                // Discovery of Two Worlds
+                || ((9..=12).contains(&d) && m == Month::October && wd == Weekday::Monday)
+                || (d == 15 && m == Month::October && wd == Weekday::Monday)
 
-            // Christmas Day
-            || (d == 25 && m == Month::December)
+                // Reformation Day
+                || (((d == 27 && m == Month::October && wd == Weekday::Friday)
+                || (d == 31 && m == Month::October && wd != Weekday::Tuesday && wd != Weekday::Wednesday)
+                || (d == 2 && m == Month::November && wd == Weekday::Friday)) && y >= 2008)
+
+                // All Saints' Day
+                || (d == 1 && m == Month::November)
+
+                // Immaculate Conception
+                || (d == 8 && m == Month::December)
+
+                // Christmas Day
+                || (d == 25 && m == Month::December)
         ) {
             return true;
         }

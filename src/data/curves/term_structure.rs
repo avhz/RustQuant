@@ -12,12 +12,6 @@ use std::collections::BTreeMap;
 use std::fmt::Display;
 use time::Date;
 
-/// Surface data.
-pub struct Surface {
-    /// Nodes of the surface.
-    pub nodes: BTreeMap<f64, TermStructure>,
-}
-
 /// Term structure data.
 pub struct TermStructure {
     /// Nodes of the term structure.

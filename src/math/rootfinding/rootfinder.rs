@@ -141,7 +141,7 @@ impl RootfinderData {
 
         diff <= tolerance * f64::abs(x) && diff <= tolerance * f64::abs(y)
     }
-
+    #[allow(dead_code)]
     pub(crate) fn close_enough(x: f64, y: f64) -> bool {
         if x == y {
             return true;

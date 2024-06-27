@@ -11,6 +11,8 @@
 // STRUCTS, ENUMS, AND TRAITS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+mod surface;
+
 use super::Curve;
 use num::Float;
 use std::collections::BTreeMap;
