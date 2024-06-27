@@ -20,7 +20,7 @@ use crate::math::interpolation::{
 /// Linear Interpolator.
 pub struct LinearInterpolator<IndexType, ValueType>
 where
-    IndexType: InterpolationIndex,
+    IndexType: InterpolationIndex<DeltaDiv = ValueType>,
     ValueType: InterpolationValue,
 {
     /// X-axis values for the interpolator.

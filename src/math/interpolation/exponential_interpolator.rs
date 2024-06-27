@@ -9,11 +9,9 @@
 
 //! Module containing functionality for interpolation.
 
-use rand_distr::num_traits;
-
-use crate::math::interpolation::{InterpolationError, InterpolationIndex, InterpolationValue};
-
 use super::Interpolator;
+use crate::math::interpolation::{InterpolationError, InterpolationIndex, InterpolationValue};
+use num::Float;
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // STRUCTS & ENUMS
@@ -22,7 +20,7 @@ use super::Interpolator;
 /// Exponential Interpolator.
 pub struct ExponentialInterpolator<IndexType, ValueType>
 where
-    IndexType: InterpolationIndex,
+    IndexType: InterpolationIndex<DeltaDiv = ValueType>,
     ValueType: InterpolationValue,
 {
     /// X-axis values for the interpolator.
@@ -41,7 +39,7 @@ where
 
 impl<IndexType, ValueType> ExponentialInterpolator<IndexType, ValueType>
 where
-    IndexType: InterpolationIndex,
+    IndexType: InterpolationIndex<DeltaDiv = ValueType>,
     ValueType: InterpolationValue,
 {
     /// Create a new ExponentialInterpolator.
@@ -77,7 +75,7 @@ impl<IndexType, ValueType> Interpolator<IndexType, ValueType>
     for ExponentialInterpolator<IndexType, ValueType>
 where
     IndexType: InterpolationIndex<DeltaDiv = ValueType>,
-    ValueType: InterpolationValue + num_traits::Float,
+    ValueType: InterpolationValue + Float,
 {
     fn fit(&mut self) -> Result<(), InterpolationError> {
         self.fitted = true;
@@ -132,7 +130,7 @@ where
 #[cfg(test)]
 mod tests_exponential_interpolation {
     use super::*;
-    use crate::{assert_approx_equal, math::interpolation, RUSTQUANT_EPSILON};
+    use crate::{assert_approx_equal, RUSTQUANT_EPSILON};
     use time::macros::date;
 
     #[test]
