@@ -157,7 +157,7 @@ impl GradientDescent {
     {
         let start = Instant::now();
 
-        let tolerance = self.tolerance.unwrap_or(std::f64::EPSILON.sqrt());
+        let tolerance = self.tolerance.unwrap_or(f64::EPSILON.sqrt());
 
         let mut result = GradientDescentResult {
             minimum: 0.0,

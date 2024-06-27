@@ -16,7 +16,7 @@
 use crate::ml::ActivationFunction;
 use nalgebra::{DMatrix, DVector};
 
-use std::f64::EPSILON as EPS;
+// use std::f64::EPSILON as EPS;
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // STRUCTS, ENUMS, AND TRAITS
@@ -93,7 +93,7 @@ impl LogisticRegressionInput<f64> {
         if self
             .y
             .iter()
-            .any(|&x| x.abs() < EPS && (x - 1.0).abs() < EPS)
+            .any(|&x| x.abs() < f64::EPSILON && (x - 1.0).abs() < f64::EPSILON)
         {
             return Err("The elements of the response vector should be either 0 or 1.");
         }
