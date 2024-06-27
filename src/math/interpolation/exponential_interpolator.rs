@@ -9,7 +9,11 @@
 
 //! Module containing functionality for interpolation.
 
+use rand_distr::num_traits;
+
 use crate::math::interpolation::{InterpolationError, InterpolationIndex, InterpolationValue};
+
+use super::Interpolator;
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // STRUCTS & ENUMS
@@ -37,7 +41,7 @@ where
 
 impl<IndexType, ValueType> ExponentialInterpolator<IndexType, ValueType>
 where
-    IndexType: InterpolationIndex<DeltaDiv = ValueType>,
+    IndexType: InterpolationIndex,
     ValueType: InterpolationValue,
 {
     /// Create a new ExponentialInterpolator.
@@ -69,88 +73,98 @@ where
     }
 }
 
-// impl<IndexType, ValueType> Interpolator<IndexType, ValueType>
-//     for ExponentialInterpolator<IndexType, ValueType>
-// where
-//     IndexType: InterpolationIndex<DeltaDiv = ValueType>, //+ std::ops::Div<Output = ValueType>,
-//     ValueType: InterpolationValue + num_traits::Float,
-// {
-//     fn fit(&mut self) -> Result<(), InterpolationError> {
-//         self.fitted = true;
-//         Ok(())
-//     }
+impl<IndexType, ValueType> Interpolator<IndexType, ValueType>
+    for ExponentialInterpolator<IndexType, ValueType>
+where
+    IndexType: InterpolationIndex<DeltaDiv = ValueType>,
+    ValueType: InterpolationValue + num_traits::Float,
+{
+    fn fit(&mut self) -> Result<(), InterpolationError> {
+        self.fitted = true;
+        Ok(())
+    }
 
-//     fn range(&self) -> (IndexType, IndexType) {
-//         (*self.xs.first().unwrap(), *self.xs.last().unwrap())
-//     }
+    fn range(&self) -> (IndexType, IndexType) {
+        (*self.xs.first().unwrap(), *self.xs.last().unwrap())
+    }
 
-//     fn add_point(&mut self, point: (IndexType, ValueType)) {
-//         let idx = self.xs.partition_point(|&x| x < point.0);
+    fn add_point(&mut self, point: (IndexType, ValueType)) {
+        let idx = self.xs.partition_point(|&x| x < point.0);
 
-//         self.xs.insert(idx, point.0);
-//         self.ys.insert(idx, point.1);
-//     }
+        self.xs.insert(idx, point.0);
+        self.ys.insert(idx, point.1);
+    }
 
-//     fn interpolate(&self, point: IndexType) -> Result<ValueType, InterpolationError> {
-//         let range = self.range();
+    fn interpolate(&self, point: IndexType) -> Result<ValueType, InterpolationError> {
+        let range = self.range();
 
-//         if point.partial_cmp(&range.0).unwrap() == std::cmp::Ordering::Less
-//             || point.partial_cmp(&range.1).unwrap() == std::cmp::Ordering::Greater
-//         {
-//             return Err(InterpolationError::OutsideOfRange);
-//         }
+        if point.partial_cmp(&range.0).unwrap() == std::cmp::Ordering::Less
+            || point.partial_cmp(&range.1).unwrap() == std::cmp::Ordering::Greater
+        {
+            return Err(InterpolationError::OutsideOfRange);
+        }
 
-//         if let Ok(idx) = self
-//             .xs
-//             .binary_search_by(|p| p.partial_cmp(&point).expect("Cannot compare values."))
-//         {
-//             return Ok(self.ys[idx]);
-//         }
+        if let Ok(idx) = self
+            .xs
+            .binary_search_by(|p| p.partial_cmp(&point).expect("Cannot compare values."))
+        {
+            return Ok(self.ys[idx]);
+        }
 
-//         let idx_r = self.xs.partition_point(|&x| x < point);
-//         let idx_l = idx_r - 1;
+        let idx_r = self.xs.partition_point(|&x| x < point);
 
-//         let lambda = (self.xs[idx_r] - point) / (self.xs[idx_r] - self.xs[idx_l]);
+        let x_l = self.xs[idx_r - 1];
+        let y_l = self.ys[idx_r - 1];
 
-//         let exponent_1 = lambda * (point / self.xs[idx_l]);
-//         let exponent_2 = point / self.xs[idx_r] - lambda * (point / self.xs[idx_r]);
+        let x_r = self.xs[idx_r];
+        let y_r = self.ys[idx_r];
 
-//         let term_1 = self.ys[idx_l].powf(exponent_1);
-//         let term_2 = self.ys[idx_r].powf(exponent_2);
+        let result = ((y_r.ln() - y_l.ln()) * ((point - x_l) / (x_r - x_l)) + y_l.ln()).exp();
 
-//         let result = term_1 * term_2;
-
-//         Ok(result)
-//     }
-// }
+        Ok(result)
+    }
+}
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Unit tests
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-// #[cfg(test)]
-// mod tests_exponential_interpolation {
-//     use super::*;
-//     use crate::{assert_approx_equal, RUSTQUANT_EPSILON};
-//     use time::macros::date;
+#[cfg(test)]
+mod tests_exponential_interpolation {
+    use super::*;
+    use crate::{assert_approx_equal, math::interpolation, RUSTQUANT_EPSILON};
+    use time::macros::date;
 
-//     // #[test]
-//     // fn test_exponential_interpolation_dates() {
-//     //     let d_1m = date!(1990 - 06 - 16);
-//     //     let d_2m = date!(1990 - 07 - 17);
+    #[test]
+    fn test_exponential_interpolation_numbers() {
+        let xs = vec![1.0, 2.0, 3.0, 5.0];
+        let ys = vec![5.0, 25.0, 125.0, 3125.0];
 
-//     //     let r_1m = 0.9870;
-//     //     let r_2m = 0.9753;
+        let interpolator = ExponentialInterpolator::new(xs, ys).unwrap();
+        assert_approx_equal!(
+            625.0,
+            interpolator.interpolate(4.0).unwrap(),
+            RUSTQUANT_EPSILON
+        );
+    }
 
-//     //     let dates = vec![d_1m, d_2m];
-//     //     let rates = vec![r_1m, r_2m];
+    #[test]
+    fn test_exponential_interpolation_dates() {
+        let d_1m = date!(1990 - 06 - 16);
+        let d_2m = date!(1990 - 07 - 17);
 
-//     //     let mut interpolator = ExponentialInterpolator::new(dates, rates).unwrap();
+        let r_1m = 0.9870;
+        let r_2m = 0.9753;
 
-//     //     assert_approx_equal!(
-//     //         0.9854,
-//     //         interpolator.interpolate(date!(1990 - 06 - 20)).unwrap(),
-//     //         RUSTQUANT_EPSILON
-//     //     );
-//     // }
-// }
+        let dates = vec![d_1m, d_2m];
+        let rates = vec![r_1m, r_2m];
+
+        let interpolator = ExponentialInterpolator::new(dates, rates).unwrap();
+
+        assert_approx_equal!(
+            0.9854824711068088,
+            interpolator.interpolate(date!(1990 - 06 - 20)).unwrap(),
+            RUSTQUANT_EPSILON
+        );
+    }
+}

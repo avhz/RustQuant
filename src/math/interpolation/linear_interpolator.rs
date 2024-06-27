@@ -39,7 +39,7 @@ where
 
 impl<IndexType, ValueType> LinearInterpolator<IndexType, ValueType>
 where
-    IndexType: InterpolationIndex,
+    IndexType: InterpolationIndex<DeltaDiv = ValueType>,
     ValueType: InterpolationValue,
 {
     /// Create a new LinearInterpolator.
