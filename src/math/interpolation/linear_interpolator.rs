@@ -108,10 +108,16 @@ where
         let idx_r = self.xs.partition_point(|&x| x < point);
         let idx_l = idx_r - 1;
 
-        let term_1 = self.ys[idx_r] - self.ys[idx_l];
-        let term_2 = (point - self.xs[idx_l]) / (self.xs[idx_r] - self.xs[idx_l]);
+        let x_l = self.xs[idx_l];
+        let x_r = self.xs[idx_r];
 
-        let result = self.ys[idx_l] + term_1 * term_2;
+        let y_l = self.ys[idx_l];
+        let y_r = self.ys[idx_r];
+
+        let term_1 = y_r - y_l;
+        let term_2 = (point - x_l) / (x_r - x_l);
+
+        let result = y_l + term_1 * term_2;
 
         Ok(result)
     }

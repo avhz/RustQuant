@@ -12,6 +12,7 @@
 use super::Interpolator;
 use crate::math::interpolation::{InterpolationError, InterpolationIndex, InterpolationValue};
 use num::Float;
+use std::cmp::Ordering;
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // STRUCTS & ENUMS
@@ -96,9 +97,10 @@ where
     fn interpolate(&self, point: IndexType) -> Result<ValueType, InterpolationError> {
         let range = self.range();
 
-        if point.partial_cmp(&range.0).unwrap() == std::cmp::Ordering::Less
-            || point.partial_cmp(&range.1).unwrap() == std::cmp::Ordering::Greater
-        {
+        let check1 = point.partial_cmp(&range.0).unwrap() == Ordering::Less;
+        let check2 = point.partial_cmp(&range.1).unwrap() == Ordering::Greater;
+
+        if check1 || check2 {
             return Err(InterpolationError::OutsideOfRange);
         }
 
@@ -110,14 +112,19 @@ where
         }
 
         let idx_r = self.xs.partition_point(|&x| x < point);
+        let idx_l = idx_r - 1;
 
-        let x_l = self.xs[idx_r - 1];
-        let y_l = self.ys[idx_r - 1];
+        let x_l = self.xs[idx_l];
+        let y_l = self.ys[idx_l];
 
         let x_r = self.xs[idx_r];
         let y_r = self.ys[idx_r];
 
-        let result = ((y_r.ln() - y_l.ln()) * ((point - x_l) / (x_r - x_l)) + y_l.ln()).exp();
+        let term1 = y_r.ln() - y_l.ln();
+        let term2 = (point - x_l) / (x_r - x_l);
+        let term3 = y_l.ln();
+
+        let result = (term1 * term2 + term3).exp();
 
         Ok(result)
     }
