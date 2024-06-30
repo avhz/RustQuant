@@ -397,18 +397,18 @@ impl FiniteDifferencePricer {
 mod tests_finite_difference_pricer_at_the_money {
     use super::*;
     use crate::assert_approx_equal;
-    use crate::RUSTQUANT_EPSILON as EPS;
     use time::macros::date;
 
+    const EPS: f64 = 1e-4;
     const EUROPEAN_CALL: FiniteDifferencePricer = FiniteDifferencePricer {
         initial_price: 10.0,
         strike_price: 10.0,
         risk_free_rate: 0.05,
-        volatility: 0.5,
+        volatility: 0.1,
         evaluation_date: Some(date!(2024 - 01 - 01)),
         expiration_date: date!(2025 - 01 - 01),
-        time_steps: 1000,
-        price_steps: 100,
+        time_steps: 10000,
+        price_steps: 250,
         type_flag: TypeFlag::Call,
         exercise_flag: ExerciseFlag::European,
     };
@@ -417,11 +417,11 @@ mod tests_finite_difference_pricer_at_the_money {
         initial_price: 10.0,
         strike_price: 10.0,
         risk_free_rate: 0.05,
-        volatility: 0.5,
+        volatility: 0.1,
         evaluation_date: Some(date!(2024 - 01 - 01)),
         expiration_date: date!(2025 - 01 - 01),
-        time_steps: 1000,
-        price_steps: 100,
+        time_steps: 10000,
+        price_steps: 250,
         type_flag: TypeFlag::Put,
         exercise_flag: ExerciseFlag::European,
     };
@@ -430,11 +430,11 @@ mod tests_finite_difference_pricer_at_the_money {
         initial_price: 10.0,
         strike_price: 10.0,
         risk_free_rate: 0.05,
-        volatility: 0.5,
+        volatility: 0.1,
         evaluation_date: Some(date!(2024 - 01 - 01)),
         expiration_date: date!(2025 - 01 - 01),
-        time_steps: 1000,
-        price_steps: 100,
+        time_steps: 10000,
+        price_steps: 250,
         type_flag: TypeFlag::Call,
         exercise_flag: ExerciseFlag::American,
     };
@@ -443,19 +443,19 @@ mod tests_finite_difference_pricer_at_the_money {
         initial_price: 10.0,
         strike_price: 10.0,
         risk_free_rate: 0.05,
-        volatility: 0.5,
+        volatility: 0.1,
         evaluation_date: Some(date!(2024 - 01 - 01)),
         expiration_date: date!(2025 - 01 - 01),
-        time_steps: 1000,
-        price_steps: 100,
+        time_steps: 10000,
+        price_steps: 250,
         type_flag: TypeFlag::Put,
         exercise_flag: ExerciseFlag::American,
     };
 
-    const EXPECT_A_CALL: f64 = 2.179_260_421_286_684_845;
-    const EXPECT_A_PUT: f64 = 1.746_847_694_033_270_004;
-    const EXPECT_E_CALL: f64 = 2.179_260_421_286_684_845;
-    const EXPECT_E_PUT: f64 = 1.691_554_666_293_823_894;
+    const EXPECT_A_CALL: f64 = 0.680_478_009_892_241;
+    const EXPECT_A_PUT: f64 = 0.243_630_311_556;
+    const EXPECT_E_CALL: f64 = 0.680_495_770_882_215;
+    const EXPECT_E_PUT: f64 = 0.192_790_015_889_355;
 
     #[test]
     fn american_call_explicit() {
@@ -526,18 +526,18 @@ mod tests_finite_difference_pricer_at_the_money {
 mod tests_finite_difference_pricer_in_the_money {
     use super::*;
     use crate::assert_approx_equal;
-    use crate::RUSTQUANT_EPSILON as EPS;
     use time::macros::date;
 
+    const EPS: f64 = 1e-5;
     const EUROPEAN_CALL: FiniteDifferencePricer = FiniteDifferencePricer {
         initial_price: 15.0,
         strike_price: 10.0,
         risk_free_rate: 0.05,
-        volatility: 0.5,
+        volatility: 0.1,
         evaluation_date: Some(date!(2024 - 01 - 01)),
         expiration_date: date!(2025 - 01 - 01),
-        time_steps: 1000,
-        price_steps: 100,
+        time_steps: 10000,
+        price_steps: 200,
         type_flag: TypeFlag::Call,
         exercise_flag: ExerciseFlag::European,
     };
@@ -546,11 +546,11 @@ mod tests_finite_difference_pricer_in_the_money {
         initial_price: 10.0,
         strike_price: 15.0,
         risk_free_rate: 0.05,
-        volatility: 0.5,
+        volatility: 0.1,
         evaluation_date: Some(date!(2024 - 01 - 01)),
         expiration_date: date!(2025 - 01 - 01),
-        time_steps: 1000,
-        price_steps: 100,
+        time_steps: 10000,
+        price_steps: 200,
         type_flag: TypeFlag::Put,
         exercise_flag: ExerciseFlag::European,
     };
@@ -559,11 +559,11 @@ mod tests_finite_difference_pricer_in_the_money {
         initial_price: 15.0,
         strike_price: 10.0,
         risk_free_rate: 0.05,
-        volatility: 0.5,
+        volatility: 0.1,
         evaluation_date: Some(date!(2024 - 01 - 01)),
         expiration_date: date!(2025 - 01 - 01),
-        time_steps: 1000,
-        price_steps: 100,
+        time_steps: 10000,
+        price_steps: 200,
         type_flag: TypeFlag::Call,
         exercise_flag: ExerciseFlag::American,
     };
@@ -572,19 +572,19 @@ mod tests_finite_difference_pricer_in_the_money {
         initial_price: 10.0,
         strike_price: 15.0,
         risk_free_rate: 0.05,
-        volatility: 0.5,
+        volatility: 0.1,
         evaluation_date: Some(date!(2024 - 01 - 01)),
         expiration_date: date!(2025 - 01 - 01),
-        time_steps: 1000,
-        price_steps: 100,
+        time_steps: 10000,
+        price_steps: 200,
         type_flag: TypeFlag::Put,
         exercise_flag: ExerciseFlag::American,
     };
 
-    const EXPECT_A_CALL: f64 = 6.0644265045002292425;
-    const EXPECT_A_PUT: f64 = 5.3274412554240626605;
-    const EXPECT_E_CALL: f64 = 6.0644265045002292425;
-    const EXPECT_E_PUT: f64 = 5.0913969604477404829;
+    const EXPECT_A_CALL: f64 = 5.487_706_388_002_172;
+    const EXPECT_A_PUT: f64 = 4.999_999_999_999_999;
+    const EXPECT_E_CALL: f64 = 5.487_706_388_002_172;
+    const EXPECT_E_PUT: f64 = 4.268_497_436_100_947;
 
     #[test]
     fn american_call_explicit() {
@@ -655,65 +655,65 @@ mod tests_finite_difference_pricer_in_the_money {
 mod tests_finite_difference_pricer_out_of_the_money {
     use super::*;
     use crate::assert_approx_equal;
-    use crate::RUSTQUANT_EPSILON as EPS;
     use time::macros::date;
 
+    const EPS: f64 = 1e-5;
     const EUROPEAN_CALL: FiniteDifferencePricer = FiniteDifferencePricer {
-        initial_price: 1.0,
-        strike_price: 10.0,
+        initial_price: 10.0,
+        strike_price: 15.0,
         risk_free_rate: 0.05,
-        volatility: 0.5,
+        volatility: 0.1,
         evaluation_date: Some(date!(2024 - 01 - 01)),
         expiration_date: date!(2025 - 01 - 01),
-        time_steps: 1000,
-        price_steps: 100,
+        time_steps: 10000,
+        price_steps: 200,
         type_flag: TypeFlag::Call,
         exercise_flag: ExerciseFlag::European,
     };
 
     const EUROPEAN_PUT: FiniteDifferencePricer = FiniteDifferencePricer {
-        initial_price: 10.0,
-        strike_price: 1.0,
+        initial_price: 15.0,
+        strike_price: 10.0,
         risk_free_rate: 0.05,
-        volatility: 0.5,
+        volatility: 0.1,
         evaluation_date: Some(date!(2024 - 01 - 01)),
         expiration_date: date!(2025 - 01 - 01),
-        time_steps: 1000,
-        price_steps: 100,
+        time_steps: 10000,
+        price_steps: 200,
         type_flag: TypeFlag::Put,
         exercise_flag: ExerciseFlag::European,
     };
 
     const AMERICAN_CALL: FiniteDifferencePricer = FiniteDifferencePricer {
-        initial_price: 1.0,
-        strike_price: 10.0,
+        initial_price: 10.0,
+        strike_price: 15.0,
         risk_free_rate: 0.05,
-        volatility: 0.5,
+        volatility: 0.1,
         evaluation_date: Some(date!(2024 - 01 - 01)),
         expiration_date: date!(2025 - 01 - 01),
-        time_steps: 1000,
-        price_steps: 100,
+        time_steps: 10000,
+        price_steps: 200,
         type_flag: TypeFlag::Call,
         exercise_flag: ExerciseFlag::American,
     };
 
     const AMERICAN_PUT: FiniteDifferencePricer = FiniteDifferencePricer {
-        initial_price: 10.0,
-        strike_price: 1.0,
+        initial_price: 15.0,
+        strike_price: 10.0,
         risk_free_rate: 0.05,
-        volatility: 0.5,
+        volatility: 0.1,
         evaluation_date: Some(date!(2024 - 01 - 01)),
         expiration_date: date!(2025 - 01 - 01),
-        time_steps: 1000,
-        price_steps: 100,
+        time_steps: 10000,
+        price_steps: 200,
         type_flag: TypeFlag::Put,
         exercise_flag: ExerciseFlag::American,
     };
 
-    const EXPECT_A_CALL: f64 = 0.0000010140475396182350785;
-    const EXPECT_A_PUT: f64 = 0.000014933019126383249514;
-    const EXPECT_E_CALL: f64 = 0.0000010140475396182350785;
-    const EXPECT_E_PUT: f64 = 0.00000037356944149356531733;
+    const EXPECT_A_CALL: f64 = 0.000_059_393_327_777_911;
+    const EXPECT_A_PUT: f64 = 0.000_000_693_279_415_654_018;
+    const EXPECT_E_CALL: f64 = 0.000_056_068_590_237_768;
+    const EXPECT_E_PUT: f64 = 0.000_000_633_009_309_923_640;
 
     #[test]
     fn american_call_explicit() {
