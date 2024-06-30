@@ -288,118 +288,125 @@ impl FiniteDifferencePricer {
         }
     }
 
+    fn grid(&self) -> (f64, f64, f64, f64) {
+        let T: f64 = self.year_fraction();
+        let delta_t: f64 = T / (self.time_steps as f64);
+        let x_min: f64 = self.initial_price.ln() - 5.0 * self.volatility * T.sqrt();
+        let delta_x: f64 = (self.initial_price.ln() + 5.0 * self.volatility * T.sqrt() - x_min) / self.price_steps as f64;
+        
+        (T, delta_t, delta_x, x_min)
+    }
+
+    fn coefficients(&self, delta_t: f64, delta_x: f64) -> (f64, f64) {
+        (0.5 * delta_t * self.volatility.powi(2) / delta_x.powi(2), delta_t * (self.risk_free_rate - 0.5 * self.volatility.powi(2)) / (2.0 * delta_x))
+    }
+
     /// Explicit method
     pub fn explicit(&self) -> f64 {
-        let (T, delta_t) = self.time_structure();
+        let (T, delta_t, delta_x, x_min) = self.grid();
+        let (x, y) = self.coefficients(delta_t, delta_x);
 
         let tridiagonal_matrix: Vec<Vec<f64>> = self.create_tridiagonal_matrix(
-            self.sub_diagonal(delta_t / 2.0),
-            self.diagonal(-delta_t),
-            self.super_diagonal(delta_t / 2.0)
+            x - y,
+            1.0 - 2.0 * x,
+            x + y,
         );
 
-        let mut u: Vec<f64> = self.boundary_condition_at_time_n();
+        let mut u: Vec<f64> = self.initial_condition(x_min, delta_x);
 
-        for t in (0..self.time_steps).rev() {
+        for t in 1..(self.time_steps + 1) {
             u = self.matrix_multiply_vector(&tridiagonal_matrix, u);
 
             match self.type_flag {
                 TypeFlag::Call => {
-                    u[(self.price_steps - 2) as usize] +=
-                        self.super_diagonal(delta_t / 2.0)((self.price_steps - 1) as f64)
-                            * self.call_boundary(t, T, delta_t);
+                    u[(self.price_steps - 2) as usize] += (x + y) * self.call_boundary((t as f64) * delta_t, self.initial_price.ln() + 5.0 * self.volatility * T.sqrt());
                 }
                 TypeFlag::Put => {
-                    u[0] +=
-                        self.sub_diagonal(delta_t / 2.0)(1.0) * self.put_boundary(t, T, delta_t);
+                    u[0] += (x - y) * self.put_boundary((t as f64) * delta_t, x_min);
                 }
             }
 
             if let ExerciseFlag::American = self.exercise_flag {
-                u = self.american_time_stop_step(u, self.price_steps);
+                u = self.american_time_stop_step(u, (t as f64) * delta_t, x_min, delta_x);
             }
         }
 
-        self.return_price(u)
+        f64::exp(- self.risk_free_rate * T) * self.return_price(u)
     }
 
-    /// Implicit method
+    ///Implicit method
     pub fn implicit(&self) -> f64 {
-        let (T, delta_t) = self.time_structure();
+        let (T, delta_t, delta_x, x_min) = self.grid();
+        let (x, y) = self.coefficients(delta_t, delta_x);
 
         let inverse_matrix: Vec<Vec<f64>> = self.invert_tridiagonal_matrix(self.create_tridiagonal_matrix(
-                self.sub_diagonal(- delta_t / 2.0),
-                self.diagonal(delta_t),
-                self.super_diagonal(- delta_t / 2.0)
+            - x + y,
+            1.0 + 2.0 * x,
+            - x - y
         ));
 
-        let mut u: Vec<f64> = self.boundary_condition_at_time_n();
+        let mut u: Vec<f64> = self.initial_condition(x_min, delta_x);
 
-        for t in (0..self.time_steps).rev() {
+        for t in 1..(self.time_steps + 1) {
             match self.type_flag {
                 TypeFlag::Call => {
-                    u[(self.price_steps - 2) as usize] -=
-                        self.super_diagonal(- delta_t / 2.0)((self.price_steps - 1) as f64)
-                            * self.call_boundary(t + 1, T, delta_t);
+                    u[(self.price_steps - 2) as usize] -= (- x - y) * self.call_boundary((t as f64) * delta_t, self.initial_price.ln() + 5.0 * self.volatility * T.sqrt());
                 }
                 TypeFlag::Put => {
-                    u[0] -=
-                        self.sub_diagonal(delta_t / 2.0)(1.0) * self.put_boundary(t + 1, T, delta_t);
+                    u[0] -= (- x + y) * self.put_boundary((t as f64) * delta_t, x_min);
                 }
             }
 
             u = self.matrix_multiply_vector(&inverse_matrix, u);
 
             if let ExerciseFlag::American = self.exercise_flag {
-                u = self.american_time_stop_step(u, self.price_steps);
+                u = self.american_time_stop_step(u, (t as f64) * delta_t, x_min, delta_x);
             }
         }
 
-        self.return_price(u)
+        f64::exp(- self.risk_free_rate * T) * self.return_price(u)
     }
 
     /// Crank-Nicolson method
     pub fn crank_nicolson(&self) -> f64 {
-        let (T, delta_t) = self.time_structure();
+        let (T, delta_t, delta_x, x_min) = self.grid();
+        let (x, y) = self.coefficients(delta_t, delta_x);
 
-        let inverse_past_matrix = self.invert_tridiagonal_matrix(self.create_tridiagonal_matrix(
-            self.sub_diagonal(- delta_t / 4.0),
-            self.diagonal(delta_t / 2.0),
-            self.super_diagonal(- delta_t / 4.0)
-        ));
-
-        let tridiagonal_future_matrix: Vec<Vec<f64>> = self.create_tridiagonal_matrix(
-            self.sub_diagonal(delta_t / 4.0),
-            self.diagonal(- delta_t / 2.0),
-            self.super_diagonal(delta_t / 4.0)
+        let tridiagonal_past_matrix: Vec<Vec<f64>> = self.create_tridiagonal_matrix(
+            0.5 * (x - y),
+            1.0 - x,
+            0.5 * (x + y),
         );
 
-        let mut u: Vec<f64> = self.boundary_condition_at_time_n();
+        let inverse_future_matrix = self.invert_tridiagonal_matrix(self.create_tridiagonal_matrix(
+            - 0.5 * (x - y),
+            1.0 + x,
+            - 0.5 * (x + y),
+        ));
 
-        for t in (0..self.time_steps).rev() {
-            u = self.matrix_multiply_vector(&tridiagonal_future_matrix, u);
+        let mut u: Vec<f64> = self.initial_condition(x_min, delta_x);
+
+        for t in 1..(self.time_steps + 1) {
+            u = self.matrix_multiply_vector(&tridiagonal_past_matrix, u);
 
             match self.type_flag {
                 TypeFlag::Call => {
                     u[(self.price_steps - 2) as usize] +=
-                        self.super_diagonal(delta_t / 4.0)((self.price_steps - 1) as f64)
-                            * (self.call_boundary(t + 1, T, delta_t)
-                                + self.call_boundary(t, T, delta_t))
+                        (x + y) * self.call_boundary((t as f64) * delta_t, self.initial_price.ln() + 5.0 * self.volatility * T.sqrt());
                 }
                 TypeFlag::Put => {
-                    u[0] += self.sub_diagonal(delta_t / 4.0)(1.0)
-                        * (self.put_boundary(t + 1, T, delta_t) + self.put_boundary(t, T, delta_t))
+                    u[0] += (x - y) * self.put_boundary((t as f64) * delta_t, x_min);
                 }
             }
 
-            u = self.matrix_multiply_vector(&inverse_past_matrix, u);
+            u = self.matrix_multiply_vector(&inverse_future_matrix, u);
 
             if let ExerciseFlag::American = self.exercise_flag {
-                u = self.american_time_stop_step(u, self.price_steps);
+                u = self.american_time_stop_step(u, (t as f64) * delta_t, x_min, delta_x);
             }
         }
 
-        self.return_price(u)
+        f64::exp(- self.risk_free_rate * T) * self.return_price(u)
     }
 }
 
