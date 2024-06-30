@@ -212,27 +212,6 @@ impl FiniteDifferencePricer {
         inverse_matrix
     }
 
-    fn sub_diagonal(&self, scaler: f64) -> Box<dyn Fn(f64) -> f64 + '_> {
-        let function = move |m: f64| {
-            scaler * ((self.volatility.powi(2) * m.powi(2)) - (self.risk_free_rate * m))
-        };
-        Box::new(function)
-    }
-
-    fn diagonal(&self, scaler: f64) -> Box<dyn Fn(f64) -> f64 + '_> {
-        let function = move |m: f64| {
-            1.0 + scaler * ((self.volatility.powi(2) * m.powi(2)) + self.risk_free_rate)
-        };
-        Box::new(function)
-    }
-
-    fn super_diagonal(&self, scaler: f64) -> Box<dyn Fn(f64) -> f64 + '_> {
-        let function = move |m: f64| {
-            scaler * ((self.volatility.powi(2)) * m.powi(2) + (self.risk_free_rate * m))
-        };
-        Box::new(function)
-    }
-
     fn payoff(&self, s: f64) -> f64 {
         match self.type_flag {
             TypeFlag::Call => (s - self.strike_price).max(0.0),
@@ -240,29 +219,34 @@ impl FiniteDifferencePricer {
         }
     }
 
-    fn american_time_stop_step(&self, u: Vec<f64>, price_steps: u32) -> Vec<f64> {
-        (0..(price_steps - 1))
+    fn american_time_stop_step(&self, u: Vec<f64>, tau: f64, x_min: f64, delta_x: f64) -> Vec<f64> {
+        (1..self.price_steps)
             .map(|i: u32| {
-                u[i as usize].max(
-                    self.payoff((i + 1) as f64 * (2.0 * self.initial_price) / (price_steps as f64)),
+                u[(i - 1) as usize].max(
+                    f64::exp(self.risk_free_rate * tau) * self.payoff(
+                        f64::exp(
+                            x_min + (i as f64) * delta_x
+                        )
+                    )
                 )
             })
+        .collect()
+    }
+
+    fn initial_condition(&self, x_min: f64, delta_x: f64) -> Vec<f64> {
+        (1..self.price_steps)
+            .map(|i: u32| self.payoff(
+                f64::exp(
+                x_min + (i as f64) * delta_x)))
             .collect()
     }
 
-    fn boundary_condition_at_time_n(&self) -> Vec<f64> {
-        (1..(self.price_steps))
-            .map(|i: u32| self.payoff((i as f64) * (2.0 * self.initial_price / (self.price_steps as f64))))
-            .collect()
+    fn call_boundary(&self, tau: f64, x_max: f64) -> f64 {
+        f64::exp(x_max) - self.strike_price * f64::exp(- self.risk_free_rate * tau)
     }
 
-    fn call_boundary(&self, t: u32, T: f64, delta_t: f64) -> f64 {
-        2.0 * self.initial_price
-            - self.strike_price * f64::exp(-self.risk_free_rate * (T - (t as f64 * delta_t)))
-    }
-
-    fn put_boundary(&self, t: u32, T: f64, delta_t: f64) -> f64 {
-        self.strike_price * f64::exp(-(self.risk_free_rate * (T - t as f64 * delta_t)))
+    fn put_boundary(&self, tau: f64, x_min: f64) -> f64 {
+        self.strike_price * f64::exp(- self.risk_free_rate * tau) - f64::exp(x_min)
     }
 
     fn year_fraction(&self) -> f64 {
