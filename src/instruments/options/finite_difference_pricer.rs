@@ -256,11 +256,6 @@ impl FiniteDifferencePricer {
         )
     }
 
-    fn time_structure(&self) -> (f64, f64) {
-        let T: f64 = self.year_fraction();
-        (T, T / (self.time_steps as f64))
-    }
-
     fn return_price(&self, u: Vec<f64>) -> f64 {
         match self.price_steps % 2 {
             0 => u[((self.price_steps - 1) / 2) as usize],
