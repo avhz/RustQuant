@@ -83,96 +83,71 @@ impl FiniteDifferencePricer {
         }
     }
 
+    fn tridiagonal_matrix_multiply_vector(
+        &self, 
+        sub_diagonal: f64, 
+        diagonal: f64, 
+        super_diagonal: f64, 
+        v: Vec<f64>
+    ) -> Vec<f64> {
+        let mut Av: Vec<f64> = Vec::new();
+
+        for i in 0..v.len() {
+            Av.push(
+                match i 
+                    {
+                        k if k == 0 => diagonal * v[0] + super_diagonal * v[1],
+                        k if k == v.len() - 1 => sub_diagonal * v[v.len() - 2] + diagonal * v[v.len() - 1],
+                        _ => sub_diagonal * v[i - 1] + diagonal * v[i] + super_diagonal * v[i + 1]
+                    }
+            )
+        }
+        Av
+    }
+
     fn matrix_multiply_vector(&self, A: &[Vec<f64>], v: Vec<f64>) -> Vec<f64> {
         let mut Av: Vec<f64> = Vec::new();
         let mut value: f64;
 
-        match A[0].len() {
-            n if n == v.len() => {
-                for row in A {
-                    value = 0.0;
-                    for (a, b) in row.iter().zip(&v) {
-                        value += a * b;
-                    }
-                    Av.push(value);
-                }
+        for row in A {
+            value = 0.0;
+            for (a, b) in row.iter().zip(&v) {
+                value += a * b;
             }
-            _ => {
-                for i in 0..A.len() {
-                    match i {
-                        0 => Av.push(A[0][0] * v[0] + A[0][1] * v[1]),
-                        n if n == A.len() - 1 => Av.push(A[n][0] * v[n - 1] + A[n][1] * v[n]),
-                        _ => Av.push(A[i][0] * v[i - 1] + A[i][1] * v[i] + A[i][2] * v[i + 1]),
-                    }
-                }
-            }
+            Av.push(value);
         }
 
         Av
     }
 
-    fn create_tridiagonal_matrix(
-        &self,
-        sub_diagonal: f64,
-        diagonal: f64,
-        super_diagonal: f64
-    ) -> Vec<Vec<f64>>
-    {
-        let mut matrix_row: Vec<f64> = Vec::new();
-        let mut tridiagonal_matrix: Vec<Vec<f64>> = Vec::new();
-
-        for i in 1..(self.price_steps) {
-            if i != 1 {
-                matrix_row.push(sub_diagonal);
-            }
-
-            matrix_row.push(diagonal);
-
-            if i != self.price_steps - 1 {
-                matrix_row.push(super_diagonal);
-            }
-
-            tridiagonal_matrix.push(matrix_row.clone());
-            matrix_row.clear()
-        }
-
-        tridiagonal_matrix
-    }
-
-    fn invert_tridiagonal_matrix(&self, tridiagonal_matrix: Vec<Vec<f64>>) -> Vec<Vec<f64>> {
-        let last = tridiagonal_matrix.len() - 1;
+    fn invert_tridiagonal_matrix(&self, sub_diagonal: f64, diagonal: f64, super_diagonal: f64) -> Vec<Vec<f64>> {
         let mut theta: Vec<f64> = Vec::new();
+        let system_size: usize = (self.price_steps - 1) as usize;
+
         theta.push(1.0);
-        theta.push(tridiagonal_matrix[0][0]);
+        theta.push(diagonal);
         theta.push(
-            tridiagonal_matrix[1][1] * theta[1]
-                - tridiagonal_matrix[0][1] * tridiagonal_matrix[1][0] * theta[0],
+            diagonal * diagonal
+                - super_diagonal * sub_diagonal,
         );
 
-        for i in 2..(tridiagonal_matrix.len()) {
+        for i in 2..system_size {
             theta.push(
-                tridiagonal_matrix[i][1] * theta[i]
-                    - tridiagonal_matrix[i - 1][2] * tridiagonal_matrix[i][0] * theta[i - 1],
+                diagonal * theta[i]
+                    - super_diagonal * sub_diagonal * theta[i - 1]
             )
         }
 
         let mut phi: Vec<f64> = Vec::new();
         phi.push(1.0);
-        phi.push(tridiagonal_matrix[last][1]);
+        phi.push(diagonal);
 
-        for i in 1..(tridiagonal_matrix.len() - 1) {
+        for i in 1..(system_size) {
             phi.push(
-                tridiagonal_matrix[last - i][1] * phi[i]
-                    - tridiagonal_matrix[last - i][2]
-                        * tridiagonal_matrix[last + 1 - i][0]
-                        * phi[i - 1],
+                diagonal * phi[i]
+                    - super_diagonal * sub_diagonal * phi[i - 1]
             )
         }
-
-        phi.push(
-            tridiagonal_matrix[0][0] * phi[last]
-                - tridiagonal_matrix[0][1] * tridiagonal_matrix[1][0] * phi[last - 1],
-        );
 
         let theta_n = theta.pop().unwrap();
         phi.pop();
@@ -182,24 +157,25 @@ impl FiniteDifferencePricer {
         let mut inverse_matrix: Vec<Vec<f64>> = Vec::new();
         let mut matrix_row: Vec<f64> = Vec::new();
 
-        for i in 0..tridiagonal_matrix.len() {
-            for j in 0..tridiagonal_matrix.len() {
-                value = (-1.0_f64).powi((i + j) as i32);
+        for i in 0..system_size {
+            for j in 0..system_size {
+                value = (- 1.0_f64).powi((i + j) as i32);
 
                 match i.cmp(&j) {
                     Ordering::Less => {
-                        for item in &tridiagonal_matrix[i..j] {
-                            value *= item.last().unwrap()
+                        for k in i..j {
+                            value *= match k {
+                                k if k == system_size - 1 => {diagonal},
+                                _ => super_diagonal
+                            }
                         }
                         value *= theta[i] * phi[j] / theta_n;
                     }
                     Ordering::Equal => value *= theta[i] * phi[i] / theta_n,
-
                     Ordering::Greater => {
-                        for item in &tridiagonal_matrix[(j + 1)..(i + 1)] {
-                            value *= item.first().unwrap()
+                        for _k in (j + 1)..(i + 1) {
+                            value *= sub_diagonal
                         }
-
                         value *= theta[j] * phi[i] / theta_n
                     }
                 }
