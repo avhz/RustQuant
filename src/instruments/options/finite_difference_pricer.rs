@@ -103,7 +103,7 @@ impl FiniteDifferencePricer {
         Av
     }
 
-    fn matrix_multiply_vector(&self, A: &[Vec<f64>], v: Vec<f64>) -> Vec<f64> {
+    fn general_matrix_multiply_vector(&self, A: &[Vec<f64>], v: Vec<f64>) -> Vec<f64> {
         let mut Av: Vec<f64> = Vec::new();
         let mut value: f64;
 
@@ -313,7 +313,7 @@ impl FiniteDifferencePricer {
                 }
             }
 
-            v = self.matrix_multiply_vector(&inverse_matrix, v);
+            v = self.general_matrix_multiply_vector(&inverse_matrix, v);
 
             if let ExerciseFlag::American = self.exercise_flag {
                 v = self.american_time_stop_step(v, (t as f64) * delta_t, x_min, delta_x);
@@ -360,7 +360,7 @@ impl FiniteDifferencePricer {
                 }
             }
 
-            v = self.matrix_multiply_vector(&inverse_future_matrix, v);
+            v = self.general_matrix_multiply_vector(&inverse_future_matrix, v);
 
             if let ExerciseFlag::American = self.exercise_flag {
                 v = self.american_time_stop_step(v, (t as f64) * delta_t, x_min, delta_x);
