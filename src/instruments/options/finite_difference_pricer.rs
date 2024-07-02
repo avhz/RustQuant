@@ -92,16 +92,14 @@ impl FiniteDifferencePricer {
     ) -> Vec<f64> {
         let mut Av: Vec<f64> = Vec::new();
 
-        for i in 0..v.len() {
-            Av.push(
-                match i 
-                    {
-                        k if k == 0 => diagonal * v[0] + super_diagonal * v[1],
-                        k if k == v.len() - 1 => sub_diagonal * v[v.len() - 2] + diagonal * v[v.len() - 1],
-                        _ => sub_diagonal * v[i - 1] + diagonal * v[i] + super_diagonal * v[i + 1]
-                    }
-            )
+        Av.push(diagonal * v[0] + super_diagonal * v[1]);
+
+        for i in 1..(v.len() - 1) {
+            Av.push(sub_diagonal * v[i - 1] + diagonal * v[i] + super_diagonal * v[i + 1])
         }
+        
+        Av.push(sub_diagonal * v[v.len() - 2] + diagonal * v[v.len() - 1]);
+
         Av
     }
 
