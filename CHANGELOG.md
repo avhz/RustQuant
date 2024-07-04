@@ -6,6 +6,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.6](https://github.com/avhz/RustQuant/compare/v0.2.5...v0.2.6) - 2024-07-04
+
+### Other
+- Merge pull request [#221](https://github.com/avhz/RustQuant/pull/221) from yfnaji/finite_difference_pricer_adjustments
+- Amend function name from matrix_multiply_vector to general_matrix_multiply_vector
+- Amend tridiagonal_matrix_multiply_vector() by removing match statement and manually add first and final entries outside loop
+- Amend schemes to incorporate newly created tridiagonal_matrix_multiply_vector() and amendment in invert_tridiagonal_matrix()
+- Introduce function exclusively for multiplication between tridiagonal matrix and vector + amend invert_tridiagonal_matrix() to return matrix representation using only diagonal and sub/super diagonals arguments
+- Amend error threshold and target values for unit tests
+- Remove now obsolete time_structure()
+- Remove obsolete diagonal functions + amend condition functions
+- Amend schemes to approximate transformed Black-Scholes equation
+- Amend argument datatype from functions to f64 and amending create_tridiagonal_matrix() accordingly
+- Adjustments in crank_nicolson()
+- Adjustments in implicit()
+- Adjustments in explicit()
+- Refactor in create_tridiagonal_matrix()
+- Correct error in implementation for call/put boundary conditions + remove unnecessary argument for boundary_condition_at_time_n()
+- Remove unnecessary parameter from create_tridiagonal_matrix()
+
 ## [0.2.5](https://github.com/avhz/RustQuant/compare/v0.2.4...v0.2.5) - 2024-06-28
 
 ### Other
