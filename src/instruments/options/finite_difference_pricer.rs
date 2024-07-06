@@ -83,101 +83,69 @@ impl FiniteDifferencePricer {
         }
     }
 
-    fn matrix_multiply_vector(&self, A: &[Vec<f64>], v: Vec<f64>) -> Vec<f64> {
+    fn tridiagonal_matrix_multiply_vector(
+        &self, 
+        sub_diagonal: f64, 
+        diagonal: f64, 
+        super_diagonal: f64, 
+        v: Vec<f64>
+    ) -> Vec<f64> {
+        let mut Av: Vec<f64> = Vec::new();
+
+        Av.push(diagonal * v[0] + super_diagonal * v[1]);
+
+        for i in 1..(v.len() - 1) {
+            Av.push(sub_diagonal * v[i - 1] + diagonal * v[i] + super_diagonal * v[i + 1])
+        }
+        
+        Av.push(sub_diagonal * v[v.len() - 2] + diagonal * v[v.len() - 1]);
+
+        Av
+    }
+
+    fn general_matrix_multiply_vector(&self, A: &[Vec<f64>], v: Vec<f64>) -> Vec<f64> {
         let mut Av: Vec<f64> = Vec::new();
         let mut value: f64;
 
-        match A[0].len() {
-            n if n == v.len() => {
-                for row in A {
-                    value = 0.0;
-                    for (a, b) in row.iter().zip(&v) {
-                        value += a * b;
-                    }
-                    Av.push(value);
-                }
+        for row in A {
+            value = 0.0;
+            for (a, b) in row.iter().zip(&v) {
+                value += a * b;
             }
-            _ => {
-                for i in 0..A.len() {
-                    match i {
-                        0 => Av.push(A[0][0] * v[0] + A[0][1] * v[1]),
-                        n if n == A.len() - 1 => Av.push(A[n][0] * v[n - 1] + A[n][1] * v[n]),
-                        _ => Av.push(A[i][0] * v[i - 1] + A[i][1] * v[i] + A[i][2] * v[i + 1]),
-                    }
-                }
-            }
+            Av.push(value);
         }
 
         Av
     }
 
-    fn create_tridiagonal_matrix<A, B, C>(
-        &self,
-        sub_diagonal: A,
-        diagonal: B,
-        super_diagonal: C,
-        price_steps: u32,
-    ) -> Vec<Vec<f64>>
-    where
-        A: Fn(f64) -> f64,
-        B: Fn(f64) -> f64,
-        C: Fn(f64) -> f64,
-    {
-        let mut matrix_row: Vec<f64> = Vec::new();
-        let mut tridiagonal_matrix: Vec<Vec<f64>> = Vec::new();
-
-        for i in 1..(price_steps) {
-            if i != 1 {
-                matrix_row.push(sub_diagonal(i as f64));
-            }
-
-            matrix_row.push(diagonal(i as f64));
-
-            if i != price_steps - 1 {
-                matrix_row.push(super_diagonal(i as f64));
-            }
-
-            tridiagonal_matrix.push(matrix_row.clone());
-            matrix_row.clear()
-        }
-
-        tridiagonal_matrix
-    }
-
-    fn invert_tridiagonal_matrix(&self, tridiagonal_matrix: Vec<Vec<f64>>) -> Vec<Vec<f64>> {
-        let last = tridiagonal_matrix.len() - 1;
+    fn invert_tridiagonal_matrix(&self, sub_diagonal: f64, diagonal: f64, super_diagonal: f64) -> Vec<Vec<f64>> {
         let mut theta: Vec<f64> = Vec::new();
+        let system_size: usize = (self.price_steps - 1) as usize;
+
         theta.push(1.0);
-        theta.push(tridiagonal_matrix[0][0]);
+        theta.push(diagonal);
         theta.push(
-            tridiagonal_matrix[1][1] * theta[1]
-                - tridiagonal_matrix[0][1] * tridiagonal_matrix[1][0] * theta[0],
+            diagonal * diagonal
+                - super_diagonal * sub_diagonal,
         );
 
-        for i in 2..(tridiagonal_matrix.len()) {
+        for i in 2..system_size {
             theta.push(
-                tridiagonal_matrix[i][1] * theta[i]
-                    - tridiagonal_matrix[i - 1][2] * tridiagonal_matrix[i][0] * theta[i - 1],
+                diagonal * theta[i]
+                    - super_diagonal * sub_diagonal * theta[i - 1]
             )
         }
 
         let mut phi: Vec<f64> = Vec::new();
         phi.push(1.0);
-        phi.push(tridiagonal_matrix[last][1]);
+        phi.push(diagonal);
 
-        for i in 1..(tridiagonal_matrix.len() - 1) {
+        for i in 1..(system_size) {
             phi.push(
-                tridiagonal_matrix[last - i][1] * phi[i]
-                    - tridiagonal_matrix[last - i][2]
-                        * tridiagonal_matrix[last + 1 - i][0]
-                        * phi[i - 1],
+                diagonal * phi[i]
+                    - super_diagonal * sub_diagonal * phi[i - 1]
             )
         }
-
-        phi.push(
-            tridiagonal_matrix[0][0] * phi[last]
-                - tridiagonal_matrix[0][1] * tridiagonal_matrix[1][0] * phi[last - 1],
-        );
 
         let theta_n = theta.pop().unwrap();
         phi.pop();
@@ -187,24 +155,25 @@ impl FiniteDifferencePricer {
         let mut inverse_matrix: Vec<Vec<f64>> = Vec::new();
         let mut matrix_row: Vec<f64> = Vec::new();
 
-        for i in 0..tridiagonal_matrix.len() {
-            for j in 0..tridiagonal_matrix.len() {
-                value = (-1.0_f64).powi((i + j) as i32);
+        for i in 0..system_size {
+            for j in 0..system_size {
+                value = (- 1.0_f64).powi((i + j) as i32);
 
                 match i.cmp(&j) {
                     Ordering::Less => {
-                        for item in &tridiagonal_matrix[i..j] {
-                            value *= item.last().unwrap()
+                        for k in i..j {
+                            value *= match k {
+                                k if k == system_size - 1 => {diagonal},
+                                _ => super_diagonal
+                            }
                         }
                         value *= theta[i] * phi[j] / theta_n;
                     }
                     Ordering::Equal => value *= theta[i] * phi[i] / theta_n,
-
                     Ordering::Greater => {
-                        for item in &tridiagonal_matrix[(j + 1)..(i + 1)] {
-                            value *= item.first().unwrap()
+                        for _k in (j + 1)..(i + 1) {
+                            value *= sub_diagonal
                         }
-
                         value *= theta[j] * phi[i] / theta_n
                     }
                 }
@@ -217,27 +186,6 @@ impl FiniteDifferencePricer {
         inverse_matrix
     }
 
-    fn sub_diagonal(&self, scaler: f64) -> Box<dyn Fn(f64) -> f64 + '_> {
-        let function = move |m: f64| {
-            scaler * ((self.volatility.powi(2) * m.powi(2)) - (self.risk_free_rate * m))
-        };
-        Box::new(function)
-    }
-
-    fn diagonal(&self, scaler: f64) -> Box<dyn Fn(f64) -> f64 + '_> {
-        let function = move |m: f64| {
-            1.0 + scaler * ((self.volatility.powi(2) * m.powi(2)) + self.risk_free_rate)
-        };
-        Box::new(function)
-    }
-
-    fn super_diagonal(&self, scaler: f64) -> Box<dyn Fn(f64) -> f64 + '_> {
-        let function = move |m: f64| {
-            scaler * ((self.volatility.powi(2)) * m.powi(2) + (self.risk_free_rate * m))
-        };
-        Box::new(function)
-    }
-
     fn payoff(&self, s: f64) -> f64 {
         match self.type_flag {
             TypeFlag::Call => (s - self.strike_price).max(0.0),
@@ -245,29 +193,34 @@ impl FiniteDifferencePricer {
         }
     }
 
-    fn american_time_stop_step(&self, u: Vec<f64>, price_steps: u32) -> Vec<f64> {
-        (0..(price_steps - 1))
+    fn american_time_stop_step(&self, v: Vec<f64>, tau: f64, x_min: f64, delta_x: f64) -> Vec<f64> {
+        (1..self.price_steps)
             .map(|i: u32| {
-                u[i as usize].max(
-                    self.payoff((i + 1) as f64 * (2.0 * self.initial_price) / (price_steps as f64)),
+                v[(i - 1) as usize].max(
+                    f64::exp(self.risk_free_rate * tau) * self.payoff(
+                        f64::exp(
+                            x_min + (i as f64) * delta_x
+                        )
+                    )
                 )
             })
+        .collect()
+    }
+
+    fn initial_condition(&self, x_min: f64, delta_x: f64) -> Vec<f64> {
+        (1..self.price_steps)
+            .map(|i: u32| self.payoff(
+                f64::exp(
+                x_min + (i as f64) * delta_x)))
             .collect()
     }
 
-    fn boundary_condition_at_time_n(&self, price_steps: u32) -> Vec<f64> {
-        (1..(price_steps))
-            .map(|i| self.payoff(((i) as f64) * (2.0 * self.initial_price / (price_steps as f64))))
-            .collect()
+    fn call_boundary(&self, tau: f64, x_max: f64) -> f64 {
+        f64::exp(x_max) - self.strike_price * f64::exp(- self.risk_free_rate * tau)
     }
 
-    fn call_boundary(&self, t: u32, T: f64, delta_t: f64) -> f64 {
-        2.0 * self.initial_price
-            - self.strike_price * f64::exp(-(self.risk_free_rate * T) - (t as f64 * delta_t))
-    }
-
-    fn put_boundary(&self, t: u32, T: f64, delta_t: f64) -> f64 {
-        self.strike_price * f64::exp(-(self.risk_free_rate * T) - (t as f64 * delta_t))
+    fn put_boundary(&self, tau: f64, x_min: f64) -> f64 {
+        self.strike_price * f64::exp(- self.risk_free_rate * tau) - f64::exp(x_min)
     }
 
     fn year_fraction(&self) -> f64 {
@@ -275,11 +228,6 @@ impl FiniteDifferencePricer {
             self.evaluation_date.unwrap_or(today()),
             self.expiration_date,
         )
-    }
-
-    fn time_structure(&self) -> (f64, f64) {
-        let T: f64 = self.year_fraction();
-        (T, T / (self.time_steps as f64))
     }
 
     fn return_price(&self, u: Vec<f64>) -> f64 {
@@ -293,122 +241,133 @@ impl FiniteDifferencePricer {
         }
     }
 
-    /// Explicit method
-    pub fn explicit(&self) -> f64 {
-        let (T, delta_t) = self.time_structure();
-
-        let tridiagonal_matrix = self.create_tridiagonal_matrix(
-            self.sub_diagonal(delta_t / 2.0),
-            self.diagonal(-delta_t),
-            self.super_diagonal(delta_t / 2.0),
-            self.price_steps,
-        );
-
-        let mut u: Vec<f64> = self.boundary_condition_at_time_n(self.price_steps);
-
-        for t in (1..self.time_steps).rev() {
-            u = self.matrix_multiply_vector(&tridiagonal_matrix, u);
-
-            match self.type_flag {
-                TypeFlag::Call => {
-                    u[(self.price_steps - 2) as usize] +=
-                        self.super_diagonal(delta_t / 2.0)((self.price_steps - 1) as f64)
-                            * self.call_boundary(t, T, delta_t);
-                }
-                TypeFlag::Put => {
-                    u[0] +=
-                        self.sub_diagonal(delta_t / 2.0)(1.0) * self.put_boundary(t, T, delta_t);
-                }
-            }
-
-            if let ExerciseFlag::American = self.exercise_flag {
-                u = self.american_time_stop_step(u, self.price_steps);
-            }
-        }
-
-        self.return_price(u)
+    fn grid(&self) -> (f64, f64, f64, f64) {
+        let T: f64 = self.year_fraction();
+        let delta_t: f64 = T / (self.time_steps as f64);
+        let x_min: f64 = self.initial_price.ln() - 5.0 * self.volatility * T.sqrt();
+        let delta_x: f64 = (self.initial_price.ln() + 5.0 * self.volatility * T.sqrt() - x_min) / self.price_steps as f64;
+        
+        (T, delta_t, delta_x, x_min)
     }
 
-    /// Implicit method
-    pub fn implicit(&self) -> f64 {
-        let (T, delta_t) = self.time_structure();
+    fn coefficients(&self, delta_t: f64, delta_x: f64) -> (f64, f64) {
+        (0.5 * delta_t * self.volatility.powi(2) / delta_x.powi(2), delta_t * (self.risk_free_rate - 0.5 * self.volatility.powi(2)) / (2.0 * delta_x))
+    }
 
-        let inverse_matrix = self.invert_tridiagonal_matrix(self.create_tridiagonal_matrix(
-            self.sub_diagonal(-delta_t / 2.0),
-            self.diagonal(delta_t),
-            self.super_diagonal(-delta_t / 2.0),
-            self.price_steps,
-        ));
+    /// Explicit method
+    pub fn explicit(&self) -> f64 {
+        let (T, delta_t, delta_x, x_min) = self.grid();
+        let (x, y) = self.coefficients(delta_t, delta_x);
+        let sub_diagonal: f64 = x - y;
+        let diagonal: f64 = 1.0 - 2.0 * x;
+        let super_diagonal: f64 = x + y;
 
-        let mut u: Vec<f64> = self.boundary_condition_at_time_n(self.price_steps);
+        let mut v: Vec<f64> = self.initial_condition(x_min, delta_x);
 
-        for t in (1..self.time_steps).rev() {
+        for t in 1..(self.time_steps + 1) {
+            v = self.tridiagonal_matrix_multiply_vector(sub_diagonal, diagonal, super_diagonal, v);
+
             match self.type_flag {
                 TypeFlag::Call => {
-                    u[(self.price_steps - 2) as usize] -=
-                        self.super_diagonal(-delta_t / 2.0)((self.price_steps - 1) as f64)
-                            * self.call_boundary(t, T, delta_t);
+                    v[(self.price_steps - 2) as usize] += super_diagonal * self.call_boundary(
+                        (t as f64) * delta_t, 
+                        self.initial_price.ln() + 5.0 * self.volatility * T.sqrt()
+                    );
                 }
                 TypeFlag::Put => {
-                    u[0] +=
-                        self.sub_diagonal(delta_t / 2.0)(1.0) * self.put_boundary(t, T, delta_t);
+                    v[0] += sub_diagonal * self.put_boundary((t as f64) * delta_t, x_min);
                 }
             }
 
-            u = self.matrix_multiply_vector(&inverse_matrix, u);
-
             if let ExerciseFlag::American = self.exercise_flag {
-                u = self.american_time_stop_step(u, self.price_steps);
+                v = self.american_time_stop_step(v, (t as f64) * delta_t, x_min, delta_x);
             }
         }
 
-        self.return_price(u)
+        f64::exp(- self.risk_free_rate * T) * self.return_price(v)
+    }
+
+    ///Implicit method
+    pub fn implicit(&self) -> f64 {
+        let (T, delta_t, delta_x, x_min) = self.grid();
+        let (x, y) = self.coefficients(delta_t, delta_x);
+
+        let inverse_matrix: Vec<Vec<f64>> = self.invert_tridiagonal_matrix(
+            - x + y, 
+            1.0 + 2.0 * x,
+             - x - y
+        );
+
+        let mut v: Vec<f64> = self.initial_condition(x_min, delta_x);
+
+        for t in 1..(self.time_steps + 1) {
+            match self.type_flag {
+                TypeFlag::Call => {
+                    v[(self.price_steps - 2) as usize] -= (- x - y) * self.call_boundary(
+                        (t as f64) * delta_t, 
+                        self.initial_price.ln() + 5.0 * self.volatility * T.sqrt()
+                    );
+                }
+                TypeFlag::Put => {
+                    v[0] -= (- x + y) * self.put_boundary((t as f64) * delta_t, x_min);
+                }
+            }
+
+            v = self.general_matrix_multiply_vector(&inverse_matrix, v);
+
+            if let ExerciseFlag::American = self.exercise_flag {
+                v = self.american_time_stop_step(v, (t as f64) * delta_t, x_min, delta_x);
+            }
+        }
+
+        f64::exp(- self.risk_free_rate * T) * self.return_price(v)
     }
 
     /// Crank-Nicolson method
     pub fn crank_nicolson(&self) -> f64 {
-        let (T, delta_t) = self.time_structure();
+        let (T, delta_t, delta_x, x_min) = self.grid();
+        let (x, y) = self.coefficients(delta_t, delta_x);
+        let sub_diagonal: f64 = 0.5 * (x - y);
+        let diagonal: f64 = 1.0 - x;
+        let super_diagonal: f64 = 0.5 * (x + y);
 
-        let inverse_past_matrix = self.invert_tridiagonal_matrix(self.create_tridiagonal_matrix(
-            self.sub_diagonal(-delta_t / 4.0),
-            self.diagonal(delta_t / 2.0),
-            self.super_diagonal(-delta_t / 4.0),
-            self.price_steps,
-        ));
-
-        let tridiagonal_future_matrix = self.create_tridiagonal_matrix(
-            self.sub_diagonal(delta_t / 4.0),
-            self.diagonal(-delta_t / 2.0),
-            self.super_diagonal(delta_t / 4.0),
-            self.price_steps,
+        let inverse_future_matrix = self.invert_tridiagonal_matrix(
+            - sub_diagonal, 
+            1.0 + x, 
+            - super_diagonal
         );
 
-        let mut u: Vec<f64> = self.boundary_condition_at_time_n(self.price_steps);
+        let mut v: Vec<f64> = self.initial_condition(x_min, delta_x);
 
-        for t in (1..self.time_steps).rev() {
-            u = self.matrix_multiply_vector(&tridiagonal_future_matrix, u);
+        for t in 1..(self.time_steps + 1) {
+            v = self.tridiagonal_matrix_multiply_vector(
+                sub_diagonal,
+                diagonal,
+                super_diagonal,
+                v
+            );
 
             match self.type_flag {
                 TypeFlag::Call => {
-                    u[(self.price_steps - 2) as usize] +=
-                        self.super_diagonal(delta_t / 4.0)((self.price_steps - 1) as f64)
-                            * (self.call_boundary(t + 1, T, delta_t)
-                                - self.call_boundary(t, T, delta_t))
+                    v[(self.price_steps - 2) as usize] +=
+                        2.0 * super_diagonal * self.call_boundary(
+                            (t as f64) * delta_t, 
+                                self.initial_price.ln() + 5.0 * self.volatility * T.sqrt()
+                            );
                 }
                 TypeFlag::Put => {
-                    u[0] += self.sub_diagonal(delta_t / 4.0)(1.0)
-                        * (self.put_boundary(t + 1, T, delta_t) - self.put_boundary(t, T, delta_t))
+                    v[0] += 2.0 * sub_diagonal * self.put_boundary((t as f64) * delta_t, x_min);
                 }
             }
 
-            u = self.matrix_multiply_vector(&inverse_past_matrix, u);
+            v = self.general_matrix_multiply_vector(&inverse_future_matrix, v);
 
             if let ExerciseFlag::American = self.exercise_flag {
-                u = self.american_time_stop_step(u, self.price_steps);
+                v = self.american_time_stop_step(v, (t as f64) * delta_t, x_min, delta_x);
             }
         }
 
-        self.return_price(u)
+        f64::exp(- self.risk_free_rate * T) * self.return_price(v)
     }
 }
 
@@ -420,18 +379,18 @@ impl FiniteDifferencePricer {
 mod tests_finite_difference_pricer_at_the_money {
     use super::*;
     use crate::assert_approx_equal;
-    use crate::RUSTQUANT_EPSILON as EPS;
     use time::macros::date;
 
+    const EPS: f64 = 1e-4;
     const EUROPEAN_CALL: FiniteDifferencePricer = FiniteDifferencePricer {
         initial_price: 10.0,
         strike_price: 10.0,
         risk_free_rate: 0.05,
-        volatility: 0.5,
+        volatility: 0.1,
         evaluation_date: Some(date!(2024 - 01 - 01)),
         expiration_date: date!(2025 - 01 - 01),
-        time_steps: 1000,
-        price_steps: 100,
+        time_steps: 10000,
+        price_steps: 250,
         type_flag: TypeFlag::Call,
         exercise_flag: ExerciseFlag::European,
     };
@@ -440,11 +399,11 @@ mod tests_finite_difference_pricer_at_the_money {
         initial_price: 10.0,
         strike_price: 10.0,
         risk_free_rate: 0.05,
-        volatility: 0.5,
+        volatility: 0.1,
         evaluation_date: Some(date!(2024 - 01 - 01)),
         expiration_date: date!(2025 - 01 - 01),
-        time_steps: 1000,
-        price_steps: 100,
+        time_steps: 10000,
+        price_steps: 250,
         type_flag: TypeFlag::Put,
         exercise_flag: ExerciseFlag::European,
     };
@@ -453,11 +412,11 @@ mod tests_finite_difference_pricer_at_the_money {
         initial_price: 10.0,
         strike_price: 10.0,
         risk_free_rate: 0.05,
-        volatility: 0.5,
+        volatility: 0.1,
         evaluation_date: Some(date!(2024 - 01 - 01)),
         expiration_date: date!(2025 - 01 - 01),
-        time_steps: 1000,
-        price_steps: 100,
+        time_steps: 10000,
+        price_steps: 250,
         type_flag: TypeFlag::Call,
         exercise_flag: ExerciseFlag::American,
     };
@@ -466,19 +425,19 @@ mod tests_finite_difference_pricer_at_the_money {
         initial_price: 10.0,
         strike_price: 10.0,
         risk_free_rate: 0.05,
-        volatility: 0.5,
+        volatility: 0.1,
         evaluation_date: Some(date!(2024 - 01 - 01)),
         expiration_date: date!(2025 - 01 - 01),
-        time_steps: 1000,
-        price_steps: 100,
+        time_steps: 10000,
+        price_steps: 250,
         type_flag: TypeFlag::Put,
         exercise_flag: ExerciseFlag::American,
     };
 
-    const EXPECT_A_CALL: f64 = 2.179_260_421_286_684_845;
-    const EXPECT_A_PUT: f64 = 1.746_847_694_033_270_004;
-    const EXPECT_E_CALL: f64 = 2.179_260_421_286_684_845;
-    const EXPECT_E_PUT: f64 = 1.691_554_666_293_823_894;
+    const EXPECT_A_CALL: f64 = 0.680_478_009_892_241;
+    const EXPECT_A_PUT: f64 = 0.243_630_311_556;
+    const EXPECT_E_CALL: f64 = 0.680_495_770_882_215;
+    const EXPECT_E_PUT: f64 = 0.192_790_015_889_355;
 
     #[test]
     fn american_call_explicit() {
@@ -549,18 +508,18 @@ mod tests_finite_difference_pricer_at_the_money {
 mod tests_finite_difference_pricer_in_the_money {
     use super::*;
     use crate::assert_approx_equal;
-    use crate::RUSTQUANT_EPSILON as EPS;
     use time::macros::date;
 
+    const EPS: f64 = 1e-5;
     const EUROPEAN_CALL: FiniteDifferencePricer = FiniteDifferencePricer {
         initial_price: 15.0,
         strike_price: 10.0,
         risk_free_rate: 0.05,
-        volatility: 0.5,
+        volatility: 0.1,
         evaluation_date: Some(date!(2024 - 01 - 01)),
         expiration_date: date!(2025 - 01 - 01),
-        time_steps: 1000,
-        price_steps: 100,
+        time_steps: 10000,
+        price_steps: 200,
         type_flag: TypeFlag::Call,
         exercise_flag: ExerciseFlag::European,
     };
@@ -569,11 +528,11 @@ mod tests_finite_difference_pricer_in_the_money {
         initial_price: 10.0,
         strike_price: 15.0,
         risk_free_rate: 0.05,
-        volatility: 0.5,
+        volatility: 0.1,
         evaluation_date: Some(date!(2024 - 01 - 01)),
         expiration_date: date!(2025 - 01 - 01),
-        time_steps: 1000,
-        price_steps: 100,
+        time_steps: 10000,
+        price_steps: 200,
         type_flag: TypeFlag::Put,
         exercise_flag: ExerciseFlag::European,
     };
@@ -582,11 +541,11 @@ mod tests_finite_difference_pricer_in_the_money {
         initial_price: 15.0,
         strike_price: 10.0,
         risk_free_rate: 0.05,
-        volatility: 0.5,
+        volatility: 0.1,
         evaluation_date: Some(date!(2024 - 01 - 01)),
         expiration_date: date!(2025 - 01 - 01),
-        time_steps: 1000,
-        price_steps: 100,
+        time_steps: 10000,
+        price_steps: 200,
         type_flag: TypeFlag::Call,
         exercise_flag: ExerciseFlag::American,
     };
@@ -595,19 +554,19 @@ mod tests_finite_difference_pricer_in_the_money {
         initial_price: 10.0,
         strike_price: 15.0,
         risk_free_rate: 0.05,
-        volatility: 0.5,
+        volatility: 0.1,
         evaluation_date: Some(date!(2024 - 01 - 01)),
         expiration_date: date!(2025 - 01 - 01),
-        time_steps: 1000,
-        price_steps: 100,
+        time_steps: 10000,
+        price_steps: 200,
         type_flag: TypeFlag::Put,
         exercise_flag: ExerciseFlag::American,
     };
 
-    const EXPECT_A_CALL: f64 = 6.0644265045002292425;
-    const EXPECT_A_PUT: f64 = 5.3274412554240626605;
-    const EXPECT_E_CALL: f64 = 6.0644265045002292425;
-    const EXPECT_E_PUT: f64 = 5.0913969604477404829;
+    const EXPECT_A_CALL: f64 = 5.487_706_388_002_172;
+    const EXPECT_A_PUT: f64 = 4.999_999_999_999_999;
+    const EXPECT_E_CALL: f64 = 5.487_706_388_002_172;
+    const EXPECT_E_PUT: f64 = 4.268_497_436_100_947;
 
     #[test]
     fn american_call_explicit() {
@@ -678,65 +637,65 @@ mod tests_finite_difference_pricer_in_the_money {
 mod tests_finite_difference_pricer_out_of_the_money {
     use super::*;
     use crate::assert_approx_equal;
-    use crate::RUSTQUANT_EPSILON as EPS;
     use time::macros::date;
 
+    const EPS: f64 = 1e-5;
     const EUROPEAN_CALL: FiniteDifferencePricer = FiniteDifferencePricer {
-        initial_price: 1.0,
-        strike_price: 10.0,
+        initial_price: 10.0,
+        strike_price: 15.0,
         risk_free_rate: 0.05,
-        volatility: 0.5,
+        volatility: 0.1,
         evaluation_date: Some(date!(2024 - 01 - 01)),
         expiration_date: date!(2025 - 01 - 01),
-        time_steps: 1000,
-        price_steps: 100,
+        time_steps: 10000,
+        price_steps: 200,
         type_flag: TypeFlag::Call,
         exercise_flag: ExerciseFlag::European,
     };
 
     const EUROPEAN_PUT: FiniteDifferencePricer = FiniteDifferencePricer {
-        initial_price: 10.0,
-        strike_price: 1.0,
+        initial_price: 15.0,
+        strike_price: 10.0,
         risk_free_rate: 0.05,
-        volatility: 0.5,
+        volatility: 0.1,
         evaluation_date: Some(date!(2024 - 01 - 01)),
         expiration_date: date!(2025 - 01 - 01),
-        time_steps: 1000,
-        price_steps: 100,
+        time_steps: 10000,
+        price_steps: 200,
         type_flag: TypeFlag::Put,
         exercise_flag: ExerciseFlag::European,
     };
 
     const AMERICAN_CALL: FiniteDifferencePricer = FiniteDifferencePricer {
-        initial_price: 1.0,
-        strike_price: 10.0,
+        initial_price: 10.0,
+        strike_price: 15.0,
         risk_free_rate: 0.05,
-        volatility: 0.5,
+        volatility: 0.1,
         evaluation_date: Some(date!(2024 - 01 - 01)),
         expiration_date: date!(2025 - 01 - 01),
-        time_steps: 1000,
-        price_steps: 100,
+        time_steps: 10000,
+        price_steps: 200,
         type_flag: TypeFlag::Call,
         exercise_flag: ExerciseFlag::American,
     };
 
     const AMERICAN_PUT: FiniteDifferencePricer = FiniteDifferencePricer {
-        initial_price: 10.0,
-        strike_price: 1.0,
+        initial_price: 15.0,
+        strike_price: 10.0,
         risk_free_rate: 0.05,
-        volatility: 0.5,
+        volatility: 0.1,
         evaluation_date: Some(date!(2024 - 01 - 01)),
         expiration_date: date!(2025 - 01 - 01),
-        time_steps: 1000,
-        price_steps: 100,
+        time_steps: 10000,
+        price_steps: 200,
         type_flag: TypeFlag::Put,
         exercise_flag: ExerciseFlag::American,
     };
 
-    const EXPECT_A_CALL: f64 = 0.0000010140475396182350785;
-    const EXPECT_A_PUT: f64 = 0.000014933019126383249514;
-    const EXPECT_E_CALL: f64 = 0.0000010140475396182350785;
-    const EXPECT_E_PUT: f64 = 0.00000037356944149356531733;
+    const EXPECT_A_CALL: f64 = 0.000_059_393_327_777_911;
+    const EXPECT_A_PUT: f64 = 0.000_000_693_279_415_654_018;
+    const EXPECT_E_CALL: f64 = 0.000_056_068_590_237_768;
+    const EXPECT_E_PUT: f64 = 0.000_000_633_009_309_923_640;
 
     #[test]
     fn american_call_explicit() {

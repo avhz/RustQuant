@@ -105,6 +105,8 @@
 //! println!("{:?}", data.data);
 //! ```
 
+use std::{collections::BTreeMap, hash::Hash};
+
 /// File reading and writing.
 pub mod io;
 pub use io::*;
@@ -113,15 +115,150 @@ pub use io::*;
 pub mod yahoo;
 pub use yahoo::*;
 
-/// Curves module.
-/// Curves (in the financial sense) are functions that map
-/// a time to a value, such as a yield curve or a swap curve.
-/// They may also be known as term structures.
-pub mod curves;
-pub use curves::*;
+// /// Curves module.
+// /// Curves (in the financial sense) are functions that map
+// /// a time to a value, such as a yield curve or a swap curve.
+// /// They may also be known as term structures.
+// pub mod curve;
+// pub use curve::*;
 
-/// Surface implementations.
-/// Surfaces are simply [Curve]s with an additional dimension.
-/// For example, a volatility surface is a function of time and strike/moneyness.
-pub mod surfaces;
-pub use surfaces::*;
+// /// Surface implementations.
+// /// Surfaces are simply [Curve]s with an additional dimension.
+// /// For example, a volatility surface is a function of time and strike/moneyness.
+// pub mod surface;
+// pub use surface::*;
+
+// /// Term structure data.
+// pub mod term_structure;
+// pub use term_structure::*;
+
+/// Curve index trait.
+pub trait CurveIndex {}
+impl<T> CurveIndex for T where T: Ord + Hash {}
+
+/// Curve data structure.
+pub struct Curve<C>
+where
+    C: CurveIndex,
+{
+    /// The nodes of the curve.
+    pub nodes: BTreeMap<C, f64>,
+}
+
+/// Surface data structure.
+pub struct Surface<S, C>
+where
+    S: CurveIndex,
+    C: CurveIndex,
+{
+    /// The curves that make up the surface.
+    pub nodes: BTreeMap<S, Curve<C>>,
+}
+
+macro_rules! impl_curve {
+    ($index:ty) => {
+        impl Curve<$index> {
+            /// Create a new curve.
+            pub fn new() -> Self {
+                Self {
+                    nodes: BTreeMap::new(),
+                }
+            }
+
+            /// Add a node to the curve.
+            pub fn insert(&mut self, index: $index, value: f64) {
+                self.nodes.insert(index, value);
+            }
+
+            /// Get a value for a specific index.
+            pub fn get(&self, index: $index) -> Option<&f64> {
+                self.nodes.get(&index)
+            }
+
+            /// Get a mutable reference to a value for a specific index.
+            pub fn get_mut(&mut self, index: $index) -> Option<&mut f64> {
+                self.nodes.get_mut(&index)
+            }
+
+            /// Create a Curve from a vector of indices and values.
+            pub fn new_from_slice(indices: &[$index], values: &[f64]) -> Self {
+                let mut curve = Self::new();
+
+                for (index, value) in indices.iter().zip(values.iter()) {
+                    curve.insert(*index, *value);
+                }
+
+                curve
+            }
+
+            /// Create a Curve from a function.
+            pub fn new_from_function<F>(f: F, indices: &[$index]) -> Self
+            where
+                F: Fn($index) -> f64,
+            {
+                let mut curve = Self::new();
+
+                for index in indices {
+                    curve.insert(*index, f(*index));
+                }
+
+                curve
+            }
+
+            /// Create a Curve from a constant value.
+            pub fn new_from_constant(value: f64, indices: &[$index]) -> Self {
+                let mut curve = Self::new();
+
+                for index in indices {
+                    curve.insert(*index, value);
+                }
+
+                curve
+            }
+
+            /// Shift the curve by a constant value.
+            pub fn shift(&mut self, shift: f64) {
+                for value in self.nodes.values_mut() {
+                    *value += shift;
+                }
+            }
+
+            // /// Create a Curve from a Polars DataFrame.
+            // pub fn new_from_polars(df: &DataFrame, index: &str, value: &str) -> Self {
+            //     let mut curve = Self::new();
+
+            //     let index_series = df.column(index).unwrap();
+            //     let value_series = df.column(value).unwrap();
+
+            //     for i in 0..df.height() {
+            //         let index = index_series.get(i).unwrap().get::<$index>().unwrap();
+            //         let value = value_series.get(i).unwrap().get::<f64>().unwrap();
+
+            //         curve.insert(index, value);
+            //     }
+
+            //     curve
+            // }
+        }
+    };
+}
+
+// Implement the Curve for temporal types.
+impl_curve!(time::Date);
+impl_curve!(time::Time);
+impl_curve!(time::OffsetDateTime);
+impl_curve!(time::PrimitiveDateTime);
+
+// Implement the Curve for unsigned integer types.
+impl_curve!(u64);
+impl_curve!(u32);
+impl_curve!(u16);
+impl_curve!(u8);
+impl_curve!(usize);
+
+// Implement the Curve for signed integer types.
+impl_curve!(i64);
+impl_curve!(i32);
+impl_curve!(i16);
+impl_curve!(i8);
+impl_curve!(isize);
