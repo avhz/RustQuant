@@ -222,36 +222,25 @@ impl ExchangeRate {
 #[cfg(test)]
 mod test_exchange_rate {
     use super::*;
-    use crate::iso::*;
 
     use crate::assert_approx_equal;
+    use crate::iso::iso_4217::*;
     use crate::iso::{EUR, USD};
     use std::f64::EPSILON as EPS;
 
     #[test]
     fn test_conversion() {
-        // Initialize USD and EUR currencies and their ISO codes (simplified for example)
-        let usd = Currency::new(
-            "United States Dollar",
-            "$",
-            ISO_4217::new("USD", "840"),
-            2,
-            100,
-        );
-
-        let eur = Currency::new("Euro", "€", ISO_4217::new("EUR", "978"), 2, 100);
-
         // Create Money instance
-        let usd_100 = Money::new(usd, 100.0);
+        let usd_100 = Money::new(USD, 100.0);
 
         // Create ExchangeRate instance
-        let usd_to_eur = ExchangeRate::new(usd, eur, 0.85); // 1 USD = 0.85 EUR as an example
+        let usd_to_eur = ExchangeRate::new(USD, EUR, 0.85); // 1 USD = 0.85 EUR as an example
 
         // Convert USD to EUR
         let eur_85 = usd_to_eur.convert(usd_100);
 
         // Verify the conversion
-        assert_eq!(eur_85.currency, eur);
+        assert_eq!(eur_85.currency, EUR);
         assert_approx_equal!(eur_85.amount, 85.0, EPS);
     }
 

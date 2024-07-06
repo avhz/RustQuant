@@ -11,7 +11,10 @@
 //! defined according to the ISO 4217 standard.
 //! It currently needs to be proof-read and tested.
 
-use crate::instruments::fx::currency::Currency;
+use std::fmt;
+use std::fmt::Formatter;
+
+pub use unformatted::*;
 
 /// ISO 4217 codes enum.
 ///
@@ -26,13 +29,13 @@ pub struct ISO_4217 {
     pub alphabetic: &'static str,
 
     /// The ISO 4217 numeric code.
-    pub numeric: &'static str,
+    pub numeric: u16,
 }
 
 impl ISO_4217 {
     /// Create a new ISO 4217 code.
     #[must_use]
-    pub fn new(alphabetic: &'static str, numeric: &'static str) -> Self {
+    pub fn new(alphabetic: &'static str, numeric: u16) -> Self {
         Self {
             alphabetic,
             numeric,
@@ -47,2072 +50,205 @@ impl ISO_4217 {
 
     /// Get the ISO 4217 numeric code.
     #[must_use]
-    pub fn numeric(&self) -> &str {
+    pub fn numeric(&self) -> u16 {
         self.numeric
     }
 }
 
-/// United Arab Emirates dirham (AED)
-pub const AED: Currency = Currency {
-    name: "United Arab Emirates Dirham",
-    symbol: "د.إ",
-    code: ISO_4217 {
-        alphabetic: "AED",
-        numeric: "784",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Afghan afghani (AFN)
-pub const AFN: Currency = Currency {
-    name: "Afghan Afghani",
-    symbol: "؋",
-    code: ISO_4217 {
-        alphabetic: "AFN",
-        numeric: "971",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Albanian lek (ALL)
-pub const ALL: Currency = Currency {
-    name: "Albanian Lek",
-    symbol: "L",
-    code: ISO_4217 {
-        alphabetic: "ALL",
-        numeric: "008",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Armenian dram (AMD)
-pub const AMD: Currency = Currency {
-    name: "Armenian Dram",
-    symbol: "֏",
-    code: ISO_4217 {
-        alphabetic: "AMD",
-        numeric: "051",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Netherlands Antillean guilder (ANG)
-pub const ANG: Currency = Currency {
-    name: "Netherlands Antillean Guilder",
-    symbol: "ƒ",
-    code: ISO_4217 {
-        alphabetic: "ANG",
-        numeric: "532",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Angolan kwanza (AOA)
-pub const AOA: Currency = Currency {
-    name: "Angolan Kwanza",
-    symbol: "Kz",
-    code: ISO_4217 {
-        alphabetic: "AOA",
-        numeric: "973",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Argentine peso (ARS)
-pub const ARS: Currency = Currency {
-    name: "Argentine Peso",
-    symbol: "AR$",
-    code: ISO_4217 {
-        alphabetic: "ARS",
-        numeric: "032",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Australian dollar (AUD)
-pub const AUD: Currency = Currency {
-    name: "Australian Dollar",
-    symbol: "AU$",
-    code: ISO_4217 {
-        alphabetic: "AUD",
-        numeric: "036",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Aruban florin (AWG)
-pub const AWG: Currency = Currency {
-    name: "Aruban Florin",
-    symbol: "ƒ",
-    code: ISO_4217 {
-        alphabetic: "AWG",
-        numeric: "533",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Azerbbaijani manat (AZN)
-pub const AZN: Currency = Currency {
-    name: "Azerbaijani Manat",
-    symbol: "₼",
-    code: ISO_4217 {
-        alphabetic: "AZN",
-        numeric: "944",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Bosnia and Herzegovina convertible mark (BAM)
-pub const BAM: Currency = Currency {
-    name: "Bosnia and Herzegovina Convertible Mark",
-    symbol: "KM",
-    code: ISO_4217 {
-        alphabetic: "BAM",
-        numeric: "977",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Barbados dollar (BBD)
-pub const BBD: Currency = Currency {
-    name: "Barbados Dollar",
-    symbol: "Bds$",
-    code: ISO_4217 {
-        alphabetic: "BBD",
-        numeric: "052",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Bangladeshi taka (BDT)
-pub const BDT: Currency = Currency {
-    name: "Bangladeshi Taka",
-    symbol: "৳",
-    code: ISO_4217 {
-        alphabetic: "BDT",
-        numeric: "050",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Bulgarian lev (BGN)
-pub const BGN: Currency = Currency {
-    name: "Bulgarian Lev",
-    symbol: "лв",
-    code: ISO_4217 {
-        alphabetic: "BGN",
-        numeric: "975",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Bahraini dinar (BHD)
-pub const BHD: Currency = Currency {
-    name: "Bahraini Dinar",
-    symbol: "BD",
-    code: ISO_4217 {
-        alphabetic: "BHD",
-        numeric: "048",
-    },
-    minor: 3,
-    fractions: 1000,
-};
-
-/// Burundian franc (BIF)
-pub const BIF: Currency = Currency {
-    name: "Burundian Franc",
-    symbol: "FBu",
-    code: ISO_4217 {
-        alphabetic: "BIF",
-        numeric: "108",
-    },
-    minor: 0,
-    fractions: 1,
-};
-
-/// Bermudian dollar (BMD)
-pub const BMD: Currency = Currency {
-    name: "Bermudian Dollar",
-    symbol: "BD$",
-    code: ISO_4217 {
-        alphabetic: "BMD",
-        numeric: "060",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Brunei dollar (BND)
-pub const BND: Currency = Currency {
-    name: "Brunei Dollar",
-    symbol: "BN$",
-    code: ISO_4217 {
-        alphabetic: "BND",
-        numeric: "096",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Boliviano (BOB)
-pub const BOB: Currency = Currency {
-    name: "Boliviano",
-    symbol: "Bs",
-    code: ISO_4217 {
-        alphabetic: "BOB",
-        numeric: "068",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Brazilian real (BRL)
-pub const BRL: Currency = Currency {
-    name: "Brazilian Real",
-    symbol: "R$",
-    code: ISO_4217 {
-        alphabetic: "BRL",
-        numeric: "986",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Bahamian dollar (BSD)
-pub const BSD: Currency = Currency {
-    name: "Bahamian Dollar",
-    symbol: "B$",
-    code: ISO_4217 {
-        alphabetic: "BSD",
-        numeric: "044",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Bhutanese ngultrum (BTN)
-pub const BTN: Currency = Currency {
-    name: "Bhutanese Ngultrum",
-    symbol: "Nu.",
-    code: ISO_4217 {
-        alphabetic: "BTN",
-        numeric: "064",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Botswana pula (BWP)
-pub const BWP: Currency = Currency {
-    name: "Botswana Pula",
-    symbol: "P",
-    code: ISO_4217 {
-        alphabetic: "BWP",
-        numeric: "072",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Belarusian ruble (BYN)
-pub const BYN: Currency = Currency {
-    name: "Belarusian Ruble",
-    symbol: "Br",
-    code: ISO_4217 {
-        alphabetic: "BYN",
-        numeric: "933",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Belize dollar (BZD)
-pub const BZD: Currency = Currency {
-    name: "Belize Dollar",
-    symbol: "BZ$",
-    code: ISO_4217 {
-        alphabetic: "BZD",
-        numeric: "084",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Canadian dollar (CAD)
-pub const CAD: Currency = Currency {
-    name: "Canadian Dollar",
-    symbol: "CA$",
-    code: ISO_4217 {
-        alphabetic: "CAD",
-        numeric: "124",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Congolese franc (CDF)
-pub const CDF: Currency = Currency {
-    name: "Congolese Franc",
-    symbol: "FC",
-    code: ISO_4217 {
-        alphabetic: "CDF",
-        numeric: "976",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Swiss franc (CHF)
-pub const CHF: Currency = Currency {
-    name: "Swiss Franc",
-    symbol: "CHF",
-    code: ISO_4217 {
-        alphabetic: "CHF",
-        numeric: "756",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Chilean peso (CLP)
-pub const CLP: Currency = Currency {
-    name: "Chilean Peso",
-    symbol: "CL$",
-    code: ISO_4217 {
-        alphabetic: "CLP",
-        numeric: "152",
-    },
-    minor: 0,
-    fractions: 1,
-};
-
-/// Colombian peso (COP)
-pub const COP: Currency = Currency {
-    name: "Colombian Peso",
-    symbol: "CO$",
-    code: ISO_4217 {
-        alphabetic: "COP",
-        numeric: "170",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Costa Rican colon (CRC)
-pub const CRC: Currency = Currency {
-    name: "Costa Rican Colon",
-    symbol: "₡",
-    code: ISO_4217 {
-        alphabetic: "CRC",
-        numeric: "188",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Cuban convertible peso (CUC)
-pub const CUC: Currency = Currency {
-    name: "Cuban Convertible Peso",
-    symbol: "$",
-    code: ISO_4217 {
-        alphabetic: "CUC",
-        numeric: "931",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Cuban peso (CUP)
-pub const CUP: Currency = Currency {
-    name: "Cuban Peso",
-    symbol: "$MN",
-    code: ISO_4217 {
-        alphabetic: "CUP",
-        numeric: "192",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Cape Verdean escudo (CVE)
-pub const CVE: Currency = Currency {
-    name: "Cape Verdean Escudo",
-    symbol: "Esc",
-    code: ISO_4217 {
-        alphabetic: "CVE",
-        numeric: "132",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Czech koruna (CZK)
-pub const CZK: Currency = Currency {
-    name: "Czech Koruna",
-    symbol: "Kč",
-    code: ISO_4217 {
-        alphabetic: "CZK",
-        numeric: "203",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Djiboutian franc (DJF)
-pub const DJF: Currency = Currency {
-    name: "Djiboutian Franc",
-    symbol: "Fdj",
-    code: ISO_4217 {
-        alphabetic: "DJF",
-        numeric: "262",
-    },
-    minor: 0,
-    fractions: 1,
-};
-
-/// Danish krone (DKK)
-pub const DKK: Currency = Currency {
-    name: "Danish Krone",
-    symbol: "kr",
-    code: ISO_4217 {
-        alphabetic: "DKK",
-        numeric: "208",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Dominican peso (DOP)
-pub const DOP: Currency = Currency {
-    name: "Dominican Peso",
-    symbol: "RD$",
-    code: ISO_4217 {
-        alphabetic: "DOP",
-        numeric: "214",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Algerian dinar (DZD)
-pub const DZD: Currency = Currency {
-    name: "Algerian Dinar",
-    symbol: "دج",
-    code: ISO_4217 {
-        alphabetic: "DZD",
-        numeric: "012",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Egyptian pound (EGP)
-pub const EGP: Currency = Currency {
-    name: "Egyptian Pound",
-    symbol: "E£",
-    code: ISO_4217 {
-        alphabetic: "EGP",
-        numeric: "818",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Eritrean nakfa (ERN)
-pub const ERN: Currency = Currency {
-    name: "Eritrean Nakfa",
-    symbol: "Nfk",
-    code: ISO_4217 {
-        alphabetic: "ERN",
-        numeric: "232",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Ethiopian birr (ETB)
-pub const ETB: Currency = Currency {
-    name: "Ethiopian Birr",
-    symbol: "Br",
-    code: ISO_4217 {
-        alphabetic: "ETB",
-        numeric: "230",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Euro (EUR)
-pub const EUR: Currency = Currency {
-    name: "Euro",
-    symbol: "€",
-    code: ISO_4217 {
-        alphabetic: "EUR",
-        numeric: "978",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Fijian dollar (FJD)
-pub const FJD: Currency = Currency {
-    name: "Fijian Dollar",
-    symbol: "FJ$",
-    code: ISO_4217 {
-        alphabetic: "FJD",
-        numeric: "242",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Falkland Islands pound (FKP)
-pub const FKP: Currency = Currency {
-    name: "Falkland Islands Pound",
-    symbol: "FK£",
-    code: ISO_4217 {
-        alphabetic: "FKP",
-        numeric: "238",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Pound sterling (GBP)
-pub const GBP: Currency = Currency {
-    name: "Pound Sterling",
-    symbol: "£",
-    code: ISO_4217 {
-        alphabetic: "GBP",
-        numeric: "826",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Georgian lari (GEL)
-pub const GEL: Currency = Currency {
-    name: "Georgian Lari",
-    symbol: "₾",
-    code: ISO_4217 {
-        alphabetic: "GEL",
-        numeric: "981",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Ghanaian cedi (GHS)
-pub const GHS: Currency = Currency {
-    name: "Ghanaian Cedi",
-    symbol: "GH₵",
-    code: ISO_4217 {
-        alphabetic: "GHS",
-        numeric: "936",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Gibraltar pound (GIP)
-pub const GIP: Currency = Currency {
-    name: "Gibraltar Pound",
-    symbol: "£",
-    code: ISO_4217 {
-        alphabetic: "GIP",
-        numeric: "292",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Gambian dalasi (GMD)
-pub const GMD: Currency = Currency {
-    name: "Gambian Dalasi",
-    symbol: "D",
-    code: ISO_4217 {
-        alphabetic: "GMD",
-        numeric: "270",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Guinean franc (GNF)
-pub const GNF: Currency = Currency {
-    name: "Guinean Franc",
-    symbol: "FG",
-    code: ISO_4217 {
-        alphabetic: "GNF",
-        numeric: "324",
-    },
-    minor: 0,
-    fractions: 1,
-};
-
-/// Guatemalan quetzal (GTQ)
-pub const GTQ: Currency = Currency {
-    name: "Guatemalan Quetzal",
-    symbol: "Q",
-    code: ISO_4217 {
-        alphabetic: "GTQ",
-        numeric: "320",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Guyanese dollar (GYD)
-pub const GYD: Currency = Currency {
-    name: "Guyanese Dollar",
-    symbol: "GY$",
-    code: ISO_4217 {
-        alphabetic: "GYD",
-        numeric: "328",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Hong Kong dollar (HKD)
-pub const HKD: Currency = Currency {
-    name: "Hong Kong Dollar",
-    symbol: "HK$",
-    code: ISO_4217 {
-        alphabetic: "HKD",
-        numeric: "344",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Honduran lempira (HNL)
-pub const HNL: Currency = Currency {
-    name: "Honduran Lempira",
-    symbol: "L",
-    code: ISO_4217 {
-        alphabetic: "HNL",
-        numeric: "340",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Croatian kuna (HRK)
-pub const HRK: Currency = Currency {
-    name: "Croatian Kuna",
-    symbol: "kn",
-    code: ISO_4217 {
-        alphabetic: "HRK",
-        numeric: "191",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Haitian gourde (HTG)
-pub const HTG: Currency = Currency {
-    name: "Haitian Gourde",
-    symbol: "G",
-    code: ISO_4217 {
-        alphabetic: "HTG",
-        numeric: "332",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Hungarian forint (HUF)
-pub const HUF: Currency = Currency {
-    name: "Hungarian Forint",
-    symbol: "Ft",
-    code: ISO_4217 {
-        alphabetic: "HUF",
-        numeric: "348",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Indonesian rupiah (IDR)
-pub const IDR: Currency = Currency {
-    name: "Indonesian Rupiah",
-    symbol: "Rp",
-    code: ISO_4217 {
-        alphabetic: "IDR",
-        numeric: "360",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Israeli new shekel (ILS)
-pub const ILS: Currency = Currency {
-    name: "Israeli New Shekel",
-    symbol: "₪",
-    code: ISO_4217 {
-        alphabetic: "ILS",
-        numeric: "376",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Indian rupee (INR)
-pub const INR: Currency = Currency {
-    name: "Indian Rupee",
-    symbol: "₹",
-    code: ISO_4217 {
-        alphabetic: "INR",
-        numeric: "356",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Iraqi dinar (IQD)
-pub const IQD: Currency = Currency {
-    name: "Iraqi Dinar",
-    symbol: "ع.د",
-    code: ISO_4217 {
-        alphabetic: "IQD",
-        numeric: "368",
-    },
-    minor: 3,
-    fractions: 1000,
-};
-
-/// Iranian rial (IRR)
-pub const IRR: Currency = Currency {
-    name: "Iranian Rial",
-    symbol: "﷼",
-    code: ISO_4217 {
-        alphabetic: "IRR",
-        numeric: "364",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Icelandic króna (ISK)
-pub const ISK: Currency = Currency {
-    name: "Icelandic Króna",
-    symbol: "kr",
-    code: ISO_4217 {
-        alphabetic: "ISK",
-        numeric: "352",
-    },
-    minor: 0,
-    fractions: 1,
-};
-
-/// Jamaican dollar (JMD)
-pub const JMD: Currency = Currency {
-    name: "Jamaican Dollar",
-    symbol: "J$",
-    code: ISO_4217 {
-        alphabetic: "JMD",
-        numeric: "388",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Jordanian dinar (JOD)
-pub const JOD: Currency = Currency {
-    name: "Jordanian Dinar",
-    symbol: "JD",
-    code: ISO_4217 {
-        alphabetic: "JOD",
-        numeric: "400",
-    },
-    minor: 3,
-    fractions: 1000,
-};
-
-/// Japanese yen (JPY)
-pub const JPY: Currency = Currency {
-    name: "Japanese Yen",
-    symbol: "¥",
-    code: ISO_4217 {
-        alphabetic: "JPY",
-        numeric: "392",
-    },
-    minor: 0,
-    fractions: 1,
-};
-
-/// Kenyan shilling (KES)
-pub const KES: Currency = Currency {
-    name: "Kenyan Shilling",
-    symbol: "KSh",
-    code: ISO_4217 {
-        alphabetic: "KES",
-        numeric: "404",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Kyrgyzstani Som (KGS)
-pub const KGS: Currency = Currency {
-    name: "Kyrgyzstani Som",
-    symbol: "лв",
-    code: ISO_4217 {
-        alphabetic: "KGS",
-        numeric: "417",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Cambodian riel (KHR)
-pub const KHR: Currency = Currency {
-    name: "Cambodian Riel",
-    symbol: "៛",
-    code: ISO_4217 {
-        alphabetic: "KHR",
-        numeric: "116",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Comoro franc (KMF)
-pub const KMF: Currency = Currency {
-    name: "Comoro Franc",
-    symbol: "CF",
-    code: ISO_4217 {
-        alphabetic: "KMF",
-        numeric: "174",
-    },
-    minor: 0,
-    fractions: 1,
-};
-
-/// North Korean won (KPW)
-pub const KPW: Currency = Currency {
-    name: "North Korean Won",
-    symbol: "₩",
-    code: ISO_4217 {
-        alphabetic: "KPW",
-        numeric: "408",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// South Korean won (KRW)
-pub const KRW: Currency = Currency {
-    name: "South Korean Won",
-    symbol: "₩",
-    code: ISO_4217 {
-        alphabetic: "KRW",
-        numeric: "410",
-    },
-    minor: 0,
-    fractions: 1,
-};
-
-/// Kuwaiti dinar (KWD)
-pub const KWD: Currency = Currency {
-    name: "Kuwaiti Dinar",
-    symbol: "KD",
-    code: ISO_4217 {
-        alphabetic: "KWD",
-        numeric: "414",
-    },
-    minor: 3,
-    fractions: 1000,
-};
-
-/// Cayman Islands dollar (KYD)
-pub const KYD: Currency = Currency {
-    name: "Cayman Islands Dollar",
-    symbol: "KY$",
-    code: ISO_4217 {
-        alphabetic: "KYD",
-        numeric: "136",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Kazakhstani tenge (KZT)
-pub const KZT: Currency = Currency {
-    name: "Kazakhstani Tenge",
-    symbol: "₸",
-    code: ISO_4217 {
-        alphabetic: "KZT",
-        numeric: "398",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Lao kip (LAK)
-pub const LAK: Currency = Currency {
-    name: "Lao Kip",
-    symbol: "₭",
-    code: ISO_4217 {
-        alphabetic: "LAK",
-        numeric: "418",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Lebanese pound (LBP)
-pub const LBP: Currency = Currency {
-    name: "Lebanese Pound",
-    symbol: "L£",
-    code: ISO_4217 {
-        alphabetic: "LBP",
-        numeric: "422",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Sri Lankan rupee (LKR)
-pub const LKR: Currency = Currency {
-    name: "Sri Lankan Rupee",
-    symbol: "Rs",
-    code: ISO_4217 {
-        alphabetic: "LKR",
-        numeric: "144",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Liberian dollar (LRD)
-pub const LRD: Currency = Currency {
-    name: "Liberian Dollar",
-    symbol: "L$",
-    code: ISO_4217 {
-        alphabetic: "LRD",
-        numeric: "430",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Lesotho loti (LSL)
-pub const LSL: Currency = Currency {
-    name: "Lesotho Loti",
-    symbol: "M",
-    code: ISO_4217 {
-        alphabetic: "LSL",
-        numeric: "426",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Libyan dinar (LYD)
-pub const LYD: Currency = Currency {
-    name: "Libyan Dinar",
-    symbol: "LD",
-    code: ISO_4217 {
-        alphabetic: "LYD",
-        numeric: "434",
-    },
-    minor: 3,
-    fractions: 1000,
-};
-
-/// Moroccan dirham (MAD)
-pub const MAD: Currency = Currency {
-    name: "Moroccan Dirham",
-    symbol: "MAD",
-    code: ISO_4217 {
-        alphabetic: "MAD",
-        numeric: "504",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Moldovan leu (MDL)
-pub const MDL: Currency = Currency {
-    name: "Moldovan Leu",
-    symbol: "MDL",
-    code: ISO_4217 {
-        alphabetic: "MDL",
-        numeric: "498",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Malagasy ariary (MGA)
-pub const MGA: Currency = Currency {
-    name: "Malagasy Ariary",
-    symbol: "Ar",
-    code: ISO_4217 {
-        alphabetic: "MGA",
-        numeric: "969",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Macedonian denar (MKD)
-pub const MKD: Currency = Currency {
-    name: "Macedonian Denar",
-    symbol: "ден",
-    code: ISO_4217 {
-        alphabetic: "MKD",
-        numeric: "807",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Myanmar kyat (MMK)
-pub const MMK: Currency = Currency {
-    name: "Myanmar Kyat",
-    symbol: "K",
-    code: ISO_4217 {
-        alphabetic: "MMK",
-        numeric: "104",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Mongolian tögrög (MNT)
-pub const MNT: Currency = Currency {
-    name: "Mongolian Tögrög",
-    symbol: "₮",
-    code: ISO_4217 {
-        alphabetic: "MNT",
-        numeric: "496",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Macanese pataca (MOP)
-pub const MOP: Currency = Currency {
-    name: "Macanese Pataca",
-    symbol: "MOP$",
-    code: ISO_4217 {
-        alphabetic: "MOP",
-        numeric: "446",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Mauritanian ouguiya (MRO)
-pub const MRO: Currency = Currency {
-    name: "Mauritanian Ouguiya",
-    symbol: "UM",
-    code: ISO_4217 {
-        alphabetic: "MRO",
-        numeric: "478",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Mauritian rupee (MUR)
-pub const MUR: Currency = Currency {
-    name: "Mauritian Rupee",
-    symbol: "Rs",
-    code: ISO_4217 {
-        alphabetic: "MUR",
-        numeric: "480",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Maldivian rufiyaa (MVR)
-pub const MVR: Currency = Currency {
-    name: "Maldivian Rufiyaa",
-    symbol: "Rf",
-    code: ISO_4217 {
-        alphabetic: "MVR",
-        numeric: "462",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Malawian kwacha (MWK)
-pub const MWK: Currency = Currency {
-    name: "Malawian Kwacha",
-    symbol: "MK",
-    code: ISO_4217 {
-        alphabetic: "MWK",
-        numeric: "454",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Mexican peso (MXN)
-pub const MXN: Currency = Currency {
-    name: "Mexican Peso",
-    symbol: "MX$",
-    code: ISO_4217 {
-        alphabetic: "MXN",
-        numeric: "484",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Malaysian ringgit (MYR)
-pub const MYR: Currency = Currency {
-    name: "Malaysian Ringgit",
-    symbol: "RM",
-    code: ISO_4217 {
-        alphabetic: "MYR",
-        numeric: "458",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-// FINISH ALL THE CURRENCIES
-
-/// Mozambican metical (MZN)
-pub const MZN: Currency = Currency {
-    name: "Mozambican Metical",
-    symbol: "MT",
-    code: ISO_4217 {
-        alphabetic: "MZN",
-        numeric: "943",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Namibian dollar (NAD)
-pub const NAD: Currency = Currency {
-    name: "Namibian Dollar",
-    symbol: "N$",
-    code: ISO_4217 {
-        alphabetic: "NAD",
-        numeric: "516",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Nigerian naira (NGN)
-pub const NGN: Currency = Currency {
-    name: "Nigerian Naira",
-    symbol: "₦",
-    code: ISO_4217 {
-        alphabetic: "NGN",
-        numeric: "566",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Nicaraguan córdoba (NIO)
-pub const NIO: Currency = Currency {
-    name: "Nicaraguan Córdoba",
-    symbol: "C$",
-    code: ISO_4217 {
-        alphabetic: "NIO",
-        numeric: "558",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Norwegian krone (NOK)
-pub const NOK: Currency = Currency {
-    name: "Norwegian Krone",
-    symbol: "kr",
-    code: ISO_4217 {
-        alphabetic: "NOK",
-        numeric: "578",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Nepalese rupee (NPR)
-pub const NPR: Currency = Currency {
-    name: "Nepalese Rupee",
-    symbol: "Rs",
-    code: ISO_4217 {
-        alphabetic: "NPR",
-        numeric: "524",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// New Zealand dollar (NZD)
-pub const NZD: Currency = Currency {
-    name: "New Zealand Dollar",
-    symbol: "NZ$",
-    code: ISO_4217 {
-        alphabetic: "NZD",
-        numeric: "554",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Omani rial (OMR)
-pub const OMR: Currency = Currency {
-    name: "Omani Rial",
-    symbol: "OMR",
-    code: ISO_4217 {
-        alphabetic: "OMR",
-        numeric: "512",
-    },
-    minor: 3,
-    fractions: 1000,
-};
-
-/// Panamanian balboa (PAB)
-pub const PAB: Currency = Currency {
-    name: "Panamanian Balboa",
-    symbol: "B/.",
-    code: ISO_4217 {
-        alphabetic: "PAB",
-        numeric: "590",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Peruvian sol (PEN)
-pub const PEN: Currency = Currency {
-    name: "Peruvian Sol",
-    symbol: "S/.",
-    code: ISO_4217 {
-        alphabetic: "PEN",
-        numeric: "604",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Papua New Guinean kina (PGK)
-pub const PGK: Currency = Currency {
-    name: "Papua New Guinean Kina",
-    symbol: "K",
-    code: ISO_4217 {
-        alphabetic: "PGK",
-        numeric: "598",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Philippine peso (PHP)
-pub const PHP: Currency = Currency {
-    name: "Philippine Peso",
-    symbol: "₱",
-    code: ISO_4217 {
-        alphabetic: "PHP",
-        numeric: "608",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Pakistani rupee (PKR)
-pub const PKR: Currency = Currency {
-    name: "Pakistani Rupee",
-    symbol: "Rs",
-    code: ISO_4217 {
-        alphabetic: "PKR",
-        numeric: "586",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Polish złoty (PLN)
-pub const PLN: Currency = Currency {
-    name: "Polish Złoty",
-    symbol: "zł",
-    code: ISO_4217 {
-        alphabetic: "PLN",
-        numeric: "985",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Paraguayan guaraní (PYG)
-pub const PYG: Currency = Currency {
-    name: "Paraguayan Guarani",
-    symbol: "₲",
-    code: ISO_4217 {
-        alphabetic: "PYG",
-        numeric: "600",
-    },
-    minor: 0,
-    fractions: 1,
-};
-
-/// Qatari riyal (QAR)
-pub const QAR: Currency = Currency {
-    name: "Qatari Riyal",
-    symbol: "QR",
-    code: ISO_4217 {
-        alphabetic: "QAR",
-        numeric: "634",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Romanian leu (RON)
-pub const RON: Currency = Currency {
-    name: "Romanian Leu",
-    symbol: "lei",
-    code: ISO_4217 {
-        alphabetic: "RON",
-        numeric: "946",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Serbian dinar (RSD)
-pub const RSD: Currency = Currency {
-    name: "Serbian Dinar",
-    symbol: "din",
-    code: ISO_4217 {
-        alphabetic: "RSD",
-        numeric: "941",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Renminbi (Chinese) yuan (CNY)
-pub const CNY: Currency = Currency {
-    name: "Renminbi (Chinese) Yuan",
-    symbol: "¥",
-    code: ISO_4217 {
-        alphabetic: "CNY",
-        numeric: "156",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Russian ruble (RUB)
-pub const RUB: Currency = Currency {
-    name: "Russian Ruble",
-    symbol: "₽",
-    code: ISO_4217 {
-        alphabetic: "RUB",
-        numeric: "643",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Rwandan franc (RWF)
-pub const RWF: Currency = Currency {
-    name: "Rwandan Franc",
-    symbol: "RF",
-    code: ISO_4217 {
-        alphabetic: "RWF",
-        numeric: "646",
-    },
-    minor: 0,
-    fractions: 1,
-};
-
-/// Saudi riyal (SAR)
-pub const SAR: Currency = Currency {
-    name: "Saudi Riyal",
-    symbol: "SR",
-    code: ISO_4217 {
-        alphabetic: "SAR",
-        numeric: "682",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Solomon Islands dollar (SBD)
-pub const SBD: Currency = Currency {
-    name: "Solomon Islands Dollar",
-    symbol: "SI$",
-    code: ISO_4217 {
-        alphabetic: "SBD",
-        numeric: "090",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Seychelles rupee (SCR)
-pub const SCR: Currency = Currency {
-    name: "Seychelles Rupee",
-    symbol: "SR",
-    code: ISO_4217 {
-        alphabetic: "SCR",
-        numeric: "690",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Sudanese pound (SDG)
-pub const SDG: Currency = Currency {
-    name: "Sudanese Pound",
-    symbol: "SDG",
-    code: ISO_4217 {
-        alphabetic: "SDG",
-        numeric: "938",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Swedish krona/kronor (SEK)
-pub const SEK: Currency = Currency {
-    name: "Swedish Krona/Kronor",
-    symbol: "kr",
-    code: ISO_4217 {
-        alphabetic: "SEK",
-        numeric: "752",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Singapore dollar (SGD)
-pub const SGD: Currency = Currency {
-    name: "Singapore Dollar",
-    symbol: "S$",
-    code: ISO_4217 {
-        alphabetic: "SGD",
-        numeric: "702",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Saint Helena pound (SHP)
-pub const SHP: Currency = Currency {
-    name: "Saint Helena Pound",
-    symbol: "£",
-    code: ISO_4217 {
-        alphabetic: "SHP",
-        numeric: "654",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Sierra Leonean (new) leone (SLE)
-pub const SLE: Currency = Currency {
-    name: "Sierra Leonean (new) Leone",
-    symbol: "Le",
-    code: ISO_4217 {
-        alphabetic: "SLE",
-        numeric: "925",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Sierra Leonean (old) leone (SLL)
-pub const SLL: Currency = Currency {
-    name: "Sierra Leonean (old) Leone",
-    symbol: "Le",
-    code: ISO_4217 {
-        alphabetic: "SLL",
-        numeric: "694",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Somali shilling (SOS)
-pub const SOS: Currency = Currency {
-    name: "Somali Shilling",
-    symbol: "Sh",
-    code: ISO_4217 {
-        alphabetic: "SOS",
-        numeric: "706",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Surinamese dollar (SRD)
-pub const SRD: Currency = Currency {
-    name: "Surinamese Dollar",
-    symbol: "SR$",
-    code: ISO_4217 {
-        alphabetic: "SRD",
-        numeric: "968",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// South Sudanese pound (SSP)
-pub const SSP: Currency = Currency {
-    name: "South Sudanese Pound",
-    symbol: "SSP",
-    code: ISO_4217 {
-        alphabetic: "SSP",
-        numeric: "728",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// São Tomé and Príncipe dobra (STN)
-pub const STN: Currency = Currency {
-    name: "São Tomé and Príncipe Dobra",
-    symbol: "Db",
-    code: ISO_4217 {
-        alphabetic: "STN",
-        numeric: "930",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Salvadoran colón (SVC)
-pub const SVC: Currency = Currency {
-    name: "Salvadoran Colón",
-    symbol: "₡",
-    code: ISO_4217 {
-        alphabetic: "SVC",
-        numeric: "222",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Syrian pound (SYP)
-pub const SYP: Currency = Currency {
-    name: "Syrian Pound",
-    symbol: "LS",
-    code: ISO_4217 {
-        alphabetic: "SYP",
-        numeric: "760",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Swazi lilangeni (SZL)
-pub const SZL: Currency = Currency {
-    name: "Swazi Lilangeni",
-    symbol: "E",
-    code: ISO_4217 {
-        alphabetic: "SZL",
-        numeric: "748",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Thai baht (THB)
-pub const THB: Currency = Currency {
-    name: "Thai Baht",
-    symbol: "฿",
-    code: ISO_4217 {
-        alphabetic: "THB",
-        numeric: "764",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Tajikistani somoni (TJS)
-pub const TJS: Currency = Currency {
-    name: "Tajikistani Somoni",
-    symbol: "SM",
-    code: ISO_4217 {
-        alphabetic: "TJS",
-        numeric: "972",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Turkmenistan manat (TMT)
-pub const TMT: Currency = Currency {
-    name: "Turkmenistan Manat",
-    symbol: "T",
-    code: ISO_4217 {
-        alphabetic: "TMT",
-        numeric: "934",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Tunisian dinar (TND)
-pub const TND: Currency = Currency {
-    name: "Tunisian Dinar",
-    symbol: "DT",
-    code: ISO_4217 {
-        alphabetic: "TND",
-        numeric: "788",
-    },
-    minor: 3,
-    fractions: 1000,
-};
-
-/// Tongan paʻanga (TOP)
-pub const TOP: Currency = Currency {
-    name: "Tongan Paʻanga",
-    symbol: "T$",
-    code: ISO_4217 {
-        alphabetic: "TOP",
-        numeric: "776",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Turkish lira (TRY)
-pub const TRY: Currency = Currency {
-    name: "Turkish Lira",
-    symbol: "₺",
-    code: ISO_4217 {
-        alphabetic: "TRY",
-        numeric: "949",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Trinidad and Tobago dollar (TTD)
-pub const TTD: Currency = Currency {
-    name: "Trinidad and Tobago Dollar",
-    symbol: "TT$",
-    code: ISO_4217 {
-        alphabetic: "TTD",
-        numeric: "780",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// New Taiwan dollar (TWD)
-pub const TWD: Currency = Currency {
-    name: "New Taiwan Dollar",
-    symbol: "NT$",
-    code: ISO_4217 {
-        alphabetic: "TWD",
-        numeric: "901",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Tanzanian shilling (TZS)
-pub const TZS: Currency = Currency {
-    name: "Tanzanian Shilling",
-    symbol: "TSh",
-    code: ISO_4217 {
-        alphabetic: "TZS",
-        numeric: "834",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Ukrainian hryvnia (UAH)
-pub const UAH: Currency = Currency {
-    name: "Ukrainian Hryvnia",
-    symbol: "₴",
-    code: ISO_4217 {
-        alphabetic: "UAH",
-        numeric: "980",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Ugandan shilling (UGX)
-pub const UGX: Currency = Currency {
-    name: "Ugandan Shilling",
-    symbol: "USh",
-    code: ISO_4217 {
-        alphabetic: "UGX",
-        numeric: "800",
-    },
-    minor: 0,
-    fractions: 1,
-};
-
-/// United States dollar (USD)
-pub const USD: Currency = Currency {
-    name: "United States Dollar",
-    symbol: "$",
-    code: ISO_4217 {
-        alphabetic: "USD",
-        numeric: "840",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Uruguayan peso (UYU)
-pub const UYU: Currency = Currency {
-    name: "Uruguayan Peso",
-    symbol: "$U",
-    code: ISO_4217 {
-        alphabetic: "UYU",
-        numeric: "858",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Uzbekistan Som (UZS)
-pub const UZS: Currency = Currency {
-    name: "Uzbekistan Som",
-    symbol: "лв",
-    code: ISO_4217 {
-        alphabetic: "UZS",
-        numeric: "860",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Venezuelan bolívar soberano (VES)
-pub const VES: Currency = Currency {
-    name: "Venezuelan Bolívar Soberano",
-    symbol: "Bs",
-    code: ISO_4217 {
-        alphabetic: "VES",
-        numeric: "928",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Vietnamese đồng (VND)
-pub const VND: Currency = Currency {
-    name: "Vietnamese Đồng",
-    symbol: "₫",
-    code: ISO_4217 {
-        alphabetic: "VND",
-        numeric: "704",
-    },
-    minor: 0,
-    fractions: 1,
-};
-
-/// Vanuatu vatu (VUV)
-pub const VUV: Currency = Currency {
-    name: "Vanuatu Vatu",
-    symbol: "VT",
-    code: ISO_4217 {
-        alphabetic: "VUV",
-        numeric: "548",
-    },
-    minor: 0,
-    fractions: 1,
-};
-
-/// Samoan tālā (WST)
-pub const WST: Currency = Currency {
-    name: "Samoan Tālā",
-    symbol: "WS$",
-    code: ISO_4217 {
-        alphabetic: "WST",
-        numeric: "882",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// CFA franc BEAC (XAF)
-pub const XAF: Currency = Currency {
-    name: "CFA Franc BEAC",
-    symbol: "FCFA",
-    code: ISO_4217 {
-        alphabetic: "XAF",
-        numeric: "950",
-    },
-    minor: 0,
-    fractions: 1,
-};
-
-/// East Caribbean dollar (XCD)
-pub const XCD: Currency = Currency {
-    name: "East Caribbean Dollar",
-    symbol: "EC$",
-    code: ISO_4217 {
-        alphabetic: "XCD",
-        numeric: "951",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// CFA franc BCEAO (XOF)
-pub const XOF: Currency = Currency {
-    name: "CFA Franc BCEAO",
-    symbol: "CFA",
-    code: ISO_4217 {
-        alphabetic: "XOF",
-        numeric: "952",
-    },
-    minor: 0,
-    fractions: 1,
-};
-
-/// CFP franc (XPF)
-pub const XPF: Currency = Currency {
-    name: "CFP Franc",
-    symbol: "₣",
-    code: ISO_4217 {
-        alphabetic: "XPF",
-        numeric: "953",
-    },
-    minor: 0,
-    fractions: 1,
-};
-
-/// Yemeni rial (YER)
-pub const YER: Currency = Currency {
-    name: "Yemeni Rial",
-    symbol: "YR",
-    code: ISO_4217 {
-        alphabetic: "YER",
-        numeric: "886",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// South African rand (ZAR)
-pub const ZAR: Currency = Currency {
-    name: "South African Rand",
-    symbol: "R",
-    code: ISO_4217 {
-        alphabetic: "ZAR",
-        numeric: "710",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Zambian kwacha (ZMW)
-pub const ZMW: Currency = Currency {
-    name: "Zambian Kwacha",
-    symbol: "ZK",
-    code: ISO_4217 {
-        alphabetic: "ZMW",
-        numeric: "967",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-/// Zimbabwean dollar (ZWL)
-pub const ZWL: Currency = Currency {
-    name: "Zimbabwean Dollar",
-    symbol: "Z$",
-    code: ISO_4217 {
-        alphabetic: "ZWL",
-        numeric: "932",
-    },
-    minor: 2,
-    fractions: 100,
-};
-
-// /// Macro to generate all ISO 4217 country codes.
-// macro_rules! iso_4217 {
-//     ($($name:ident: $alphabetic:literal, $numeric:literal,)*) => {
-//         $(
-//             /// $name
-//             pub const $name: ISO_4217 = ISO_4217 {
-//                 alphabetic: $alphabetic,
-//                 numeric: $numeric,
-//             };
-//         )*
-//     };
-// }
-
-// iso_4217! {
-//     AED: "AED", "784",
-//     AFN: "AFN", "971",
-//     ALL: "ALL", "008",
-//     AMD: "AMD", "051",
-//     ANG: "ANG", "532",
-//     AOA: "AOA", "973",
-//     ARS: "ARS", "032",
-//     AUD: "AUD", "036",
-//     AWG: "AWG", "533",
-//     AZN: "AZN", "944",
-//     BAM: "BAM", "977",
-//     BBD: "BBD", "052",
-//     BDT: "BDT", "050",
-//     BGN: "BGN", "975",
-//     BHD: "BHD", "048",
-//     BIF: "BIF", "108",
-//     BMD: "BMD", "060",
-//     BND: "BND", "096",
-//     BOB: "BOB", "068",
-//     BOV: "BOV", "984",
-//     BRL: "BRL", "986",
-//     BSD: "BSD", "044",
-//     BTN: "BTN", "064",
-//     BWP: "BWP", "072",
-//     BYN: "BYN", "933",
-//     BZD: "BZD", "084",
-//     CAD: "CAD", "124",
-//     CDF: "CDF", "976",
-//     CHE: "CHE", "947",
-//     CHF: "CHF", "756",
-//     CHW: "CHW", "948",
-//     CLF: "CLF", "990",
-//     CLP: "CLP", "152",
-//     CNY: "CNY", "156",
-//     COP: "COP", "170",
-//     COU: "COU", "970",
-//     CRC: "CRC", "188",
-//     CUC: "CUC", "931",
-//     CUP: "CUP", "192",
-//     CVE: "CVE", "132",
-//     CZK: "CZK", "203",
-//     DJF: "DJF", "262",
-//     DKK: "DKK", "208",
-//     DOP: "DOP", "214",
-//     DZD: "DZD", "012",
-//     EGP: "EGP", "818",
-//     ERN: "ERN", "232",
-//     ETB: "ETB", "230",
-//     EUR: "EUR", "978",
-//     FJD: "FJD", "242",
-//     FKP: "FKP", "238",
-//     GBP: "GBP", "826",
-//     GEL: "GEL", "981",
-//     GHS: "GHS", "936",
-//     GIP: "GIP", "292",
-//     GMD: "GMD", "270",
-//     GNF: "GNF", "324",
-//     GTQ: "GTQ", "320",
-//     GYD: "GYD", "328",
-//     HKD: "HKD", "344",
-//     HNL: "HNL", "340",
-//     HRK: "HRK", "191",
-//     HTG: "HTG", "332",
-//     HUF: "HUF", "348",
-//     IDR: "IDR", "360",
-//     ILS: "ILS", "376",
-//     INR: "INR", "356",
-//     IQD: "IQD", "368",
-//     IRR: "IRR", "364",
-//     ISK: "ISK", "352",
-//     JMD: "JMD", "388",
-//     JOD: "JOD", "400",
-//     JPY: "JPY", "392",
-//     KES: "KES", "404",
-//     KGS: "KGS", "417",
-//     KHR: "KHR", "116",
-//     KMF: "KMF", "174",
-//     KPW: "KPW", "408",
-//     KRW: "KRW", "410",
-//     KWD: "KWD", "414",
-//     KYD: "KYD", "136",
-//     KZT: "KZT", "398",
-//     LAK: "LAK", "418",
-//     LBP: "LBP", "422",
-//     LKR: "LKR", "144",
-//     LRD: "LRD", "430",
-//     LSL: "LSL", "426",
-//     LYD: "LYD", "434",
-//     MAD: "MAD", "504",
-//     MDL: "MDL", "498",
-//     MGA: "MGA", "969",
-//     MKD: "MKD", "807",
-//     MMK: "MMK", "104",
-//     MNT: "MNT", "496",
-//     MOP: "MOP", "446",
-//     MRU: "MRU", "929",
-//     MUR: "MUR", "480",
-//     MVR: "MVR", "462",
-//     MWK: "MWK", "454",
-//     MXN: "MXN", "484",
-//     MXV: "MXV", "979",
-//     MYR: "MYR", "458",
-//     MZN: "MZN", "943",
-//     NAD: "NAD", "516",
-//     NGN: "NGN", "566",
-//     NIO: "NIO", "558",
-//     NOK: "NOK", "578",
-//     NPR: "NPR", "524",
-//     NZD: "NZD", "554",
-//     OMR: "OMR", "512",
-//     PAB: "PAB", "590",
-//     PEN: "PEN", "604",
-//     PGK: "PGK", "598",
-//     PHP: "PHP", "608",
-//     PKR: "PKR", "586",
-//     PLN: "PLN", "985",
-//     PYG: "PYG", "600",
-//     QAR: "QAR", "634",
-//     RON: "RON", "946",
-//     RSD: "RSD", "941",
-//     RUB: "RUB", "643",
-//     RWF: "RWF", "646",
-//     SAR: "SAR", "682",
-//     SBD: "SBD", "090",
-//     SCR: "SCR", "690",
-//     SDG: "SDG", "938",
-//     SEK: "SEK", "752",
-//     SGD: "SGD", "702",
-//     SHP: "SHP", "654",
-//     SLL: "SLL", "694",
-//     SOS: "SOS", "706",
-//     SRD: "SRD", "968",
-//     SSP: "SSP", "728",
-//     STN: "STN", "930",
-//     SVC: "SVC", "222",
-//     SYP: "SYP", "760",
-//     SZL: "SZL", "748",
-//     THB: "THB", "764",
-//     TJS: "TJS", "972",
-//     TMT: "TMT", "934",
-//     TND: "TND", "788",
-//     TOP: "TOP", "776",
-//     TRY: "TRY", "949",
-//     TTD: "TTD", "780",
-//     TWD: "TWD", "901",
-//     TZS: "TZS", "834",
-//     UAH: "UAH", "980",
-//     UGX: "UGX", "800",
-//     USD: "USD", "840",
-//     USN: "USN", "997",
-//     UYI: "UYI", "940",
-// }
+impl Eq for ISO_4217 {}
+
+impl PartialEq for ISO_4217 {
+    fn eq(&self, other: &Self) -> bool {
+        self.alphabetic == other.alphabetic && self.numeric == other.numeric
+    }
+}
+
+impl fmt::Display for ISO_4217 {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        write!(
+            f,
+            "Alphabetic: {}, Numeric: {}",
+            self.alphabetic, self.numeric
+        )
+    }
+}
+
+macro_rules! generate_currency {
+    ($identifier:ident, $name:literal, $symbol:literal, $alphabetic_code:literal, $numeric_code:literal, $minor:literal, $fractions:literal) => {
+        #[doc = concat!(" ", $name, " (", $alphabetic_code, ")")]
+        pub const $identifier: Currency = Currency {
+            name: $name,
+            symbol: $symbol,
+            code: ISO_4217 {
+                alphabetic: $alphabetic_code,
+                numeric: $numeric_code,
+            },
+            minor: $minor,
+            fractions: $fractions,
+        };
+    };
+}
+
+#[rustfmt::skip]
+mod unformatted {
+    use crate::iso::iso_4217::ISO_4217;
+    use crate::instruments::fx::currency::Currency;
+    generate_currency!(AED, "United Arab Emirates Dirham", "د.إ", "AED", 784, 2, 100);
+    generate_currency!(AFN, "Afghan Afghani", "؋", "AFN", 971, 2, 100);
+    generate_currency!(ALL, "Albanian Lek", "L", "ALL", 008, 2, 100);
+    generate_currency!(AMD, "Armenian Dram", "֏", "AMD", 051, 2, 100);
+    generate_currency!(ANG, "Netherlands Antillean Guilder", "ƒ", "ANG", 532, 2, 100);
+    generate_currency!(AOA, "Angolan Kwanza", "Kz", "AOA", 973, 2, 100);
+    generate_currency!(ARS, "Argentine Peso", "AR$", "ARS", 032, 2, 100);
+    generate_currency!(AUD, "Australian Dollar", "AU$", "AUD", 036, 2, 100);
+    generate_currency!(AWG, "Aruban Florin", "ƒ", "AWG", 533, 2, 100);
+    generate_currency!(AZN, "Azerbaijani Manat", "₼", "AZN", 944, 2, 100);
+    generate_currency!(BAM, "Bosnia and Herzegovina Convertible Mark", "KM", "BAM", 977, 2, 100);
+    generate_currency!(BBD, "Barbados Dollar", "Bds$", "BBD", 052, 2, 100);
+    generate_currency!(BDT, "Bangladeshi Taka", "৳", "BDT", 050, 2, 100);
+    generate_currency!(BGN, "Bulgarian Lev", "лв", "BGN", 975, 2, 100);
+    generate_currency!(BHD, "Bahraini Dinar", "BD", "BHD", 048, 3, 1000);
+    generate_currency!(BIF, "Burundian Franc", "FBu", "BIF", 108, 0, 1);
+    generate_currency!(BMD, "Bermudian Dollar", "BD$", "BMD", 060, 2, 100);
+    generate_currency!(BND, "Brunei Dollar", "BN$", "BND", 096, 2, 100);
+    generate_currency!(BOB, "Boliviano", "Bs", "BOB", 068, 2, 100);
+    generate_currency!(BRL, "Brazilian Real", "R$", "BRL", 986, 2, 100);
+    generate_currency!(BSD, "Bahamian Dollar", "B$", "BSD", 044, 2, 100);
+    generate_currency!(BTN, "Bhutanese Ngultrum", "Nu.", "BTN", 064, 2, 100);
+    generate_currency!(BWP, "Botswana Pula", "P", "BWP", 072, 2, 100);
+    generate_currency!(BYN, "Belarusian Ruble", "Br", "BYN", 933, 2, 100);
+    generate_currency!(BZD, "Belize Dollar", "BZ$", "BZD", 084, 2, 100);
+    generate_currency!(CAD, "Canadian Dollar", "CA$", "CAD", 124, 2, 100);
+    generate_currency!(CDF, "Congolese Franc", "FC", "CDF", 976, 2, 100);
+    generate_currency!(CHF, "Swiss Franc", "CHF", "CHF", 756, 2, 100);
+    generate_currency!(CLP, "Chilean Peso", "CL$", "CLP", 152, 0, 1);
+    generate_currency!(COP, "Colombian Peso", "CO$", "COP", 170, 2, 100);
+    generate_currency!(CRC, "Costa Rican Colon", "₡", "CRC", 188, 2, 100);
+    generate_currency!(CUC, "Cuban Convertible Peso", "$", "CUC", 931, 2, 100);
+    generate_currency!(CUP, "Cuban Peso", "$MN", "CUP", 192, 2, 100);
+    generate_currency!(CVE, "Cape Verdean Escudo", "Esc", "CVE", 132, 2, 100);
+    generate_currency!(CZK, "Czech Koruna", "Kč", "CZK", 203, 2, 100);
+    generate_currency!(DJF, "Djiboutian Franc", "Fdj", "DJF", 262, 0, 1);
+    generate_currency!(DKK, "Danish Krone", "kr", "DKK", 208, 2, 100);
+    generate_currency!(DOP, "Dominican Peso", "RD$", "DOP", 214, 2, 100);
+    generate_currency!(DZD, "Algerian Dinar", "دج", "DZD", 012, 2, 100);
+    generate_currency!(EGP, "Egyptian Pound", "E£", "EGP", 818, 2, 100);
+    generate_currency!(ERN, "Eritrean Nakfa", "Nfk", "ERN", 232, 2, 100);
+    generate_currency!(ETB, "Ethiopian Birr", "Br", "ETB", 230, 2, 100);
+    generate_currency!(EUR, "Euro", "€", "EUR", 978, 2, 100);
+    generate_currency!(FJD, "Fijian Dollar", "FJ$", "FJD", 242, 2, 100);
+    generate_currency!(FKP, "Falkland Islands Pound", "FK£", "FKP", 238, 2, 100);
+    generate_currency!(GBP, "Pound Sterling", "£", "GBP", 826, 2, 100);
+    generate_currency!(GEL, "Georgian Lari", "₾", "GEL", 981, 2, 100);
+    generate_currency!(GHS, "Ghanaian Cedi", "GH₵", "GHS", 936, 2, 100);
+    generate_currency!(GIP, "Gibraltar Pound", "£", "GIP", 292, 2, 100);
+    generate_currency!(GMD, "Gambian Dalasi", "D", "GMD", 270, 2, 100);
+    generate_currency!(GNF, "Guinean Franc", "FG", "GNF", 324, 0, 1);
+    generate_currency!(GTQ, "Guatemalan Quetzal", "Q", "GTQ", 320, 2, 100);
+    generate_currency!(GYD, "Guyanese Dollar", "GY$", "GYD", 328, 2, 100);
+    generate_currency!(HKD, "Hong Kong Dollar", "HK$", "HKD", 344, 2, 100);
+    generate_currency!(HNL, "Honduran Lempira", "L", "HNL", 340, 2, 100);
+    generate_currency!(HRK, "Croatian Kuna", "kn", "HRK", 191, 2, 100);
+    generate_currency!(HTG, "Haitian Gourde", "G", "HTG", 332, 2, 100);
+    generate_currency!(HUF, "Hungarian Forint", "Ft", "HUF", 348, 2, 100);
+    generate_currency!(IDR, "Indonesian Rupiah", "Rp", "IDR", 360, 2, 100);
+    generate_currency!(ILS, "Israeli New Shekel", "₪", "ILS", 376, 2, 100);
+    generate_currency!(INR, "Indian Rupee", "₹", "INR", 356, 2, 100);
+    generate_currency!(IQD, "Iraqi Dinar", "ع.د", "IQD", 368, 3, 1000);
+    generate_currency!(IRR, "Iranian Rial", "﷼", "IRR", 364, 2, 100);
+    generate_currency!(ISK, "Icelandic Króna", "kr", "ISK", 352, 0, 1);
+    generate_currency!(JMD, "Jamaican Dollar", "J$", "JMD", 388, 2, 100);
+    generate_currency!(JOD, "Jordanian Dinar", "JD", "JOD", 400, 3, 1000);
+    generate_currency!(JPY, "Japanese Yen", "¥", "JPY", 392, 0, 1);
+    generate_currency!(KES, "Kenyan Shilling", "KSh", "KES", 404, 2, 100);
+    generate_currency!(KGS, "Kyrgyzstani Som", "лв", "KGS", 417, 2, 100);
+    generate_currency!(KHR, "Cambodian Riel", "៛", "KHR", 116, 2, 100);
+    generate_currency!(KMF, "Comoro Franc", "CF", "KMF", 174, 0, 1);
+    generate_currency!(KPW, "North Korean Won", "₩", "KPW", 408, 2, 100);
+    generate_currency!(KRW, "South Korean Won", "₩", "KRW", 410, 0, 1);
+    generate_currency!(KWD, "Kuwaiti Dinar", "KD", "KWD", 414, 3, 1000);
+    generate_currency!(KYD, "Cayman Islands Dollar", "KY$", "KYD", 136, 2, 100);
+    generate_currency!(KZT, "Kazakhstani Tenge", "₸", "KZT", 398, 2, 100);
+    generate_currency!(LAK, "Lao Kip", "₭", "LAK", 418, 2, 100);
+    generate_currency!(LBP, "Lebanese Pound", "L£", "LBP", 422, 2, 100);
+    generate_currency!(LKR, "Sri Lankan Rupee", "Rs", "LKR", 144, 2, 100);
+    generate_currency!(LRD, "Liberian Dollar", "L$", "LRD", 430, 2, 100);
+    generate_currency!(LSL, "Lesotho Loti", "M", "LSL", 426, 2, 100);
+    generate_currency!(LYD, "Libyan Dinar", "LD", "LYD", 434, 3, 1000);
+    generate_currency!(MAD, "Moroccan Dirham", "MAD", "MAD", 504, 2, 100);
+    generate_currency!(MDL, "Moldovan Leu", "MDL", "MDL", 498, 2, 100);
+    generate_currency!(MGA, "Malagasy Ariary", "Ar", "MGA", 969, 2, 100);
+    generate_currency!(MKD, "Macedonian Denar", "ден", "MKD", 807, 2, 100);
+    generate_currency!(MMK, "Myanmar Kyat", "K", "MMK", 104, 2, 100);
+    generate_currency!(MNT, "Mongolian Tögrög", "₮", "MNT", 496, 2, 100);
+    generate_currency!(MOP, "Macanese Pataca", "MOP$", "MOP", 446, 2, 100);
+    generate_currency!(MRO, "Mauritanian Ouguiya", "UM", "MRO", 478, 2, 100);
+    generate_currency!(MUR, "Mauritian Rupee", "Rs", "MUR", 480, 2, 100);
+    generate_currency!(MVR, "Maldivian Rufiyaa", "Rf", "MVR", 462, 2, 100);
+    generate_currency!(MWK, "Malawian Kwacha", "MK", "MWK", 454, 2, 100);
+    generate_currency!(MXN, "Mexican Peso", "MX$", "MXN", 484, 2, 100);
+    generate_currency!(MYR, "Malaysian Ringgit", "RM", "MYR", 458, 2, 100);
+    generate_currency!(MZN, "Mozambican Metical", "MT", "MZN", 943, 2, 100);
+    generate_currency!(NAD, "Namibian Dollar", "N$", "NAD", 516, 2, 100);
+    generate_currency!(NGN, "Nigerian Naira", "₦", "NGN", 566, 2, 100);
+    generate_currency!(NIO, "Nicaraguan Córdoba", "C$", "NIO", 558, 2, 100);
+    generate_currency!(NOK, "Norwegian Krone", "kr", "NOK", 578, 2, 100);
+    generate_currency!(NPR, "Nepalese Rupee", "Rs", "NPR", 524, 2, 100);
+    generate_currency!(NZD, "New Zealand Dollar", "NZ$", "NZD", 554, 2, 100);
+    generate_currency!(OMR, "Omani Rial", "OMR", "OMR", 512, 3, 1000);
+    generate_currency!(PAB, "Panamanian Balboa", "B/.", "PAB", 590, 2, 100);
+    generate_currency!(PEN, "Peruvian Sol", "S/.", "PEN", 604, 2, 100);
+    generate_currency!(PGK, "Papua New Guinean Kina", "K", "PGK", 598, 2, 100);
+    generate_currency!(PHP, "Philippine Peso", "₱", "PHP", 608, 2, 100);
+    generate_currency!(PKR, "Pakistani Rupee", "Rs", "PKR", 586, 2, 100);
+    generate_currency!(PLN, "Polish Złoty", "zł", "PLN", 985, 2, 100);
+    generate_currency!(PYG, "Paraguayan Guarani", "₲", "PYG", 600, 0, 1);
+    generate_currency!(QAR, "Qatari Riyal", "QR", "QAR", 634, 2, 100);
+    generate_currency!(RON, "Romanian Leu", "lei", "RON", 946, 2, 100);
+    generate_currency!(RSD, "Serbian Dinar", "din", "RSD", 941, 2, 100);
+    generate_currency!(CNY, "Renminbi (Chinese) Yuan", "¥", "CNY", 156, 2, 100);
+    generate_currency!(RUB, "Russian Ruble", "₽", "RUB", 643, 2, 100);
+    generate_currency!(RWF, "Rwandan Franc", "RF", "RWF", 646, 0, 1);
+    generate_currency!(SAR, "Saudi Riyal", "SR", "SAR", 682, 2, 100);
+    generate_currency!(SBD, "Solomon Islands Dollar", "SI$", "SBD", 090, 2, 100);
+    generate_currency!(SCR, "Seychelles Rupee", "SR", "SCR", 690, 2, 100);
+    generate_currency!(SDG, "Sudanese Pound", "SDG", "SDG", 938, 2, 100);
+    generate_currency!(SEK, "Swedish Krona/Kronor", "kr", "SEK", 752, 2, 100);
+    generate_currency!(SGD, "Singapore Dollar", "S$", "SGD", 702, 2, 100);
+    generate_currency!(SHP, "Saint Helena Pound", "£", "SHP", 654, 2, 100);
+    generate_currency!(SLE, "Sierra Leonean (new) Leone", "Le", "SLE", 925, 2, 100);
+    generate_currency!(SLL, "Sierra Leonean (old) Leone", "Le", "SLL", 694, 2, 100);
+    generate_currency!(SOS, "Somali Shilling", "Sh", "SOS", 706, 2, 100);
+    generate_currency!(SRD, "Surinamese Dollar", "SR$", "SRD", 968, 2, 100);
+    generate_currency!(SSP, "South Sudanese Pound", "SSP", "SSP", 728, 2, 100);
+    generate_currency!(STN, "São Tomé and Príncipe Dobra", "Db", "STN", 930, 2, 100);
+    generate_currency!(SVC, "Salvadoran Colón", "₡", "SVC", 222, 2, 100);
+    generate_currency!(SYP, "Syrian Pound", "LS", "SYP", 760, 2, 100);
+    generate_currency!(SZL, "Swazi Lilangeni", "E", "SZL", 748, 2, 100);
+    generate_currency!(THB, "Thai Baht", "฿", "THB", 764, 2, 100);
+    generate_currency!(TJS, "Tajikistani Somoni", "SM", "TJS", 972, 2, 100);
+    generate_currency!(TMT, "Turkmenistan Manat", "T", "TMT", 934, 2, 100);
+    generate_currency!(TND, "Tunisian Dinar", "DT", "TND", 788, 3, 1000);
+    generate_currency!(TOP, "Tongan Paʻanga", "T$", "TOP", 776, 2, 100);
+    generate_currency!(TRY, "Turkish Lira", "₺", "TRY", 949, 2, 100);
+    generate_currency!(TTD, "Trinidad and Tobago Dollar", "TT$", "TTD", 780, 2, 100);
+    generate_currency!(TWD, "New Taiwan Dollar", "NT$", "TWD", 901, 2, 100);
+    generate_currency!(TZS, "Tanzanian Shilling", "TSh", "TZS", 834, 2, 100);
+    generate_currency!(UAH, "Ukrainian Hryvnia", "₴", "UAH", 980, 2, 100);
+    generate_currency!(UGX, "Ugandan Shilling", "USh", "UGX", 800, 0, 1);
+    generate_currency!(USD, "United States Dollar", "$", "USD", 840, 2, 100);
+    generate_currency!(UYU, "Uruguayan Peso", "$U", "UYU", 858, 2, 100);
+    generate_currency!(UZS, "Uzbekistan Som", "лв", "UZS", 860, 2, 100);
+    generate_currency!(VES, "Venezuelan Bolívar Soberano", "Bs", "VES", 928, 2, 100);
+    generate_currency!(VND, "Vietnamese Đồng", "₫", "VND", 704, 0, 1);
+    generate_currency!(VUV, "Vanuatu Vatu", "VT", "VUV", 548, 0, 1);
+    generate_currency!(WST, "Samoan Tālā", "WS$", "WST", 882, 2, 100);
+    generate_currency!(XAF, "CFA Franc BEAC", "FCFA", "XAF", 950, 0, 1);
+    generate_currency!(XCD, "East Caribbean Dollar", "EC$", "XCD", 951, 2, 100);
+    generate_currency!(XOF, "CFA Franc BCEAO", "CFA", "XOF", 952, 0, 1);
+    generate_currency!(XPF, "CFP Franc", "₣", "XPF", 953, 0, 1);
+    generate_currency!(YER, "Yemeni Rial", "YR", "YER", 886, 2, 100);
+    generate_currency!(ZAR, "South African Rand", "R", "ZAR", 710, 2, 100);
+    generate_currency!(ZMW, "Zambian Kwacha", "ZK", "ZMW", 967, 2, 100);
+    generate_currency!(ZWL, "Zimbabwean Dollar", "Z$", "ZWL", 932, 2, 100);
+}
