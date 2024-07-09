@@ -10,5 +10,5 @@
 /// Zero-coupon bond struct.
 pub mod zero_coupon_bond;
 
-/// Coupon bond struct.
-pub mod coupon_bond;
+// /// Coupon bond struct.
+// pub mod coupon_bond;
