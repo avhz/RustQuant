@@ -105,6 +105,10 @@
 //! println!("{:?}", data.data);
 //! ```
 
+use crate::math::{
+    interpolation::{Interpolator, LinearInterpolator},
+    InterpolationIndex,
+};
 use std::{collections::BTreeMap, hash::Hash};
 
 /// File reading and writing.
@@ -134,7 +138,7 @@ pub use yahoo::*;
 
 /// Curve index trait.
 pub trait CurveIndex {}
-impl<T> CurveIndex for T where T: Ord + Hash {}
+impl<T> CurveIndex for T where T: Ord + Hash + InterpolationIndex {}
 
 /// Curve data structure.
 pub struct Curve<C>
@@ -222,6 +226,23 @@ macro_rules! impl_curve {
                     *value += shift;
                 }
             }
+
+            // /// Interpolate the curve at a specific index.
+            // pub fn interpolate(&self, index: $index) -> f64 {
+            //     // let (left, right) = self.nodes.range(..=index).next_back().unwrap();
+            //     // let (left_index, left_value) = left;
+            //     // let (right_index, right_value) = right;
+
+            //     // let t = (*index - *left_index) / (*right_index - *left_index);
+
+            //     // left_value + (right_value - left_value) * t
+            //     let xs = self.nodes.keys().cloned().collect::<Vec<$index>>();
+            //     let ys = self.nodes.values().cloned().collect::<Vec<f64>>();
+
+            //     let interpolator = LinearInterpolator::new(xs, ys);
+
+            //     1.0
+            // }
 
             // /// Create a Curve from a Polars DataFrame.
             // pub fn new_from_polars(df: &DataFrame, index: &str, value: &str) -> Self {
