@@ -233,8 +233,8 @@ where
 mod tests_portfolio {
     use super::*;
     use crate::{
+        instruments::fx::currencies::*,
         instruments::options::{BlackScholesMerton, TypeFlag},
-        iso::USD,
         time::today,
     };
     use time::Duration;

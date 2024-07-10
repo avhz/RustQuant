@@ -40,55 +40,6 @@ pub struct Currency {
 // IMPLEMENTATIONS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-impl Instrument for Currency {
-    fn price(&self) -> f64 {
-        1.0
-    }
-
-    fn error(&self) -> Option<f64> {
-        None
-    }
-
-    fn valuation_date(&self) -> time::Date {
-        today()
-    }
-
-    fn instrument_type(&self) -> &'static str {
-        self.name
-    }
-}
-
-impl Eq for Currency {}
-impl Eq for ISO_4217 {}
-
-impl PartialEq for Currency {
-    fn eq(&self, other: &Self) -> bool {
-        self.code == other.code
-    }
-}
-
-impl PartialEq for ISO_4217 {
-    fn eq(&self, other: &Self) -> bool {
-        self.alphabetic == other.alphabetic && self.numeric == other.numeric
-    }
-}
-
-impl fmt::Display for Currency {
-    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
-        write!(f, "Currency:\t{}\nISO Code:\t{:?}", self.name, self.code)
-    }
-}
-
-impl fmt::Display for ISO_4217 {
-    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
-        write!(
-            f,
-            "Alphabetic: {}, Numeric: {}",
-            self.alphabetic, self.numeric
-        )
-    }
-}
-
 impl Currency {
     /// Create a new currency.
     #[must_use]
@@ -139,40 +90,51 @@ impl Currency {
     }
 }
 
+impl Instrument for Currency {
+    fn price(&self) -> f64 {
+        1.0
+    }
+
+    fn error(&self) -> Option<f64> {
+        None
+    }
+
+    fn valuation_date(&self) -> time::Date {
+        today()
+    }
+
+    fn instrument_type(&self) -> &'static str {
+        self.name
+    }
+}
+
+impl Eq for Currency {}
+
+impl PartialEq for Currency {
+    fn eq(&self, other: &Self) -> bool {
+        self.code == other.code
+    }
+}
+
+impl fmt::Display for Currency {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        write!(f, "Currency:\t{}\nISO Code:\t{:?}", self.name, self.code)
+    }
+}
+
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // UNIT TESTS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 #[cfg(test)]
 mod test_currencies {
-    use super::*;
     use crate::assert_approx_equal;
+    use crate::instruments::fx::currencies::*;
     use crate::instruments::fx::money::Money;
+    use crate::iso::iso_4217::*;
     use std::f64::EPSILON as EPS;
 
     // Setup some example currencies and money for testing
-    const USD: Currency = Currency {
-        name: "United States Dollar",
-        symbol: "$",
-        code: ISO_4217 {
-            alphabetic: "USD",
-            numeric: "840",
-        },
-        minor: 2,
-        fractions: 100,
-    };
-
-    const EUR: Currency = Currency {
-        name: "Euro",
-        symbol: "€",
-        code: ISO_4217 {
-            alphabetic: "EUR",
-            numeric: "978",
-        },
-        minor: 2,
-        fractions: 100,
-    };
-
     #[test]
     fn test_currency_display() {
         let display_output = format!("{}", USD);

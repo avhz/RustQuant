@@ -149,32 +149,11 @@ impl std::ops::Div for Money {
 mod test_currencies {
     use super::*;
     use crate::assert_approx_equal;
-    use crate::iso::ISO_4217;
+    use crate::instruments::fx::currencies::*;
+    use crate::iso::iso_4217::*;
     use std::f64::EPSILON as EPS;
 
     // Setup some example currencies and money for testing
-    const USD: Currency = Currency {
-        name: "United States Dollar",
-        symbol: "$",
-        code: ISO_4217 {
-            alphabetic: "USD",
-            numeric: "840",
-        },
-        minor: 2,
-        fractions: 100,
-    };
-
-    const EUR: Currency = Currency {
-        name: "Euro",
-        symbol: "€",
-        code: ISO_4217 {
-            alphabetic: "EUR",
-            numeric: "978",
-        },
-        minor: 2,
-        fractions: 100,
-    };
-
     #[test]
     fn test_currency_display() {
         let display_output = format!("{}", USD);
