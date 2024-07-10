@@ -129,6 +129,7 @@ impl fmt::Display for Currency {
 #[cfg(test)]
 mod test_currencies {
     use crate::assert_approx_equal;
+    use crate::instruments::fx::currencies::*;
     use crate::instruments::fx::money::Money;
     use crate::iso::iso_4217::*;
     use std::f64::EPSILON as EPS;
