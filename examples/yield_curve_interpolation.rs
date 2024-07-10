@@ -1,9 +1,10 @@
 use time::{Date, Duration};
 use RustQuant::{
-    data::{Curve, YieldCurve},
+    data::curve::{YieldCurve,Curve},
     plot_vector,
     time::today,
 };
+
 
 fn main() {
     // Initial date of the curve (today).

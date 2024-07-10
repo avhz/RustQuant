@@ -106,7 +106,6 @@
 //! ```
 
 use crate::math::{
-    interpolation::{Interpolator, LinearInterpolator},
     InterpolationIndex,
 };
 use std::{collections::BTreeMap, hash::Hash};
@@ -119,11 +118,11 @@ pub use io::*;
 pub mod yahoo;
 pub use yahoo::*;
 
-// /// Curves module.
-// /// Curves (in the financial sense) are functions that map
-// /// a time to a value, such as a yield curve or a swap curve.
-// /// They may also be known as term structures.
-// pub mod curve;
+/// Curves module.
+/// Curves (in the financial sense) are functions that map
+/// a time to a value, such as a yield curve or a swap curve.
+/// They may also be known as term structures.
+pub mod curve;
 // pub use curve::*;
 
 // /// Surface implementations.
