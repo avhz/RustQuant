@@ -224,9 +224,8 @@ mod test_exchange_rate {
     use super::*;
 
     use crate::assert_approx_equal;
-    use crate::instruments::fx::currencies::*;
-    use crate::instruments::fx::currencies::{EUR, USD};
-    use crate::iso::iso_4217::*;
+    use crate::instruments::fx::*;
+    use crate::instruments::fx::{EUR, USD};
     use std::f64::EPSILON as EPS;
 
     #[test]

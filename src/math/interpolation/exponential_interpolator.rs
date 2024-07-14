@@ -10,7 +10,10 @@
 //! Module containing functionality for interpolation.
 
 use super::Interpolator;
-use crate::math::interpolation::{InterpolationError, InterpolationIndex, InterpolationValue};
+use crate::{
+    error::RustQuantError,
+    math::interpolation::{InterpolationIndex, InterpolationValue},
+};
 use num::Float;
 use std::cmp::Ordering;
 
@@ -46,16 +49,16 @@ where
     /// Create a new ExponentialInterpolator.
     ///
     /// # Errors
-    /// - `InterpolationError::UnequalLength` if ```xs.length() != ys.length()```.
+    /// - `RustQuantError::UnequalLength` if ```xs.length() != ys.length()```.
     ///
     /// # Panics
     /// Panics if NaN is in the index.
     pub fn new(
         xs: Vec<IndexType>,
         ys: Vec<ValueType>,
-    ) -> Result<ExponentialInterpolator<IndexType, ValueType>, InterpolationError> {
+    ) -> Result<ExponentialInterpolator<IndexType, ValueType>, RustQuantError> {
         if xs.len() != ys.len() {
-            return Err(InterpolationError::UnequalLength);
+            return Err(RustQuantError::UnequalLength);
         }
 
         let mut tmp: Vec<_> = xs.into_iter().zip(ys).collect();
@@ -78,7 +81,7 @@ where
     IndexType: InterpolationIndex<DeltaDiv = ValueType>,
     ValueType: InterpolationValue + Float,
 {
-    fn fit(&mut self) -> Result<(), InterpolationError> {
+    fn fit(&mut self) -> Result<(), RustQuantError> {
         self.fitted = true;
         Ok(())
     }
@@ -94,14 +97,14 @@ where
         self.ys.insert(idx, point.1);
     }
 
-    fn interpolate(&self, point: IndexType) -> Result<ValueType, InterpolationError> {
+    fn interpolate(&self, point: IndexType) -> Result<ValueType, RustQuantError> {
         let range = self.range();
 
         let check1 = point.partial_cmp(&range.0).unwrap() == Ordering::Less;
         let check2 = point.partial_cmp(&range.1).unwrap() == Ordering::Greater;
 
         if check1 || check2 {
-            return Err(InterpolationError::OutsideOfRange);
+            return Err(RustQuantError::OutsideOfRange);
         }
 
         if let Ok(idx) = self

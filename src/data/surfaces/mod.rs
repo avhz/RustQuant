@@ -1,31 +1,33 @@
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// RustQuant: A Rust library for quantitative finance tools.
+// Copyright (C) 2023 https://github.com/avhz
+// Dual licensed under Apache 2.0 and MIT.
+// See:
+//      - LICENSE-APACHE.md
+//      - LICENSE-MIT.md
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 use super::Curve;
 use crate::data::TermStructure;
 use num::Float;
 use std::collections::BTreeMap;
 use time::Date;
 
+/// Surface data structure.
+pub struct Surface<S, C>
+where
+    S: CurveIndex,
+    C: CurveIndex,
+{
+    /// The curves that make up the surface.
+    pub nodes: BTreeMap<S, Curve<C>>,
+}
+
 /// Surface data.
 #[allow(dead_code)] // never used
 pub struct Surface {
     /// Nodes of the surface.
     pub nodes: BTreeMap<u64, TermStructure>,
-}
-
-// /// Surface trait.
-// pub trait Surface {
-//     /// Returns the value of the surface for a given time and space coordinate.
-//     fn value<F: Float>(&self, time: Date, space: F) -> f64;
-// }
-
-/// Volatility surface.
-/// A volatility surface is a surface of points (volatilities) over a
-/// space dimension (e.g. strike or moneyness) and a time dimension (e.g. dates).
-///
-/// We represent this as a map from time to a curve of volatilities.
-#[allow(clippy::module_name_repetitions)]
-pub struct VolatilitySurface<C: Curve> {
-    /// The volatilities of the surface.
-    pub volatilities: BTreeMap<f64, C>,
 }
 
 #[allow(dead_code)]

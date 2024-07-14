@@ -105,12 +105,6 @@
 //! println!("{:?}", data.data);
 //! ```
 
-use crate::math::{
-    interpolation::{Interpolator, LinearInterpolator},
-    InterpolationIndex,
-};
-use std::{collections::BTreeMap, hash::Hash};
-
 /// File reading and writing.
 pub mod io;
 pub use io::*;
@@ -126,160 +120,12 @@ pub use yahoo::*;
 // pub mod curve;
 // pub use curve::*;
 
-// /// Surface implementations.
+/// Base curve data structure and implementations.
+pub mod curves;
+pub use curves::*;
+
+// /// Base surface data structure and implementations.
 // /// Surfaces are simply [Curve]s with an additional dimension.
 // /// For example, a volatility surface is a function of time and strike/moneyness.
 // pub mod surface;
 // pub use surface::*;
-
-// /// Term structure data.
-// pub mod term_structure;
-// pub use term_structure::*;
-
-/// Curve index trait.
-pub trait CurveIndex {}
-impl<T> CurveIndex for T where T: Ord + Hash + InterpolationIndex {}
-
-/// Curve data structure.
-pub struct Curve<C>
-where
-    C: CurveIndex,
-{
-    /// The nodes of the curve.
-    pub nodes: BTreeMap<C, f64>,
-}
-
-/// Surface data structure.
-pub struct Surface<S, C>
-where
-    S: CurveIndex,
-    C: CurveIndex,
-{
-    /// The curves that make up the surface.
-    pub nodes: BTreeMap<S, Curve<C>>,
-}
-
-macro_rules! impl_curve {
-    ($index:ty) => {
-        impl Curve<$index> {
-            /// Create a new curve.
-            pub fn new() -> Self {
-                Self {
-                    nodes: BTreeMap::new(),
-                }
-            }
-
-            /// Add a node to the curve.
-            pub fn insert(&mut self, index: $index, value: f64) {
-                self.nodes.insert(index, value);
-            }
-
-            /// Get a value for a specific index.
-            pub fn get(&self, index: $index) -> Option<&f64> {
-                self.nodes.get(&index)
-            }
-
-            /// Get a mutable reference to a value for a specific index.
-            pub fn get_mut(&mut self, index: $index) -> Option<&mut f64> {
-                self.nodes.get_mut(&index)
-            }
-
-            /// Create a Curve from a vector of indices and values.
-            pub fn new_from_slice(indices: &[$index], values: &[f64]) -> Self {
-                let mut curve = Self::new();
-
-                for (index, value) in indices.iter().zip(values.iter()) {
-                    curve.insert(*index, *value);
-                }
-
-                curve
-            }
-
-            /// Create a Curve from a function.
-            pub fn new_from_function<F>(f: F, indices: &[$index]) -> Self
-            where
-                F: Fn($index) -> f64,
-            {
-                let mut curve = Self::new();
-
-                for index in indices {
-                    curve.insert(*index, f(*index));
-                }
-
-                curve
-            }
-
-            /// Create a Curve from a constant value.
-            pub fn new_from_constant(value: f64, indices: &[$index]) -> Self {
-                let mut curve = Self::new();
-
-                for index in indices {
-                    curve.insert(*index, value);
-                }
-
-                curve
-            }
-
-            /// Shift the curve by a constant value.
-            pub fn shift(&mut self, shift: f64) {
-                for value in self.nodes.values_mut() {
-                    *value += shift;
-                }
-            }
-
-            // /// Interpolate the curve at a specific index.
-            // pub fn interpolate(&self, index: $index) -> f64 {
-            //     // let (left, right) = self.nodes.range(..=index).next_back().unwrap();
-            //     // let (left_index, left_value) = left;
-            //     // let (right_index, right_value) = right;
-
-            //     // let t = (*index - *left_index) / (*right_index - *left_index);
-
-            //     // left_value + (right_value - left_value) * t
-            //     let xs = self.nodes.keys().cloned().collect::<Vec<$index>>();
-            //     let ys = self.nodes.values().cloned().collect::<Vec<f64>>();
-
-            //     let interpolator = LinearInterpolator::new(xs, ys);
-
-            //     1.0
-            // }
-
-            // /// Create a Curve from a Polars DataFrame.
-            // pub fn new_from_polars(df: &DataFrame, index: &str, value: &str) -> Self {
-            //     let mut curve = Self::new();
-
-            //     let index_series = df.column(index).unwrap();
-            //     let value_series = df.column(value).unwrap();
-
-            //     for i in 0..df.height() {
-            //         let index = index_series.get(i).unwrap().get::<$index>().unwrap();
-            //         let value = value_series.get(i).unwrap().get::<f64>().unwrap();
-
-            //         curve.insert(index, value);
-            //     }
-
-            //     curve
-            // }
-        }
-    };
-}
-
-// Implement the Curve for temporal types.
-impl_curve!(time::Date);
-impl_curve!(time::Time);
-impl_curve!(time::OffsetDateTime);
-impl_curve!(time::PrimitiveDateTime);
-
-// Implement the Curve for unsigned integer types.
-impl_curve!(u64);
-impl_curve!(u32);
-impl_curve!(u16);
-impl_curve!(u8);
-impl_curve!(usize);
-
-// Implement the Curve for signed integer types.
-impl_curve!(i64);
-impl_curve!(i32);
-impl_curve!(i16);
-impl_curve!(i8);
-impl_curve!(isize);

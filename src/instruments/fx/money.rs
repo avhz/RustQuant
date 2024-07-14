@@ -149,8 +149,7 @@ impl std::ops::Div for Money {
 mod test_currencies {
     use super::*;
     use crate::assert_approx_equal;
-    use crate::instruments::fx::currencies::*;
-    use crate::iso::iso_4217::*;
+    use crate::instruments::fx::*;
     use std::f64::EPSILON as EPS;
 
     // Setup some example currencies and money for testing

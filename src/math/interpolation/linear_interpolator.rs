@@ -9,8 +9,9 @@
 
 //! Module containing functionality for interpolation.
 
-use crate::math::interpolation::{
-    InterpolationError, InterpolationIndex, InterpolationValue, Interpolator,
+use crate::{
+    error::RustQuantError,
+    math::interpolation::{InterpolationIndex, InterpolationValue, Interpolator},
 };
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -45,16 +46,16 @@ where
     /// Create a new LinearInterpolator.
     ///
     /// # Errors
-    /// - `InterpolationError::UnequalLength` if ```xs.length() != ys.length()```.
+    /// - `RustQuantError::UnequalLength` if ```xs.length() != ys.length()```.
     ///
     /// # Panics
     /// Panics if NaN is in the index.
     pub fn new(
         xs: Vec<IndexType>,
         ys: Vec<ValueType>,
-    ) -> Result<LinearInterpolator<IndexType, ValueType>, InterpolationError> {
+    ) -> Result<LinearInterpolator<IndexType, ValueType>, RustQuantError> {
         if xs.len() != ys.len() {
-            return Err(InterpolationError::UnequalLength);
+            return Err(RustQuantError::UnequalLength);
         }
 
         let mut tmp: Vec<_> = xs.into_iter().zip(ys).collect();
@@ -77,7 +78,7 @@ where
     IndexType: InterpolationIndex<DeltaDiv = ValueType>,
     ValueType: InterpolationValue,
 {
-    fn fit(&mut self) -> Result<(), InterpolationError> {
+    fn fit(&mut self) -> Result<(), RustQuantError> {
         self.fitted = true;
         Ok(())
     }
@@ -92,12 +93,12 @@ where
         self.ys.insert(idx, point.1);
     }
 
-    fn interpolate(&self, point: IndexType) -> Result<ValueType, InterpolationError> {
+    fn interpolate(&self, point: IndexType) -> Result<ValueType, RustQuantError> {
         let range = self.range();
         if point.partial_cmp(&range.0).unwrap() == std::cmp::Ordering::Less
             || point.partial_cmp(&range.1).unwrap() == std::cmp::Ordering::Greater
         {
-            return Err(InterpolationError::OutsideOfRange);
+            return Err(RustQuantError::OutsideOfRange);
         }
         if let Ok(idx) = self
             .xs
@@ -161,7 +162,7 @@ mod tests_linear_interpolation {
         let mut interpolator = LinearInterpolator::new(xs, ys).unwrap();
         let _ = interpolator.fit();
 
-        assert!(InterpolationError::OutsideOfRange == interpolator.interpolate(6.).err().unwrap());
+        assert!(interpolator.interpolate(6.).is_err());
     }
 
     #[test]

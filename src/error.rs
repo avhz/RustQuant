@@ -96,6 +96,21 @@ pub enum RustQuantError {
     /// failed to compute u
     #[error("SVD decomposition failed: u is likely wrong type")]
     SvdDecompositionFailedOnU,
+
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // Interpolation related errors
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    /// Unequal length of `xs` and `ys`.
+    #[error("Unequal length of `xs` and `ys` inputs in interpolator.")]
+    UnequalLength,
+
+    /// Interpolator has not been fitted.
+    #[error("Interpolator has not been fitted.")]
+    Unfitted,
+
+    /// Outside of interpolation range.
+    #[error("Outside of interpolation range.")]
+    OutsideOfRange,
 }
 
 /// Create a `RustQuantError` with the text to include in the output.
