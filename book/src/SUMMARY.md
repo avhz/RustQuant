@@ -20,5 +20,5 @@
 - [File Template](./Template.md)
 - [References](./References.md)
 - [Licenses](./Licenses/Licenses.md)
-    - [Apache v2](./Licenses//LICENSE-APACHE.md)
-    - [MIT](./Licenses//LICENSE-MIT.md)
+    - [Apache v2](./Licenses/LICENSE-APACHE.md)
+    - [MIT](./Licenses/LICENSE-MIT.md)
