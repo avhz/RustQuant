@@ -11,7 +11,7 @@
 //! A leg is a sequence of cashflows.
 
 use super::Cashflow;
-use time::OffsetDateTime;
+use time::{Date, OffsetDateTime};
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // STRUCTS, ENUMS, AND TRAITS
@@ -19,61 +19,52 @@ use time::OffsetDateTime;
 
 /// Leg (sequence of cashflows).
 #[derive(Debug, Clone, Default, PartialEq, PartialOrd)]
-pub struct Leg<C: Cashflow> {
-    cashflows: Vec<C>,
+pub struct Leg {
+    cashflows: Vec<Cashflow>,
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // IMPLEMENTATIONS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-impl<C: Cashflow> Leg<C> {
+impl Leg {
     /// Creates a new leg with given cashflows.
-    #[must_use]
-    pub fn new(cashflows: Vec<C>) -> Self {
+    pub fn new(cashflows: Vec<Cashflow>) -> Self {
         Self { cashflows }
     }
 
     /// Returns the number of cashflows in the leg.
-    #[must_use]
     pub fn size(&self) -> usize {
         self.cashflows.len()
     }
 
     /// Returns the Net Present Value (NPV) of the leg given a discount function.
-    pub fn npv<F>(&self, df: F) -> f64
-    where
-        F: Fn(OffsetDateTime) -> f64,
-    {
-        self.cashflows.iter().map(|cf| cf.npv(&df)).sum()
+    pub fn npv(&self, discount_rate: f64) -> f64 {
+        self.cashflows.iter().map(|cf| cf.npv(discount_rate)).sum()
     }
 
     /// Adds a cashflow to the leg.
-    pub fn add_cashflow(&mut self, cashflow: C) {
+    pub fn add_cashflow(&mut self, cashflow: Cashflow) {
         self.cashflows.push(cashflow);
     }
 
     /// Returns a slice of all the cashflows in the leg.
-    #[must_use]
-    pub fn cashflows(&self) -> &[C] {
+    pub fn cashflows(&self) -> &[Cashflow] {
         &self.cashflows
     }
 
     /// Returns the start date of the leg.
-    #[must_use]
-    pub fn start_date(&self) -> Option<OffsetDateTime> {
+    pub fn start_date(&self) -> Option<Date> {
         self.cashflows.iter().map(Cashflow::date).min()
     }
 
     /// Returns the end date of the leg.
-    #[must_use]
-    pub fn end_date(&self) -> Option<OffsetDateTime> {
+    pub fn end_date(&self) -> Option<Date> {
         self.cashflows.iter().map(Cashflow::date).max()
     }
 
     /// Returns true if the leg is active at the given date.
-    #[must_use]
-    pub fn is_active(&self, current_date: OffsetDateTime) -> bool {
+    pub fn is_active(&self, current_date: Date) -> bool {
         match (self.start_date(), self.end_date()) {
             (Some(start), Some(end)) => current_date >= start && current_date <= end,
             _ => false,

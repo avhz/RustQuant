@@ -8,10 +8,10 @@
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 use super::zero_coupon_bond::ZeroCouponBond;
-use crate::data::{Curve, YieldCurve};
+use crate::data::{Curve, DiscountCurve};
 use crate::instruments::fx::currency::Currency;
 use crate::instruments::Instrument;
-use crate::time::{DateRollingConvention, Frequency};
+use crate::time::{Calendar, DateRollingConvention, Frequency, Schedule};
 use std::collections::BTreeMap;
 use time::{Date, Duration};
 
@@ -32,7 +32,16 @@ use time::{Date, Duration};
 /// - A 12-month zero-coupon bond with a face value of $2.50.
 /// - An 18-month zero-coupon bond with a face value of $102.50.
 #[allow(clippy::module_name_repetitions)]
-pub struct CouponBond {
+pub struct CouponBond<C: Calendar> {
+    /// The face value of the bond.
+    pub face_value: f64,
+
+    /// Coupon payments.
+    pub schedule: Schedule,
+
+    /// Calendar.
+    pub calendar: C,
+
     /// The date the bond is evaluated (i.e. priced).
     pub evaluation_date: Date,
 
@@ -51,11 +60,8 @@ pub struct CouponBond {
     /// Settlement convention.
     pub settlement_convention: DateRollingConvention,
 
-    /// Yield curve to use for pricing.
-    pub yield_curve: YieldCurve,
-
-    /// The face value of the bond.
-    pub face_value: f64,
+    /// Discount curve used to price the bond.
+    pub discount_curve: DiscountCurve<Date, C>,
 
     /// The coupons of the bond.
     /// The coupons are represented as a map of dates to coupon amounts,
@@ -74,7 +80,10 @@ pub struct CouponBond2 {
 // IMPLEMENTATIONS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-impl CouponBond {
+impl<C> CouponBond<C>
+where
+    C: Calendar,
+{
     /// Constructs the coupons of the bond.
     pub fn construct_coupons(&mut self) {
         let mut coupons: BTreeMap<Date, f64> = BTreeMap::new();
@@ -117,13 +126,16 @@ impl CouponBond {
     }
 }
 
-impl Instrument for CouponBond {
+impl<C> Instrument for CouponBond<C>
+where
+    C: Calendar,
+{
     /// Returns the price (net present value) of the instrument.
     fn price(&self) -> f64 {
         // Compute the discount factors for the coupons.
-        let discount_factors = self
-            .yield_curve
-            .discount_factors(&self.coupons.keys().copied().collect::<Vec<Date>>());
+        // let discount_factors = self
+        //     .discount_curve
+        //     .discount_factors(&self.coupons.keys().copied().collect::<Vec<Date>>());
         // .iter()
         // .enumerate()
         // .map(|(i, df)| (1. + df / self.coupon_frequency as i32 as f64).powi((i + 1) as i32))
@@ -132,7 +144,7 @@ impl Instrument for CouponBond {
         // Compute the present value of the coupons and face value, and sum them.
         self.coupons
             .values()
-            .zip(discount_factors.iter())
+            .zip(self.discount_curve.curve.nodes.values().into_iter())
             .map(|(coupon, df)| coupon * df)
             .sum::<f64>()
     }
@@ -184,8 +196,8 @@ mod tests_bond {
     use crate::{data::Curve, iso::USD, time::today};
 
     #[allow(clippy::similar_names)]
-    fn create_test_yield_curve(t0: Date) -> YieldCurve {
-        // Create a treasury yield curve with 8 points (3m, 6m, 1y, 2y, 5y, 10y, 30y).
+    fn create_test_discount_curve(t0: Date) -> YieldCurve {
+        // Create a treasury discount curve with 8 points (3m, 6m, 1y, 2y, 5y, 10y, 30y).
         // Values from Bloomberg: <https://www.bloomberg.com/markets/rates-bonds/government-bonds/us>
         let rate_vec = vec![0.0544, 0.0556, 0.0546, 0.0514, 0.0481, 0.0481, 0.0494];
         let date_vec = vec![
@@ -198,7 +210,7 @@ mod tests_bond {
             t0 + Duration::days(30 * 365),
         ];
 
-        YieldCurve::from_dates_and_rates(&date_vec, &rate_vec)
+        DiscountCurve::from_dates_and_rates(&date_vec, &rate_vec)
     }
 
     #[test]
@@ -212,7 +224,7 @@ mod tests_bond {
             coupon_rate: 0.15,
             coupon_frequency: Frequency::SemiAnnually,
             settlement_convention: DateRollingConvention::Actual,
-            yield_curve: create_test_yield_curve(today),
+            discount_curve: create_test_discount_curve(today),
             face_value: 1000.0,
             coupons: BTreeMap::new(),
         };

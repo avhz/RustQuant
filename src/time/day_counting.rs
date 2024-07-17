@@ -7,31 +7,14 @@
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-/// Actual/Actual day count factor calculation.
-pub mod actual_actual;
-
-/// Actual/xxx day count factor calculation.
-pub mod actual_constant;
-
-/// No-Leap day count factor calculation.
-pub mod no_leap;
-
-/// One/One day count factor calculation.
-pub mod one_one;
-
-/// Simple day count factor calculation.
-pub mod simple;
-
-/// Thirty/xxx day count factor calculation.
-pub mod thirthy_360;
-
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // IMPORTS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+use super::{contains_leap_year, days_between, is_last_day_of_february, leap_year_count};
 use crate::time::Calendar;
 use std::fmt;
-use time::{Date, Duration};
+use time::{util::is_leap_year, Date, Duration, Month};
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -51,6 +34,7 @@ use time::{Date, Duration};
 /// payment dates, the seller is eligible to some fraction of the coupon amount.
 /// """
 #[allow(non_camel_case_types)]
+#[derive(Clone, Copy)]
 pub enum DayCountConvention {
     /// The '1/1' day count, which always returns a day count of 1.
     One_One,
@@ -391,5 +375,403 @@ impl DayCountConvention {
             Self::Thirty_E_Plus_360     => Self::day_count_factor_thirty_e_plus_360(start_date, end_date),
             Self::Thirty_U_360          => Self::day_count_factor_thirty_u_360(start_date, end_date),
         }
+    }
+}
+
+impl DayCountConvention {
+    // Actual/Actual AFB day count factor calculation.
+    pub(crate) fn day_count_factor_actual_actual_afb(start_date: Date, end_date: Date) -> f64 {
+        let (y1, _y2) = (start_date.year(), end_date.year());
+        let (_m1, m2) = (start_date.month(), end_date.month());
+        let (_d1, d2) = (start_date.day(), end_date.day());
+
+        let stub_date = if Date::from_calendar_date(y1, m2, d2).unwrap() < start_date {
+            Date::from_calendar_date(y1 + 1, m2, d2).unwrap()
+        } else {
+            Date::from_calendar_date(y1, m2, d2).unwrap()
+        };
+
+        let initial_stub_days = (stub_date - start_date).whole_days() as f64;
+        // let final_stub_days = (end_date - stub_date).whole_days() as f64;
+        let final_stub_years = (end_date.year() - stub_date.year()) as f64;
+        let initial_stub_contains_leap = contains_leap_year(start_date, stub_date);
+
+        match initial_stub_contains_leap {
+            true => final_stub_years + initial_stub_days / 366.0,
+            false => (end_date - start_date).whole_days() as f64 / 365.0,
+        }
+    }
+
+    // Actual/Actual ICMA day count factor calculation.
+    pub(crate) fn day_count_factor_actual_actual_icma(_start_date: Date, _end_date: Date) -> f64 {
+        todo!()
+    }
+
+    // Actual/Actual ISDA day count factor calculation.
+    pub(crate) fn day_count_factor_actual_actual_isda(start_date: Date, end_date: Date) -> f64 {
+        if start_date == end_date {
+            return 0.0;
+        }
+
+        let (y1, y2) = (start_date.year(), end_date.year());
+
+        let (dib1, dib2) = (
+            if is_leap_year(y1) { 366.0 } else { 365.0 },
+            if is_leap_year(y2) { 366.0 } else { 365.0 },
+        );
+
+        let mut sum: f64 = (y2 - y1 - 1) as f64;
+
+        sum += days_between(
+            start_date,
+            Date::from_calendar_date(y1 + 1, Month::January, 1).unwrap(),
+        ) as f64
+            / dib1;
+
+        sum += days_between(
+            Date::from_calendar_date(y2, Month::January, 1).unwrap(),
+            end_date,
+        ) as f64
+            / dib2;
+
+        sum
+    }
+
+    // NL/360 day count factor calculation.
+    pub(crate) fn day_count_factor_nl_360(start_date: Date, end_date: Date) -> f64 {
+        let day_count = (end_date - start_date).whole_days() as f64;
+        let leap_years = leap_year_count(start_date, end_date) as f64;
+
+        (day_count - leap_years) / 360.0
+    }
+
+    // NL/365 day count factor calculation.
+    pub(crate) fn day_count_factor_nl_365(start_date: Date, end_date: Date) -> f64 {
+        let day_count = (end_date - start_date).whole_days() as f64;
+        let leap_years = leap_year_count(start_date, end_date) as f64;
+
+        (day_count - leap_years) / 365.0
+    }
+
+    // One/One day count factor calculation.
+    pub(crate) fn day_count_factor_one_one(_start_date: Date, _end_date: Date) -> f64 {
+        1.0
+    }
+
+    // Actual/360 day count factor calculation.
+    pub(crate) fn day_count_factor_actual_360(start_date: Date, end_date: Date) -> f64 {
+        (end_date - start_date).whole_days() as f64 / 360.0
+    }
+
+    // Actual/364 day count factor calculation.
+    pub(crate) fn day_count_factor_actual_364(start_date: Date, end_date: Date) -> f64 {
+        (end_date - start_date).whole_days() as f64 / 364.0
+    }
+
+    // Actual/365.25 day count factor calculation.
+    pub(crate) fn day_count_factor_actual_365_25(start_date: Date, end_date: Date) -> f64 {
+        (end_date - start_date).whole_days() as f64 / 365.25
+    }
+
+    // Actual/365 Actual day count factor calculation.
+    pub(crate) fn day_count_factor_actual_365_actual(start_date: Date, end_date: Date) -> f64 {
+        match contains_leap_year(start_date, end_date) {
+            true => (end_date - start_date).whole_days() as f64 / 366.0,
+            false => (end_date - start_date).whole_days() as f64 / 365.0,
+        }
+    }
+
+    // Actual/365F day count factor calculation.
+    pub(crate) fn day_count_factor_actual_365_fixed(start_date: Date, end_date: Date) -> f64 {
+        (end_date - start_date).whole_days() as f64 / 365.0
+    }
+
+    // Actual/365L day count factor calculation.
+    pub(crate) fn day_count_factor_actual_365_leap(start_date: Date, end_date: Date) -> f64 {
+        match contains_leap_year(start_date, end_date) {
+            true => (end_date - start_date).whole_days() as f64 / 366.0,
+            false => (end_date - start_date).whole_days() as f64 / 365.0,
+        }
+    }
+
+    // Actual/366 day count factor calculation.
+    pub(crate) fn day_count_factor_actual_366(start_date: Date, end_date: Date) -> f64 {
+        (end_date - start_date).whole_days() as f64 / 366.0
+    }
+
+    // 30/360 ISDA day count factor calculation.
+    pub(crate) fn day_count_factor_thirty_360_isda(start_date: Date, end_date: Date) -> f64 {
+        let (y1, m1, mut d1) = Self::thirty_360_unpack_date(start_date);
+        let (y2, m2, mut d2) = Self::thirty_360_unpack_date(end_date);
+
+        if d1 == 31 {
+            d1 = 30;
+        }
+
+        if d1 == 30 && d2 == 31 {
+            d2 = 30;
+        }
+
+        Self::thirty_360_numerator(y1, y2, m1, m2, d1, d2) / 360.0
+    }
+
+    // 30E/360 day count factor calculation.
+    pub(crate) fn day_count_factor_thirty_e_360(start_date: Date, end_date: Date) -> f64 {
+        let (y1, m1, mut d1) = Self::thirty_360_unpack_date(start_date);
+        let (y2, m2, mut d2) = Self::thirty_360_unpack_date(end_date);
+
+        if d1 == 31 {
+            d1 = 30;
+        }
+
+        if d2 == 31 {
+            d2 = 30;
+        }
+
+        Self::thirty_360_numerator(y1, y2, m1, m2, d1, d2) / 360.0
+    }
+
+    // 30E/360 ISDA day count factor calculation.
+    pub(crate) fn day_count_factor_thirty_e_360_isda(start_date: Date, end_date: Date) -> f64 {
+        let (y1, m1, mut d1) = Self::thirty_360_unpack_date(start_date);
+        let (y2, m2, mut d2) = Self::thirty_360_unpack_date(end_date);
+
+        if d1 == 31 || is_last_day_of_february(start_date) {
+            d1 = 30;
+        }
+
+        if d2 == 31 || is_last_day_of_february(end_date) {
+            d2 = 30;
+        }
+
+        Self::thirty_360_numerator(y1, y2, m1, m2, d1, d2) / 360.0
+    }
+
+    // 30E+/360 day count factor calculation.
+    pub(crate) fn day_count_factor_thirty_e_plus_360(start_date: Date, end_date: Date) -> f64 {
+        let (y1, m1, mut d1) = Self::thirty_360_unpack_date(start_date);
+        let (mut y2, mut m2, mut d2) = Self::thirty_360_unpack_date(end_date);
+
+        if d1 == 31 {
+            d1 = 30;
+        }
+
+        if d2 == 31 {
+            (y2, m2, d2) = Self::thirty_360_unpack_date(end_date.next_day().unwrap());
+        }
+
+        Self::thirty_360_numerator(y1, y2, m1, m2, d1, d2) / 360.0
+    }
+
+    // 30U/360 day count factor calculation.
+    pub(crate) fn day_count_factor_thirty_u_360(start_date: Date, end_date: Date) -> f64 {
+        let (y1, m1, mut d1) = Self::thirty_360_unpack_date(start_date);
+        let (y2, m2, mut d2) = Self::thirty_360_unpack_date(end_date);
+
+        if d1 == 31 || is_last_day_of_february(start_date) {
+            d1 = 30;
+        }
+
+        if d2 == 31 && d1 == 30 || is_last_day_of_february(end_date) {
+            d2 = 30;
+        }
+
+        Self::thirty_360_numerator(y1, y2, m1, m2, d1, d2) / 360.0
+    }
+
+    // 30E/365 day count factor calculation.
+    pub(crate) fn day_count_factor_thirty_e_365(start_date: Date, end_date: Date) -> f64 {
+        let (y1, m1, mut d1) = Self::thirty_360_unpack_date(start_date);
+        let (y2, m2, mut d2) = Self::thirty_360_unpack_date(end_date);
+
+        if d1 == 31 || is_last_day_of_february(start_date) {
+            d1 = 30;
+        }
+
+        if d2 == 31 || is_last_day_of_february(end_date) {
+            d2 = 30;
+        }
+
+        Self::thirty_360_numerator(y1, y2, m1, m2, d1, d2) / 365.0
+    }
+
+    /// Function to comput the 30/360 numerator.
+    pub(crate) fn thirty_360_numerator(
+        y1: i32,
+        y2: i32,
+        m1: i32,
+        m2: i32,
+        d1: i32,
+        d2: i32,
+    ) -> f64 {
+        (360 * (y2 - y1) + 30 * (m2 - m1) + (d2 - d1)) as f64
+    }
+
+    /// Function to unpack the date components for 30/360 calculation.
+    pub(crate) fn thirty_360_unpack_date(date: Date) -> (i32, i32, i32) {
+        (date.year(), date.month() as i32, date.day() as i32)
+    }
+}
+
+// UNIT TESTS
+
+#[cfg(test)]
+mod TESTS_thirty_360 {
+    use crate::assert_approx_equal;
+    use crate::time::DayCountConvention;
+    use crate::RUSTQUANT_EPSILON;
+    use time::macros::date;
+
+    #[test]
+    fn thirty_e_365() {
+        let start_date = date!(2011 - 06 - 17);
+        let end_date = date!(2012 - 12 - 30);
+
+        let dcf = DayCountConvention::day_count_factor_thirty_e_365(start_date, end_date);
+
+        assert_approx_equal!(dcf, 1.515_068_493, RUSTQUANT_EPSILON);
+    }
+}
+
+#[cfg(test)]
+mod TESTS_actual_constant {
+    use crate::assert_approx_equal;
+    use crate::time::DayCountConvention;
+    use crate::RUSTQUANT_EPSILON;
+    use time::macros::date;
+
+    #[test]
+    fn actual_365_25() {
+        // Test cases from QuantLib.
+        let test_dates: Vec<time::Date> = vec![
+            date!(2002 - 02 - 1),
+            date!(2002 - 02 - 4),
+            date!(2003 - 05 - 16),
+            date!(2003 - 12 - 17),
+            date!(2004 - 12 - 17),
+            date!(2005 - 12 - 19),
+            date!(2006 - 01 - 02),
+            date!(2006 - 03 - 13),
+            date!(2006 - 05 - 15),
+            date!(2006 - 03 - 17),
+            date!(2006 - 05 - 15),
+            date!(2006 - 07 - 26),
+            date!(2007 - 06 - 28),
+            date!(2009 - 09 - 16),
+            date!(2016 - 07 - 26),
+        ];
+
+        let expected: Vec<f64> = vec![
+            0.0082135523613963,
+            1.27583846680356,
+            0.588637919233402,
+            1.00205338809035,
+            1.00479123887748,
+            0.0383299110198494,
+            0.191649555099247,
+            0.172484599589322,
+            -0.161533196440794,
+            0.161533196440794,
+            0.197125256673511,
+            0.922655715263518,
+            2.22039698836413,
+            6.85831622176591,
+        ];
+
+        for i in 1..test_dates.len() {
+            let dcf = DayCountConvention::day_count_factor_actual_365_25(
+                test_dates[i - 1],
+                test_dates[i],
+            );
+
+            assert_approx_equal!(dcf, expected[i - 1], RUSTQUANT_EPSILON);
+        }
+    }
+
+    #[test]
+    fn actual_366() {
+        // Test cases from QuantLib.
+        let test_dates: Vec<time::Date> = vec![
+            date!(2002 - 02 - 1),
+            date!(2002 - 02 - 4),
+            date!(2003 - 05 - 16),
+            date!(2003 - 12 - 17),
+            date!(2004 - 12 - 17),
+            date!(2005 - 12 - 19),
+            date!(2006 - 01 - 02),
+            date!(2006 - 03 - 13),
+            date!(2006 - 05 - 15),
+            date!(2006 - 03 - 17),
+            date!(2006 - 05 - 15),
+            date!(2006 - 07 - 26),
+            date!(2007 - 06 - 28),
+            date!(2009 - 09 - 16),
+            date!(2016 - 07 - 26),
+        ];
+
+        let expected: Vec<f64> = vec![
+            0.00819672131147541,
+            1.27322404371585,
+            0.587431693989071,
+            1.0000000000000,
+            1.00273224043716,
+            0.0382513661202186,
+            0.191256830601093,
+            0.172131147540984,
+            -0.16120218579235,
+            0.16120218579235,
+            0.19672131147541,
+            0.920765027322404,
+            2.21584699453552,
+            6.84426229508197,
+        ];
+
+        for i in 1..test_dates.len() {
+            let dcf =
+                DayCountConvention::day_count_factor_actual_366(test_dates[i - 1], test_dates[i]);
+
+            assert_approx_equal!(dcf, expected[i - 1], RUSTQUANT_EPSILON);
+        }
+    }
+}
+
+#[cfg(test)]
+mod TESTS_actual_actual {
+    use crate::assert_approx_equal;
+    use crate::time::DayCountConvention;
+    use crate::RUSTQUANT_EPSILON;
+    use time::macros::date;
+
+    const DATE_1: time::Date = date!(2003 - 11 - 1);
+    const DATE_2: time::Date = date!(2004 - 5 - 1);
+
+    #[test]
+    fn actual_actual_isda() {
+        // Test cases from QuantLib.
+        assert_approx_equal!(
+            DayCountConvention::day_count_factor_actual_actual_isda(DATE_1, DATE_2),
+            0.497724380567,
+            RUSTQUANT_EPSILON
+        );
+    }
+
+    #[test]
+    fn actual_actual_icma() {
+        // Test cases from QuantLib.
+        assert_approx_equal!(
+            DayCountConvention::day_count_factor_actual_actual_isda(DATE_1, DATE_2),
+            0.497724380567,
+            RUSTQUANT_EPSILON
+        );
+    }
+
+    #[test]
+    fn actual_actual_afb() {
+        // Test cases from QuantLib.
+        assert_approx_equal!(
+            DayCountConvention::day_count_factor_actual_actual_afb(DATE_1, DATE_2),
+            0.497267759563,
+            RUSTQUANT_EPSILON
+        );
     }
 }

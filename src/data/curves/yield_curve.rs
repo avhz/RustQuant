@@ -11,102 +11,130 @@
 // IMPORTS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use crate::time::DayCountConvention;
-use std::{collections::BTreeMap, time::Duration};
+use super::{Curve, CurveIndex};
+use crate::time::{Calendar, DateRollingConvention, DayCountConvention};
+use derive_builder::Builder;
 use time::Date;
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// Structs, enums, and traits
+// STRUCTS, ENUMS, TRAITS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-/// Curve error enum.
-#[allow(clippy::module_name_repetitions)]
-#[derive(Debug, Clone, Copy)]
-pub enum CurveError {
-    /// The date is outside the curve's range.
-    DateOutsideRange,
+/// Yield curve data structure.
+#[derive(Clone, Builder)]
+pub struct YieldCurve<I, C>
+where
+    I: CurveIndex,
+    C: Calendar,
+{
+    /// Map of dates and rates.
+    pub curve: Curve<I>,
 
-    /// The curve has no points.
-    NoPoints,
+    /// Calendar.
+    pub calendar: Option<C>,
+
+    /// Day count convention.
+    pub day_count_convention: Option<DayCountConvention>,
+
+    /// Date rolling convention.
+    pub date_rolling_convention: Option<DateRollingConvention>,
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Implementations, functions, and macros
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-impl YieldCurve {
-    /// Creates a new yield curve.
-    #[must_use]
-    pub fn new(rates: BTreeMap<Date, f64>) -> Self {
-        Self { rates }
-    }
-}
+impl<C> YieldCurve<Date, C>
+where
+    C: Calendar,
+{
+    /// Creates a new yield curve from a set of `Date`s and rates.
+    pub fn new(dates: &[Date], rates: &[f64]) -> Self {
+        assert!(dates.len() == rates.len());
 
-impl Curve for YieldCurve {
-    fn initial_date(&self) -> Date {
-        *self.rates.keys().min().unwrap()
-    }
-
-    fn terminal_date(&self) -> Date {
-        *self.rates.keys().max().unwrap()
-    }
-
-    #[allow(clippy::similar_names)]
-    fn update_rate(&mut self, date: Date, rate: f64) {
-        self.rates.insert(date, rate);
-    }
-
-    #[allow(clippy::similar_names)]
-    fn from_dates_and_rates(dates: &[Date], rates: &[f64]) -> Self {
-        let mut rates_map = BTreeMap::new();
-
-        for (date, rate) in dates.iter().zip(rates.iter()) {
-            rates_map.insert(*date, *rate);
-        }
-
-        Self { rates: rates_map }
-    }
-
-    #[allow(clippy::similar_names)]
-    fn from_initial_date_rates_and_durations(
-        initial_date: Date,
-        rates: &[f64],
-        durations: &[Duration],
-    ) -> Self {
-        let mut dates = vec![initial_date];
-
-        for duration in durations {
-            dates.push(*dates.last().unwrap() + *duration);
-        }
-
-        Self::from_dates_and_rates(&dates, rates)
-    }
-
-    fn rate(&self, date: Date) -> f64 {
-        let n = self.rates.len();
-
-        match n {
-            0 => panic!("The curve has no points."),
-            1 => *self.rates.values().next().unwrap(),
-            _ => {
-                let (x0, x1) = self.find_date_interval(date);
-                let (y0, y1) = (*self.rates.get(&x0).unwrap(), *self.rates.get(&x1).unwrap());
-
-                (y0 * (x1 - date) + y1 * (date - x0)) / (x1 - x0)
-            }
+        Self {
+            curve: Curve::<Date>::new_from_slice(&dates, &rates),
+            calendar: None,
+            day_count_convention: None,
+            date_rolling_convention: None,
         }
     }
 
-    fn find_date_interval(&self, date: Date) -> (Date, Date) {
-        if date == self.initial_date() || date == self.terminal_date() {
-            return (date, date);
-        }
-
-        (
-            *self.rates.range(..date).next_back().unwrap().0,
-            *self.rates.range(date..).next().unwrap().0,
-        )
+    /// Set the calendar for the yield curve.
+    pub fn with_calendar(&mut self, calendar: C) {
+        self.calendar = Some(calendar);
     }
+
+    /// Set the day count convention for the yield curve.
+    pub fn with_day_count_convention(&mut self, day_count_convention: DayCountConvention) {
+        self.day_count_convention = Some(day_count_convention);
+    }
+
+    /// Set the date rolling convention for the yield curve.
+    pub fn with_date_rolling_convention(&mut self, date_rolling_convention: DateRollingConvention) {
+        self.date_rolling_convention = Some(date_rolling_convention);
+    }
+
+    /// Get the initial date of the yield curve.
+    pub fn initial_date(&self) -> Date {
+        *self.curve.first_key().unwrap()
+    }
+
+    /// Get the terminal date of the yield curve.
+    pub fn terminal_date(&self) -> Date {
+        *self.curve.last_key().unwrap()
+    }
+
+    /// Insert a new rate into the yield curve.
+    pub fn insert_rate(&mut self, date: Date, rate: f64) {
+        self.curve.insert(date, rate);
+    }
+
+    /// Get the rate for a specific date.
+    ///
+    /// Note: If the date is not in the curve, the rate is interpolated,
+    /// and the interpolated rate is also stored in the curve.
+    /// This is why a mutable reference to the curve is required.
+    pub fn get_rate(&mut self, date: Date) -> f64 {
+        self.curve.interpolate(date);
+
+        *self.curve.get(date).unwrap()
+    }
+
+    /// Get multiple rates for a set of dates.
+    ///
+    /// Note: If a date is not in the curve, the rate is interpolated,
+    /// and the interpolated rate is also stored in the curve.
+    /// This is why a mutable reference to the curve is required.
+    pub fn get_rates(&mut self, dates: &[Date]) -> Vec<f64> {
+        dates.iter().map(|date| self.get_rate(*date)).collect()
+    }
+
+    // #[allow(clippy::similar_names)]
+    // fn from_initial_date_rates_and_durations(
+    //     initial_date: Date,
+    //     rates: &[f64],
+    //     durations: &[Duration],
+    // ) -> Self {
+    //     let mut dates = vec![initial_date];
+
+    //     for duration in durations {
+    //         dates.push(*dates.last().unwrap() + *duration);
+    //     }
+
+    //     Self::from_dates_and_rates(&dates, rates)
+    // }
+
+    // fn find_date_interval(&self, date: Date) -> (Date, Date) {
+    //     if date == self.initial_date() || date == self.terminal_date() {
+    //         return (date, date);
+    //     }
+
+    //     (
+    //         *self.rates.range(..date).next_back().unwrap().0,
+    //         *self.rates.range(date..).next().unwrap().0,
+    //     )
+    // }
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -123,25 +151,24 @@ mod tests_curves {
 
     #[test]
     fn test_yield_curve_creation() {
-        let mut rates = BTreeMap::new();
-        rates.insert(today() + Duration::days(30), 0.025);
-        rates.insert(today() + Duration::days(60), 0.03);
+        let dates = [today() + Duration::days(30), today() + Duration::days(60)];
+        let rates = [0.025, 0.03];
 
-        let yield_curve = YieldCurve::new(rates.clone());
+        let yield_curve = YieldCurve::new(&dates, &rates);
 
         assert_eq!(yield_curve.rates, rates);
     }
 
     #[test]
     fn test_yield_curve_initial_date() {
-        let mut rates = BTreeMap::new();
-        rates.insert(
+        let dates = [
             OffsetDateTime::UNIX_EPOCH.date() + Duration::days(30),
-            0.025,
-        );
-        rates.insert(OffsetDateTime::UNIX_EPOCH.date() + Duration::days(60), 0.03);
+            OffsetDateTime::UNIX_EPOCH.date() + Duration::days(60),
+        ];
 
-        let yield_curve = YieldCurve::new(rates);
+        let rates = [0.025, 0.03];
+
+        let yield_curve = YieldCurve::new(&dates, &rates);
         let initial_date = yield_curve.initial_date();
 
         assert_eq!(
@@ -152,14 +179,14 @@ mod tests_curves {
 
     #[test]
     fn test_yield_curve_final_date() {
-        let mut rates = BTreeMap::new();
-        rates.insert(
+        let dates = [
             OffsetDateTime::UNIX_EPOCH.date() + Duration::days(30),
-            0.025,
-        );
-        rates.insert(OffsetDateTime::UNIX_EPOCH.date() + Duration::days(60), 0.03);
+            OffsetDateTime::UNIX_EPOCH.date() + Duration::days(60),
+        ];
 
-        let yield_curve = YieldCurve::new(rates);
+        let rates = [0.025, 0.03];
+
+        let yield_curve = YieldCurve::new(&dates, &rates);
         let final_date = yield_curve.terminal_date();
 
         assert_eq!(
@@ -170,15 +197,14 @@ mod tests_curves {
 
     #[test]
     fn test_find_date_interval() {
-        let mut rates = BTreeMap::new();
-
-        rates.insert(
+        let dates = [
             OffsetDateTime::UNIX_EPOCH.date() + Duration::days(30),
-            0.025,
-        );
-        rates.insert(OffsetDateTime::UNIX_EPOCH.date() + Duration::days(60), 0.03);
+            OffsetDateTime::UNIX_EPOCH.date() + Duration::days(60),
+        ];
 
-        let yield_curve = YieldCurve::new(rates);
+        let rates = [0.025, 0.03];
+
+        let yield_curve = YieldCurve::new(&dates, &rates);
 
         let date1 = OffsetDateTime::UNIX_EPOCH.date() + Duration::days(30);
         let date2 = OffsetDateTime::UNIX_EPOCH.date() + Duration::days(45);

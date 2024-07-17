@@ -19,6 +19,7 @@ pub trait CurveIndex: Ord + Hash + InterpolationIndex + Clone + Copy {}
 impl<T> CurveIndex for T where T: Ord + Hash + InterpolationIndex + Clone + Copy {}
 
 /// Curve data structure.
+#[derive(Clone, Debug, PartialEq)]
 pub struct Curve<C>
 where
     C: CurveIndex,
@@ -137,13 +138,19 @@ macro_rules! impl_curve {
             /// Interpolate the curve at a specific index.
             ///
             /// Note: This method modifies the curve by adding the interpolated value.
-            pub fn interpolate(&mut self, index: $index) {
+            pub fn interpolate(&mut self, index: $index) -> f64 {
+                if self.nodes.contains_key(&index) {
+                    return *self.nodes.get(&index).unwrap();
+                }
+
                 let xs: Vec<$index> = self.nodes.keys().cloned().collect();
                 let ys: Vec<f64> = self.nodes.values().cloned().collect();
 
                 let interpolator = LinearInterpolator::new(xs, ys).unwrap();
 
                 self.insert(index, interpolator.interpolate(index).unwrap());
+
+                *self.nodes.get(&index).unwrap()
             }
 
             /// Interpolate the curve at multiple indices.
@@ -156,7 +163,9 @@ macro_rules! impl_curve {
                 let interpolator = LinearInterpolator::new(xs, ys).unwrap();
 
                 for index in indices {
-                    self.insert(*index, interpolator.interpolate(*index).unwrap());
+                    if !self.nodes.contains_key(index) {
+                        self.insert(*index, interpolator.interpolate(*index).unwrap());
+                    }
                 }
             }
         }

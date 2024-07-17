@@ -14,3 +14,7 @@ pub use curve::*;
 /// Curve model trait.
 pub mod curve_model;
 pub use curve_model::*;
+
+/// Discount curve data structure.
+pub mod discount_curve;
+pub use discount_curve::*;

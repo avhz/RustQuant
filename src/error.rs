@@ -113,6 +113,16 @@ pub enum RustQuantError {
     OutsideOfRange,
 }
 
+/// Curve error enum.
+#[derive(Debug, Clone, Copy)]
+pub enum CurveError {
+    /// The date is outside the curve's range.
+    DateOutsideRange,
+
+    /// The curve has no points.
+    NoPoints,
+}
+
 /// Create a `RustQuantError` with the text to include in the output.
 /// You would use it as follows:
 ///

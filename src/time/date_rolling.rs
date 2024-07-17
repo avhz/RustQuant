@@ -7,28 +7,7 @@
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-/// Actual date rolling convention.
-pub mod actual;
-
-/// Following date rolling convention.
-pub mod following;
-
-/// Modified following date rolling convention.
-pub mod modified_following;
-
-/// Modified rolling date rolling convention.
-pub mod modified_preceding;
-
-/// Modified preceding date rolling convention.
-pub mod modified_rolling;
-
-/// Preceding date rolling convention.
-pub mod preceding;
-
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// IMPORTS
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
+use super::{next_business_day, previous_business_day};
 use crate::time::calendar::Calendar;
 use std::fmt;
 use time::Date;
@@ -43,6 +22,7 @@ use time::Date;
 /// time such that it falls in a business day, according with the
 /// same business calendar.
 /// """
+#[derive(Clone, Copy)]
 pub enum DateRollingConvention {
     /// Actual: paid on the actual day, even if it is a non-business day.
     Actual,
@@ -124,5 +104,55 @@ impl fmt::Display for DateRollingConvention {
             Self::ModifiedPreceding     => write!(f, "Modified Preceding"),
             Self::ModifiedRolling       => write!(f, "Modified Rolling"),
         }
+    }
+}
+
+impl DateRollingConvention {
+    /// Adjust (roll) the date according: Actual convention.
+    pub(crate) fn roll_date_actual<C: Calendar>(date: Date, _calendar: &C) -> Date {
+        date
+    }
+
+    /// Adjust (roll) the date according: Following convention.
+    pub(crate) fn roll_date_following<C: Calendar>(date: Date, calendar: &C) -> Date {
+        next_business_day(date, calendar)
+    }
+
+    /// Adjust (roll) the date according: Modified following convention.
+    pub(crate) fn roll_date_modified_following<C: Calendar>(date: Date, calendar: &C) -> Date {
+        let mut new_date = next_business_day(date, calendar);
+
+        if new_date.month() != date.month() {
+            new_date = previous_business_day(date, calendar);
+        }
+
+        new_date
+    }
+
+    /// Adjust (roll) the date according: Modified preceding convention.
+    pub(crate) fn roll_date_modified_preceding<C: Calendar>(date: Date, calendar: &C) -> Date {
+        let mut new_date = previous_business_day(date, calendar);
+
+        if new_date.month() != date.month() {
+            new_date = next_business_day(date, calendar);
+        }
+
+        new_date
+    }
+
+    /// Adjust (roll) the date according: Modified rolling convention.
+    pub(crate) fn roll_date_modified_rolling<C: Calendar>(date: Date, calendar: &C) -> Date {
+        let mut new_date = date;
+
+        while !calendar.is_business_day(new_date) {
+            new_date = new_date.next_day().unwrap();
+        }
+
+        new_date
+    }
+
+    /// Adjust (roll) the date according: Preceding convention.
+    pub(crate) fn roll_date_preceding<C: Calendar>(date: Date, calendar: &C) -> Date {
+        previous_business_day(date, calendar)
     }
 }

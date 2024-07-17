@@ -113,14 +113,10 @@ pub use io::*;
 pub mod yahoo;
 pub use yahoo::*;
 
-// /// Curves module.
-// /// Curves (in the financial sense) are functions that map
-// /// a time to a value, such as a yield curve or a swap curve.
-// /// They may also be known as term structures.
-// pub mod curve;
-// pub use curve::*;
-
 /// Base curve data structure and implementations.
+/// Curves (in the financial sense) are functions that map
+/// a time to a value, such as a yield curve or a swap curve.
+/// They may also be known as term structures depending on the context.
 pub mod curves;
 pub use curves::*;
 
