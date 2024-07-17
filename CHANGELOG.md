@@ -6,6 +6,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.7](https://github.com/avhz/RustQuant/compare/v0.2.6...v0.2.7) - 2024-07-17
+
+### Fixed
+- `curves` module progress [#96](https://github.com/avhz/RustQuant/pull/96)
+- `curves` module progress [#96](https://github.com/avhz/RustQuant/pull/96)
+- adjust currencies macro
+
+### Other
+- Update README.md
+- `Curve` struct and impl, with placeholder modules for various curves.
+- Merge remote-tracking branch 'MeetThePatel/strongly-typed-currencies' into strongly-typed-currencies
+- Merge branch 'avhz:main' into strongly-typed-currencies
+- re-working Curve and Surface. Again..
+- re-working Curve and Surface. Again..
+
 ## [0.2.6](https://github.com/avhz/RustQuant/compare/v0.2.5...v0.2.6) - 2024-07-04
 
 ### Other
