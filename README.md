@@ -3,27 +3,27 @@
 
 <p align="center">
     <a href="#license" alt="license">
-        <img alt="License" src="https://img.shields.io/badge/Dual_License-MIT_and_Apache_2.0-black?logo=apache">
+        <img alt="License" src="https://img.shields.io/badge/Dual_License-MIT_and_Apache_2.0-black?logo=apache"></a>
     <a href="#version" alt="version">
-        <img alt="Crates.io" src="https://img.shields.io/crates/v/RustQuant?logo=rust&color=black">
+        <img alt="Crates.io" src="https://img.shields.io/crates/v/RustQuant?logo=rust&color=black"></a>
     <a href="#downloads" alt="downloads">
-        <img alt="Crates.io" src="https://img.shields.io/crates/d/RustQuant?logo=rust&color=black">
+        <img alt="Crates.io" src="https://img.shields.io/crates/d/RustQuant?logo=rust&color=black"></a>
     <a href="#stars" alt="stars">
-        <img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/avhz/RustQuant?logo=github&color=black">
+        <img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/avhz/RustQuant?logo=github&color=black"></a>
 </p>
 
 <p align="center">
     <a href="#build" alt="build">
-        <img alt="GitHub Workflow Status" src="https://img.shields.io/github/actions/workflow/status/avhz/RustQuant/cargo_build.yml">
+        <img alt="GitHub Workflow Status" src="https://img.shields.io/github/actions/workflow/status/avhz/RustQuant/cargo_build.yml"></a>
     <a href="#codecov" alt="codecov">
-        <img alt="Codecov" src="https://img.shields.io/codecov/c/gh/avhz/RustQuant">
+        <img alt="Codecov" src="https://img.shields.io/codecov/c/gh/avhz/RustQuant"></a>
     <a href="#deps" alt="deps">
-        <img alt="Dependencies" src="https://deps.rs/repo/github/avhz/RustQuant/status.svg">
+        <img alt="Dependencies" src="https://deps.rs/repo/github/avhz/RustQuant/status.svg"></a>
 </p>
 
 <p align="center">
     <a href="#discord" alt="discord">
-        <img alt="Discord" src="https://img.shields.io/discord/1146771658082881636?logo=discord">
+        <img alt="Discord" src="https://img.shields.io/discord/1146771658082881636?logo=discord"></a>
 </p>
 
 A Rust library for quantitative finance.
