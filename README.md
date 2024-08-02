@@ -1,4 +1,3 @@
-
 ![](./images/logo.png)
 
 <p align="center">
@@ -6,6 +5,7 @@
         <img alt="License" src="https://img.shields.io/badge/Dual_License-MIT_and_Apache_2.0-black?logo=apache"></a>
     <a href="#version" alt="version">
         <img alt="Crates.io" src="https://img.shields.io/crates/v/RustQuant?logo=rust&color=black"></a>
+<a href="https://app.fossa.com/projects/git%2Bgithub.com%2Favhz%2FRustQuant?ref=badge_shield" alt="FOSSA Status"><img src="https://app.fossa.com/api/projects/git%2Bgithub.com%2Favhz%2FRustQuant.svg?type=shield"/></a>
     <a href="#downloads" alt="downloads">
         <img alt="Crates.io" src="https://img.shields.io/crates/d/RustQuant?logo=rust&color=black"></a>
     <a href="#stars" alt="stars">
@@ -37,6 +37,9 @@ A Rust library for quantitative finance.
 | <RustQuantContact@gmail.com> | <https://discord.gg/gMdv8Hpuwr> | [Changelog](./CHANGELOG.md) |
 
 </div>
+
+
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Favhz%2FRustQuant.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Favhz%2FRustQuant?ref=badge_large)
 
 ## Modules
 
