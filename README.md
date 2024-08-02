@@ -5,7 +5,6 @@
         <img alt="License" src="https://img.shields.io/badge/Dual_License-MIT_and_Apache_2.0-black?logo=apache"></a>
     <a href="#version" alt="version">
         <img alt="Crates.io" src="https://img.shields.io/crates/v/RustQuant?logo=rust&color=black"></a>
-<a href="https://app.fossa.com/projects/git%2Bgithub.com%2Favhz%2FRustQuant?ref=badge_shield" alt="FOSSA Status"><img src="https://app.fossa.com/api/projects/git%2Bgithub.com%2Favhz%2FRustQuant.svg?type=shield"/></a>
     <a href="#downloads" alt="downloads">
         <img alt="Crates.io" src="https://img.shields.io/crates/d/RustQuant?logo=rust&color=black"></a>
     <a href="#stars" alt="stars">
@@ -19,6 +18,7 @@
         <img alt="Codecov" src="https://img.shields.io/codecov/c/gh/avhz/RustQuant"></a>
     <a href="#deps" alt="deps">
         <img alt="Dependencies" src="https://deps.rs/repo/github/avhz/RustQuant/status.svg"></a>
+    <a href="https://app.fossa.com/projects/git%2Bgithub.com%2Favhz%2FRustQuant?ref=badge_shield" alt="FOSSA Status"><img src="https://app.fossa.com/api/projects/git%2Bgithub.com%2Favhz%2FRustQuant.svg?type=shield"/></a>
 </p>
 
 <p align="center">
@@ -39,7 +39,6 @@ A Rust library for quantitative finance.
 </div>
 
 
-[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Favhz%2FRustQuant.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Favhz%2FRustQuant?ref=badge_large)
 
 ## Modules
 
@@ -70,3 +69,9 @@ cargo run --example <example>
 
 > [!NOTE]  
 > Disclaimer: This is currently a free-time project and not a professional financial software library. Nothing in this library should be taken as financial advice, and I do not recommend you to use it for trading or making financial decisions.
+
+<p align="center">
+    
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Favhz%2FRustQuant.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Favhz%2FRustQuant?ref=badge_large)
+
+</p>
