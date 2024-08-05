@@ -2,7 +2,7 @@
 
 This is explained in [Contributing](./Contributing.md), but for ease of finding and copy-pasting, all `.rs` files should use the following template:
 
-```rust
+```rust,ignore
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // RustQuant: A Rust library for quantitative finance tools.
 // Copyright (C) 2023 https://github.com/avhz

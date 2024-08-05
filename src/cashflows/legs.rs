@@ -11,7 +11,7 @@
 //! A leg is a sequence of cashflows.
 
 use super::Cashflow;
-use time::{Date, OffsetDateTime};
+use time::Date;
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // STRUCTS, ENUMS, AND TRAITS

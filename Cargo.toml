@@ -29,6 +29,10 @@ keywords = [
 categories = ["finance", "mathematics", "science", "algorithms", "simulation"]
 license = "MIT OR Apache-2.0"
 
+## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+## COMPILATION PROFILES
+## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 ## To compile a release build with debug symbols, use:
 ## `cargo build --profile=release-with-debug`
 [profile.release-with-debug]
@@ -47,18 +51,20 @@ debug = 0
 all-features = true
 rustdoc-args = ["--html-in-header", "katex_header.html", "--cfg", "docsrs"]
 
-
 ## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ## DEPENDENCIES
 ## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 [dependencies]
+argmin = "0.10.0"           # https://docs.rs/argmin/latest/argmin/
+argmin-math = "0.4.0"       # https://docs.rs/argmin-math/latest/argmin_math/
 derive_builder = "0.20.0"   # https://docs.rs/derive_builder/latest/derive_builder/
 errorfunctions = "0.2.0"    # https://docs.rs/errorfunctions/latest/errorfunctions/
 nalgebra = "0.33.0"         # https://docs.rs/nalgebra/latest/nalgebra/
 ndarray = "0.15.0"          # https://docs.rs/ndarray/latest/ndarray/
 ndrustfft = "0.4.0"         # https://docs.rs/ndrustfft/latest/ndrustfft/
 ndarray-rand = "0.14.0"     # https://docs.rs/ndarray-rand/latest/ndarray_rand/
+plotly = "0.9.0"            # https://docs.rs/plotly/latest/plotly/
 plotters = "0.3.5"          # https://docs.rs/plotters/latest/plotters/
 rand = "0.8.5"              # https://docs.rs/rand/latest/rand/
 rand_distr = "0.4.3"        # https://docs.rs/rand_distr/latest/rand_distr/
@@ -81,7 +87,6 @@ polars = { version = "0.41.1", features = ["docs-selection"] }
 
 [dev-dependencies]
 finitediff = "0.1.4" # https://docs.rs/finitediff/latest/finitediff/
-
 
 ## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ## PYTHON BINDINGS

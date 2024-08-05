@@ -7,7 +7,16 @@
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+use crate::data::CurveModel;
+use crate::time::{today, DayCountConvention};
+use time::Date;
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// STRUCTS, ENUMS, AND TRAITS
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 /// Nelson-Siegel-Svensson (1994) model parameters.
+#[derive(Clone, Copy, Debug, PartialEq, Default)]
 pub struct NelsonSiegelSvensson {
     /// $\beta_0$
     pub beta0: f64,
@@ -28,6 +37,10 @@ pub struct NelsonSiegelSvensson {
     pub lambda2: f64,
 }
 
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// IMPLEMENTATIONS, TRAITS, AND FUNCTIONS
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 impl NelsonSiegelSvensson {
     /// Create a new Nelson-Siegel model.
     #[must_use]
@@ -47,5 +60,82 @@ impl NelsonSiegelSvensson {
             lambda1,
             lambda2,
         }
+    }
+}
+
+impl CurveModel for NelsonSiegelSvensson {
+    /// Returns the forward rate for a given date.
+    fn forward_rate(&self, date: Date) -> f64 {
+        assert!(date > today(), "Date must be in the future.");
+
+        let tau = DayCountConvention::default().day_count_factor(today(), date);
+
+        let term1 = f64::exp(-tau / self.lambda1);
+        let term2 = (tau / self.lambda1) * term1;
+        let term3 = (tau / self.lambda2) * f64::exp(-tau / self.lambda2);
+
+        self.beta0 + self.beta1 * term1 + self.beta2 * term2 + self.beta3 * term3
+    }
+
+    /// Returns the spot rate for a given date.
+    fn spot_rate(&self, date: Date) -> f64 {
+        assert!(date > today(), "Date must be in the future.");
+
+        let tau = DayCountConvention::default().day_count_factor(today(), date);
+
+        let term1 = self.lambda1 * (1. - f64::exp(-tau / self.lambda1)) / tau;
+        let term2 = term1 - f64::exp(-tau / self.lambda1);
+        let term3 = self.lambda2 * (1. - f64::exp(-tau / self.lambda2)) / tau
+            - f64::exp(-tau / self.lambda2);
+
+        self.beta0 + self.beta1 * term1 + self.beta2 * term2 + self.beta3 * term3
+    }
+
+    fn discount_factor(&self, date: Date) -> f64 {
+        let tau = DayCountConvention::default().day_count_factor(today(), date);
+
+        f64::exp(-self.spot_rate(date) * tau / 100.)
+    }
+}
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// UNIT TESTS
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+#[cfg(test)]
+mod tests_nelson_siegel_svensson {
+    use super::*;
+    use time::Duration;
+
+    #[test]
+    fn test_nelson_siegel_svensson() {
+        let nss = NelsonSiegelSvensson {
+            beta0: 0.0806,
+            beta1: -0.0031,
+            beta2: -0.0625,
+            beta3: -0.0198,
+            lambda1: 1.58,
+            lambda2: 0.15,
+        };
+
+        let dates = (2..365 * 30)
+            .map(|i| today() + Duration::days(i))
+            .collect::<Vec<Date>>();
+
+        let _forward_curve = dates
+            .iter()
+            .map(|date| nss.forward_rate(*date))
+            .collect::<Vec<_>>();
+
+        let _discount_curve = dates
+            .iter()
+            .map(|date| nss.discount_factor(*date))
+            .collect::<Vec<_>>();
+
+        // plot_vector!(forward_curve, "./images/nelson_siegel_svensson_forward.png");
+        // plot_vector!(
+        //     discount_curve,
+        //     "./images/nelson_siegel_svensson_discount.png"
+        // );
     }
 }

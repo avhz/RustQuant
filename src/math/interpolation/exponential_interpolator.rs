@@ -114,20 +114,55 @@ where
             return Ok(self.ys[idx]);
         }
 
-        let idx_r = self.xs.partition_point(|&x| x < point);
-        let idx_l = idx_r - 1;
+        //         let idx_r = self.xs.partition_point(|&x| x < point);
+        //         let idx_l = idx_r - 1;
 
-        let x_l = self.xs[idx_l];
-        let y_l = self.ys[idx_l];
+        // lambda = (x2 - X) / (x2 - x1)
+        // exponent_1 = lambda * (X / x1)
+        // exponent_2 = X / x2 - lambda * (X / x2) = (X / x2) * (1 - lambda)
+        // term_1 = y1^exponent_1
+        // term_2 = y2^exponent_2
+        // result = y1^(lambda * X / x1) * y2^((X / x2) * (1 - lambda))
+
+        //         let lambda = (self.xs[idx_r] - point) / (self.xs[idx_r] - self.xs[idx_l]);
+
+        //         let exponent_1 = lambda * (point / self.xs[idx_l]);
+        //         let exponent_2 = point / self.xs[idx_r] - lambda * (point / self.xs[idx_r]);
+
+        //         let term_1 = self.ys[idx_l].powf(exponent_1);
+        //         let term_2 = self.ys[idx_r].powf(exponent_2);
+
+        //         let result = term_1 * term_2;
+
+        //         Ok(result)
+
+        // let idx_r = self.xs.partition_point(|&x| x < point);
+        // let idx_l = idx_r - 1;
+
+        // let x_l = self.xs[idx_l];
+        // let y_l = self.ys[idx_l];
+
+        // let x_r = self.xs[idx_r];
+        // let y_r = self.ys[idx_r];
+
+        // let term1 = y_r.ln() - y_l.ln();
+        // let term2 = (point - x_l) / (x_r - x_l);
+        // let term3 = y_l.ln();
+
+        // let result = (term1 * term2 + term3).exp();
+
+        let idx_r = self.xs.partition_point(|&x| x < point);
+
+        let x_l = self.xs[idx_r - 1];
+        let y_l = self.ys[idx_r - 1];
 
         let x_r = self.xs[idx_r];
         let y_r = self.ys[idx_r];
 
-        let term1 = y_r.ln() - y_l.ln();
-        let term2 = (point - x_l) / (x_r - x_l);
-        let term3 = y_l.ln();
+        let exp1 = (point - x_l) / (x_r - x_l);
+        let exp2 = (x_r - point) / (x_r - x_l);
 
-        let result = (term1 * term2 + term3).exp();
+        let result = y_r.powf(exp1) * y_l.powf(exp2);
 
         Ok(result)
     }

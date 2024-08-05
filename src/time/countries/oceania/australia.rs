@@ -14,6 +14,7 @@ use crate::time::utilities::unpack_date;
 use time::{Date, Month, Weekday};
 
 /// Australian national holiday calendar.
+#[derive(Debug, Clone, Copy)]
 pub struct AustraliaCalendar;
 
 impl Calendar for AustraliaCalendar {
