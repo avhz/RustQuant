@@ -71,7 +71,7 @@ impl Graph {
         graph
     }
 
-    /// Add a new variable to to the graph.
+    /// Add a new variable to the graph.
     /// Returns a new `Variable` instance (the contents of a vertex).
     #[inline]
     pub fn var(&self, value: f64) -> Variable {

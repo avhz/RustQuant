@@ -10,7 +10,7 @@
 //! This module contains functions for numerical integration.
 //!
 //! The Tanh-Sinh quadrature is used for the integration.
-//! This method uses a the hyperbolic trig functions to transform
+//! This method uses the hyperbolic trig functions to transform
 //! the integral over $[-1, +1]$ to an integral over $\mathbb{R} = (-\infty, +\infty)$.
 //!
 //! We have the approximation:
