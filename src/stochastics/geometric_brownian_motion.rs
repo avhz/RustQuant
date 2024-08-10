@@ -36,13 +36,15 @@ impl StochasticProcess for GeometricBrownianMotion {
 #[cfg(test)]
 mod tests_gbm {
     use super::*;
+    use crate::stochastics::StochasticProcessConfig;
     use crate::{assert_approx_equal, math::*};
 
     #[test]
     fn test_geometric_brownian_motion() {
         let gbm = GeometricBrownianMotion::new(0.05, 0.9);
 
-        let output = gbm.euler_maruyama(10.0, 0.0, 0.5, 125, 10000, false);
+        let config = StochasticProcessConfig::new(10.0, 0.0, 0.5, 125, 10000, false);
+        let output = gbm.euler_maruyama(&config);
 
         // Test the distribution of the final values.
         let X_T: Vec<f64> = output

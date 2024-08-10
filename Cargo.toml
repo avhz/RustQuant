@@ -75,6 +75,7 @@ thiserror = "1.0.57"        # https://docs.rs/thiserror/latest/thiserror/
 yahoo_finance_api = "2.1.0" # https://docs.rs/yahoo-finance-api/latest/yahoo_finance_api/
 tokio-test = "0.4.3"        # https://docs.rs/tokio-test/latest/tokio_test/
 
+
 # https://docs.rs/num/latest/num/
 num = { version = "0.4.1", features = ["rand"] }
 
@@ -83,6 +84,9 @@ time = { version = "0.3.34", features = ["macros"] }
 
 # https://docs.rs/polars/latest/polars/
 polars = { version = "0.41.1", features = ["docs-selection"] }
+
+# https://docs.rs/uuid/latest/uuid/
+uuid = { version = "1.10.0", features = ["v4", "fast-rng"] }
 
 
 [dev-dependencies]

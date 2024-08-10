@@ -50,3 +50,7 @@ pub use schedule::*;
 /// Date generation rules.
 pub mod date_generation;
 pub use date_generation::*;
+
+/// Stub generation rules.
+pub mod stub_generation;
+pub use stub_generation::*;

@@ -34,13 +34,13 @@ impl StochasticProcess for ArithmeticBrownianMotion {
 #[cfg(test)]
 mod tests_abm {
     use super::*;
-    use crate::{assert_approx_equal, math::*};
+    use crate::{assert_approx_equal, math::*, stochastics::StochasticProcessConfig};
 
     #[test]
     fn test_arithmetic_brownian_motion() {
         let abm = ArithmeticBrownianMotion::new(0.05, 0.9);
-
-        let output = abm.euler_maruyama(10.0, 0.0, 0.5, 125, 1000, false);
+        let config = StochasticProcessConfig::new(10.0, 0.0, 0.5, 125, 1000, false);
+        let output = abm.euler_maruyama(&config);
 
         // let file1 = "./images/ABM1.png";
         // plot_vector((&output.trajectories[0]).clone(), file1).unwrap();

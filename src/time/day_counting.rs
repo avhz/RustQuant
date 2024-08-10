@@ -34,7 +34,7 @@ use time::{util::is_leap_year, Date, Duration, Month};
 /// payment dates, the seller is eligible to some fraction of the coupon amount.
 /// """
 #[allow(non_camel_case_types)]
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, Debug)]
 pub enum DayCountConvention {
     /// The '1/1' day count, which always returns a day count of 1.
     One_One,

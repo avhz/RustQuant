@@ -33,13 +33,14 @@ impl StochasticProcess for OrnsteinUhlenbeck {
 #[cfg(test)]
 mod tests_ornstein_uhlenbeck {
     use super::*;
-    use crate::{assert_approx_equal, math::*};
+    use crate::{assert_approx_equal, math::*, stochastics::StochasticProcessConfig};
 
     #[test]
     fn test_ornstein_uhlenbeck() {
         let ou = OrnsteinUhlenbeck::new(0.15, 0.45, 0.01);
 
-        let output = ou.euler_maruyama(10.0, 0.0, 0.5, 100, 100, false);
+        let config = StochasticProcessConfig::new(10.0, 0.0, 0.5, 100, 100, false);
+        let output = ou.euler_maruyama(&config);
 
         // Test the distribution of the final values.
         let X_T: Vec<f64> = output

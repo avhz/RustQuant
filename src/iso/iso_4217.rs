@@ -22,7 +22,7 @@ use std::fmt::Formatter;
 ///     - First two letters are the ISO 3166-1 alpha-2 country code. e.g. US = United States
 ///     - Third letter is the first letter of the currency name. e.g. USD = United States Dollar
 ///     - The number is the ISO numeric code. e.g. 840 = USD
-#[derive(Debug, Clone, Copy, Eq)]
+#[derive(Debug, Clone, Copy, Eq, PartialEq, PartialOrd, Ord, Hash)]
 #[allow(non_camel_case_types)]
 pub struct ISO_4217 {
     /// The ISO 4217 alphabetic code.
@@ -55,11 +55,11 @@ impl ISO_4217 {
     }
 }
 
-impl PartialEq for ISO_4217 {
-    fn eq(&self, other: &Self) -> bool {
-        self.alphabetic == other.alphabetic && self.numeric == other.numeric
-    }
-}
+// impl PartialEq for ISO_4217 {
+//     fn eq(&self, other: &Self) -> bool {
+//         self.alphabetic == other.alphabetic && self.numeric == other.numeric
+//     }
+// }
 
 impl fmt::Display for ISO_4217 {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {

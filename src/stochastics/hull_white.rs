@@ -30,8 +30,8 @@ impl StochasticProcess for HullWhite {
 #[cfg(test)]
 mod tests_hull_white {
     use super::*;
+    use crate::stochastics::StochasticProcessConfig;
     use crate::{assert_approx_equal, math::*};
-
     // fn theta_t(_t: f64) -> f64 {
     //     0.5
     // }
@@ -43,8 +43,9 @@ mod tests_hull_white {
         let sigma = 2.0;
 
         let hw = HullWhite::new(alpha, sigma, theta);
+        let config = StochasticProcessConfig::new(10.0, 0.0, 1.0, 150, 1000, false);
 
-        let output = hw.euler_maruyama(10.0, 0.0, 1.0, 150, 1000, false);
+        let output = hw.euler_maruyama(&config);
 
         // Test the distribution of the final values.
         let X_T: Vec<f64> = output

@@ -63,7 +63,8 @@ fn main() {
 
     // Generate path using Euler-Maruyama scheme.
     // Parameters: x_0, t_0, t_n, n, sims, parallel.
-    let gbm_out = gbm.euler_maruyama(INITIAL_VALUE, START_TIME, END_TIME, NUM_STEPS, NUM_SIMS, PARALLEL);
+    let config = StochasticProcessConfig::new(INITIAL_VALUE, START_TIME, END_TIME, NUM_STEPS, NUM_SIMS, PARALLEL);
+    let gbm_out = gbm.euler_maruyama(&config);
 
     // Price the options. 
     println!("Up-and-out call: {}", barrier_option_payoff(&gbm_out.paths[0], 10.0, 12.0, OptionType::Call, BarrierType::UpAndOut));

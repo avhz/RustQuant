@@ -174,20 +174,20 @@ mod test_cashflows {
     use super::*;
     use time::Duration;
 
-    use crate::assert_approx_equal;
+    use crate::{assert_approx_equal, time::today};
     use std::f64::EPSILON as EPS;
 
     // Test to verify the `amount` method.
     #[test]
     fn test_amount() {
-        let cf = Cashflow::new(100.0, Date::now_utc());
+        let cf = Cashflow::new(100.0, today());
         assert_approx_equal!(cf.amount(), 100.0, EPS);
     }
 
     // Test to verify the `date` method.
     #[test]
     fn test_date() {
-        let now = Date::now_utc();
+        let now = today();
         let cf = Cashflow::new(100.0, now);
         assert_eq!(cf.date(), now);
     }
@@ -195,41 +195,26 @@ mod test_cashflows {
     // Test to verify the `npv` method.
     #[test]
     fn test_npv() {
-        let now = Date::now_utc();
-        let cf = Cashflow::new(100.0, now);
+        let cf = Cashflow::new(100.0, today());
 
-        // Discount function that reduces value by 10%.
-        let df = |date: Date| if date == now { 0.9 } else { 1.0 };
-        assert_approx_equal!(cf.npv(df), 90.0, EPS);
+        assert_approx_equal!(cf.npv(0.9), 90.0, EPS);
     }
 
     // Test to verify the `npv` method with a zero discount rate.
     #[test]
     fn test_npv_zero_discount() {
-        let now = Date::now_utc();
+        let now = today();
         let cf = Cashflow::new(100.0, now);
 
         // Discount function that keeps value the same.
-        let df = |_: Date| 1.0;
+        let df = 1.0;
         assert_approx_equal!(cf.npv(df), 100.0, EPS);
-    }
-
-    // Test to verify the `npv` method with future date
-    #[test]
-    fn test_npv_future_date() {
-        let now = Date::now_utc();
-        let future_date = now + Duration::days(30);
-        let cf = Cashflow::new(100.0, future_date);
-
-        // Discount function that reduces value by 10% for future_date.
-        let df = |date: Date| if date == future_date { 0.9 } else { 1.0 };
-        assert_approx_equal!(cf.npv(df), 90.0, EPS);
     }
 
     // Test to verify addition of cashflows with the same date.
     #[test]
     fn test_add_cashflows() {
-        let date = Date::now_utc();
+        let date = today();
         let cf1 = Cashflow::new(100.0, date);
         let cf2 = Cashflow::new(50.0, date);
         let result = cf1 + cf2;
@@ -240,7 +225,7 @@ mod test_cashflows {
     // Test to verify subtraction of cashflows with the same date.
     #[test]
     fn test_sub_cashflows() {
-        let date = Date::now_utc();
+        let date = today();
         let cf1 = Cashflow::new(100.0, date);
         let cf2 = Cashflow::new(50.0, date);
         let result = cf1 - cf2;
@@ -251,7 +236,7 @@ mod test_cashflows {
     // Test for negative cashflows.
     #[test]
     fn test_negative_cashflow() {
-        let date = Date::now_utc();
+        let date = today();
         let cf = Cashflow::new(-100.0, date);
         assert_approx_equal!(cf.amount(), -100.0, EPS);
     }
@@ -259,7 +244,7 @@ mod test_cashflows {
     // Test for zero cashflows.
     #[test]
     fn test_zero_cashflow() {
-        let date = Date::now_utc();
+        let date = today();
         let cf = Cashflow::new(0.0, date);
         assert_approx_equal!(cf.amount(), 0.0, EPS);
     }
@@ -268,7 +253,7 @@ mod test_cashflows {
     #[test]
     #[should_panic(expected = "Dates must match.")]
     fn test_non_matching_dates_add() {
-        let date1 = Date::now_utc();
+        let date1 = today();
         let date2 = date1 + Duration::days(1);
         let cf1 = Cashflow::new(100.0, date1);
         let cf2 = Cashflow::new(50.0, date2);

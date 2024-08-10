@@ -8,6 +8,7 @@
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 /// Date generation conventions.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum DateGenerationConvention {
     /// Forward from the issue date.
     Forward,

@@ -9,6 +9,7 @@
 
 //! FX exchange module.
 
+use super::CurrencyPair;
 use crate::instruments::fx::currency::Currency;
 use crate::instruments::fx::money::Money;
 use std::collections::HashMap;
@@ -24,7 +25,7 @@ pub struct Exchange {
     /// The key is a string of the form e.g. "USD_EUR",
     /// and the value is an ExchangeRate struct.
     /// The key is generated from the from_currency and to_currency of the ExchangeRate.
-    pub rates: HashMap<String, ExchangeRate>,
+    pub rates: HashMap<CurrencyPair, ExchangeRate>,
 }
 
 /// `ExchangeRate` struct to hold exchange rate information.
@@ -79,10 +80,11 @@ impl Exchange {
     /// ```
     ///
     pub fn add_rate(&mut self, rate: ExchangeRate) {
-        let key = format!(
-            "{}/{}",
-            rate.from_currency.code.alphabetic, rate.to_currency.code.alphabetic
-        );
+        // let key = format!(
+        //     "{}/{}",
+        //     rate.from_currency.code.alphabetic, rate.to_currency.code.alphabetic
+        // );
+        let key = CurrencyPair::new(rate.from_currency, rate.to_currency);
         self.rates.insert(key, rate);
     }
 
@@ -115,10 +117,11 @@ impl Exchange {
         from_currency: &Currency,
         to_currency: &Currency,
     ) -> Option<&ExchangeRate> {
-        let key = format!(
-            "{}/{}",
-            from_currency.code.alphabetic, to_currency.code.alphabetic
-        );
+        // let key = format!(
+        //     "{}/{}",
+        //     from_currency.code.alphabetic, to_currency.code.alphabetic
+        // );
+        let key = CurrencyPair::new(*from_currency, *to_currency);
         self.rates.get(&key)
     }
 

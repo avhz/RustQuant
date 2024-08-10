@@ -42,7 +42,7 @@ pub(crate) fn diff(f: &(dyn Fn(f64) -> f64 + Send + Sync), t: f64) -> f64 {
 #[cfg(test)]
 mod tests_black_derman_toy {
     use super::*;
-    use crate::math::*;
+    use crate::{math::*, stochastics::StochasticProcessConfig};
 
     // fn theta_t(_t: f64) -> f64 {
     //     1.5
@@ -58,7 +58,8 @@ mod tests_black_derman_toy {
 
         let hw = BlackDermanToy::new(sigma, theta);
 
-        let output = hw.euler_maruyama(0.13, 0.0, 1.0, 100, 100, false);
+        let config = StochasticProcessConfig::new(0.13, 0.0, 1.0, 100, 1000, false);
+        let output = hw.euler_maruyama(&config);
 
         // Test the distribution of the final values.
         let X_T: Vec<f64> = output
@@ -78,8 +79,8 @@ mod tests_black_derman_toy {
         let theta = 1.5;
 
         let hw = BlackDermanToy::new(sigma, theta);
-
-        let output = hw.euler_maruyama(0.13, 0.0, 1.0, 100, 1000, false);
+        let config = StochasticProcessConfig::new(0.13, 0.0, 1.0, 100, 1000, false);
+        let output = hw.euler_maruyama(&config);
 
         // Test the distribution of the final values.
         let X_T: Vec<f64> = output

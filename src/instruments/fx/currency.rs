@@ -22,7 +22,7 @@ use std::fmt::{self, Formatter};
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 /// Currency data struct.
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct Currency {
     /// Currency name. e.g. United States Dollar
     pub name: &'static str,
@@ -34,6 +34,16 @@ pub struct Currency {
     pub minor: usize,
     /// Fractions per unit. e.g. 100 cents = 1 dollar.
     pub fractions: usize,
+}
+
+/// Currency pair.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, PartialOrd, Ord)]
+pub struct CurrencyPair {
+    /// Base currency.
+    pub base: Currency,
+
+    /// Quote currency.
+    pub quote: Currency,
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -108,13 +118,20 @@ impl Instrument for Currency {
     }
 }
 
-impl Eq for Currency {}
-
-impl PartialEq for Currency {
-    fn eq(&self, other: &Self) -> bool {
-        self.code == other.code
+impl CurrencyPair {
+    /// Create a new currency pair.
+    pub fn new(base: Currency, quote: Currency) -> Self {
+        Self { base, quote }
     }
 }
+
+// impl Eq for Currency {}
+
+// impl PartialEq for Currency {
+//     fn eq(&self, other: &Self) -> bool {
+//         self.code == other.code
+//     }
+// }
 
 impl fmt::Display for Currency {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {

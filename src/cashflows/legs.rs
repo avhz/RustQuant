@@ -78,18 +78,20 @@ impl Leg {
 
 #[cfg(test)]
 mod tests_legs {
-    use super::super::SimpleCashflow;
+    // use super::super::SimpleCashflow;
     use super::*;
     use crate::assert_approx_equal;
+    use crate::time::today;
     use std::f64::EPSILON as EPS;
     use time::Duration;
+    use time::OffsetDateTime;
 
     // Utility function to generate a simple leg for testing.
-    fn generate_simple_leg(now: OffsetDateTime) -> Leg<SimpleCashflow> {
+    fn generate_simple_leg(now: Date) -> Leg {
         let cashflows = vec![
-            SimpleCashflow::new(100.0, now),
-            SimpleCashflow::new(200.0, now + Duration::days(30)),
-            SimpleCashflow::new(300.0, now + Duration::days(60)),
+            Cashflow::new(100.0, now),
+            Cashflow::new(200.0, now + Duration::days(30)),
+            Cashflow::new(300.0, now + Duration::days(60)),
         ];
         Leg::new(cashflows)
     }
@@ -97,7 +99,7 @@ mod tests_legs {
     // Test to verify the `size` method.
     #[test]
     fn test_size() {
-        let now = OffsetDateTime::now_utc();
+        let now = today();
         let leg = generate_simple_leg(now);
         assert_eq!(leg.size(), 3);
     }
@@ -105,20 +107,20 @@ mod tests_legs {
     // Test to verify the `npv` method.
     #[test]
     fn test_npv() {
-        let now = OffsetDateTime::now_utc();
+        let now = today();
         let leg = generate_simple_leg(now);
 
         // Discount function that reduces value by 10%.
-        let df = |_| 0.9;
+        let df = 0.9;
         assert_approx_equal!(leg.npv(df), 540.0, EPS);
     }
 
     // Test to verify the `add_cashflow` method.
     #[test]
     fn test_add_cashflow() {
-        let now = OffsetDateTime::now_utc();
+        let now = today();
         let mut leg = generate_simple_leg(now);
-        let new_cashflow = SimpleCashflow::new(400.0, now + Duration::days(90));
+        let new_cashflow = Cashflow::new(400.0, now + Duration::days(90));
         leg.add_cashflow(new_cashflow.clone());
         assert_eq!(leg.size(), 4);
         assert_approx_equal!(
@@ -131,7 +133,7 @@ mod tests_legs {
     // Test to verify the `start_date` and `end_date` methods.
     #[test]
     fn test_start_end_date() {
-        let now = OffsetDateTime::now_utc();
+        let now = today();
         let leg = generate_simple_leg(now);
         let start = leg.start_date().unwrap();
         let end = leg.end_date().unwrap();
@@ -142,7 +144,7 @@ mod tests_legs {
     // Test to verify the `is_active` method.
     #[test]
     fn test_is_active() {
-        let now = OffsetDateTime::now_utc();
+        let now = today();
         let leg = generate_simple_leg(now);
         assert!(leg.is_active(now));
         assert!(leg.is_active(now + Duration::days(30)));

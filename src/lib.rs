@@ -71,6 +71,7 @@ pub mod math;
 pub mod ml;
 pub mod models;
 pub mod portfolio;
+pub mod pricer;
 pub mod stochastics;
 pub mod time;
 pub mod trading;

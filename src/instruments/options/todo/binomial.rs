@@ -86,16 +86,16 @@ impl BinomialOption {
         for j in (0..n).rev() {
             for i in 0..=j {
                 match ame_eur_flag {
-                    ExerciseFlag::American => {
+                    ExerciseFlag::American { .. } => {
                         option_value[i] = (f64::from(z)
                             * (S * u.powi(i as i32) * d.powi(j as i32 - i as i32) - K))
                             .max(Df * (p * (option_value[i + 1]) + (1.0 - p) * option_value[i]));
                     }
-                    ExerciseFlag::European => {
+                    ExerciseFlag::European { .. } => {
                         option_value[i] =
                             Df * (p * (option_value[i + 1]) + (1.0 - p) * option_value[i]);
                     }
-                    ExerciseFlag::Bermudan => {
+                    ExerciseFlag::Bermudan { .. } => {
                         panic!("Bermudan option pricing not implemented yet.");
                     }
                 }

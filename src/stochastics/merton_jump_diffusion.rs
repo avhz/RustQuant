@@ -12,6 +12,8 @@ use crate::models::merton_jump_diffusion::MertonJumpDiffusion;
 use crate::stochastics::process::{StochasticProcess, Trajectories};
 use rand_distr::Distribution;
 use rayon::prelude::*;
+
+use super::StochasticProcessConfig;
 // use statrs::distribution::Normal;
 
 impl StochasticProcess for MertonJumpDiffusion {
@@ -28,15 +30,9 @@ impl StochasticProcess for MertonJumpDiffusion {
         self.gaussian.sample(1).unwrap().first().copied()
     }
 
-    fn euler_maruyama(
-        &self,
-        x_0: f64,
-        t_0: f64,
-        t_n: f64,
-        n_steps: usize,
-        m_paths: usize,
-        parallel: bool,
-    ) -> Trajectories {
+    fn euler_maruyama(&self, config: &StochasticProcessConfig) -> Trajectories {
+        let (x_0, t_0, t_n, n_steps, m_paths, parallel) = config.unpack();
+
         assert!(t_0 < t_n);
 
         let dt: f64 = (t_n - t_0) / (n_steps as f64);
@@ -92,8 +88,8 @@ mod tests_gbm_bridge {
     #[test]
     fn test_geometric_brownian_motion_bridge() {
         let mjd = MertonJumpDiffusion::new(0.05, 0.9, 1.0, 0.0, 0.3);
-
-        let output = mjd.euler_maruyama(10.0, 0.0, 0.5, 125, 10000, false);
+        let config = StochasticProcessConfig::new(10.0, 0.0, 0.5, 125, 10000, false);
+        let output = mjd.euler_maruyama(&config);
 
         // Test the distribution of the final values.
         let X_T: Vec<f64> = output

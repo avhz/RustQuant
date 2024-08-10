@@ -15,3 +15,4 @@ title = "The RustQuant Book"
 ## and you will be able to use the usual $...$ and $$...$$ delimiters.
 [output.html]
 mathjax-support = true
+fold = { enable = true }

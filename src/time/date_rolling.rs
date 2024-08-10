@@ -22,7 +22,7 @@ use time::Date;
 /// time such that it falls in a business day, according with the
 /// same business calendar.
 /// """
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum DateRollingConvention {
     /// Actual: paid on the actual day, even if it is a non-business day.
     Actual,

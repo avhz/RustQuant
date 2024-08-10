@@ -10,6 +10,7 @@
 use super::{
     fractional_brownian_motion::FractionalProcessGeneratorMethod,
     process::{StochasticProcess, Trajectories},
+    StochasticProcessConfig,
 };
 use crate::models::{
     fractional_brownian_motion::FractionalBrownianMotion,
@@ -30,15 +31,9 @@ impl StochasticProcess for FractionalCoxIngersollRoss {
         Some(0.0)
     }
 
-    fn euler_maruyama(
-        &self,
-        x_0: f64,
-        t_0: f64,
-        t_n: f64,
-        n_steps: usize,
-        m_paths: usize,
-        parallel: bool,
-    ) -> Trajectories {
+    fn euler_maruyama(&self, config: &StochasticProcessConfig) -> Trajectories {
+        let (t_0, x_0, t_n, n_steps, m_paths, parallel) = config.unpack();
+
         let fgn = match self.method {
             FractionalProcessGeneratorMethod::CHOLESKY => {
                 let fbm = FractionalBrownianMotion::new(
@@ -100,8 +95,10 @@ mod test_fractional_cir {
             FractionalProcessGeneratorMethod::FFT,
         );
 
+        let config = StochasticProcessConfig::new(10.0, 0.0, 0.5, 100, 100, false);
+
         #[allow(dead_code)]
-        let _output = fou.euler_maruyama(10.0, 0.0, 0.5, 100, 100, false);
+        let _output = fou.euler_maruyama(&config);
 
         std::result::Result::Ok(())
     }
