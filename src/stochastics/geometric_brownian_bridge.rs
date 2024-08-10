@@ -34,6 +34,7 @@ impl StochasticProcess for GeometricBrownianBridge {
 #[cfg(test)]
 mod tests_gbm_bridge {
     use super::*;
+    use crate::stochastics::StochasticProcessConfig;
     use crate::{assert_approx_equal, math::*};
 
     /// Test the Geometric Brownian Bridge process.
@@ -41,7 +42,9 @@ mod tests_gbm_bridge {
     fn test_geometric_brownian_motion_bridge() {
         let gbm = GeometricBrownianBridge::new(0.05, 0.9, 10.0, 0.5);
 
-        let output = gbm.euler_maruyama(10.0, 0.0, 0.5, 125, 10000, false);
+        let config = StochasticProcessConfig::new(10.0, 0.0, 0.5, 125, 10000, false);
+
+        let output = gbm.euler_maruyama(&config);
 
         // Test the distribution of the final values.
         let X_T: Vec<f64> = output

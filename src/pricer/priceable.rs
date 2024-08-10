@@ -10,82 +10,46 @@
 //! Priceable trait.
 
 use super::{ContextData, MarketData};
-use crate::data::curves::Curves;
 use crate::{
-    data::CurveIndex,
-    instruments::{BlackScholesMerton, ExerciseFlag, Instrument, PricingEngine, VanillaOption},
-    stochastics::StochasticProcess,
-    time::{Calendar, DayCounter},
+    instruments::{Instrument, Payoff},
+    stochastics::process::StochasticProcess,
+    time::Calendar,
 };
 
 /// Priceable trait.
-pub trait Priceable<C>
+pub trait Priceable<C, S, P>: Payoff + Instrument
 where
     C: Calendar,
+    S: StochasticProcess,
+    P: Payoff,
 {
-    /// Backend method for pricing the instrument.
-    fn pricer_impl(
+    /// Function to prepare the data for the specific instrument.
+    fn prepare_data(&self) -> ();
+
+    /// Analytic pricer implementation.
+    fn price_analytic_impl(
         &self,
         context_data: &Option<ContextData<C>>,
         market_data: &mut Option<MarketData<C>>,
-        // model: &Option<S>,
+        model: &Option<S>,
+        // engine: &Option<PricingEngine>,
+    ) -> f64;
+
+    /// Simulation pricer implementation.
+    fn price_simulation_impl(
+        &self,
+        context_data: &Option<ContextData<C>>,
+        market_data: &mut Option<MarketData<C>>,
+        model: &Option<S>,
+        // engine: &Option<PricingEngine>,
+    ) -> f64;
+
+    /// Numerical pricer implementation.
+    fn price_numerical_impl(
+        &self,
+        context_data: &Option<ContextData<C>>,
+        market_data: &mut Option<MarketData<C>>,
+        model: &Option<S>,
         // engine: &Option<PricingEngine>,
     ) -> f64;
 }
-
-impl<C> Priceable<C> for VanillaOption
-where
-    C: Calendar + Clone,
-{
-    /// VanillaOption pricer implementation.
-    ///
-    /// This aksjdfoasj ofdjsod
-    fn pricer_impl(
-        &self,
-        context_data: &Option<ContextData<C>>,
-        market_data: &mut Option<MarketData<C>>,
-        // model: &Option<S>,
-        // engine: &Option<PricingEngine>,
-    ) -> f64 {
-        let cal = context_data.as_ref().unwrap().calendar.as_ref().unwrap();
-        let eval = context_data.as_ref().unwrap().evaluation_date.unwrap();
-
-        let s = market_data.as_ref().unwrap().underlying_price.unwrap();
-        let k = self.strike;
-        let t = match self.contract.exercise_flag {
-            ExerciseFlag::European { expiry } => expiry,
-            ExerciseFlag::American { .. } => todo!(),
-            ExerciseFlag::Bermudan { .. } => todo!(),
-        };
-        let tau = DayCounter::day_count_factor(
-            cal,
-            eval,
-            t,
-            &context_data.as_ref().unwrap().day_count_convention.unwrap(),
-        );
-        let r = market_data
-            .as_mut()
-            .unwrap()
-            .spot_curve
-            .as_mut()
-            .unwrap()
-            .get_rate(t);
-        let v = market_data.as_ref().unwrap().volatility.unwrap();
-
-        let bsm = BlackScholesMerton {
-            cost_of_carry: r,
-            underlying_price: s,
-            strike_price: k,
-            volatility: v,
-            risk_free_rate: r,
-            evaluation_date: Some(eval),
-            expiration_date: t,
-            option_type: self.contract.type_flag,
-        };
-
-        bsm.price()
-    }
-}
-
-#[cfg(test)]
-mod test_pricer {}

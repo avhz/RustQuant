@@ -21,6 +21,8 @@ use rand::{rngs::StdRng, SeedableRng};
 use rand_distr::StandardNormal;
 use rayon::prelude::*;
 
+use super::StochasticProcessConfig;
+
 /// Method used to generate the Fractional Brownian Motion.
 #[derive(Debug)]
 pub enum FractionalProcessGeneratorMethod {
@@ -149,15 +151,9 @@ impl StochasticProcess for FractionalBrownianMotion {
         None
     }
 
-    fn euler_maruyama(
-        &self,
-        x_0: f64,
-        t_0: f64,
-        t_n: f64,
-        n_steps: usize,
-        m_paths: usize,
-        parallel: bool,
-    ) -> Trajectories {
+    fn euler_maruyama(&self, config: &StochasticProcessConfig) -> Trajectories {
+        let (x_0, t_0, t_n, n_steps, m_paths, parallel) = config.unpack();
+
         assert!(t_0 < t_n);
 
         let dt: f64 = (t_n - t_0) / (n_steps as f64);
@@ -293,7 +289,8 @@ mod test_fractional_brownian_motion {
     #[test]
     fn test_brownian_motion() {
         let fbm = FractionalBrownianMotion::new(0.7, FractionalProcessGeneratorMethod::FFT);
-        let output_serial = fbm.euler_maruyama(0.0, 0.0, 0.5, 100, 1000, false);
+        let config = StochasticProcessConfig::new(0.0, 0.0, 0.5, 100, 1000, false);
+        let output_serial = fbm.euler_maruyama(&config);
         // let output_parallel = (&bm).euler_maruyama(10.0, 0.0, 0.5, 100, 10, true);
 
         // Test the distribution of the final values.

@@ -391,7 +391,9 @@ mod tests_finite_difference_pricer_at_the_money {
         time_steps: 10000,
         price_steps: 250,
         type_flag: TypeFlag::Call,
-        exercise_flag: ExerciseFlag::European,
+        exercise_flag: ExerciseFlag::European {
+            expiry: date!(2025 - 01 - 01),
+        },
     };
 
     const EUROPEAN_PUT: FiniteDifferencePricer = FiniteDifferencePricer {
@@ -404,7 +406,9 @@ mod tests_finite_difference_pricer_at_the_money {
         time_steps: 10000,
         price_steps: 250,
         type_flag: TypeFlag::Put,
-        exercise_flag: ExerciseFlag::European,
+        exercise_flag: ExerciseFlag::European {
+            expiry: date!(2025 - 01 - 01),
+        },
     };
 
     const AMERICAN_CALL: FiniteDifferencePricer = FiniteDifferencePricer {
@@ -417,7 +421,10 @@ mod tests_finite_difference_pricer_at_the_money {
         time_steps: 10000,
         price_steps: 250,
         type_flag: TypeFlag::Call,
-        exercise_flag: ExerciseFlag::American,
+        exercise_flag: ExerciseFlag::American {
+            start: date!(2024 - 01 - 01),
+            end: date!(2025 - 01 - 01),
+        },
     };
 
     const AMERICAN_PUT: FiniteDifferencePricer = FiniteDifferencePricer {
@@ -430,7 +437,10 @@ mod tests_finite_difference_pricer_at_the_money {
         time_steps: 10000,
         price_steps: 250,
         type_flag: TypeFlag::Put,
-        exercise_flag: ExerciseFlag::American,
+        exercise_flag: ExerciseFlag::American {
+            start: date!(2024 - 01 - 01),
+            end: date!(2025 - 01 - 01),
+        },
     };
 
     const EXPECT_A_CALL: f64 = 0.680_478_009_892_241;
@@ -520,7 +530,9 @@ mod tests_finite_difference_pricer_in_the_money {
         time_steps: 10000,
         price_steps: 200,
         type_flag: TypeFlag::Call,
-        exercise_flag: ExerciseFlag::European,
+        exercise_flag: ExerciseFlag::European {
+            expiry: date!(2025 - 01 - 01),
+        },
     };
 
     const EUROPEAN_PUT: FiniteDifferencePricer = FiniteDifferencePricer {
@@ -533,7 +545,9 @@ mod tests_finite_difference_pricer_in_the_money {
         time_steps: 10000,
         price_steps: 200,
         type_flag: TypeFlag::Put,
-        exercise_flag: ExerciseFlag::European,
+        exercise_flag: ExerciseFlag::European {
+            expiry: date!(2025 - 01 - 01),
+        },
     };
 
     const AMERICAN_CALL: FiniteDifferencePricer = FiniteDifferencePricer {
@@ -546,7 +560,10 @@ mod tests_finite_difference_pricer_in_the_money {
         time_steps: 10000,
         price_steps: 200,
         type_flag: TypeFlag::Call,
-        exercise_flag: ExerciseFlag::American,
+        exercise_flag: ExerciseFlag::American {
+            start: date!(2024 - 01 - 01),
+            end: date!(2025 - 01 - 01),
+        },
     };
 
     const AMERICAN_PUT: FiniteDifferencePricer = FiniteDifferencePricer {
@@ -559,7 +576,10 @@ mod tests_finite_difference_pricer_in_the_money {
         time_steps: 10000,
         price_steps: 200,
         type_flag: TypeFlag::Put,
-        exercise_flag: ExerciseFlag::American,
+        exercise_flag: ExerciseFlag::American {
+            start: date!(2024 - 01 - 01),
+            end: date!(2025 - 01 - 01),
+        },
     };
 
     const EXPECT_A_CALL: f64 = 5.487_706_388_002_172;
@@ -649,7 +669,9 @@ mod tests_finite_difference_pricer_out_of_the_money {
         time_steps: 10000,
         price_steps: 200,
         type_flag: TypeFlag::Call,
-        exercise_flag: ExerciseFlag::European,
+        exercise_flag: ExerciseFlag::European {
+            expiry: date!(2025 - 01 - 01),
+        },
     };
 
     const EUROPEAN_PUT: FiniteDifferencePricer = FiniteDifferencePricer {
@@ -662,7 +684,9 @@ mod tests_finite_difference_pricer_out_of_the_money {
         time_steps: 10000,
         price_steps: 200,
         type_flag: TypeFlag::Put,
-        exercise_flag: ExerciseFlag::European,
+        exercise_flag: ExerciseFlag::European {
+            expiry: date!(2025 - 01 - 01),
+        },
     };
 
     const AMERICAN_CALL: FiniteDifferencePricer = FiniteDifferencePricer {
@@ -675,7 +699,10 @@ mod tests_finite_difference_pricer_out_of_the_money {
         time_steps: 10000,
         price_steps: 200,
         type_flag: TypeFlag::Call,
-        exercise_flag: ExerciseFlag::American,
+        exercise_flag: ExerciseFlag::American {
+            start: date!(2024 - 01 - 01),
+            end: date!(2025 - 01 - 01),
+        },
     };
 
     const AMERICAN_PUT: FiniteDifferencePricer = FiniteDifferencePricer {
@@ -688,7 +715,10 @@ mod tests_finite_difference_pricer_out_of_the_money {
         time_steps: 10000,
         price_steps: 200,
         type_flag: TypeFlag::Put,
-        exercise_flag: ExerciseFlag::American,
+        exercise_flag: ExerciseFlag::American {
+            start: date!(2024 - 01 - 01),
+            end: date!(2025 - 01 - 01),
+        },
     };
 
     const EXPECT_A_CALL: f64 = 0.000_059_393_327_777_911;

@@ -7,21 +7,15 @@
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-/// Barrier option.
+/// Gap option.
 #[derive(Debug, Clone)]
-pub struct BarrierOption {
+pub struct GapOption {
     /// The option contract.
     pub contract: OptionContract,
 
-    /// Barrier type (up-and-out, down-and-out, up-and-in, down-and-in).
-    pub barrier_type: BarrierType,
+    /// First strike price (barrier strike).
+    pub strike_1: f64,
 
-    /// Barrier level.
-    pub barrier: f64,
-
-    /// Strike price of the option.
-    pub strike: f64,
-
-    /// Rebate amount.
-    pub rebate: Option<f64>,
+    /// Second strike price (payoff strike).
+    pub strike_2: f64,
 }

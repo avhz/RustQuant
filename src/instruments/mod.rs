@@ -75,7 +75,7 @@ pub use instrument::*;
 
 /// Bond pricing models.
 pub mod bonds;
-pub use bonds::*;
+// pub use bonds::*;
 
 /// Option pricers and sensitivity functions.
 pub mod options;
@@ -92,3 +92,7 @@ pub use equities::*;
 /// Ticker symbol.
 pub mod ticker;
 pub use ticker::*;
+
+/// Generic derivative payoff trait.
+pub mod payoff;
+pub use payoff::*;

@@ -7,15 +7,15 @@
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-/// Forward start option.
-#[derive(Debug, Clone)]
-pub struct ForwardStartOption {
-    /// The option contract.
-    pub contract: OptionContract,
+//! Monte-Carlo pricer trait.
 
-    /// Strike price of the option.
-    pub strike: f64,
+use crate::stochastics::{StochasticProcess, StochasticProcessConfig};
 
-    /// Forward start date.
-    pub start_date: Date,
+/// Monte-Carlo pricer trait.
+pub trait MonteCarloPricer<S>
+where
+    S: StochasticProcess,
+{
+    /// Price the instrument using a Monte-Carlo method.
+    fn price_monte_carlo(&self, process: S, config: StochasticProcessConfig, rate: f64) -> f64;
 }

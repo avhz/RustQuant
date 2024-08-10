@@ -1,10 +1,9 @@
-use plotly::{Plot, Scatter};
 use polars::prelude::*;
 use time::macros::date;
-use time::{Date, Duration};
-use RustQuant::data::{discount_curve, Curve, DiscountCurve};
+use time::Date;
+use RustQuant::data::Curves;
+use RustQuant::data::{Curve, DiscountCurve};
 use RustQuant::time::oceania::australia::AustraliaCalendar;
-use RustQuant::time::Calendar;
 
 fn main() {
     let cal = AustraliaCalendar;

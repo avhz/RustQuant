@@ -34,13 +34,13 @@ impl StochasticProcess for ConstantElasticityOfVariance {
 #[cfg(test)]
 mod tests_cev {
     use super::*;
-    use crate::math::*;
+    use crate::{math::*, stochastics::StochasticProcessConfig};
 
     #[test]
     fn test_cev_process() {
         let cev = ConstantElasticityOfVariance::new(0.05, 0.9, 0.45);
-
-        let output = cev.euler_maruyama(10.0, 0.0, 0.5, 100, 100, false);
+        let config = StochasticProcessConfig::new(10.0, 0.0, 0.5, 100, 100, false);
+        let output = cev.euler_maruyama(&config);
 
         // Test the distribution of the final values.
         let X_T: Vec<f64> = output

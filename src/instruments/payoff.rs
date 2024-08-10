@@ -7,15 +7,11 @@
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-/// Forward start option.
-#[derive(Debug, Clone)]
-pub struct ForwardStartOption {
-    /// The option contract.
-    pub contract: OptionContract,
+/// Generic payoff trait for derivatives.
+pub trait Payoff {
+    /// Underlying input type for the payoff function.
+    type Underlying;
 
-    /// Strike price of the option.
-    pub strike: f64,
-
-    /// Forward start date.
-    pub start_date: Date,
+    /// Payoff function for the derivative.
+    fn payoff(&self, underlying: Self::Underlying) -> f64;
 }

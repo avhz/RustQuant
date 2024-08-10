@@ -1,4 +1,3 @@
-use plotly::{Plot, Scatter};
 use time::macros::date;
 use time::{Date, Duration};
 use RustQuant::data::Curve;

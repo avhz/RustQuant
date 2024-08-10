@@ -11,8 +11,6 @@
 // BINOMIAL OPTION PRICING PARAMETER STRUCT
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use time::Date;
-
 use super::{ExerciseFlag, TypeFlag};
 
 /// Struct containing the parameters to price an option via binomial tree method.

@@ -101,6 +101,59 @@ pub trait StochasticVolatilityProcess: Sync {
     }
 }
 
+/// Configuration parameters for simulating a stochastic process.
+pub struct StochasticProcessConfig {
+    /// Initial value of the process.
+    pub x_0: f64,
+
+    /// Initial time point.
+    pub t_0: f64,
+
+    /// Terminal time point.
+    pub t_n: f64,
+
+    /// Number of time steps between `t_0` and `t_n`.
+    pub n_steps: usize,
+
+    /// How many process trajectories to simulate.
+    pub m_paths: usize,
+
+    /// Run in parallel or not (recommended for > 1000 paths).
+    pub parallel: bool,
+}
+
+impl StochasticProcessConfig {
+    /// Create a new configuration for a stochastic process.
+    pub fn new(
+        x_0: f64,
+        t_0: f64,
+        t_n: f64,
+        n_steps: usize,
+        m_paths: usize,
+        parallel: bool,
+    ) -> Self {
+        Self {
+            x_0,
+            t_0,
+            t_n,
+            n_steps,
+            m_paths,
+            parallel,
+        }
+    }
+
+    pub(crate) fn unpack(&self) -> (f64, f64, f64, usize, usize, bool) {
+        (
+            self.x_0,
+            self.t_0,
+            self.t_n,
+            self.n_steps,
+            self.m_paths,
+            self.parallel,
+        )
+    }
+}
+
 /// Trait to implement stochastic processes.
 #[allow(clippy::module_name_repetitions)]
 pub trait StochasticProcess: Sync {
@@ -122,15 +175,8 @@ pub trait StochasticProcess: Sync {
     /// * `n_steps` - The number of time steps between `t_0` and `t_n`.
     /// * `m_paths` - How many process trajectories to simulate.
     /// * `parallel` - Run in parallel or not (recommended for > 1000 paths).
-    fn euler_maruyama(
-        &self,
-        x_0: f64,
-        t_0: f64,
-        t_n: f64,
-        n_steps: usize,
-        m_paths: usize,
-        parallel: bool,
-    ) -> Trajectories {
+    fn euler_maruyama(&self, config: &StochasticProcessConfig) -> Trajectories {
+        let (x_0, t_0, t_n, n_steps, m_paths, parallel) = config.unpack();
         assert!(t_0 < t_n);
 
         let dt: f64 = (t_n - t_0) / (n_steps as f64);
@@ -224,20 +270,22 @@ pub trait StochasticProcess: Sync {
 mod test_process {
     use crate::models::geometric_brownian_motion::GeometricBrownianMotion;
     use crate::stochastics::process::StochasticProcess;
+    use crate::stochastics::StochasticProcessConfig;
     use std::time::Instant;
 
     #[test]
     fn test_euler_maruyama() {
         let gbm = GeometricBrownianMotion::new(0.05, 0.9);
+        let config = StochasticProcessConfig::new(10.0, 0.0, 1.0, 125, 10000, false);
 
         let start = Instant::now();
-        gbm.euler_maruyama(10.0, 0.0, 1.0, 125, 10000, false);
+        gbm.euler_maruyama(&config);
         let serial = start.elapsed();
 
         println!("Serial: \t {:?}", serial);
 
         let start = Instant::now();
-        gbm.euler_maruyama(10.0, 0.0, 1.0, 125, 10000, true);
+        gbm.euler_maruyama(&config);
         let parallel = start.elapsed();
 
         println!("Parallel: \t {:?}", parallel);

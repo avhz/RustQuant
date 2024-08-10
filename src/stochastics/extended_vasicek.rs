@@ -31,6 +31,7 @@ impl StochasticProcess for ExtendedVasicek {
 #[cfg(test)]
 mod tests_extended_vasicek {
     use super::*;
+    use crate::stochastics::StochasticProcessConfig;
     use crate::{assert_approx_equal, math::*};
 
     // fn alpha_t(_t: f64) -> f64 {
@@ -48,7 +49,9 @@ mod tests_extended_vasicek {
 
         let ev = ExtendedVasicek::new(alpha, sigma, theta);
 
-        let output = ev.euler_maruyama(10.0, 0.0, 1.0, 150, 1000, false);
+        let config = StochasticProcessConfig::new(10.0, 0.0, 1.0, 150, 1000, false);
+
+        let output = ev.euler_maruyama(&config);
 
         // Test the distribution of the final values.
         let X_T: Vec<f64> = output

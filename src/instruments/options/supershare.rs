@@ -7,21 +7,26 @@
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-/// Barrier option.
+/// Supershare option.
 #[derive(Debug, Clone)]
-pub struct BarrierOption {
+pub struct SupershareOption {
     /// The option contract.
     pub contract: OptionContract,
 
-    /// Barrier type (up-and-out, down-and-out, up-and-in, down-and-in).
-    pub barrier_type: BarrierType,
+    /// Lower strike price.
+    pub strike_1: f64,
 
-    /// Barrier level.
-    pub barrier: f64,
+    /// Upper strike price.
+    pub strike_2: f64,
+}
 
-    /// Strike price of the option.
-    pub strike: f64,
+impl Payoff for SupershareOption {
+    type Underlying = f64;
 
-    /// Rebate amount.
-    pub rebate: Option<f64>,
+    fn payoff(&self, underlying: Self::Underlying) -> f64 {
+        match (strike_1..=strike_2).contains(&underlying) {
+            true => underlying / strike_1,
+            false => 0.0,
+        }
+    }
 }

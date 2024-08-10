@@ -37,19 +37,21 @@ fn main() {
 
     // Generate path using Euler-Maruyama scheme.
     // Parameters: x_0, t_0, t_n, n, sims, parallel.
-    let abm_out = abm.euler_maruyama(INITIAL_VALUE, START_TIME, END_TIME, NUM_STEPS, NUM_SIMS, PARALLEL);
-    let bdt_out = bdt.euler_maruyama(INITIAL_VALUE, START_TIME, END_TIME, NUM_STEPS, NUM_SIMS, PARALLEL);
-    let bm_out  = bm.euler_maruyama(INITIAL_VALUE, START_TIME, END_TIME, NUM_STEPS, NUM_SIMS, PARALLEL);
-    let cir_out = cir.euler_maruyama(INITIAL_VALUE, START_TIME, END_TIME, NUM_STEPS, NUM_SIMS, PARALLEL);
-    let ev_out  = ev.euler_maruyama(INITIAL_VALUE, START_TIME, END_TIME, NUM_STEPS, NUM_SIMS, PARALLEL);
-    let gbm_out = gbm.euler_maruyama(INITIAL_VALUE, START_TIME, END_TIME, NUM_STEPS, 10, PARALLEL);
-    let hl_out  = hl.euler_maruyama(INITIAL_VALUE, START_TIME, END_TIME, NUM_STEPS, NUM_SIMS, PARALLEL);
-    let hw_out  = hw.euler_maruyama(INITIAL_VALUE, START_TIME, END_TIME, NUM_STEPS, NUM_SIMS, PARALLEL);
-    let ou_out  = ou.euler_maruyama(INITIAL_VALUE, START_TIME, END_TIME, NUM_STEPS, NUM_SIMS, PARALLEL);
-    let fbm_out = fbm.euler_maruyama(INITIAL_VALUE, START_TIME, END_TIME, NUM_STEPS, NUM_SIMS, PARALLEL);
-    let mjd_out = mjd.euler_maruyama(INITIAL_VALUE, START_TIME, END_TIME, NUM_STEPS, NUM_SIMS, PARALLEL);
-    let gbb_out = gbb.euler_maruyama(INITIAL_VALUE, START_TIME, END_TIME, NUM_STEPS, NUM_SIMS, PARALLEL);
-    let cev_out = cev.euler_maruyama(INITIAL_VALUE, START_TIME, END_TIME, NUM_STEPS, NUM_SIMS, PARALLEL);
+    let config = StochasticProcessConfig::new(INITIAL_VALUE, START_TIME, END_TIME, NUM_STEPS, NUM_SIMS, PARALLEL);
+
+    let abm_out = abm.euler_maruyama(&config);
+    let bdt_out = bdt.euler_maruyama(&config);
+    let bm_out  = bm.euler_maruyama(&config);
+    let cir_out = cir.euler_maruyama(&config);
+    let ev_out  = ev.euler_maruyama(&config);
+    let gbm_out = gbm.euler_maruyama(&config);
+    let hl_out  = hl.euler_maruyama(&config);
+    let hw_out  = hw.euler_maruyama(&config);
+    let ou_out  = ou.euler_maruyama(&config);
+    let fbm_out = fbm.euler_maruyama(&config);
+    let mjd_out = mjd.euler_maruyama(&config);
+    let gbb_out = gbb.euler_maruyama(&config);
+    let cev_out = cev.euler_maruyama(&config);
 
     // Plot the paths.
     plot_vector!(abm_out.paths[0].clone(), "./images/arithmetic_brownian_motion.png");
@@ -69,7 +71,7 @@ fn main() {
     plot_trajectories(&gbm_out, true);
 }
 
-use plotly::{color::NamedColor, common::Marker, common::Mode, Plot, Scatter};
+use plotly::{common::Mode, Plot, Scatter};
 
 fn plot_trajectories(paths: &Trajectories, show: bool) -> Plot {
     let mut plot = Plot::new();

@@ -32,13 +32,16 @@ impl StochasticProcess for CoxIngersollRoss {
 #[cfg(test)]
 mod tests_cir {
     use super::*;
+    use crate::stochastics::StochasticProcessConfig;
     use crate::{assert_approx_equal, math::*};
 
     #[test]
     fn test_cox_ingersoll_ross() {
         let cir = CoxIngersollRoss::new(0.15, 0.45, 0.01);
 
-        let output = cir.euler_maruyama(10.0, 0.0, 0.5, 100, 100, false);
+        let config = StochasticProcessConfig::new(10.0, 0.0, 0.5, 100, 100, false);
+
+        let output = cir.euler_maruyama(&config);
 
         // Test the distribution of the final values.
         let X_T: Vec<f64> = output

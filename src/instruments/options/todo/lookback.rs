@@ -40,25 +40,29 @@ pub enum LookbackStrike {
 #[allow(clippy::module_name_repetitions)]
 #[derive(Debug, Clone, Copy)]
 pub struct LookbackOption {
-    /// The option contract.
-    pub contract: OptionContract,
-
+    /// `S` - Initial price of the underlying.
+    pub initial_price: f64,
+    /// `r` - Risk-free rate parameter.
+    pub risk_free_rate: f64,
     /// `K` - Strike price (only needed for fixed strike lookbacks).
     /// If the strike is floating, then this is `None`.
     pub strike_price: Option<f64>,
-
+    /// `v` - Volatility parameter.
+    pub volatility: f64,
+    /// `T` - Time to expiry/maturity.
+    pub time_to_maturity: f64,
+    /// `q` - dividend yield.
+    pub dividend_yield: f64,
     /// Minimum value of the underlying price observed **so far**.
     /// If the contract starts at t=0, then `S_min = S_0`.
     /// Used for the closed-form put price.
     pub s_min: f64,
-
     /// Maximum value of the underlying price observed **so far**.
     /// If the contract starts at t=0, then `S_max = S_0`.
     /// Used for the closed-form call price.
     pub s_max: f64,
-
-    /// Start date of the contract.
-    pub start_date: Date,
+    /// Strike type.
+    pub strike_type: LookbackStrike,
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
