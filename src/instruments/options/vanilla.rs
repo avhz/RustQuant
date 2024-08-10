@@ -8,11 +8,7 @@
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 use super::{OptionContract, TypeFlag};
-use crate::{
-    instruments::Payoff,
-    pricer::MonteCarloPricer,
-    stochastics::{StochasticProcess, StochasticProcessConfig},
-};
+use crate::instruments::Payoff;
 
 /// Vanilla option.
 #[derive(Debug, Clone)]
@@ -42,34 +38,18 @@ impl VanillaOption {
     }
 }
 
-impl<S> MonteCarloPricer<S> for VanillaOption
-where
-    S: StochasticProcess,
-{
-    fn price_monte_carlo(&self, process: S, config: StochasticProcessConfig, rate: f64) -> f64 {
-        let out = process.euler_maruyama(&config);
-
-        let n = out.paths.len();
-
-        let df = (-rate * (config.t_n - config.t_0)).exp();
-
-        out.paths.iter().fold(0.0, |acc, path| {
-            let payoff = self.payoff(path.last().unwrap().clone());
-            acc + df * payoff
-        }) / n as f64
-    }
-}
-
 #[cfg(test)]
 mod test_vanilla_option_monte_carlo {
-    use time::macros::date;
+    use std::time::Instant;
 
+    use super::*;
+    use crate::instruments::AveragingMethod;
+    use crate::instruments::StrikeFlag;
     use crate::{
         instruments::{ExerciseFlag, OptionContractBuilder},
         models::GeometricBrownianMotion,
     };
-
-    use super::*;
+    use time::macros::date;
 
     #[test]
     fn test_vanilla_option_monte_carlo() {
@@ -91,9 +71,41 @@ mod test_vanilla_option_monte_carlo {
         let process = GeometricBrownianMotion::new(interest_rate, volatility);
 
         let config =
-            StochasticProcessConfig::new(underlying, 0.0, time_to_maturity, 1000, 1000, false);
+            StochasticProcessConfig::new(underlying, 0.0, time_to_maturity, 1000, 1000, true);
 
+        let start = Instant::now();
         let price = option.price_monte_carlo(process, config, interest_rate);
+        println!("Elapsed time: {:?}", start.elapsed());
+
+        println!("Price: {}", price);
+    }
+
+    #[test]
+    fn test_asian_option_monte_carlo() {
+        let underlying = 100.0;
+        let strike = 100.0;
+        let interest_rate = 0.05;
+        let time_to_maturity = 1.0;
+        let volatility = 0.2;
+
+        let contract = OptionContractBuilder::default()
+            .type_flag(TypeFlag::Call)
+            .exercise_flag(ExerciseFlag::European {
+                expiry: date!(2025 - 01 - 01),
+            })
+            .strike_flag(Some(StrikeFlag::Fixed))
+            .build()
+            .unwrap();
+
+        let option = AsianOption::new(contract, AveragingMethod::ArithmeticDiscrete, Some(strike));
+        let process = GeometricBrownianMotion::new(interest_rate, volatility);
+
+        let config =
+            StochasticProcessConfig::new(underlying, 0.0, time_to_maturity, 1000, 1000, true);
+
+        let start = Instant::now();
+        let price = option.price_monte_carlo(process, config, interest_rate);
+        println!("Elapsed time: {:?}", start.elapsed());
 
         println!("Price: {}", price);
     }

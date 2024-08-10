@@ -7,8 +7,14 @@
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+use derive_builder::Builder;
+
+use super::option_flags::*;
+use super::{AveragingMethod, OptionContract};
+use crate::instruments::Payoff;
+
 /// Asian option.
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Builder)]
 pub struct AsianOption {
     /// The option contract.
     pub contract: OptionContract,
@@ -19,6 +25,21 @@ pub struct AsianOption {
     /// Strike price of the option.
     /// Required for fixed strike Asian options.
     pub strike: Option<f64>,
+}
+
+impl AsianOption {
+    /// Create a new Asian option.
+    pub fn new(
+        contract: OptionContract,
+        averaging_method: AveragingMethod,
+        strike: Option<f64>,
+    ) -> Self {
+        Self {
+            contract,
+            averaging_method,
+            strike,
+        }
+    }
 }
 
 impl Payoff for AsianOption {
@@ -38,14 +59,15 @@ impl Payoff for AsianOption {
         };
 
         match self.contract.strike_flag {
-            StrikeFlag::Fixed => match self.contract.type_flag {
+            Some(StrikeFlag::Fixed) => match self.contract.type_flag {
                 TypeFlag::Call => (average - self.strike.unwrap_or_default()).max(0.0),
                 TypeFlag::Put => (self.strike.unwrap_or_default() - average).max(0.0),
             },
-            StrikeFlag::Floating => match self.contract.type_flag {
+            Some(StrikeFlag::Floating) => match self.contract.type_flag {
                 TypeFlag::Call => (terminal - average).max(0.0),
                 TypeFlag::Put => (average - terminal).max(0.0),
             },
+            None => panic!("Strike flag not set."),
         }
     }
 }

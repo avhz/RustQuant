@@ -7,6 +7,10 @@
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+use crate::instruments::Payoff;
+
+use super::{BinaryType, OptionContract, TypeFlag};
+
 /// Binary option.
 #[derive(Debug, Clone)]
 pub struct BinaryOption {

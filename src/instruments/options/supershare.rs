@@ -7,6 +7,9 @@
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+use super::OptionContract;
+use crate::instruments::Payoff;
+
 /// Supershare option.
 #[derive(Debug, Clone)]
 pub struct SupershareOption {
@@ -24,8 +27,8 @@ impl Payoff for SupershareOption {
     type Underlying = f64;
 
     fn payoff(&self, underlying: Self::Underlying) -> f64 {
-        match (strike_1..=strike_2).contains(&underlying) {
-            true => underlying / strike_1,
+        match (self.strike_1..=self.strike_2).contains(&underlying) {
+            true => underlying / self.strike_1,
             false => 0.0,
         }
     }

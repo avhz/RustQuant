@@ -7,14 +7,17 @@
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+use super::{OptionContract, TypeFlag};
+use crate::instruments::Payoff;
+
 /// Power Option.
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone)]
 pub struct PowerOption {
     /// The option contract.
     pub contract: OptionContract,
 
     /// Strike price of the option.
-    pub strike_price: f64,
+    pub strike: f64,
 
     /// Power parameter.
     pub power: f64,
@@ -24,7 +27,7 @@ pub struct PowerOption {
 #[derive(Debug, Clone, Copy)]
 pub struct PowerContract {
     /// Strike price of the option.
-    pub strike_price: f64,
+    pub strike: f64,
 
     /// Power parameter.
     pub power: f64,
@@ -34,7 +37,7 @@ impl Payoff for PowerContract {
     type Underlying = f64;
 
     fn payoff(&self, underlying: Self::Underlying) -> f64 {
-        (underlying / self.strike_price).powf(self.power)
+        (underlying / self.strike).powf(self.power)
     }
 }
 
