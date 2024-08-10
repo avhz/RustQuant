@@ -316,15 +316,6 @@ pub trait Curves<C> {
     /// Create a new curve from a set of `Date`s and rates (`f64`s).
     fn new(dates: &[Date], rates: &[f64]) -> Self;
 
-    /// Set the calendar for the curve.
-    fn with_calendar(&mut self, calendar: C);
-
-    /// Set the day count convention for the curve.
-    fn with_day_count_convention(&mut self, day_count_convention: DayCountConvention);
-
-    /// Set the date rolling convention for the curve.
-    fn with_date_rolling_convention(&mut self, date_rolling_convention: DateRollingConvention);
-
     /// Get the initial date of the curve.
     fn initial_date(&self) -> Date;
 
@@ -347,7 +338,7 @@ pub trait Curves<C> {
     fn plot(&self);
 }
 
-macro_rules! impl_specific_curve {
+macro_rules! impl_specific_curve_cost_function {
     ($curve:ident, $curve_function:ident) => {
         impl<C> CostFunction for &$curve<Date, C>
         where
@@ -377,11 +368,11 @@ macro_rules! impl_specific_curve {
                 Ok(log_cosh_loss)
             }
         }
+    };
+}
 
-        // impl<C> $curve<Date, C>
-        // where
-        //     C: Calendar + Clone,
-        // {
+macro_rules! impl_specific_curve {
+    ($curve:ident, $curve_function:ident) => {
         impl<C> Curves<C> for $curve<Date, C>
         where
             C: Calendar + Clone,
@@ -437,24 +428,6 @@ macro_rules! impl_specific_curve {
                     fitted: false,
                     fitted_curve: None,
                 }
-            }
-
-            #[doc = concat!("Set the calendar for the ", stringify!($curve))]
-            fn with_calendar(&mut self, calendar: C) {
-                self.calendar = Some(calendar);
-            }
-
-            #[doc = concat!("Set the day count convention for the ", stringify!($curve))]
-            fn with_day_count_convention(&mut self, day_count_convention: DayCountConvention) {
-                self.day_count_convention = Some(day_count_convention);
-            }
-
-            #[doc = concat!("Set the date rolling convention for the ", stringify!($curve))]
-            fn with_date_rolling_convention(
-                &mut self,
-                date_rolling_convention: DateRollingConvention,
-            ) {
-                self.date_rolling_convention = Some(date_rolling_convention);
             }
 
             #[doc = concat!("Get the initial date of the ", stringify!($curve))]
@@ -569,7 +542,7 @@ macro_rules! impl_specific_curve {
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 /// Discount curve data structure.
-#[derive(Builder, Clone)]
+#[derive(Builder, Clone, Debug)]
 pub struct DiscountCurve<I, C>
 where
     I: CurveIndex,
@@ -601,6 +574,7 @@ where
     pub fitted_curve: Option<Curve<I>>,
 }
 
+impl_specific_curve_cost_function!(DiscountCurve, discount_factor);
 impl_specific_curve!(DiscountCurve, discount_factor);
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -608,7 +582,7 @@ impl_specific_curve!(DiscountCurve, discount_factor);
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 /// Spot curve data structure.
-#[derive(Builder, Clone)]
+#[derive(Builder, Clone, Debug)]
 pub struct SpotCurve<I, C>
 where
     I: CurveIndex,
@@ -640,6 +614,7 @@ where
     pub fitted_curve: Option<Curve<I>>,
 }
 
+impl_specific_curve_cost_function!(SpotCurve, spot_rate);
 impl_specific_curve!(SpotCurve, spot_rate);
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -647,7 +622,7 @@ impl_specific_curve!(SpotCurve, spot_rate);
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 /// Forward curve data structure.
-#[derive(Builder, Clone)]
+#[derive(Builder, Clone, Debug)]
 pub struct ForwardCurve<I, C>
 where
     I: CurveIndex,
@@ -679,7 +654,99 @@ where
     pub fitted_curve: Option<Curve<I>>,
 }
 
+impl_specific_curve_cost_function!(ForwardCurve, forward_rate);
 impl_specific_curve!(ForwardCurve, forward_rate);
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// FLAT CURVE
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+/// Flat curve data structure.
+#[derive(Builder, Clone, Debug)]
+pub struct FlatCurve<C>
+where
+    C: Calendar,
+{
+    /// Rate of the curve.
+    pub rate: f64,
+
+    /// Calendar.
+    pub calendar: Option<C>,
+
+    /// Day count convention.
+    pub day_count_convention: Option<DayCountConvention>,
+
+    /// Date rolling convention.
+    pub date_rolling_convention: Option<DateRollingConvention>,
+}
+
+impl<C> FlatCurve<C>
+where
+    C: Calendar,
+{
+    /// Create a new flat curve.
+    pub fn new_flat_curve(rate: f64) -> Self {
+        Self {
+            rate,
+            calendar: None,
+            day_count_convention: None,
+            date_rolling_convention: None,
+        }
+    }
+
+    /// Get the rate of the curve.
+    pub fn get_rate(&self) -> f64 {
+        self.rate
+    }
+
+    /// Get rate for a specific date.
+    pub fn get_rate_for_date(&self, _date: Date) -> f64 {
+        self.rate
+    }
+
+    /// Get rates for multiple dates.
+    pub fn get_rates_for_dates(&self, dates: &[Date]) -> Vec<f64> {
+        vec![self.rate; dates.len()]
+    }
+}
+
+// impl<C> Curves<C> for FlatCurve<C>
+// where
+//     C: Calendar,
+// {
+//     /// NOT TO BE USED. Prefer the `new_flat_curve()` method.
+//     fn new(dates: &[Date], rates: &[f64]) -> Self {
+//         unimplemented!("FlatCurve does not support this method. Use `new_flat_curve()` instead.")
+//     }
+
+//     fn initial_date(&self) -> Date {
+//         Date::MIN
+//     }
+
+//     fn terminal_date(&self) -> Date {
+//         Date::MAX
+//     }
+
+//     fn get_rate(&mut self, date: Date) -> f64 {
+//         self.rate
+//     }
+
+//     fn get_rates(&mut self, dates: &[Date]) -> Vec<f64> {
+//         vec![self.rate; dates.len()]
+//     }
+
+//     fn insert_rate(&mut self, date: Date, rate: f64) {
+//         todo!()
+//     }
+
+//     fn fit(&mut self) -> Result<(), argmin::core::Error> {
+//         unimplemented!()
+//     }
+
+//     fn plot(&self) {
+//         unimplemented!()
+//     }
+// }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Base Curve Trait

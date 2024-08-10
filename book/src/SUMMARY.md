@@ -1,21 +1,35 @@
 # Summary
 
-- [Introduction to RustQuant](./Introduction.md)
-- [Modules](./Modules.md)
-    - [`autodiff`](./Modules/autodiff.md)
-    - [`cashflows`](./Modules/cashflows.md)
-    - [`data`](./Modules/data.md)
-    - [`error`](./Modules/error.md)
-    - [`instruments`](./Modules/instruments.md)
-    - [`iso`](./Modules/iso.md)
-    - [`macros`](./Modules/macros.md)
-    - [`math`](./Modules/math.md)
-    - [`ml`](./Modules/ml.md)
-    - [`models`](./Modules/models.md)
-    - [`portfolio`](./Modules/portfolio.md)
-    - [`stochastics`](./Modules/stochastics.md)
-    - [`time`](./Modules/time.md)
-    - [`trading`](./Modules/trading.md)
+# Introduction
+
+- [RustQuant](./Introduction.md)
+
+---
+
+# Modules
+
+<!-- - [`autodiff`](./Modules/autodiff/autodiff.md)
+- [`cashflows`](./Modules/cashflows/cashflows.md) -->
+
+- [`data`](./Modules/data/data.md)
+    - [Curves](./Modules/data/curves.md)
+
+<!-- - [`error`](./Modules/error.md)
+- [`instruments`](./Modules/instruments/instruments.md)
+- [`iso`](./Modules/iso/iso.md)
+- [`macros`](./Modules/macros.md)
+- [`math`](./Modules/math/math.md)
+- [`ml`](./Modules/ml/ml.md)
+- [`models`](./Modules/models/models.md)
+- [`portfolio`](./Modules/portfolio/portfolio.md)
+- [`stochastics`](./Modules/stochastics/stochastics.md)
+- [`time`](./Modules/time/time.md)
+- [`trading`](./Modules/trading/trading.md) -->
+
+---
+
+# Development
+
 - [Contributing](./Contributing.md)
 - [File Template](./Template.md)
 - [References](./References.md)

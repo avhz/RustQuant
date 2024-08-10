@@ -7,7 +7,7 @@
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use crate::instruments::options::option::{ExerciseFlag, TypeFlag};
+use super::option_flags::*;
 use crate::time::{today, DayCountConvention};
 use std::cmp::Ordering;
 use time::Date;
@@ -84,11 +84,11 @@ impl FiniteDifferencePricer {
     }
 
     fn tridiagonal_matrix_multiply_vector(
-        &self, 
-        sub_diagonal: f64, 
-        diagonal: f64, 
-        super_diagonal: f64, 
-        v: Vec<f64>
+        &self,
+        sub_diagonal: f64,
+        diagonal: f64,
+        super_diagonal: f64,
+        v: Vec<f64>,
     ) -> Vec<f64> {
         let mut Av: Vec<f64> = Vec::new();
 
@@ -97,7 +97,7 @@ impl FiniteDifferencePricer {
         for i in 1..(v.len() - 1) {
             Av.push(sub_diagonal * v[i - 1] + diagonal * v[i] + super_diagonal * v[i + 1])
         }
-        
+
         Av.push(sub_diagonal * v[v.len() - 2] + diagonal * v[v.len() - 1]);
 
         Av
@@ -118,22 +118,21 @@ impl FiniteDifferencePricer {
         Av
     }
 
-    fn invert_tridiagonal_matrix(&self, sub_diagonal: f64, diagonal: f64, super_diagonal: f64) -> Vec<Vec<f64>> {
+    fn invert_tridiagonal_matrix(
+        &self,
+        sub_diagonal: f64,
+        diagonal: f64,
+        super_diagonal: f64,
+    ) -> Vec<Vec<f64>> {
         let mut theta: Vec<f64> = Vec::new();
         let system_size: usize = (self.price_steps - 1) as usize;
 
         theta.push(1.0);
         theta.push(diagonal);
-        theta.push(
-            diagonal * diagonal
-                - super_diagonal * sub_diagonal,
-        );
+        theta.push(diagonal * diagonal - super_diagonal * sub_diagonal);
 
         for i in 2..system_size {
-            theta.push(
-                diagonal * theta[i]
-                    - super_diagonal * sub_diagonal * theta[i - 1]
-            )
+            theta.push(diagonal * theta[i] - super_diagonal * sub_diagonal * theta[i - 1])
         }
 
         let mut phi: Vec<f64> = Vec::new();
@@ -141,10 +140,7 @@ impl FiniteDifferencePricer {
         phi.push(diagonal);
 
         for i in 1..(system_size) {
-            phi.push(
-                diagonal * phi[i]
-                    - super_diagonal * sub_diagonal * phi[i - 1]
-            )
+            phi.push(diagonal * phi[i] - super_diagonal * sub_diagonal * phi[i - 1])
         }
 
         let theta_n = theta.pop().unwrap();
@@ -157,14 +153,14 @@ impl FiniteDifferencePricer {
 
         for i in 0..system_size {
             for j in 0..system_size {
-                value = (- 1.0_f64).powi((i + j) as i32);
+                value = (-1.0_f64).powi((i + j) as i32);
 
                 match i.cmp(&j) {
                     Ordering::Less => {
                         for k in i..j {
                             value *= match k {
-                                k if k == system_size - 1 => {diagonal},
-                                _ => super_diagonal
+                                k if k == system_size - 1 => diagonal,
+                                _ => super_diagonal,
                             }
                         }
                         value *= theta[i] * phi[j] / theta_n;
@@ -197,30 +193,25 @@ impl FiniteDifferencePricer {
         (1..self.price_steps)
             .map(|i: u32| {
                 v[(i - 1) as usize].max(
-                    f64::exp(self.risk_free_rate * tau) * self.payoff(
-                        f64::exp(
-                            x_min + (i as f64) * delta_x
-                        )
-                    )
+                    f64::exp(self.risk_free_rate * tau)
+                        * self.payoff(f64::exp(x_min + (i as f64) * delta_x)),
                 )
             })
-        .collect()
+            .collect()
     }
 
     fn initial_condition(&self, x_min: f64, delta_x: f64) -> Vec<f64> {
         (1..self.price_steps)
-            .map(|i: u32| self.payoff(
-                f64::exp(
-                x_min + (i as f64) * delta_x)))
+            .map(|i: u32| self.payoff(f64::exp(x_min + (i as f64) * delta_x)))
             .collect()
     }
 
     fn call_boundary(&self, tau: f64, x_max: f64) -> f64 {
-        f64::exp(x_max) - self.strike_price * f64::exp(- self.risk_free_rate * tau)
+        f64::exp(x_max) - self.strike_price * f64::exp(-self.risk_free_rate * tau)
     }
 
     fn put_boundary(&self, tau: f64, x_min: f64) -> f64 {
-        self.strike_price * f64::exp(- self.risk_free_rate * tau) - f64::exp(x_min)
+        self.strike_price * f64::exp(-self.risk_free_rate * tau) - f64::exp(x_min)
     }
 
     fn year_fraction(&self) -> f64 {
@@ -245,13 +236,17 @@ impl FiniteDifferencePricer {
         let T: f64 = self.year_fraction();
         let delta_t: f64 = T / (self.time_steps as f64);
         let x_min: f64 = self.initial_price.ln() - 5.0 * self.volatility * T.sqrt();
-        let delta_x: f64 = (self.initial_price.ln() + 5.0 * self.volatility * T.sqrt() - x_min) / self.price_steps as f64;
-        
+        let delta_x: f64 = (self.initial_price.ln() + 5.0 * self.volatility * T.sqrt() - x_min)
+            / self.price_steps as f64;
+
         (T, delta_t, delta_x, x_min)
     }
 
     fn coefficients(&self, delta_t: f64, delta_x: f64) -> (f64, f64) {
-        (0.5 * delta_t * self.volatility.powi(2) / delta_x.powi(2), delta_t * (self.risk_free_rate - 0.5 * self.volatility.powi(2)) / (2.0 * delta_x))
+        (
+            0.5 * delta_t * self.volatility.powi(2) / delta_x.powi(2),
+            delta_t * (self.risk_free_rate - 0.5 * self.volatility.powi(2)) / (2.0 * delta_x),
+        )
     }
 
     /// Explicit method
@@ -269,22 +264,27 @@ impl FiniteDifferencePricer {
 
             match self.type_flag {
                 TypeFlag::Call => {
-                    v[(self.price_steps - 2) as usize] += super_diagonal * self.call_boundary(
-                        (t as f64) * delta_t, 
-                        self.initial_price.ln() + 5.0 * self.volatility * T.sqrt()
-                    );
+                    v[(self.price_steps - 2) as usize] += super_diagonal
+                        * self.call_boundary(
+                            (t as f64) * delta_t,
+                            self.initial_price.ln() + 5.0 * self.volatility * T.sqrt(),
+                        );
                 }
                 TypeFlag::Put => {
                     v[0] += sub_diagonal * self.put_boundary((t as f64) * delta_t, x_min);
                 }
             }
 
-            if let ExerciseFlag::American = self.exercise_flag {
+            if let ExerciseFlag::American {
+                start: Date::MIN,
+                end: Date::MAX,
+            } = self.exercise_flag
+            {
                 v = self.american_time_stop_step(v, (t as f64) * delta_t, x_min, delta_x);
             }
         }
 
-        f64::exp(- self.risk_free_rate * T) * self.return_price(v)
+        f64::exp(-self.risk_free_rate * T) * self.return_price(v)
     }
 
     ///Implicit method
@@ -292,35 +292,37 @@ impl FiniteDifferencePricer {
         let (T, delta_t, delta_x, x_min) = self.grid();
         let (x, y) = self.coefficients(delta_t, delta_x);
 
-        let inverse_matrix: Vec<Vec<f64>> = self.invert_tridiagonal_matrix(
-            - x + y, 
-            1.0 + 2.0 * x,
-             - x - y
-        );
+        let inverse_matrix: Vec<Vec<f64>> =
+            self.invert_tridiagonal_matrix(-x + y, 1.0 + 2.0 * x, -x - y);
 
         let mut v: Vec<f64> = self.initial_condition(x_min, delta_x);
 
         for t in 1..(self.time_steps + 1) {
             match self.type_flag {
                 TypeFlag::Call => {
-                    v[(self.price_steps - 2) as usize] -= (- x - y) * self.call_boundary(
-                        (t as f64) * delta_t, 
-                        self.initial_price.ln() + 5.0 * self.volatility * T.sqrt()
-                    );
+                    v[(self.price_steps - 2) as usize] -= (-x - y)
+                        * self.call_boundary(
+                            (t as f64) * delta_t,
+                            self.initial_price.ln() + 5.0 * self.volatility * T.sqrt(),
+                        );
                 }
                 TypeFlag::Put => {
-                    v[0] -= (- x + y) * self.put_boundary((t as f64) * delta_t, x_min);
+                    v[0] -= (-x + y) * self.put_boundary((t as f64) * delta_t, x_min);
                 }
             }
 
             v = self.general_matrix_multiply_vector(&inverse_matrix, v);
 
-            if let ExerciseFlag::American = self.exercise_flag {
+            if let ExerciseFlag::American {
+                start: Date::MIN,
+                end: Date::MAX,
+            } = self.exercise_flag
+            {
                 v = self.american_time_stop_step(v, (t as f64) * delta_t, x_min, delta_x);
             }
         }
 
-        f64::exp(- self.risk_free_rate * T) * self.return_price(v)
+        f64::exp(-self.risk_free_rate * T) * self.return_price(v)
     }
 
     /// Crank-Nicolson method
@@ -331,29 +333,22 @@ impl FiniteDifferencePricer {
         let diagonal: f64 = 1.0 - x;
         let super_diagonal: f64 = 0.5 * (x + y);
 
-        let inverse_future_matrix = self.invert_tridiagonal_matrix(
-            - sub_diagonal, 
-            1.0 + x, 
-            - super_diagonal
-        );
+        let inverse_future_matrix =
+            self.invert_tridiagonal_matrix(-sub_diagonal, 1.0 + x, -super_diagonal);
 
         let mut v: Vec<f64> = self.initial_condition(x_min, delta_x);
 
         for t in 1..(self.time_steps + 1) {
-            v = self.tridiagonal_matrix_multiply_vector(
-                sub_diagonal,
-                diagonal,
-                super_diagonal,
-                v
-            );
+            v = self.tridiagonal_matrix_multiply_vector(sub_diagonal, diagonal, super_diagonal, v);
 
             match self.type_flag {
                 TypeFlag::Call => {
-                    v[(self.price_steps - 2) as usize] +=
-                        2.0 * super_diagonal * self.call_boundary(
-                            (t as f64) * delta_t, 
-                                self.initial_price.ln() + 5.0 * self.volatility * T.sqrt()
-                            );
+                    v[(self.price_steps - 2) as usize] += 2.0
+                        * super_diagonal
+                        * self.call_boundary(
+                            (t as f64) * delta_t,
+                            self.initial_price.ln() + 5.0 * self.volatility * T.sqrt(),
+                        );
                 }
                 TypeFlag::Put => {
                     v[0] += 2.0 * sub_diagonal * self.put_boundary((t as f64) * delta_t, x_min);
@@ -362,12 +357,16 @@ impl FiniteDifferencePricer {
 
             v = self.general_matrix_multiply_vector(&inverse_future_matrix, v);
 
-            if let ExerciseFlag::American = self.exercise_flag {
+            if let ExerciseFlag::American {
+                start: Date::MIN,
+                end: Date::MAX,
+            } = self.exercise_flag
+            {
                 v = self.american_time_stop_step(v, (t as f64) * delta_t, x_min, delta_x);
             }
         }
 
-        f64::exp(- self.risk_free_rate * T) * self.return_price(v)
+        f64::exp(-self.risk_free_rate * T) * self.return_price(v)
     }
 }
 

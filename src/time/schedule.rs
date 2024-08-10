@@ -26,6 +26,7 @@ use time::Date;
 ///
 /// The Schedule struct is used to represent these schedules,
 /// and pricing methods should be implemented using date/time functionality.
+#[derive(Clone, Debug)]
 pub struct Schedule {
     /// The dates of the schedule.
     pub dates: Vec<Date>,

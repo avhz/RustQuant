@@ -8,9 +8,8 @@
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 pub use crate::instruments::options::{
-    asian::*, bachelier::*, barrier::*, binary::*, binomial::*, black_scholes_merton::*,
-    forward_start::*, heston::*, implied_volatility::*, lookback::*, merton_jump_diffusion::*,
-    option::*, power::*,
+    asian::*, bachelier::*, binary::*, binomial::*, black_scholes_merton::*, forward_start::*,
+    heston::*, implied_volatility::*, lookback::*, merton_jump_diffusion::*, option::*, power::*,
 };
 
 /// Asian option pricers.
@@ -19,8 +18,8 @@ pub mod asian;
 /// Bachelier option pricer.
 pub mod bachelier;
 
-/// Barrier option pricers.
-pub mod barrier;
+// /// Barrier option pricers.
+// pub mod barrier;
 
 /// Binary option pricers.
 pub mod binary;
@@ -54,3 +53,7 @@ pub mod power;
 
 /// Finite Difference Pricer
 pub mod finite_difference_pricer;
+
+/// Option flags.
+pub mod option_flags;
+pub use option_flags::*;

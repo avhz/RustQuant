@@ -41,6 +41,7 @@ pub struct Price {
 }
 
 /// Pricing engine for instruments.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum PricingEngine {
     /// Analytic pricing method (e.g. closed-form solution).
     Analytic,
