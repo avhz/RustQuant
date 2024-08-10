@@ -42,15 +42,6 @@ impl VanillaOption {
     }
 }
 
-/// Monte-Carlo pricer trait.
-pub trait MonteCarloPricer<S>
-where
-    S: StochasticProcess,
-{
-    /// Price the instrument using a Monte-Carlo method.
-    fn price_monte_carlo(&self, process: S, config: StochasticProcessConfig, rate: f64) -> f64;
-}
-
 impl<S> MonteCarloPricer<S> for VanillaOption
 where
     S: StochasticProcess,
