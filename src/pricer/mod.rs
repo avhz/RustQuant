@@ -25,6 +25,9 @@ pub use priceable::*;
 pub mod monte_carlo_pricer;
 pub use monte_carlo_pricer::*;
 
+pub mod analytic_pricer;
+pub use analytic_pricer::*;
+
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // PRICER STRUCT
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

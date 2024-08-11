@@ -26,4 +26,16 @@ impl GeometricBrownianMotion {
             sigma: sigma.into(),
         }
     }
+
+    /// Return the parameters as a Vec<f64>.
+    pub fn parameters(&self) -> Vec<f64> {
+        vec![self.mu.0(0.0), self.sigma.0(0.0)]
+    }
+
+    /// Unpack the parameters from a Vec<f64>.
+    pub fn unpack(&self) -> (f64, f64) {
+        let p = self.parameters();
+
+        (p[0], p[1])
+    }
 }

@@ -29,6 +29,7 @@ keywords = [
 categories = ["finance", "mathematics", "science", "algorithms", "simulation"]
 license = "MIT OR Apache-2.0"
 
+
 ## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ## COMPILATION PROFILES
 ## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -91,6 +92,7 @@ uuid = { version = "1.10.0", features = ["v4", "fast-rng"] }
 
 [dev-dependencies]
 finitediff = "0.1.4" # https://docs.rs/finitediff/latest/finitediff/
+
 
 ## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ## PYTHON BINDINGS

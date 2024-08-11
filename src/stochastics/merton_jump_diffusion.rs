@@ -30,6 +30,10 @@ impl StochasticProcess for MertonJumpDiffusion {
         self.gaussian.sample(1).unwrap().first().copied()
     }
 
+    fn parameters(&self) -> Vec<f64> {
+        vec![self.mu.0(0.0), self.sigma.0(0.0), self.lambda.0(0.0)]
+    }
+
     fn euler_maruyama(&self, config: &StochasticProcessConfig) -> Trajectories {
         let (x_0, t_0, t_n, n_steps, m_paths, parallel) = config.unpack();
 

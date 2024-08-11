@@ -22,6 +22,10 @@ impl StochasticProcess for BrownianMotion {
     fn jump(&self, _x: f64, _t: f64) -> Option<f64> {
         None
     }
+
+    fn parameters(&self) -> Vec<f64> {
+        vec![]
+    }
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

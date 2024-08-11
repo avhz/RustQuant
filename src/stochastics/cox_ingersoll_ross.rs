@@ -23,6 +23,10 @@ impl StochasticProcess for CoxIngersollRoss {
     fn jump(&self, _x: f64, _t: f64) -> Option<f64> {
         None
     }
+
+    fn parameters(&self) -> Vec<f64> {
+        vec![self.mu.0(0.0), self.sigma.0(0.0), self.theta.0(0.0)]
+    }
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

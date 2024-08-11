@@ -7,38 +7,20 @@
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+use super::OptionContract;
 use crate::{
     math::distributions::{gaussian::Gaussian, Distribution},
     time::{today, DayCountConvention},
 };
 use time::Date;
 
-use super::OptionContract;
-
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // STRUCTS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-/// Type of Asian option (fixed or floating strike).
-#[allow(clippy::module_name_repetitions)]
-#[derive(Debug, Clone, Copy)]
-pub enum AsianStrike {
-    /// Floating strike Asian option.
-    /// Payoffs:
-    /// - Call: `max(S_T - A, 0)`
-    /// - Put: `max(A - S_T, 0)`
-    Floating,
-    /// Fixed strike Asian option.
-    /// Payoffs:
-    /// - Call: `max(A - K, 0)`
-    /// - Put: `max(K - A, 0)`
-    Fixed,
-}
-
 /// Asian Option struct.
-#[allow(clippy::module_name_repetitions)]
 #[derive(derive_builder::Builder, Debug, Clone, Copy)]
-pub struct AsianOption {
+pub struct AsianOptionAnalyticBackend {
     /// `S` - Initial price of the underlying.
     pub initial_price: f64,
     /// `K` - Strike price.

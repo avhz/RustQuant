@@ -40,15 +40,17 @@ impl VanillaOption {
 
 #[cfg(test)]
 mod test_vanilla_option_monte_carlo {
-    use std::time::Instant;
-
     use super::*;
+    use crate::instruments::AsianOption;
     use crate::instruments::AveragingMethod;
     use crate::instruments::StrikeFlag;
+    use crate::pricer::monte_carlo_pricer::MonteCarloPricer;
+    use crate::stochastics::StochasticProcessConfig;
     use crate::{
         instruments::{ExerciseFlag, OptionContractBuilder},
         models::GeometricBrownianMotion,
     };
+    use std::time::Instant;
     use time::macros::date;
 
     #[test]
@@ -71,10 +73,10 @@ mod test_vanilla_option_monte_carlo {
         let process = GeometricBrownianMotion::new(interest_rate, volatility);
 
         let config =
-            StochasticProcessConfig::new(underlying, 0.0, time_to_maturity, 1000, 1000, true);
+            StochasticProcessConfig::new(underlying, 0.0, time_to_maturity, 1, 1_000_000, true);
 
         let start = Instant::now();
-        let price = option.price_monte_carlo(process, config, interest_rate);
+        let price = option.price_monte_carlo(&process, &config, interest_rate);
         println!("Elapsed time: {:?}", start.elapsed());
 
         println!("Price: {}", price);
@@ -104,7 +106,7 @@ mod test_vanilla_option_monte_carlo {
             StochasticProcessConfig::new(underlying, 0.0, time_to_maturity, 1000, 1000, true);
 
         let start = Instant::now();
-        let price = option.price_monte_carlo(process, config, interest_rate);
+        let price = option.price_monte_carlo(&process, &config, interest_rate);
         println!("Elapsed time: {:?}", start.elapsed());
 
         println!("Price: {}", price);

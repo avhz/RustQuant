@@ -20,7 +20,13 @@ where
     S: StochasticProcess,
 {
     /// Price the instrument using a Monte-Carlo method.
-    fn price_monte_carlo(&self, process: S, config: StochasticProcessConfig, rate: f64) -> f64;
+    ///
+    /// # Arguments
+    ///
+    /// * `process` - The [StochasticProcess] to use for the sample paths.
+    /// * `config` - The [StochasticProcessConfig] for the simulation.
+    /// * `rate` - The interest rate used to discount the payoff.
+    fn price_monte_carlo(&self, process: &S, config: &StochasticProcessConfig, rate: f64) -> f64;
 }
 
 /// Macro to implement `MonteCarloPricer` for a given instrument type.
@@ -32,8 +38,8 @@ macro_rules! impl_monte_carlo_pricer {
         {
             fn price_monte_carlo(
                 &self,
-                process: S,
-                config: StochasticProcessConfig,
+                process: &S,
+                config: &StochasticProcessConfig,
                 rate: f64,
             ) -> f64 {
                 let out = process.euler_maruyama(&config);
@@ -46,10 +52,10 @@ macro_rules! impl_monte_carlo_pricer {
                     let underlying = $underlying(&*path);
                     let payoff = self.payoff(underlying);
 
-                    acc + df * payoff
+                    acc + payoff
                 });
 
-                payoffs / n as f64
+                df * payoffs / n as f64
             }
         }
     };
@@ -70,3 +76,8 @@ impl_monte_carlo_pricer!(crate::instruments::PowerContract, path_independent);
 impl_monte_carlo_pricer!(crate::instruments::PowerOption, path_independent);
 impl_monte_carlo_pricer!(crate::instruments::SupershareOption, path_independent);
 impl_monte_carlo_pricer!(crate::instruments::BarrierOption, path_dependent);
+impl_monte_carlo_pricer!(crate::instruments::CappedPowerOption, path_independent);
+impl_monte_carlo_pricer!(crate::instruments::PoweredOption, path_independent);
+impl_monte_carlo_pricer!(crate::instruments::LogMoneynessContract, path_independent);
+impl_monte_carlo_pricer!(crate::instruments::LogUnderlyingContract, path_independent);
+impl_monte_carlo_pricer!(crate::instruments::LogOption, path_independent);

@@ -33,6 +33,15 @@ impl StochasticProcess for FractionalOrnsteinUhlenbeck {
         None
     }
 
+    fn parameters(&self) -> Vec<f64> {
+        vec![
+            self.mu.0(0.0),
+            self.sigma.0(0.0),
+            self.theta.0(0.0),
+            self.hurst,
+        ]
+    }
+
     fn euler_maruyama(&self, config: &StochasticProcessConfig) -> Trajectories {
         let (x_0, t_0, t_n, n_steps, m_paths, parallel) = config.unpack();
 

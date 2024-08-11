@@ -151,6 +151,10 @@ impl StochasticProcess for FractionalBrownianMotion {
         None
     }
 
+    fn parameters(&self) -> Vec<f64> {
+        vec![self.hurst]
+    }
+
     fn euler_maruyama(&self, config: &StochasticProcessConfig) -> Trajectories {
         let (x_0, t_0, t_n, n_steps, m_paths, parallel) = config.unpack();
 

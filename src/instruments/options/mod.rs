@@ -7,16 +7,13 @@
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-pub use crate::instruments::options::{
-    black_scholes_merton::*, implied_volatility::*, merton_jump_diffusion::*, option_contract::*,
-};
-
 /// Asian option pricers.
 pub mod asian;
 pub use asian::*;
 
 // /// Bachelier option pricer.
 // pub mod bachelier;
+// pub use bachelier::*;
 
 /// Barrier option pricers.
 pub mod barrier;
@@ -31,27 +28,32 @@ pub use binary::*;
 
 /// Generalised Black-Scholes-Merton option pricer.
 pub mod black_scholes_merton;
+pub use black_scholes_merton::*;
 
 // /// Forward start options pricers.
 // pub mod forward_start;
 
 // /// Heston model option pricer.
 // pub mod heston;
+// pub use heston::*;
 
 /// Implied volatility functions.
 pub mod implied_volatility;
+pub use implied_volatility::*;
 
-// /// Lookback option pricers.
-// pub mod lookback;
+/// Lookback option pricers.
+pub mod lookback;
+pub use lookback::*;
 
-/// Merton (1976) jump diffusion model.
-pub mod merton_jump_diffusion;
+// /// Merton (1976) jump diffusion model.
+// pub mod merton_jump_diffusion;
+// pub use merton_jump_diffusion::*;
 
 /// Base option traits.
 pub mod option_contract;
 pub use option_contract::*;
 
-/// Power options.
+/// Power options and contracts.
 pub mod power;
 pub use power::*;
 
@@ -69,3 +71,7 @@ pub use vanilla::*;
 /// Supershare options.
 pub mod supershare;
 pub use supershare::*;
+
+/// Log contracts and options.
+pub mod log;
+pub use log::*;

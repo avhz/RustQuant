@@ -102,6 +102,14 @@ pub trait StochasticVolatilityProcess: Sync {
 }
 
 /// Configuration parameters for simulating a stochastic process.
+///
+/// # Arguments:
+/// * `x_0` - The process' initial value at `t_0`.
+/// * `t_0` - The initial time point.
+/// * `t_n` - The terminal time point.
+/// * `n_steps` - The number of time steps between `t_0` and `t_n`.
+/// * `m_paths` - How many process trajectories to simulate.
+/// * `parallel` - Run in parallel or not (recommended for > 1000 paths).
 pub struct StochasticProcessConfig {
     /// Initial value of the process.
     pub x_0: f64,
@@ -165,6 +173,11 @@ pub trait StochasticProcess: Sync {
 
     /// Base method for the process' jump term (if applicable).
     fn jump(&self, x: f64, t: f64) -> Option<f64>;
+
+    /// Return the model's parameters as a Vec<f64>.
+    fn parameters(&self) -> Vec<f64> {
+        vec![]
+    }
 
     /// Euler-Maruyama discretisation scheme.
     ///
