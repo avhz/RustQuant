@@ -50,6 +50,8 @@ pub mod europe {
     pub mod hungary;
     /// This module defines Iceland holidays and calendars.
     pub mod iceland;
+    /// This module defines Netherlands holidays and calendars.
+    pub mod netherlands;
     /// This module defines United Kingdom holidays and calendars.
     pub mod united_kingdom;
 }
