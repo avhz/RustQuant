@@ -6,6 +6,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.8](https://github.com/avhz/RustQuant/compare/v0.2.7...v0.2.8) - 2024-09-05
+
+### Added
+- BarrierOption Payoff and Monte-Carlo
+
+### Other
+- add tests, fix impl
+- Add Netherlands calendar
+- monte-carlo example
+- vanilla option monte-carlo
+- vanilla option monte-carlo
+- market data
+- fix some comments
+
 ## [0.2.7](https://github.com/avhz/RustQuant/compare/v0.2.6...v0.2.7) - 2024-08-05
 
 ### Added
