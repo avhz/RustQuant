@@ -153,12 +153,13 @@ impl ModifiedBachelier {
         );
 
         let d1 = (S - K) / (v * T.sqrt());
+        let df = (-r * T).exp();
 
         let n = Gaussian::default();
 
         match self.option_type {
-            TypeFlag::Call => ((S - K) * (-r * T).exp()) * n.cdf(d1) + v * T.sqrt() * n.pdf(d1),
-            TypeFlag::Put => ((K - S) * (-r * T).exp()) * n.cdf(-d1) + v * T.sqrt() * n.pdf(-d1),
+            TypeFlag::Call => df * ((S - K) * n.cdf(d1) + v * T.sqrt() * n.pdf(d1)),
+            TypeFlag::Put => df * ((K - S) * n.cdf(-d1) + v * T.sqrt() * n.pdf(-d1)),
         }
     }
 }

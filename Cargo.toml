@@ -62,10 +62,9 @@ argmin-math = "0.4.0"       # https://docs.rs/argmin-math/latest/argmin_math/
 derive_builder = "0.20.0"   # https://docs.rs/derive_builder/latest/derive_builder/
 errorfunctions = "0.2.0"    # https://docs.rs/errorfunctions/latest/errorfunctions/
 nalgebra = "0.33.0"         # https://docs.rs/nalgebra/latest/nalgebra/
-ndarray = "0.16.1"          # https://docs.rs/ndarray/latest/ndarray/
 ndrustfft = "0.4.0"         # https://docs.rs/ndrustfft/latest/ndrustfft/
 ndarray-rand = "0.14.0"     # https://docs.rs/ndarray-rand/latest/ndarray_rand/
-plotly = "0.10.0"            # https://docs.rs/plotly/latest/plotly/
+plotly = "0.10.0"           # https://docs.rs/plotly/latest/plotly/
 plotters = "0.3.5"          # https://docs.rs/plotters/latest/plotters/
 rand = "0.8.5"              # https://docs.rs/rand/latest/rand/
 rand_distr = "0.4.3"        # https://docs.rs/rand_distr/latest/rand_distr/
@@ -76,6 +75,8 @@ thiserror = "1.0.57"        # https://docs.rs/thiserror/latest/thiserror/
 yahoo_finance_api = "2.1.0" # https://docs.rs/yahoo-finance-api/latest/yahoo_finance_api/
 tokio-test = "0.4.3"        # https://docs.rs/tokio-test/latest/tokio_test/
 
+# https://docs.rs/ndarray/latest/ndarray/
+ndarray = { version = "0.16.1", features = ["rayon"] }
 
 # https://docs.rs/num/latest/num/
 num = { version = "0.4.1", features = ["rand"] }

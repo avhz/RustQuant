@@ -1,10 +1,3 @@
-[build-system]
-requires = ["maturin>=1.6,<2.0"]
-build-backend = "maturin"
-
-[tool.maturin]
-features = ["pyo3/extension-module"]
-
 [project]
 name = "RustQuant"
 requires-python = ">=3.8"
@@ -14,3 +7,10 @@ classifiers = [
     "Programming Language :: Python :: Implementation :: CPython",
     "Programming Language :: Python :: Implementation :: PyPy",
 ]
+
+[build-system]
+requires = ["maturin>=1.7,<2.0"]
+build-backend = "maturin"
+
+[tool.maturin]
+features = ["pyo3/extension-module"]

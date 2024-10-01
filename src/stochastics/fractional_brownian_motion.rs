@@ -121,8 +121,11 @@ impl FractionalBrownianMotion {
         }
         let r_fft = FftHandler::new(r.len());
         let mut sqrt_eigenvalues = Array1::<Complex<f64>>::zeros(r.len());
+
         ndfft_par(&data, &mut sqrt_eigenvalues, &r_fft, 0);
+
         sqrt_eigenvalues.par_mapv_inplace(|x| Complex::new((x.re / (2.0 * n as f64)).sqrt(), x.im));
+
         let rnd = Array1::<Complex<f64>>::random(
             2 * n,
             ComplexDistribution::new(StandardNormal, StandardNormal),
@@ -130,7 +133,9 @@ impl FractionalBrownianMotion {
         let fgn = &sqrt_eigenvalues * &rnd;
         let fft_handler = FftHandler::new(2 * n);
         let mut fgn_fft = Array1::<Complex<f64>>::zeros(2 * n);
+
         ndfft_par(&fgn, &mut fgn_fft, &fft_handler, 0);
+
         let fgn = fgn_fft
             .slice(s![1..n + 1])
             .mapv(|x: Complex<f64>| (x.re * (n as f64).powf(-self.hurst)) * t_n.powf(self.hurst));

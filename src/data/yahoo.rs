@@ -10,12 +10,11 @@
 //! Module to fetch data from Yahoo! Finance,
 //! and store it in a Polars DataFrame object.
 
+use crate::error::RustQuantError;
 use polars::prelude::*;
 use time::OffsetDateTime;
 use yahoo::YahooError;
 use yahoo_finance_api as yahoo;
-
-use crate::error::RustQuantError;
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // STRUCTS, TRAITS, AND ENUMS
@@ -209,7 +208,7 @@ impl YahooFinanceReader for YahooFinanceData {
         let adjclose = quotes.iter().map(|q| q.adjclose).collect::<Vec<_>>();
 
         let df = df!(
-            "date" => Series::new("date", date).cast(&DataType::Date)?,
+            "date" => Series::new("date".into(), date).cast(&DataType::Date)?,
             "open" => open,
             "high" => high,
             "low" => low,
@@ -266,7 +265,7 @@ impl YahooFinanceReader for YahooFinanceData {
         let df = df!(
             "contract" => contract,
             "strike" => strike,
-            "last_trade_date" => Series::new("last_trade_date", last_trade_date)
+            "last_trade_date" => Series::new("last_trade_date".into(), last_trade_date)
                 .cast(&DataType::Date)
                 ?,
             "last_price" => last_price,
