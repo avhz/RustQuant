@@ -157,8 +157,8 @@ impl ModifiedBachelier {
         let n = Gaussian::default();
 
         match self.option_type {
-            TypeFlag::Call => (S - K * (-r * T).exp()) * n.cdf(d1) + v * T.sqrt() * n.pdf(d1),
-            TypeFlag::Put => (K * (-r * T).exp() - S) * n.cdf(-d1) + v * T.sqrt() * n.pdf(-d1),
+            TypeFlag::Call => ((S - K) * (-r * T).exp()) * n.cdf(d1) + v * T.sqrt() * n.pdf(d1),
+            TypeFlag::Put => ((K - S) * (-r * T).exp()) * n.cdf(-d1) + v * T.sqrt() * n.pdf(-d1),
         }
     }
 }
@@ -198,6 +198,6 @@ mod tests_bachelier {
             today() + Duration::days(365),
             TypeFlag::Call,
         );
-        assert_approx_equal!(bachelier.price(), 2.513031723793472, 1e-2);
+        assert_approx_equal!(bachelier.price(), 0.07589, 1e-2);
     }
 }
