@@ -33,7 +33,7 @@ impl StochasticProcess for BrownianMotion {
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 #[cfg(test)]
-mod sde_tests {
+mod tests_brownian_motion {
     // use std::time::Instant;
 
     use super::*;
@@ -66,7 +66,7 @@ mod sde_tests {
         // }
         // assert!(1 == 2);
 
-        let config = StochasticProcessConfig::new(0.0, 0.0, 0.5, 100, 1000, false);
+        let config = StochasticProcessConfig::new(0.0, 0.0, 0.5, 100, 1000, false, None);
         let output_serial = bm.euler_maruyama(&config);
         // let output_parallel = (&bm).euler_maruyama(10.0, 0.0, 0.5, 100, 10, true);
 
@@ -76,6 +76,116 @@ mod sde_tests {
         // plot_vector((&output_serial.trajectories[1]).clone(), file2).unwrap();
         // let file2 = "./images/BM3_parallel.png";
         // plot_vector((&output_parallel.trajectories[0]).clone(), file2)
+
+        // Test the distribution of the final values.
+        let X_T: Vec<f64> = output_serial
+            .paths
+            .iter()
+            .filter_map(|v| v.last().copied())
+            .collect();
+
+        let E_XT = X_T.mean();
+        let V_XT = X_T.variance();
+        // E[X_T] = 0
+        assert_approx_equal!(E_XT, 0.0, 0.5);
+        // V[X_T] = T
+        assert_approx_equal!(V_XT, 0.5, 0.5);
+    }
+
+    #[test]
+    fn test_brownian_motion_euler_maruyama_seeded() {
+        let bm = BrownianMotion::new();
+
+        let config = StochasticProcessConfig::new(0.0, 0.0, 0.5, 100, 1000, false, Some(1337));
+        let output_serial = bm.euler_maruyama(&config);
+
+        // Test the distribution of the final values.
+        let X_T: Vec<f64> = output_serial
+            .paths
+            .iter()
+            .filter_map(|v| v.last().copied())
+            .collect();
+
+        let E_XT = X_T.mean();
+        let V_XT = X_T.variance();
+        // E[X_T] = 0
+        assert_approx_equal!(E_XT, 0.0, 0.5);
+        // V[X_T] = T
+        assert_approx_equal!(V_XT, 0.5, 0.5);
+    }
+
+    #[test]
+    fn test_brownian_motion_milstein() {
+        let bm = BrownianMotion::new();
+
+        let config = StochasticProcessConfig::new(0.0, 0.0, 0.5, 100, 1000, false, None);
+        let output_serial = bm.milstein(&config);
+
+        // Test the distribution of the final values.
+        let X_T: Vec<f64> = output_serial
+            .paths
+            .iter()
+            .filter_map(|v| v.last().copied())
+            .collect();
+
+        let E_XT = X_T.mean();
+        let V_XT = X_T.variance();
+        // E[X_T] = 0
+        assert_approx_equal!(E_XT, 0.0, 0.5);
+        // V[X_T] = T
+        assert_approx_equal!(V_XT, 0.5, 0.5);
+    }
+
+    #[test]
+    fn test_brownian_motion_milstein_seeded() {
+        let bm = BrownianMotion::new();
+
+        let config = StochasticProcessConfig::new(0.0, 0.0, 0.5, 100, 1000, false, Some(1337));
+        let output_serial = bm.milstein(&config);
+
+        // Test the distribution of the final values.
+        let X_T: Vec<f64> = output_serial
+            .paths
+            .iter()
+            .filter_map(|v| v.last().copied())
+            .collect();
+
+        let E_XT = X_T.mean();
+        let V_XT = X_T.variance();
+        // E[X_T] = 0
+        assert_approx_equal!(E_XT, 0.0, 0.5);
+        // V[X_T] = T
+        assert_approx_equal!(V_XT, 0.5, 0.5);
+    }
+
+    #[test]
+    fn test_brownian_motion_strang_splitting() {
+        let bm = BrownianMotion::new();
+
+        let config = StochasticProcessConfig::new(0.0, 0.0, 0.5, 100, 1000, false, None);
+        let output_serial = bm.strang_splitting(&config);
+
+        // Test the distribution of the final values.
+        let X_T: Vec<f64> = output_serial
+            .paths
+            .iter()
+            .filter_map(|v| v.last().copied())
+            .collect();
+
+        let E_XT = X_T.mean();
+        let V_XT = X_T.variance();
+        // E[X_T] = 0
+        assert_approx_equal!(E_XT, 0.0, 0.5);
+        // V[X_T] = T
+        assert_approx_equal!(V_XT, 0.5, 0.5);
+    }
+
+    #[test]
+    fn test_brownian_motion_strang_splitting_seeded() {
+        let bm = BrownianMotion::new();
+
+        let config = StochasticProcessConfig::new(0.0, 0.0, 0.5, 100, 1000, false, Some(1337));
+        let output_serial = bm.strang_splitting(&config);
 
         // Test the distribution of the final values.
         let X_T: Vec<f64> = output_serial
