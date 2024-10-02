@@ -40,10 +40,10 @@ mod tests_ornstein_uhlenbeck {
     use crate::{assert_approx_equal, math::*, stochastics::StochasticProcessConfig};
 
     #[test]
-    fn test_ornstein_uhlenbeck() {
+    fn test_ornstein_uhlenbeck_euler_maruyama() {
         let ou = OrnsteinUhlenbeck::new(0.15, 0.45, 0.01);
 
-        let config = StochasticProcessConfig::new(10.0, 0.0, 0.5, 100, 100, false);
+        let config = StochasticProcessConfig::new(10.0, 0.0, 0.5, 100, 100, false, None);
         let output = ou.euler_maruyama(&config);
 
         // Test the distribution of the final values.
@@ -72,5 +72,160 @@ mod tests_ornstein_uhlenbeck {
         // plot_vector((&output.trajectories[0]).clone(), file1).unwrap();
         // let file2 = "./images/OU2.png";
         // plot_vector((&output.trajectories[1]).clone(), file2)
+    }
+
+    #[test]
+    fn test_ornstein_uhlenbeck_euler_maruyama_seeded() {
+        let ou = OrnsteinUhlenbeck::new(0.15, 0.45, 0.01);
+
+        let config = StochasticProcessConfig::new(10.0, 0.0, 0.5, 100, 100, false, Some(1337));
+        let output = ou.euler_maruyama(&config);
+
+        // Test the distribution of the final values.
+        let X_T: Vec<f64> = output
+            .paths
+            .iter()
+            .filter_map(|v| v.last().copied())
+            .collect();
+
+        let E_XT = X_T.mean();
+        let V_XT = X_T.variance();
+        // E[X_T] = https://en.wikipedia.org/wiki/Ornstein%E2%80%93Uhlenbeck_process
+        assert_approx_equal!(
+            E_XT,
+            10. * (-0.01 * 0.5_f64).exp() + 0.15 * (1. - (-0.01 * 0.5_f64).exp()),
+            0.5
+        );
+        // V[X_T] = https://en.wikipedia.org/wiki/Ornstein%E2%80%93Uhlenbeck_process
+        assert_approx_equal!(
+            V_XT,
+            (0.45 * 0.45 / (2. * 0.01)) * (1. - (-2. * 0.01 * 0.5_f64).exp()),
+            0.5
+        );
+    }
+
+    #[test]
+    fn test_ornstein_uhlenbeck_milstein() {
+        let ou = OrnsteinUhlenbeck::new(0.15, 0.45, 0.01);
+
+        let config = StochasticProcessConfig::new(10.0, 0.0, 0.5, 100, 100, false, None);
+        let output = ou.euler_maruyama(&config);
+
+        // Test the distribution of the final values.
+        let X_T: Vec<f64> = output
+            .paths
+            .iter()
+            .filter_map(|v| v.last().copied())
+            .collect();
+
+        let E_XT = X_T.mean();
+        let V_XT = X_T.variance();
+        // E[X_T] = https://en.wikipedia.org/wiki/Ornstein%E2%80%93Uhlenbeck_process
+        assert_approx_equal!(
+            E_XT,
+            10. * (-0.01 * 0.5_f64).exp() + 0.15 * (1. - (-0.01 * 0.5_f64).exp()),
+            0.5
+        );
+        // V[X_T] = https://en.wikipedia.org/wiki/Ornstein%E2%80%93Uhlenbeck_process
+        assert_approx_equal!(
+            V_XT,
+            (0.45 * 0.45 / (2. * 0.01)) * (1. - (-2. * 0.01 * 0.5_f64).exp()),
+            0.5
+        );
+
+        // let file1 = "./images/OU1.png";
+        // plot_vector((&output.trajectories[0]).clone(), file1).unwrap();
+        // let file2 = "./images/OU2.png";
+        // plot_vector((&output.trajectories[1]).clone(), file2)
+    }
+
+    #[test]
+    fn test_ornstein_uhlenbeck_milstein_seeded() {
+        let ou = OrnsteinUhlenbeck::new(0.15, 0.45, 0.01);
+
+        let config = StochasticProcessConfig::new(10.0, 0.0, 0.5, 100, 100, false, Some(1337));
+        let output = ou.milstein(&config);
+
+        // Test the distribution of the final values.
+        let X_T: Vec<f64> = output
+            .paths
+            .iter()
+            .filter_map(|v| v.last().copied())
+            .collect();
+
+        let E_XT = X_T.mean();
+        let V_XT = X_T.variance();
+        // E[X_T] = https://en.wikipedia.org/wiki/Ornstein%E2%80%93Uhlenbeck_process
+        assert_approx_equal!(
+            E_XT,
+            10. * (-0.01 * 0.5_f64).exp() + 0.15 * (1. - (-0.01 * 0.5_f64).exp()),
+            0.5
+        );
+        // V[X_T] = https://en.wikipedia.org/wiki/Ornstein%E2%80%93Uhlenbeck_process
+        assert_approx_equal!(
+            V_XT,
+            (0.45 * 0.45 / (2. * 0.01)) * (1. - (-2. * 0.01 * 0.5_f64).exp()),
+            0.5
+        );
+    }
+
+    #[test]
+    fn test_ornstein_uhlenbeck_strang_splitting() {
+        let ou = OrnsteinUhlenbeck::new(0.15, 0.45, 0.01);
+
+        let config = StochasticProcessConfig::new(10.0, 0.0, 0.5, 100, 100, false, None);
+        let output = ou.strang_splitting(&config);
+
+        // Test the distribution of the final values.
+        let X_T: Vec<f64> = output
+            .paths
+            .iter()
+            .filter_map(|v| v.last().copied())
+            .collect();
+
+        let E_XT = X_T.mean();
+        let V_XT = X_T.variance();
+        // E[X_T] = https://en.wikipedia.org/wiki/Ornstein%E2%80%93Uhlenbeck_process
+        assert_approx_equal!(
+            E_XT,
+            10. * (-0.01 * 0.5_f64).exp() + 0.15 * (1. - (-0.01 * 0.5_f64).exp()),
+            0.5
+        );
+        // V[X_T] = https://en.wikipedia.org/wiki/Ornstein%E2%80%93Uhlenbeck_process
+        assert_approx_equal!(
+            V_XT,
+            (0.45 * 0.45 / (2. * 0.01)) * (1. - (-2. * 0.01 * 0.5_f64).exp()),
+            0.5
+        );
+    }
+
+    #[test]
+    fn test_ornstein_uhlenbeck_strang_splitting_seeded() {
+        let ou = OrnsteinUhlenbeck::new(0.15, 0.45, 0.01);
+
+        let config = StochasticProcessConfig::new(10.0, 0.0, 0.5, 100, 100, false, Some(1337));
+        let output = ou.strang_splitting(&config);
+
+        // Test the distribution of the final values.
+        let X_T: Vec<f64> = output
+            .paths
+            .iter()
+            .filter_map(|v| v.last().copied())
+            .collect();
+
+        let E_XT = X_T.mean();
+        let V_XT = X_T.variance();
+        // E[X_T] = https://en.wikipedia.org/wiki/Ornstein%E2%80%93Uhlenbeck_process
+        assert_approx_equal!(
+            E_XT,
+            10. * (-0.01 * 0.5_f64).exp() + 0.15 * (1. - (-0.01 * 0.5_f64).exp()),
+            0.5
+        );
+        // V[X_T] = https://en.wikipedia.org/wiki/Ornstein%E2%80%93Uhlenbeck_process
+        assert_approx_equal!(
+            V_XT,
+            (0.45 * 0.45 / (2. * 0.01)) * (1. - (-2. * 0.01 * 0.5_f64).exp()),
+            0.5
+        );
     }
 }
