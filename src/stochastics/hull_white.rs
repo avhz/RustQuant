@@ -41,13 +41,13 @@ mod tests_hull_white {
     // }
 
     #[test]
-    fn test_hull_white() {
+    fn test_hull_white_euler_maruyama() {
         let alpha = 2.0;
         let theta = 0.5;
         let sigma = 2.0;
 
         let hw = HullWhite::new(alpha, sigma, theta);
-        let config = StochasticProcessConfig::new(10.0, 0.0, 1.0, 150, 1000, false);
+        let config = StochasticProcessConfig::new(10.0, 0.0, 1.0, 150, 1000, false, None);
 
         let output = hw.euler_maruyama(&config);
 
@@ -68,5 +68,140 @@ mod tests_hull_white {
 
         // No closed form solution for variance that I know of...
         // Have to take it on faith that it works
+    }
+
+    #[test]
+    fn test_hull_white_euler_maruyama_seeded() {
+        let alpha = 2.0;
+        let theta = 0.5;
+        let sigma = 2.0;
+
+        let hw = HullWhite::new(alpha, sigma, theta);
+        let config = StochasticProcessConfig::new(10.0, 0.0, 1.0, 150, 1000, false, Some(1337));
+
+        let output = hw.euler_maruyama(&config);
+
+        // Test the distribution of the final values.
+        let X_T: Vec<f64> = output
+            .paths
+            .iter()
+            .filter_map(|v| v.last().copied())
+            .collect();
+
+        let E_XT = X_T.mean();
+        // E[X_T] = X_0*exp(-alpha T) X_0 + (theta_t/alpha)(1- exp(-alpha * T))
+        assert_approx_equal!(
+            E_XT,
+            (-alpha * 1.0_f64).exp() * 10.0 + (theta / alpha) * (1.0 - (-alpha * 1.0_f64).exp()),
+            0.25
+        );
+    }
+
+    #[test]
+    fn test_hull_white_milstein() {
+        let alpha = 2.0;
+        let theta = 0.5;
+        let sigma = 2.0;
+
+        let hw = HullWhite::new(alpha, sigma, theta);
+        let config = StochasticProcessConfig::new(10.0, 0.0, 1.0, 150, 1000, false, None);
+
+        let output = hw.milstein(&config);
+
+        // Test the distribution of the final values.
+        let X_T: Vec<f64> = output
+            .paths
+            .iter()
+            .filter_map(|v| v.last().copied())
+            .collect();
+
+        let E_XT = X_T.mean();
+        // E[X_T] = X_0*exp(-alpha T) X_0 + (theta_t/alpha)(1- exp(-alpha * T))
+        assert_approx_equal!(
+            E_XT,
+            (-alpha * 1.0_f64).exp() * 10.0 + (theta / alpha) * (1.0 - (-alpha * 1.0_f64).exp()),
+            0.25
+        );
+    }
+
+    #[test]
+    fn test_hull_white_milstein_seeded() {
+        let alpha = 2.0;
+        let theta = 0.5;
+        let sigma = 2.0;
+
+        let hw = HullWhite::new(alpha, sigma, theta);
+        let config = StochasticProcessConfig::new(10.0, 0.0, 1.0, 150, 1000, false, Some(1337));
+
+        let output = hw.milstein(&config);
+
+        // Test the distribution of the final values.
+        let X_T: Vec<f64> = output
+            .paths
+            .iter()
+            .filter_map(|v| v.last().copied())
+            .collect();
+
+        let E_XT = X_T.mean();
+        // E[X_T] = X_0*exp(-alpha T) X_0 + (theta_t/alpha)(1- exp(-alpha * T))
+        assert_approx_equal!(
+            E_XT,
+            (-alpha * 1.0_f64).exp() * 10.0 + (theta / alpha) * (1.0 - (-alpha * 1.0_f64).exp()),
+            0.25
+        );
+    }
+
+    #[test]
+    fn test_hull_white_strang_splitting() {
+        let alpha = 2.0;
+        let theta = 0.5;
+        let sigma = 2.0;
+
+        let hw = HullWhite::new(alpha, sigma, theta);
+        let config = StochasticProcessConfig::new(10.0, 0.0, 1.0, 150, 1000, false, None);
+
+        let output = hw.strang_splitting(&config);
+
+        // Test the distribution of the final values.
+        let X_T: Vec<f64> = output
+            .paths
+            .iter()
+            .filter_map(|v| v.last().copied())
+            .collect();
+
+        let E_XT = X_T.mean();
+        // E[X_T] = X_0*exp(-alpha T) X_0 + (theta_t/alpha)(1- exp(-alpha * T))
+        assert_approx_equal!(
+            E_XT,
+            (-alpha * 1.0_f64).exp() * 10.0 + (theta / alpha) * (1.0 - (-alpha * 1.0_f64).exp()),
+            0.25
+        );
+    }
+
+    #[test]
+    fn test_hull_white_strang_splitting_seeded() {
+        let alpha = 2.0;
+        let theta = 0.5;
+        let sigma = 2.0;
+
+        let hw = HullWhite::new(alpha, sigma, theta);
+        let config = StochasticProcessConfig::new(10.0, 0.0, 1.0, 150, 1000, false, Some(1337));
+
+        let output = hw.strang_splitting(&config);
+
+        // Test the distribution of the final values.
+        let X_T: Vec<f64> = output
+            .paths
+            .iter()
+            .filter_map(|v| v.last().copied())
+            .collect();
+
+        let E_XT = X_T.mean();
+        // E[X_T] = X_0*exp(-alpha T) X_0 + (theta_t/alpha)(1- exp(-alpha * T))
+        assert_approx_equal!(
+            E_XT,
+            (-alpha * 1.0_f64).exp() * 10.0 + (theta / alpha) * (1.0 - (-alpha * 1.0_f64).exp()),
+            0.25
+        );
     }
 }
