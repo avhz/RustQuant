@@ -45,13 +45,148 @@ mod tests_ho_lee {
     // }
 
     #[test]
-    fn test_ho_lee() {
+    fn test_ho_lee_euler_maruyama() {
         let hl = HoLee::new(1.6, 2.0);
 
         // X_0 = 10.0
         // T = 1.0
-        let config = StochasticProcessConfig::new(10.0, 0.0, 1.0, 125, 1000, false);
+        let config = StochasticProcessConfig::new(10.0, 0.0, 1.0, 125, 1000, false, None);
         let output = hl.euler_maruyama(&config);
+
+        // Test the distribution of the final values.
+        let X_T: Vec<f64> = output
+            .paths
+            .iter()
+            .filter_map(|v| v.last().copied())
+            .collect();
+
+        let E_XT = X_T.mean();
+        let V_XT = X_T.variance();
+
+        // This case reduces to arithmetic brownian motion..
+        // E[X_T] = X_0 + theta_T * T
+        assert_approx_equal!(E_XT, 10.0 + 2.0 * 1.0, 0.5);
+        // Same here
+        // V[X_T] = sigma^2 * T
+        assert_approx_equal!(V_XT, 1.6 * 1.6 * 1.0, 0.5);
+    }
+
+    #[test]
+    fn test_ho_lee_euler_maruyama_seeded() {
+        let hl = HoLee::new(1.6, 2.0);
+
+        // X_0 = 10.0
+        // T = 1.0
+        let config = StochasticProcessConfig::new(10.0, 0.0, 1.0, 125, 1000, false, Some(1337));
+        let output = hl.euler_maruyama(&config);
+
+        // Test the distribution of the final values.
+        let X_T: Vec<f64> = output
+            .paths
+            .iter()
+            .filter_map(|v| v.last().copied())
+            .collect();
+
+        let E_XT = X_T.mean();
+        let V_XT = X_T.variance();
+
+        // This case reduces to arithmetic brownian motion..
+        // E[X_T] = X_0 + theta_T * T
+        assert_approx_equal!(E_XT, 10.0 + 2.0 * 1.0, 0.5);
+        // Same here
+        // V[X_T] = sigma^2 * T
+        assert_approx_equal!(V_XT, 1.6 * 1.6 * 1.0, 0.5);
+    }
+
+    #[test]
+    fn test_ho_lee_milstein() {
+        let hl = HoLee::new(1.6, 2.0);
+
+        // X_0 = 10.0
+        // T = 1.0
+        let config = StochasticProcessConfig::new(10.0, 0.0, 1.0, 125, 1000, false, None);
+        let output = hl.milstein(&config);
+
+        // Test the distribution of the final values.
+        let X_T: Vec<f64> = output
+            .paths
+            .iter()
+            .filter_map(|v| v.last().copied())
+            .collect();
+
+        let E_XT = X_T.mean();
+        let V_XT = X_T.variance();
+
+        // This case reduces to arithmetic brownian motion..
+        // E[X_T] = X_0 + theta_T * T
+        assert_approx_equal!(E_XT, 10.0 + 2.0 * 1.0, 0.5);
+        // Same here
+        // V[X_T] = sigma^2 * T
+        assert_approx_equal!(V_XT, 1.6 * 1.6 * 1.0, 0.5);
+    }
+
+    #[test]
+    fn test_ho_lee_milstein_seeded() {
+        let hl = HoLee::new(1.6, 2.0);
+
+        // X_0 = 10.0
+        // T = 1.0
+        let config = StochasticProcessConfig::new(10.0, 0.0, 1.0, 125, 1000, false, Some(1337));
+        let output = hl.milstein(&config);
+
+        // Test the distribution of the final values.
+        let X_T: Vec<f64> = output
+            .paths
+            .iter()
+            .filter_map(|v| v.last().copied())
+            .collect();
+
+        let E_XT = X_T.mean();
+        let V_XT = X_T.variance();
+
+        // This case reduces to arithmetic brownian motion..
+        // E[X_T] = X_0 + theta_T * T
+        assert_approx_equal!(E_XT, 10.0 + 2.0 * 1.0, 0.5);
+        // Same here
+        // V[X_T] = sigma^2 * T
+        assert_approx_equal!(V_XT, 1.6 * 1.6 * 1.0, 0.5);
+    }
+
+    #[test]
+    fn test_ho_lee_strang_splitting() {
+        let hl = HoLee::new(1.6, 2.0);
+
+        // X_0 = 10.0
+        // T = 1.0
+        let config = StochasticProcessConfig::new(10.0, 0.0, 1.0, 125, 1000, false, None);
+        let output = hl.strang_splitting(&config);
+
+        // Test the distribution of the final values.
+        let X_T: Vec<f64> = output
+            .paths
+            .iter()
+            .filter_map(|v| v.last().copied())
+            .collect();
+
+        let E_XT = X_T.mean();
+        let V_XT = X_T.variance();
+
+        // This case reduces to arithmetic brownian motion..
+        // E[X_T] = X_0 + theta_T * T
+        assert_approx_equal!(E_XT, 10.0 + 2.0 * 1.0, 0.5);
+        // Same here
+        // V[X_T] = sigma^2 * T
+        assert_approx_equal!(V_XT, 1.6 * 1.6 * 1.0, 0.5);
+    }
+
+    #[test]
+    fn test_ho_lee_strang_splitting_seeded() {
+        let hl = HoLee::new(1.6, 2.0);
+
+        // X_0 = 10.0
+        // T = 1.0
+        let config = StochasticProcessConfig::new(10.0, 0.0, 1.0, 125, 1000, false, Some(1337));
+        let output = hl.strang_splitting(&config);
 
         // Test the distribution of the final values.
         let X_T: Vec<f64> = output
