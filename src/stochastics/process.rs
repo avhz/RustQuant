@@ -138,6 +138,9 @@ pub struct StochasticProcessConfig {
 
     /// Run in parallel or not (recommended for > 1000 paths).
     pub parallel: bool,
+
+    /// Optional seed argument to initialize random number generator 
+    pub seed: Option<u64>,
 }
 
 impl StochasticProcessConfig {
@@ -149,6 +152,7 @@ impl StochasticProcessConfig {
         n_steps: usize,
         m_paths: usize,
         parallel: bool,
+        seed: Option<u64>
     ) -> Self {
         Self {
             x_0,
@@ -157,10 +161,11 @@ impl StochasticProcessConfig {
             n_steps,
             m_paths,
             parallel,
+            seed,
         }
     }
 
-    pub(crate) fn unpack(&self) -> (f64, f64, f64, usize, usize, bool) {
+    pub(crate) fn unpack(&self) -> (f64, f64, f64, usize, usize, bool, Option<u64>) {
         (
             self.x_0,
             self.t_0,
@@ -168,6 +173,7 @@ impl StochasticProcessConfig {
             self.n_steps,
             self.m_paths,
             self.parallel,
+            self.seed,
         )
     }
 }
