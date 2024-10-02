@@ -41,15 +41,130 @@ mod tests_abm {
     use crate::{assert_approx_equal, math::*, stochastics::StochasticProcessConfig};
 
     #[test]
-    fn test_arithmetic_brownian_motion() {
+    fn test_arithmetic_brownian_motion_euler_maruyama() {
         let abm = ArithmeticBrownianMotion::new(0.05, 0.9);
-        let config = StochasticProcessConfig::new(10.0, 0.0, 0.5, 125, 1000, false);
+        let config = StochasticProcessConfig::new(10.0, 0.0, 0.5, 125, 1000, false, None);
         let output = abm.euler_maruyama(&config);
 
         // let file1 = "./images/ABM1.png";
         // plot_vector((&output.trajectories[0]).clone(), file1).unwrap();
         // let file2 = "./images/ABM2.png";
         // plot_vector((&output.trajectories[1]).clone(), file2)
+
+        // Test the distribution of the final values.
+        let X_T: Vec<f64> = output
+            .paths
+            .iter()
+            .filter_map(|v| v.last().copied())
+            .collect();
+
+        let E_XT = X_T.mean();
+        let V_XT = X_T.variance();
+        // E[X_T] = X_0 + mu * T
+        assert_approx_equal!(E_XT, 10.0 + 0.05 * 0.5, 0.1);
+        // V[X_T] = sigma^2 * T
+        assert_approx_equal!(V_XT, 0.9 * 0.9 * 0.5, 0.1);
+    }
+
+    #[test]
+    fn test_arithmetic_brownian_motion_euler_maruyama_seeded() {
+        let abm = ArithmeticBrownianMotion::new(0.05, 0.9);
+        let config = StochasticProcessConfig::new(10.0, 0.0, 0.5, 125, 1000, false, Some(1337));
+        let output = abm.euler_maruyama(&config);
+
+        // Test the distribution of the final values.
+        let X_T: Vec<f64> = output
+            .paths
+            .iter()
+            .filter_map(|v| v.last().copied())
+            .collect();
+
+        let E_XT = X_T.mean();
+        let V_XT = X_T.variance();
+        // E[X_T] = X_0 + mu * T
+        assert_approx_equal!(E_XT, 10.0 + 0.05 * 0.5, 0.1);
+        // V[X_T] = sigma^2 * T
+        assert_approx_equal!(V_XT, 0.9 * 0.9 * 0.5, 0.1);
+    }
+
+    #[test]
+    fn test_arithmetic_brownian_motion_milstein() {
+        let abm = ArithmeticBrownianMotion::new(0.05, 0.9);
+        let config = StochasticProcessConfig::new(10.0, 0.0, 0.5, 125, 1000, false, None);
+        let output = abm.milstein(&config);
+
+        // let file1 = "./images/ABM1.png";
+        // plot_vector((&output.trajectories[0]).clone(), file1).unwrap();
+        // let file2 = "./images/ABM2.png";
+        // plot_vector((&output.trajectories[1]).clone(), file2)
+
+        // Test the distribution of the final values.
+        let X_T: Vec<f64> = output
+            .paths
+            .iter()
+            .filter_map(|v| v.last().copied())
+            .collect();
+
+        let E_XT = X_T.mean();
+        let V_XT = X_T.variance();
+        // E[X_T] = X_0 + mu * T
+        assert_approx_equal!(E_XT, 10.0 + 0.05 * 0.5, 0.1);
+        // V[X_T] = sigma^2 * T
+        assert_approx_equal!(V_XT, 0.9 * 0.9 * 0.5, 0.1);
+    }
+
+    #[test]
+    fn test_arithmetic_brownian_motion_milstein_seeded() {
+        let abm = ArithmeticBrownianMotion::new(0.05, 0.9);
+        let config = StochasticProcessConfig::new(10.0, 0.0, 0.5, 125, 1000, false, Some(1337));
+        let output = abm.milstein(&config);
+
+        // Test the distribution of the final values.
+        let X_T: Vec<f64> = output
+            .paths
+            .iter()
+            .filter_map(|v| v.last().copied())
+            .collect();
+
+        let E_XT = X_T.mean();
+        let V_XT = X_T.variance();
+        // E[X_T] = X_0 + mu * T
+        assert_approx_equal!(E_XT, 10.0 + 0.05 * 0.5, 0.1);
+        // V[X_T] = sigma^2 * T
+        assert_approx_equal!(V_XT, 0.9 * 0.9 * 0.5, 0.1);
+    }
+
+    #[test]
+    fn test_arithmetic_brownian_motion_strang_splitting() {
+        let abm = ArithmeticBrownianMotion::new(0.05, 0.9);
+        let config = StochasticProcessConfig::new(10.0, 0.0, 0.5, 125, 1000, false, None);
+        let output = abm.strang_splitting(&config);
+
+        // let file1 = "./images/ABM1.png";
+        // plot_vector((&output.trajectories[0]).clone(), file1).unwrap();
+        // let file2 = "./images/ABM2.png";
+        // plot_vector((&output.trajectories[1]).clone(), file2)
+
+        // Test the distribution of the final values.
+        let X_T: Vec<f64> = output
+            .paths
+            .iter()
+            .filter_map(|v| v.last().copied())
+            .collect();
+
+        let E_XT = X_T.mean();
+        let V_XT = X_T.variance();
+        // E[X_T] = X_0 + mu * T
+        assert_approx_equal!(E_XT, 10.0 + 0.05 * 0.5, 0.1);
+        // V[X_T] = sigma^2 * T
+        assert_approx_equal!(V_XT, 0.9 * 0.9 * 0.5, 0.1);
+    }
+
+    #[test]
+    fn test_arithmetic_brownian_motion_strang_splitting_seeded() {
+        let abm = ArithmeticBrownianMotion::new(0.05, 0.9);
+        let config = StochasticProcessConfig::new(10.0, 0.0, 0.5, 125, 1000, false, Some(1337));
+        let output = abm.strang_splitting(&config);
 
         // Test the distribution of the final values.
         let X_T: Vec<f64> = output
