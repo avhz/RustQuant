@@ -38,17 +38,172 @@ impl StochasticProcess for GeometricBrownianMotion {
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 #[cfg(test)]
-mod tests_gbm {
+mod tests_geometric_brownian_motion {
     use super::*;
     use crate::stochastics::StochasticProcessConfig;
     use crate::{assert_approx_equal, math::*};
 
     #[test]
-    fn test_geometric_brownian_motion() {
+    fn test_geometric_brownian_motion_euler_maruyama() {
         let gbm = GeometricBrownianMotion::new(0.05, 0.9);
 
-        let config = StochasticProcessConfig::new(10.0, 0.0, 0.5, 125, 10000, false);
+        let config = StochasticProcessConfig::new(10.0, 0.0, 0.5, 125, 10000, false, None);
         let output = gbm.euler_maruyama(&config);
+
+        // Test the distribution of the final values.
+        let X_T: Vec<f64> = output
+            .paths
+            .iter()
+            .filter_map(|v| v.last().copied())
+            .collect();
+
+        let E_XT = X_T.mean();
+        let V_XT = X_T.variance();
+        // E[X_T] = https://en.wikipedia.org/wiki/Geometric_Brownian_motion
+        assert_approx_equal!(E_XT, 10. * (0.05 * 0.5_f64).exp(), 0.5);
+        // V[X_T] = https://en.wikipedia.org/wiki/Geometric_Brownian_motion
+        assert_approx_equal!(
+            V_XT,
+            10. * 10. * (2. * 0.05 * 0.5_f64).exp() * ((0.9 * 0.9 * 0.5_f64).exp() - 1.),
+            5.0
+        );
+
+        // let file1 = "./images/GBM1.png";
+        // plot_vector((&output.trajectories[0]).clone(), file1).unwrap();
+        // let file2 = "./images/GBM2.png";
+        // plot_vector((&output.trajectories[1]).clone(), file2)
+    }
+
+    #[test]
+    fn test_geometric_brownian_motion_euler_maruyama_seeded() {
+        let gbm = GeometricBrownianMotion::new(0.05, 0.9);
+
+        let config = StochasticProcessConfig::new(10.0, 0.0, 0.5, 125, 10000, false, Some(1337));
+        let output = gbm.euler_maruyama(&config);
+
+        // Test the distribution of the final values.
+        let X_T: Vec<f64> = output
+            .paths
+            .iter()
+            .filter_map(|v| v.last().copied())
+            .collect();
+
+        let E_XT = X_T.mean();
+        let V_XT = X_T.variance();
+        // E[X_T] = https://en.wikipedia.org/wiki/Geometric_Brownian_motion
+        assert_approx_equal!(E_XT, 10. * (0.05 * 0.5_f64).exp(), 0.5);
+        // V[X_T] = https://en.wikipedia.org/wiki/Geometric_Brownian_motion
+        assert_approx_equal!(
+            V_XT,
+            10. * 10. * (2. * 0.05 * 0.5_f64).exp() * ((0.9 * 0.9 * 0.5_f64).exp() - 1.),
+            5.0
+        );
+
+        // let file1 = "./images/GBM1.png";
+        // plot_vector((&output.trajectories[0]).clone(), file1).unwrap();
+        // let file2 = "./images/GBM2.png";
+        // plot_vector((&output.trajectories[1]).clone(), file2)
+    }
+
+    #[test]
+    fn test_geometric_brownian_motion_milstein() {
+        let gbm = GeometricBrownianMotion::new(0.05, 0.9);
+
+        let config = StochasticProcessConfig::new(10.0, 0.0, 0.5, 125, 10000, false, None);
+        let output = gbm.milstein(&config);
+
+        // Test the distribution of the final values.
+        let X_T: Vec<f64> = output
+            .paths
+            .iter()
+            .filter_map(|v| v.last().copied())
+            .collect();
+
+        let E_XT = X_T.mean();
+        let V_XT = X_T.variance();
+        // E[X_T] = https://en.wikipedia.org/wiki/Geometric_Brownian_motion
+        assert_approx_equal!(E_XT, 10. * (0.05 * 0.5_f64).exp(), 0.5);
+        // V[X_T] = https://en.wikipedia.org/wiki/Geometric_Brownian_motion
+        assert_approx_equal!(
+            V_XT,
+            10. * 10. * (2. * 0.05 * 0.5_f64).exp() * ((0.9 * 0.9 * 0.5_f64).exp() - 1.),
+            5.0
+        );
+
+        // let file1 = "./images/GBM1.png";
+        // plot_vector((&output.trajectories[0]).clone(), file1).unwrap();
+        // let file2 = "./images/GBM2.png";
+        // plot_vector((&output.trajectories[1]).clone(), file2)
+    }
+
+    #[test]
+    fn test_geometric_brownian_motion_milstein_seeded() {
+        let gbm = GeometricBrownianMotion::new(0.05, 0.9);
+
+        let config = StochasticProcessConfig::new(10.0, 0.0, 0.5, 125, 10000, false, Some(1337));
+        let output = gbm.milstein(&config);
+
+        // Test the distribution of the final values.
+        let X_T: Vec<f64> = output
+            .paths
+            .iter()
+            .filter_map(|v| v.last().copied())
+            .collect();
+
+        let E_XT = X_T.mean();
+        let V_XT = X_T.variance();
+        // E[X_T] = https://en.wikipedia.org/wiki/Geometric_Brownian_motion
+        assert_approx_equal!(E_XT, 10. * (0.05 * 0.5_f64).exp(), 0.5);
+        // V[X_T] = https://en.wikipedia.org/wiki/Geometric_Brownian_motion
+        assert_approx_equal!(
+            V_XT,
+            10. * 10. * (2. * 0.05 * 0.5_f64).exp() * ((0.9 * 0.9 * 0.5_f64).exp() - 1.),
+            5.0
+        );
+
+        // let file1 = "./images/GBM1.png";
+        // plot_vector((&output.trajectories[0]).clone(), file1).unwrap();
+        // let file2 = "./images/GBM2.png";
+        // plot_vector((&output.trajectories[1]).clone(), file2)
+    }
+
+    #[test]
+    fn test_geometric_brownian_motion_strang_splitting() {
+        let gbm = GeometricBrownianMotion::new(0.05, 0.9);
+
+        let config = StochasticProcessConfig::new(10.0, 0.0, 0.5, 125, 10000, false, None);
+        let output = gbm.strang_splitting(&config);
+
+        // Test the distribution of the final values.
+        let X_T: Vec<f64> = output
+            .paths
+            .iter()
+            .filter_map(|v| v.last().copied())
+            .collect();
+
+        let E_XT = X_T.mean();
+        let V_XT = X_T.variance();
+        // E[X_T] = https://en.wikipedia.org/wiki/Geometric_Brownian_motion
+        assert_approx_equal!(E_XT, 10. * (0.05 * 0.5_f64).exp(), 0.5);
+        // V[X_T] = https://en.wikipedia.org/wiki/Geometric_Brownian_motion
+        assert_approx_equal!(
+            V_XT,
+            10. * 10. * (2. * 0.05 * 0.5_f64).exp() * ((0.9 * 0.9 * 0.5_f64).exp() - 1.),
+            5.0
+        );
+
+        // let file1 = "./images/GBM1.png";
+        // plot_vector((&output.trajectories[0]).clone(), file1).unwrap();
+        // let file2 = "./images/GBM2.png";
+        // plot_vector((&output.trajectories[1]).clone(), file2)
+    }
+
+    #[test]
+    fn test_geometric_brownian_motion_strang_splitting_seeded() {
+        let gbm = GeometricBrownianMotion::new(0.05, 0.9);
+
+        let config = StochasticProcessConfig::new(10.0, 0.0, 0.5, 125, 10000, false, Some(1337));
+        let output = gbm.strang_splitting(&config);
 
         // Test the distribution of the final values.
         let X_T: Vec<f64> = output
