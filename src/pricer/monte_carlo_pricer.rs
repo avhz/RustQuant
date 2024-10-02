@@ -11,8 +11,10 @@
 
 use crate::{
     instruments::Payoff,
-    stochastics::{StochasticProcess, StochasticProcessConfig},
+    stochastics::{StochasticProcess, StochasticProcessConfig, Trajectories, StochasticMethod},
 };
+
+type ProcessFn = dyn Fn(&StochasticProcessConfig) -> Trajectories + Send + Sync;
 
 /// Monte-Carlo pricer trait.
 pub trait MonteCarloPricer<S>: Payoff
@@ -26,7 +28,13 @@ where
     /// * `process` - The [StochasticProcess] to use for the sample paths.
     /// * `config` - The [StochasticProcessConfig] for the simulation.
     /// * `rate` - The interest rate used to discount the payoff.
-    fn price_monte_carlo(&self, process: &S, config: &StochasticProcessConfig, rate: f64) -> f64;
+    fn price_monte_carlo(
+        &self,
+        process: &S,
+        config: &StochasticProcessConfig,
+        method: StochasticMethod,
+        rate: f64
+    ) -> f64;
 }
 
 /// Macro to implement `MonteCarloPricer` for a given instrument type.
@@ -40,9 +48,16 @@ macro_rules! impl_monte_carlo_pricer {
                 &self,
                 process: &S,
                 config: &StochasticProcessConfig,
+                method: StochasticMethod,
                 rate: f64,
             ) -> f64 {
-                let out = process.euler_maruyama(&config);
+                // let out = process.euler_maruyama(&config);
+
+                let out = match method {
+                    StochasticMethod::EulerMaruyama => process.euler_maruyama(config),
+                    StochasticMethod::Milstein => process.milstein(config),
+                    StochasticMethod::StrangSplitting => process.strang_splitting(config),
+                };
 
                 let n = out.paths.len();
 
