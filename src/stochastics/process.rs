@@ -204,43 +204,37 @@ pub trait StochasticProcess: Sync {
     /// * `n_steps` - The number of time steps between `t_0` and `t_n`.
     /// * `m_paths` - How many process trajectories to simulate.
     /// * `parallel` - Run in parallel or not (recommended for > 1000 paths).
+    /// * `seed` - Optional argument to initialize random number generator
     fn euler_maruyama(&self, config: &StochasticProcessConfig) -> Trajectories {
-        let (x_0, t_0, t_n, n_steps, m_paths, parallel) = config.unpack();
-        assert!(t_0 < t_n);
+        assert!(config.t_0 < config.t_n);
 
-        let dt: f64 = (t_n - t_0) / (n_steps as f64);
+        let dt: f64 = (config.t_n - config.t_0) / (config.n_steps as f64);
+        let times: Vec<f64> = (0..=config.n_steps).map(|t| config.t_0 + dt * (t as f64)).collect();
+        
+        let scheme = {
+            |path: &mut Vec<f64>, mut rng: StdRng | {
+                let normal_dist: rand_distr::Normal<f64> = rand_distr::Normal::new(0.0, 1.0).unwrap();
+                let times_slice: &Vec<f64> = &times;
 
-        // Initialise empty paths and fill in the time points.
-        let mut paths = vec![vec![x_0; n_steps + 1]; m_paths];
-        let times: Vec<f64> = (0..=n_steps).map(|t| t_0 + dt * (t as f64)).collect();
+                path.clear();
+                path.push(config.x_0);
+                let diffusion_scale: f64 = dt.sqrt();
+                let mut dW: f64;
 
-        let path_generator = |path: &mut Vec<f64>| {
-            let mut rng = rand::thread_rng();
-            let scale = dt.sqrt();
-            let dW: Vec<f64> = rand_distr::Normal::new(0.0, 1.0)
-                .unwrap()
-                .sample_iter(&mut rng)
-                .take(n_steps)
-                .map(|z| z * scale)
-                .collect();
-
-            for t in 0..n_steps {
-                path[t + 1] = path[t]
-                    + self.drift(path[t], times[t]) * dt
-                    + self.diffusion(path[t], times[t]) * dW[t];
+                for t in 0..config.n_steps {
+                    dW = diffusion_scale * normal_dist.sample(&mut rng);
+                    path.push(
+                        path[t]
+                        + self.drift(path[t], times_slice[t]) * dt
+                        + self.diffusion(path[t], times_slice[t]) * dW
+                    )
+                }
             }
         };
-
-        if parallel {
-            paths.par_iter_mut().for_each(path_generator);
-        } else {
-            paths.iter_mut().for_each(path_generator);
-        }
-
-        Trajectories { times, paths }
+        monte_carlo(scheme, config.x_0, &times, config.n_steps, config.m_paths, config.parallel, config.seed)
     }
 
-    /// Euler-Maruyama discretisation scheme with a choice of random seed.
+    /// Milstein scheme.
     ///
     /// # Arguments:
     /// * `x_0` - The process' initial value at `t_0`.
@@ -249,49 +243,122 @@ pub trait StochasticProcess: Sync {
     /// * `n_steps` - The number of time steps between `t_0` and `t_n`.
     /// * `m_paths` - How many process trajectories to simulate.
     /// * `parallel` - Run in parallel or not (recommended for > 1000 paths).
-    /// * `seed` - The seed for the random number generator.
-    fn seedable_euler_maruyama(
-        &self,
-        x_0: f64,
-        t_0: f64,
-        t_n: f64,
-        n_steps: usize,
-        m_paths: usize,
-        parallel: bool,
-        seed: u64,
-    ) -> Trajectories {
-        assert!(t_0 < t_n);
+    /// * `seed` - Optional argument to initialize random number generator
+    fn milstein(&self, config: &StochasticProcessConfig) -> Trajectories {
+        assert!(config.t_0 < config.t_n);
 
-        let dt: f64 = (t_n - t_0) / (n_steps as f64);
+        let dt: f64 = (config.t_n - config.t_0) / (config.n_steps as f64);
+        let times: Vec<f64> = (0..=config.n_steps).map(|t| config.t_0 + dt * (t as f64)).collect();
+        
+        let scheme = {
+            |path: &mut Vec<f64>, mut rng: StdRng | {
+                let normal_dist: rand_distr::Normal<f64> = rand_distr::Normal::new(0.0, 1.0).unwrap();
+                let times_slice: &Vec<f64> = &times;
 
-        // Initialise empty paths and fill in the time points.
-        let mut paths = vec![vec![x_0; n_steps + 1]; m_paths];
-        let times: Vec<f64> = (0..=n_steps).map(|t| t_0 + dt * (t as f64)).collect();
+                path.clear();
+                path.push(config.x_0);
+                let diffusion_scale: f64 = dt.sqrt();
+                let mut dW: f64;
 
-        let path_generator = |path: &mut Vec<f64>| {
-            let mut rng = StdRng::seed_from_u64(seed);
-            let scale = dt.sqrt();
-            let dW: Vec<f64> = rand_distr::Normal::new(0.0, 1.0)
-                .unwrap()
-                .sample_iter(&mut rng)
-                .take(n_steps)
-                .map(|z| z * scale)
-                .collect();
-
-            for t in 0..n_steps {
-                path[t + 1] = path[t]
-                    + self.drift(path[t], times[t]) * dt
-                    + self.diffusion(path[t], times[t]) * dW[t];
+                for t in 0..config.n_steps {
+                    dW = diffusion_scale * normal_dist.sample(&mut rng);
+                    path.push(
+                        path[t]
+                        + self.drift(path[t], times_slice[t]) * dt
+                        + self.diffusion(path[t], times_slice[t]) * dW
+                        + 0.5 * (
+                            self.diffusion(path[t], times_slice[t]) 
+                            *  (
+                                    (
+                                        self.diffusion(path[t] + 1e-5, times_slice[t])
+                                        - self.diffusion(path[t] - 1e-5, times_slice[t])
+                                    )
+                                /  2.0 * 1e-5
+                            )
+                            * ((dW * dW) - dt)
+                        )
+                    )
+                }
             }
         };
+        monte_carlo(scheme, config.x_0, &times, config.n_steps, config.m_paths, config.parallel, config.seed)
+    }
 
-        if parallel {
-            paths.par_iter_mut().for_each(path_generator);
-        } else {
-            paths.iter_mut().for_each(path_generator);
-        }
+    /// Strang Splitting.
+    ///
+    /// # Arguments:
+    /// * `x_0` - The process' initial value at `t_0`.
+    /// * `t_0` - The initial time point.
+    /// * `t_n` - The terminal time point.
+    /// * `n_steps` - The number of time steps between `t_0` and `t_n`.
+    /// * `m_paths` - How many process trajectories to simulate.
+    /// * `parallel` - Run in parallel or not (recommended for > 1000 paths).
+    /// * `seed` - Optional argument to initialize random number generator
+    fn strang_splitting(&self, config: &StochasticProcessConfig) -> Trajectories {
+        assert!(config.t_0 < config.t_n);
 
-        Trajectories { times, paths }
+        let dt: f64 = (config.t_n - config.t_0) / (config.n_steps as f64);
+        let times: Vec<f64> = (0..=config.n_steps).map(|t| config.t_0 + dt * (t as f64)).collect();
+        
+        let scheme = {
+            |path: &mut Vec<f64>, mut rng: StdRng| {
+                let normal_dist: rand_distr::Normal<f64> = rand_distr::Normal::new(0.0, 1.0).unwrap();
+                let times_slice: &Vec<f64> = &times;
+
+                path.clear();
+                path.push(config.x_0);
+                let diffusion_scale: f64 = dt.sqrt();
+                let mut dW: f64;
+
+                for t in 0..config.n_steps {
+                    dW = diffusion_scale * normal_dist.sample(&mut rng);
+                    path.push(
+                        path[t]
+                        + 0.5 * self.drift(path[t], times_slice[t]) * dt
+                        + self.diffusion(
+                            path[t]
+                            + 0.5 * self.drift(path[t], times_slice[t]) * dt, times_slice[t] + 0.5 * dt
+                        ) 
+                        * dW
+                        + 0.5 * self.drift(path[t], times_slice[t]) * dt
+                    )
+                }
+            }
+        };
+        monte_carlo(scheme, config.x_0, &times, config.n_steps, config.m_paths, config.parallel, config.seed)
+    }
+}
+
+fn monte_carlo<F>(
+    scheme: F,
+    x_0: f64,
+    times: &Vec<f64>,
+    n_steps: usize,
+    m_paths: usize,
+    parallel: bool,
+    seed: Option<u64>
+) -> Trajectories
+where
+    F: Fn(&mut Vec<f64>, StdRng) + Send + Sync,
+{
+    let mut paths: Vec<Vec<f64>> = vec![vec![x_0; n_steps + 1]; m_paths];
+    let base_seed: u64 = seed.unwrap_or_else(rand::random);
+
+    if parallel {
+        paths.par_iter_mut().enumerate().for_each(|(i, path)| {
+            let rng: StdRng = StdRng::seed_from_u64(base_seed.wrapping_add(i as u64));
+            scheme(path, rng.clone());
+        });
+    } else {
+        paths.iter_mut().enumerate().for_each(|(i, path)| {
+            let rng: StdRng = StdRng::seed_from_u64(base_seed.wrapping_add(i as u64));
+            scheme(path, rng.clone());
+        });
+    }
+
+    Trajectories { 
+        times: times.to_vec(), 
+        paths: paths
     }
 }
 
