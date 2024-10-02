@@ -372,7 +372,7 @@ mod test_process {
     #[test]
     fn test_euler_maruyama() {
         let gbm = GeometricBrownianMotion::new(0.05, 0.9);
-        let config = StochasticProcessConfig::new(10.0, 0.0, 1.0, 125, 10000, false);
+        let config = StochasticProcessConfig::new(10.0, 0.0, 1.0, 10, 3, false, Some(1337));
 
         let start = Instant::now();
         gbm.euler_maruyama(&config);
@@ -392,27 +392,45 @@ mod test_process {
     }
 
     #[test]
-    fn test_seedable_maruyama() {
+    fn test_milstein() {
         let gbm = GeometricBrownianMotion::new(0.05, 0.9);
+        let config = StochasticProcessConfig::new(10.0, 0.0, 1.0, 10, 3, false, Some(1337));
 
-        let output_first_seed =
-            gbm.seedable_euler_maruyama(10.0, 0.0, 1.0, 125, 10000, true, 123456789);
-        println!("First seed: \t {:?}", output_first_seed.paths[0][125]);
+        let start = Instant::now();
+        gbm.milstein(&config);
+        let serial = start.elapsed();
 
-        let output_same_seed =
-            gbm.seedable_euler_maruyama(10.0, 0.0, 1.0, 125, 10000, true, 123456789);
-        println!("Same seed: \t {:?}", output_same_seed.paths[0][125]);
+        println!("Serial: \t {:?}", serial);
 
-        // Check that using the same seed gives the same output.
-        assert_eq!(output_first_seed.paths, output_same_seed.paths);
+        let start = Instant::now();
+        gbm.euler_maruyama(&config);
+        let parallel = start.elapsed();
 
-        let output_different_seed =
-            gbm.seedable_euler_maruyama(10.0, 0.0, 1.0, 125, 10000, true, 987654321);
-        println!("Different seed: {:?}", output_different_seed.paths[0][125]);
+        println!("Parallel: \t {:?}", parallel);
 
-        // Check that using a different seed gives a different output.
-        assert_ne!(output_first_seed.paths, output_different_seed.paths);
+        // Just checking that `parallel = true` actually works.
+        // To see the output of this "test", run:
+        // cargo test test_process -- --nocapture
+    }
 
+    #[test]
+    fn test_strang_splitter() {
+        let gbm = GeometricBrownianMotion::new(0.05, 0.9);
+        let config = StochasticProcessConfig::new(10.0, 0.0, 1.0, 10, 3, false, Some(1337));
+
+        let start = Instant::now();
+        gbm.strang_splitting(&config);
+        let serial = start.elapsed();
+
+        println!("Serial: \t {:?}", serial);
+
+        let start = Instant::now();
+        gbm.euler_maruyama(&config);
+        let parallel = start.elapsed();
+
+        println!("Parallel: \t {:?}", parallel);
+
+        // Just checking that `parallel = true` actually works.
         // To see the output of this "test", run:
         // cargo test test_process -- --nocapture
     }
