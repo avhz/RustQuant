@@ -46,14 +46,14 @@ mod tests_extended_vasicek {
     // }
 
     #[test]
-    fn test_extended_vasicek() {
+    fn test_extended_vasicek_euler_maruyama() {
         let sigma = 2.0;
         let alpha = 2.0;
         let theta = 0.5;
 
         let ev = ExtendedVasicek::new(alpha, sigma, theta);
 
-        let config = StochasticProcessConfig::new(10.0, 0.0, 1.0, 150, 1000, false);
+        let config = StochasticProcessConfig::new(10.0, 0.0, 1.0, 150, 1000, false, None);
 
         let output = ev.euler_maruyama(&config);
 
@@ -68,6 +68,150 @@ mod tests_extended_vasicek {
         // Note these tests are identical to the Hull-White
         // E[X_T] = X_0*exp(-alpha_t)(t) T) X_0 + (theta/alpha_t)(t))(1- exp(-alpha_t)(t) * T))
         // Expectation with constant reduces to Hull-White
+        assert_approx_equal!(
+            E_XT,
+            (-alpha * 1.0_f64).exp() * 10.0 + (theta / alpha) * (1.0 - alpha * 1.0_f64).exp(),
+            0.25
+        );
+    }
+
+    #[test]
+    fn test_extended_vasicek_euler_maruyama_seeded() {
+        let sigma = 2.0;
+        let alpha = 2.0;
+        let theta = 0.5;
+
+        let ev = ExtendedVasicek::new(alpha, sigma, theta);
+
+        let config = StochasticProcessConfig::new(10.0, 0.0, 1.0, 150, 1000, false, Some(1337));
+
+        let output = ev.euler_maruyama(&config);
+
+        // Test the distribution of the final values.
+        let X_T: Vec<f64> = output
+            .paths
+            .iter()
+            .filter_map(|v| v.last().copied())
+            .collect();
+
+        let E_XT = X_T.mean();
+
+        assert_approx_equal!(
+            E_XT,
+            (-alpha * 1.0_f64).exp() * 10.0 + (theta / alpha) * (1.0 - alpha * 1.0_f64).exp(),
+            0.25
+        );
+    }
+
+    #[test]
+    fn test_extended_vasicek_milstein() {
+        let sigma = 2.0;
+        let alpha = 2.0;
+        let theta = 0.5;
+
+        let ev = ExtendedVasicek::new(alpha, sigma, theta);
+
+        let config = StochasticProcessConfig::new(10.0, 0.0, 1.0, 150, 1000, false, None);
+
+        let output = ev.milstein(&config);
+
+        // Test the distribution of the final values.
+        let X_T: Vec<f64> = output
+            .paths
+            .iter()
+            .filter_map(|v| v.last().copied())
+            .collect();
+
+        let E_XT = X_T.mean();
+        // Note these tests are identical to the Hull-White
+        // E[X_T] = X_0*exp(-alpha_t)(t) T) X_0 + (theta/alpha_t)(t))(1- exp(-alpha_t)(t) * T))
+        // Expectation with constant reduces to Hull-White
+        assert_approx_equal!(
+            E_XT,
+            (-alpha * 1.0_f64).exp() * 10.0 + (theta / alpha) * (1.0 - alpha * 1.0_f64).exp(),
+            0.25
+        );
+    }
+
+    #[test]
+    fn test_extended_vasicek_milstein_seeded() {
+        let sigma = 2.0;
+        let alpha = 2.0;
+        let theta = 0.5;
+
+        let ev = ExtendedVasicek::new(alpha, sigma, theta);
+
+        let config = StochasticProcessConfig::new(10.0, 0.0, 1.0, 150, 1000, false, Some(1337));
+
+        let output = ev.milstein(&config);
+
+        // Test the distribution of the final values.
+        let X_T: Vec<f64> = output
+            .paths
+            .iter()
+            .filter_map(|v| v.last().copied())
+            .collect();
+
+        let E_XT = X_T.mean();
+
+        assert_approx_equal!(
+            E_XT,
+            (-alpha * 1.0_f64).exp() * 10.0 + (theta / alpha) * (1.0 - alpha * 1.0_f64).exp(),
+            0.25
+        );
+    }
+
+    #[test]
+    fn test_extended_vasicek_strang_splitting() {
+        let sigma = 2.0;
+        let alpha = 2.0;
+        let theta = 0.5;
+
+        let ev = ExtendedVasicek::new(alpha, sigma, theta);
+
+        let config = StochasticProcessConfig::new(10.0, 0.0, 1.0, 150, 1000, false, None);
+
+        let output = ev.strang_splitting(&config);
+
+        // Test the distribution of the final values.
+        let X_T: Vec<f64> = output
+            .paths
+            .iter()
+            .filter_map(|v| v.last().copied())
+            .collect();
+
+        let E_XT = X_T.mean();
+        // Note these tests are identical to the Hull-White
+        // E[X_T] = X_0*exp(-alpha_t)(t) T) X_0 + (theta/alpha_t)(t))(1- exp(-alpha_t)(t) * T))
+        // Expectation with constant reduces to Hull-White
+        assert_approx_equal!(
+            E_XT,
+            (-alpha * 1.0_f64).exp() * 10.0 + (theta / alpha) * (1.0 - alpha * 1.0_f64).exp(),
+            0.25
+        );
+    }
+
+    #[test]
+    fn test_extended_vasicek_strang_splitting_seeded() {
+        let sigma = 2.0;
+        let alpha = 2.0;
+        let theta = 0.5;
+
+        let ev = ExtendedVasicek::new(alpha, sigma, theta);
+
+        let config = StochasticProcessConfig::new(10.0, 0.0, 1.0, 150, 1000, false, Some(1337));
+
+        let output = ev.strang_splitting(&config);
+
+        // Test the distribution of the final values.
+        let X_T: Vec<f64> = output
+            .paths
+            .iter()
+            .filter_map(|v| v.last().copied())
+            .collect();
+
+        let E_XT = X_T.mean();
+
         assert_approx_equal!(
             E_XT,
             (-alpha * 1.0_f64).exp() * 10.0 + (theta / alpha) * (1.0 - alpha * 1.0_f64).exp(),

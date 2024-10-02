@@ -16,7 +16,7 @@ use RustQuant::instruments::options::OptionContractBuilder;
 use RustQuant::instruments::BarrierOption;
 use RustQuant::models::geometric_brownian_motion::GeometricBrownianMotion;
 use RustQuant::pricer::MonteCarloPricer;
-use RustQuant::stochastics::StochasticProcessConfig;
+use RustQuant::stochastics::{StochasticProcessConfig, StochasticMethod};
 
 fn main() {
     // Set up the parameters.
@@ -28,7 +28,7 @@ fn main() {
 
     // Create the stochastic process.
     let process = GeometricBrownianMotion::new(rate, volatility);
-    let config = StochasticProcessConfig::new(underlying, 0.0, time, 365, 100_000, true);
+    let config = StochasticProcessConfig::new(underlying, 0.0, time, 365, 100_000, true, None);
 
     // Create the option contract.
     let direction = TypeFlag::Call;
@@ -55,15 +55,15 @@ fn main() {
 
     println!(
         "Vanilla: {:?}",
-        vanilla.price_monte_carlo(&process, &config, rate)
+        vanilla.price_monte_carlo(&process, &config, StochasticMethod::EulerMaruyama, rate)
     );
     println!(
         "Asian: {:?}",
-        asian.price_monte_carlo(&process, &config, rate)
+        asian.price_monte_carlo(&process, &config, StochasticMethod::EulerMaruyama, rate)
     );
     println!(
         "Power: {:?}",
-        power.price_monte_carlo(&process, &config, rate)
+        power.price_monte_carlo(&process, &config, StochasticMethod::EulerMaruyama, rate)
     );
 
     // let start = Instant::now();

@@ -9,6 +9,9 @@
 
 use super::{OptionContract, TypeFlag};
 use crate::instruments::Payoff;
+use crate::{
+    stochastics::{StochasticProcess, StochasticProcessConfig, Trajectories, StochasticMethod},
+};
 
 /// Vanilla option.
 #[derive(Debug, Clone)]
@@ -45,6 +48,7 @@ mod test_vanilla_option_monte_carlo {
     use crate::instruments::AveragingMethod;
     use crate::instruments::StrikeFlag;
     use crate::pricer::monte_carlo_pricer::MonteCarloPricer;
+    use crate::stochastics::StochasticProcess;
     use crate::stochastics::StochasticProcessConfig;
     use crate::{
         instruments::{ExerciseFlag, OptionContractBuilder},
@@ -72,11 +76,12 @@ mod test_vanilla_option_monte_carlo {
         let option = VanillaOption::new(contract, strike);
         let process = GeometricBrownianMotion::new(interest_rate, volatility);
 
-        let config =
-            StochasticProcessConfig::new(underlying, 0.0, time_to_maturity, 1, 1_000_000, true);
-
+        let config = StochasticProcessConfig::new(
+            underlying, 0.0, time_to_maturity, 1, 1_000_000, true, None
+        );
+        process.euler_maruyama(&config);
         let start = Instant::now();
-        let price = option.price_monte_carlo(&process, &config, interest_rate);
+        let price = option.price_monte_carlo(&process, &config, StochasticMethod::EulerMaruyama,interest_rate);
         println!("Elapsed time: {:?}", start.elapsed());
 
         println!("Price: {}", price);
@@ -103,10 +108,10 @@ mod test_vanilla_option_monte_carlo {
         let process = GeometricBrownianMotion::new(interest_rate, volatility);
 
         let config =
-            StochasticProcessConfig::new(underlying, 0.0, time_to_maturity, 1000, 1000, true);
+            StochasticProcessConfig::new(underlying, 0.0, time_to_maturity, 1000, 1000, true, None);
 
         let start = Instant::now();
-        let price = option.price_monte_carlo(&process, &config, interest_rate);
+        let price = option.price_monte_carlo(&process, &config, StochasticMethod::EulerMaruyama, interest_rate);
         println!("Elapsed time: {:?}", start.elapsed());
 
         println!("Price: {}", price);

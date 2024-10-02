@@ -56,13 +56,13 @@ mod tests_black_derman_toy {
     // }
 
     #[test]
-    fn test_black_derman_toy_constant_sigma() {
+    fn test_black_derman_toy_constant_sigma_euler_maruyama() {
         let sigma = 0.13;
         let theta = 1.5;
 
         let hw = BlackDermanToy::new(sigma, theta);
 
-        let config = StochasticProcessConfig::new(0.13, 0.0, 1.0, 100, 1000, false);
+        let config = StochasticProcessConfig::new(0.13, 0.0, 1.0, 100, 1000, false, None);
         let output = hw.euler_maruyama(&config);
 
         // Test the distribution of the final values.
@@ -78,13 +78,229 @@ mod tests_black_derman_toy {
     }
 
     #[test]
-    fn test_black_derman_toy_varying_sigma() {
+    fn test_black_derman_toy_varying_sigma_euler_maruyama() {
         let sigma = 0.13;
         let theta = 1.5;
 
         let hw = BlackDermanToy::new(sigma, theta);
-        let config = StochasticProcessConfig::new(0.13, 0.0, 1.0, 100, 1000, false);
+        let config = StochasticProcessConfig::new(0.13, 0.0, 1.0, 100, 1000, false, None);
         let output = hw.euler_maruyama(&config);
+
+        // Test the distribution of the final values.
+        let X_T: Vec<f64> = output
+            .paths
+            .iter()
+            .filter_map(|v| v.last().copied())
+            .collect();
+
+        let E_XT = X_T.mean();
+        assert!(E_XT.exp() >= 0.);
+        // println!("Final expected short rate: {}", E_XT);
+    }
+
+    #[test]
+    fn test_black_derman_toy_constant_sigma_euler_maruyama_seeded() {
+        let sigma = 0.13;
+        let theta = 1.5;
+
+        let hw = BlackDermanToy::new(sigma, theta);
+
+        let config = StochasticProcessConfig::new(0.13, 0.0, 1.0, 100, 1000, false, Some(1337));
+        let output = hw.euler_maruyama(&config);
+
+        // Test the distribution of the final values.
+        let X_T: Vec<f64> = output
+            .paths
+            .iter()
+            .filter_map(|v| v.last().copied())
+            .collect();
+
+        let E_XT = X_T.mean();
+        assert!(E_XT.exp() >= 0.);
+        // println!("Final expected short rate: {}", E_XT);
+    }
+
+    #[test]
+    fn test_black_derman_toy_varying_sigma_euler_maruyama_seeded() {
+        let sigma = 0.13;
+        let theta = 1.5;
+
+        let hw = BlackDermanToy::new(sigma, theta);
+        let config = StochasticProcessConfig::new(0.13, 0.0, 1.0, 100, 1000, false, Some(1337));
+        let output = hw.euler_maruyama(&config);
+
+        // Test the distribution of the final values.
+        let X_T: Vec<f64> = output
+            .paths
+            .iter()
+            .filter_map(|v| v.last().copied())
+            .collect();
+
+        let E_XT = X_T.mean();
+        assert!(E_XT.exp() >= 0.);
+        // println!("Final expected short rate: {}", E_XT);
+    }
+
+    #[test]
+    fn test_black_derman_toy_constant_sigma_milstein() {
+        let sigma = 0.13;
+        let theta = 1.5;
+
+        let hw = BlackDermanToy::new(sigma, theta);
+
+        let config = StochasticProcessConfig::new(0.13, 0.0, 1.0, 100, 1000, false, None);
+        let output = hw.milstein(&config);
+
+        // Test the distribution of the final values.
+        let X_T: Vec<f64> = output
+            .paths
+            .iter()
+            .filter_map(|v| v.last().copied())
+            .collect();
+
+        let E_XT = X_T.mean();
+        assert!(E_XT.exp() >= 0.);
+        // println!("Final expected short rate: {}", E_XT);
+    }
+
+    #[test]
+    fn test_black_derman_toy_varying_sigma_milstein() {
+        let sigma = 0.13;
+        let theta = 1.5;
+
+        let hw = BlackDermanToy::new(sigma, theta);
+        let config = StochasticProcessConfig::new(0.13, 0.0, 1.0, 100, 1000, false, None);
+        let output = hw.milstein(&config);
+
+        // Test the distribution of the final values.
+        let X_T: Vec<f64> = output
+            .paths
+            .iter()
+            .filter_map(|v| v.last().copied())
+            .collect();
+
+        let E_XT = X_T.mean();
+        assert!(E_XT.exp() >= 0.);
+        // println!("Final expected short rate: {}", E_XT);
+    }
+
+    #[test]
+    fn test_black_derman_toy_constant_sigma_milstein_seeded() {
+        let sigma = 0.13;
+        let theta = 1.5;
+
+        let hw = BlackDermanToy::new(sigma, theta);
+
+        let config = StochasticProcessConfig::new(0.13, 0.0, 1.0, 100, 1000, false, Some(1337));
+        let output = hw.milstein(&config);
+
+        // Test the distribution of the final values.
+        let X_T: Vec<f64> = output
+            .paths
+            .iter()
+            .filter_map(|v| v.last().copied())
+            .collect();
+
+        let E_XT = X_T.mean();
+        assert!(E_XT.exp() >= 0.);
+        // println!("Final expected short rate: {}", E_XT);
+    }
+
+    #[test]
+    fn test_black_derman_toy_varying_sigma_milstein_seeded() {
+        let sigma = 0.13;
+        let theta = 1.5;
+
+        let hw = BlackDermanToy::new(sigma, theta);
+        let config = StochasticProcessConfig::new(0.13, 0.0, 1.0, 100, 1000, false, Some(1337));
+        let output = hw.milstein(&config);
+
+        // Test the distribution of the final values.
+        let X_T: Vec<f64> = output
+            .paths
+            .iter()
+            .filter_map(|v| v.last().copied())
+            .collect();
+
+        let E_XT = X_T.mean();
+        assert!(E_XT.exp() >= 0.);
+        // println!("Final expected short rate: {}", E_XT);
+    }
+
+
+    #[test]
+    fn test_black_derman_toy_constant_sigma_strang_splitting() {
+        let sigma = 0.13;
+        let theta = 1.5;
+
+        let hw = BlackDermanToy::new(sigma, theta);
+
+        let config = StochasticProcessConfig::new(0.13, 0.0, 1.0, 100, 1000, false, None);
+        let output = hw.strang_splitting(&config);
+
+        // Test the distribution of the final values.
+        let X_T: Vec<f64> = output
+            .paths
+            .iter()
+            .filter_map(|v| v.last().copied())
+            .collect();
+
+        let E_XT = X_T.mean();
+        assert!(E_XT.exp() >= 0.);
+        // println!("Final expected short rate: {}", E_XT);
+    }
+
+    #[test]
+    fn test_black_derman_toy_varying_sigma_strang_splitting() {
+        let sigma = 0.13;
+        let theta = 1.5;
+
+        let hw = BlackDermanToy::new(sigma, theta);
+        let config = StochasticProcessConfig::new(0.13, 0.0, 1.0, 100, 1000, false, None);
+        let output = hw.strang_splitting(&config);
+
+        // Test the distribution of the final values.
+        let X_T: Vec<f64> = output
+            .paths
+            .iter()
+            .filter_map(|v| v.last().copied())
+            .collect();
+
+        let E_XT = X_T.mean();
+        assert!(E_XT.exp() >= 0.);
+        // println!("Final expected short rate: {}", E_XT);
+    }
+
+    #[test]
+    fn test_black_derman_toy_constant_sigma_strang_splitting_seeded() {
+        let sigma = 0.13;
+        let theta = 1.5;
+
+        let hw = BlackDermanToy::new(sigma, theta);
+
+        let config = StochasticProcessConfig::new(0.13, 0.0, 1.0, 100, 1000, false, Some(1337));
+        let output = hw.strang_splitting(&config);
+
+        // Test the distribution of the final values.
+        let X_T: Vec<f64> = output
+            .paths
+            .iter()
+            .filter_map(|v| v.last().copied())
+            .collect();
+
+        let E_XT = X_T.mean();
+        assert!(E_XT.exp() >= 0.);
+        // println!("Final expected short rate: {}", E_XT);
+    }
+
+    #[test]
+    fn test_black_derman_toy_varying_sigma_strang_splitting_seeded() {
+        let sigma = 0.13;
+        let theta = 1.5;
+
+        let hw = BlackDermanToy::new(sigma, theta);
+        let config = StochasticProcessConfig::new(0.13, 0.0, 1.0, 100, 1000, false, Some(1337));
+        let output = hw.strang_splitting(&config);
 
         // Test the distribution of the final values.
         let X_T: Vec<f64> = output
