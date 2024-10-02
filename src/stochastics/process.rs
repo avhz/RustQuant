@@ -28,6 +28,16 @@ pub struct Trajectories {
     pub paths: Vec<Vec<f64>>,
 }
 
+/// Enum for Stochastic Methods
+pub enum StochasticMethod {
+    /// Euler-Maruyama
+    EulerMaruyama,
+    /// Milstein's Method
+    Milstein,
+    /// Strang Splitting
+    StrangSplitting
+}
+
 /// Trait to implement stochastic volatility processes.
 pub trait StochasticVolatilityProcess: Sync {
     /// Base method for the asset's drift.
