@@ -7,21 +7,20 @@
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+use super::StochasticProcessConfig;
 use crate::{
     models::fractional_brownian_motion::FractionalBrownianMotion,
     stochastics::process::{StochasticProcess, Trajectories},
 };
 use nalgebra::{DMatrix, DVector, Dim, Dyn, RowDVector};
 use ndarray::{concatenate, prelude::*};
-use ndarray_rand::RandomExt;
+use ndarray_rand::{rand::random, RandomExt};
 use ndrustfft::{ndfft_par, FftHandler};
 use num::{complex::ComplexDistribution, Complex};
 use rand::Rng;
 use rand::{rngs::StdRng, SeedableRng};
 use rand_distr::StandardNormal;
 use rayon::prelude::*;
-
-use super::StochasticProcessConfig;
 
 /// Method used to generate the Fractional Brownian Motion.
 #[derive(Debug)]

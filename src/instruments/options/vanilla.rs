@@ -44,7 +44,7 @@ mod test_vanilla_option_monte_carlo {
     use crate::instruments::AsianOption;
     use crate::instruments::AveragingMethod;
     use crate::instruments::StrikeFlag;
-    use crate::pricer::monte_carlo_pricer::MonteCarloPricer;
+    use crate::pricing::monte_carlo_pricer::MonteCarloPricer;
     use crate::stochastics::StochasticProcessConfig;
     use crate::{
         instruments::{ExerciseFlag, OptionContractBuilder},

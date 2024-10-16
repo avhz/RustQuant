@@ -52,8 +52,10 @@ pub enum ReturnsType {
 pub trait YahooFinanceReader {
     /// Retrieves the price history from Yahoo! Finance.
     fn get_price_history(&mut self) -> Result<(), RustQuantError>;
-    /// Retrieves the options chain from Yahoo! Finance.
-    fn get_options_chain(&mut self) -> Result<(), RustQuantError>;
+
+    // /// Retrieves the options chain from Yahoo! Finance.
+    // fn get_options_chain(&mut self) -> Result<(), RustQuantError>;
+
     /// Retrieves the latest quote from Yahoo! Finance.
     fn get_latest_quote(&mut self) -> Result<(), RustQuantError>;
 }
@@ -222,69 +224,75 @@ impl YahooFinanceReader for YahooFinanceData {
         Ok(())
     }
 
-    fn get_options_chain(&mut self) -> Result<(), RustQuantError> {
-        let provider = yahoo::YahooConnector::new()?;
-        let response = tokio_test::block_on(provider.search_options(self.ticker.as_ref().ok_or(
-            RustQuantError::MissingInput("No ticker provided.".to_string()),
-        )?))?;
+    // fn get_options_chain(&mut self) -> Result<(), RustQuantError> {
+    //     let provider = yahoo::YahooConnector::new()?;
+    //     let response = tokio_test::block_on(provider.search_options(self.ticker.as_ref().ok_or(
+    //         RustQuantError::MissingInput("No ticker provided.".to_string()),
+    //     )?))?;
 
-        let options = response.options;
+    //     let options = response.option_chain.result;
 
-        // YOptionResult { name: "AAPL230526C00250000", strike: 250.0, last_trade_date: "2023-05-25 3:12PM EDT",
-        //                 last_price: 250.0, bid: 250.0, ask: 250.0, change: 250.0, change_pct: 250.0,
-        //                 volume: 0, open_interest: 0, impl_volatility: 250.0 }
+    //     // YOptionResult { name: "AAPL230526C00250000", strike: 250.0, last_trade_date: "2023-05-25 3:12PM EDT",
+    //     //                 last_price: 250.0, bid: 250.0, ask: 250.0, change: 250.0, change_pct: 250.0,
+    //     //                 volume: 0, open_interest: 0, impl_volatility: 250.0 }
 
-        // CANNOT IMPLEMENT THIS YET, BECAUSE THE YAHOO FINANCE API
-        // DOES NOT RETURN THE CORRECT OPTIONS CHAIN.
-        // Issue opened: https://github.com/xemwebe/yahoo_finance_api/issues/28
-        // Pull request opened: https://github.com/xemwebe/yahoo_finance_api/pull/29
-        // Pull request was merged.
-        // Now we need to wait for the next release of the yahoo_finance_api crate.
+    //     // CANNOT IMPLEMENT THIS YET, BECAUSE THE YAHOO FINANCE API
+    //     // DOES NOT RETURN THE CORRECT OPTIONS CHAIN.
+    //     // Issue opened: https://github.com/xemwebe/yahoo_finance_api/issues/28
+    //     // Pull request opened: https://github.com/xemwebe/yahoo_finance_api/pull/29
+    //     // Pull request was merged.
+    //     // Now we need to wait for the next release of the yahoo_finance_api crate.
 
-        let contract = options.iter().map(|o| o.name.clone()).collect::<Vec<_>>();
-        let strike = options.iter().map(|o| o.strike).collect::<Vec<_>>();
-        let last_trade_date = options
-            .iter()
-            .map(|o| o.last_trade_date.clone()) //(o.last_trade_date / (24 * 60 * 60)) as i32)
-            .collect::<Vec<_>>();
-        let last_price = options.iter().map(|o| o.last_price).collect::<Vec<_>>();
-        let bid = options.iter().map(|o| o.bid).collect::<Vec<_>>();
-        let ask = options.iter().map(|o| o.ask).collect::<Vec<_>>();
-        let change = options.iter().map(|o| o.change).collect::<Vec<_>>();
-        let change_pct = options.iter().map(|o| o.change_pct).collect::<Vec<_>>();
-        let volume = options.iter().map(|o| o.volume as u64).collect::<Vec<_>>();
-        let open_interest = options
-            .iter()
-            .map(|o| o.open_interest as u64)
-            .collect::<Vec<_>>();
-        let impl_volatility = options
-            .iter()
-            .map(|o| o.impl_volatility)
-            .collect::<Vec<_>>();
+    //     let contract = options
+    //         .iter()
+    //         .map(|o| o.underlying_symbol)
+    //         .collect::<Vec<_>>();
+    //     let strike = options.iter().map(|o| o.strikes).collect::<Vec<_>>();
+    //     let last_trade_date = options
+    //         .iter()
+    //         .map(|o| o.options.last_trade_date.clone()) //(o.last_trade_date / (24 * 60 * 60)) as i32)
+    //         .collect::<Vec<_>>();
+    //     let last_price = options
+    //         .iter()
+    //         .map(|o| o.options..last_price)
+    //         .collect::<Vec<_>>();
+    //     let bid = options.iter().map(|o| o.bid).collect::<Vec<_>>();
+    //     let ask = options.iter().map(|o| o.ask).collect::<Vec<_>>();
+    //     let change = options.iter().map(|o| o.change).collect::<Vec<_>>();
+    //     let change_pct = options.iter().map(|o| o.change_pct).collect::<Vec<_>>();
+    //     let volume = options.iter().map(|o| o.volume as u64).collect::<Vec<_>>();
+    //     let open_interest = options
+    //         .iter()
+    //         .map(|o| o.open_interest as u64)
+    //         .collect::<Vec<_>>();
+    //     let impl_volatility = options
+    //         .iter()
+    //         .map(|o| o.impl_volatility)
+    //         .collect::<Vec<_>>();
 
-        let df = df!(
-            "contract" => contract,
-            "strike" => strike,
-            "last_trade_date" => Series::new("last_trade_date".into(), last_trade_date)
-                .cast(&DataType::Date)
-                ?,
-            "last_price" => last_price,
-            "bid" => bid,
-            "ask" => ask,
-            "change" => change,
-            "change_pct" => change_pct,
-            "volume" => volume,
-            "open_interest" => open_interest,
-            "impl_volatility" => impl_volatility
-            // "contract" => Series::new("date", date).cast(&DataType::Date)?,
-        );
+    //     let df = df!(
+    //         "contract" => contract,
+    //         "strike" => strike,
+    //         "last_trade_date" => Series::new("last_trade_date".into(), last_trade_date)
+    //             .cast(&DataType::Date)
+    //             ?,
+    //         "last_price" => last_price,
+    //         "bid" => bid,
+    //         "ask" => ask,
+    //         "change" => change,
+    //         "change_pct" => change_pct,
+    //         "volume" => volume,
+    //         "open_interest" => open_interest,
+    //         "impl_volatility" => impl_volatility
+    //         // "contract" => Series::new("date", date).cast(&DataType::Date)?,
+    //     );
 
-        self.options_chain = Some(df?);
+    //     self.options_chain = Some(df?);
 
-        println!("{:?}", self.options_chain);
+    //     println!("{:?}", self.options_chain);
 
-        Ok(())
-    }
+    //     Ok(())
+    // }
 
     fn get_latest_quote(&mut self) -> Result<(), RustQuantError> {
         let provider = yahoo::YahooConnector::new()?;
@@ -369,12 +377,12 @@ mod test_yahoo {
         println!("Apple's latest quote: {:?}", yfd.latest_quote)
     }
 
-    #[test]
-    fn test_get_options_chain() {
-        let mut yfd = YahooFinanceData::new("AAPL".to_string());
+    // #[test]
+    // fn test_get_options_chain() {
+    //     let mut yfd = YahooFinanceData::new("AAPL".to_string());
 
-        let _ = yfd.get_options_chain();
+    //     let _ = yfd.get_options_chain();
 
-        // println!("Apple's options chain: {:?}", yfd.options_chain)
-    }
+    //     // println!("Apple's options chain: {:?}", yfd.options_chain)
+    // }
 }

@@ -120,6 +120,14 @@ pub use yahoo::*;
 pub mod curves;
 pub use curves::*;
 
+/// Market data structures and implementations.
+pub mod market_data;
+pub use market_data::*;
+
+/// Context data structures and implementations.
+pub mod context_data;
+pub use context_data::*;
+
 // /// Base surface data structure and implementations.
 // /// Surfaces are simply [Curve]s with an additional dimension.
 // /// For example, a volatility surface is a function of time and strike/moneyness.

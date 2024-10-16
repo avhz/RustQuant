@@ -15,7 +15,7 @@ use RustQuant::instruments::options::AsianOption;
 use RustQuant::instruments::options::OptionContractBuilder;
 use RustQuant::instruments::BarrierOption;
 use RustQuant::models::geometric_brownian_motion::GeometricBrownianMotion;
-use RustQuant::pricer::MonteCarloPricer;
+use RustQuant::pricing::MonteCarloPricer;
 use RustQuant::stochastics::StochasticProcessConfig;
 
 fn main() {

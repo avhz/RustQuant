@@ -1,5 +1,4 @@
-use RustQuant::pricer::MarketData;
-use RustQuant::pricer::MarketDataBuilder;
+use RustQuant::data::{MarketData, MarketDataBuilder};
 use RustQuant::time::oceania::australia::AustraliaCalendar;
 
 fn main() {
