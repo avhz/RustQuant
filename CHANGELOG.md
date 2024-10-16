@@ -6,6 +6,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.8](https://github.com/avhz/RustQuant/compare/v0.2.7...v0.2.8) - 2024-10-16
+
+### Added
+- BarrierOption Payoff and Monte-Carlo
+
+### Fixed
+- fix discount factor for Bachelier backend
+
+### Other
+- *(https://github.com/avhz/RustQuant/pull/271)* temp fix for Polars/hashbrown issue
+- Merge pull request [#268](https://github.com/avhz/RustQuant/pull/268) from broadhed/267-bachelier-options-pricer-issue
+- Merge pull request [#266](https://github.com/avhz/RustQuant/pull/266) from avhz/dependabot/cargo/plotly-0.10.0
+- Merge pull request [#265](https://github.com/avhz/RustQuant/pull/265) from avhz/dependabot/cargo/polars-0.43.1
+- Merge pull request [#261](https://github.com/avhz/RustQuant/pull/261) from avhz/dependabot/cargo/ndarray-0.16.1
+- add tests, fix impl
+- Add Netherlands calendar
+- monte-carlo example
+- vanilla option monte-carlo
+- vanilla option monte-carlo
+- market data
+- fix some comments
+
 ## [0.2.7](https://github.com/avhz/RustQuant/compare/v0.2.6...v0.2.7) - 2024-08-05
 
 ### Added
