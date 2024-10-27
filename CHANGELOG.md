@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.9](https://github.com/avhz/RustQuant/compare/v0.2.8...v0.2.9) - 2024-10-27
+
+### Added
+- All variants of Generalised BSM model impl'd for vanilla option.
+
 ## [0.2.8](https://github.com/avhz/RustQuant/compare/v0.2.7...v0.2.8) - 2024-10-16
 
 ### Added
