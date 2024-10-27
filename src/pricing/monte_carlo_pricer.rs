@@ -71,7 +71,7 @@ fn path_dependent(path: &[f64]) -> Vec<f64> {
 
 impl_monte_carlo_pricer!(crate::instruments::AsianOption, path_dependent);
 impl_monte_carlo_pricer!(crate::instruments::BinaryOption, path_independent);
-impl_monte_carlo_pricer!(crate::instruments::VanillaOption, path_independent);
+impl_monte_carlo_pricer!(crate::instruments::EuropeanVanillaOption, path_independent);
 impl_monte_carlo_pricer!(crate::instruments::PowerContract, path_independent);
 impl_monte_carlo_pricer!(crate::instruments::PowerOption, path_independent);
 impl_monte_carlo_pricer!(crate::instruments::SupershareOption, path_independent);

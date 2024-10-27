@@ -7,15 +7,12 @@
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+use super::Distribution;
 use crate::error::RustQuantError;
 use errorfunctions::RealErrorFunctions;
-
-use {
-    super::Distribution,
-    num::Complex,
-    statrs::function::erf,
-    std::f64::consts::{PI, SQRT_2},
-};
+use num::Complex;
+use statrs::function::erf;
+use std::f64::consts::{PI, SQRT_2};
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // STRUCTS
@@ -29,6 +26,11 @@ pub struct Gaussian {
     /// Variance (squared scale).
     variance: f64,
 }
+
+/// Standard-Normal distribution convenience constant.
+///
+/// Primnarily for use in option pricing modules.
+pub const N: Gaussian = Gaussian::new(0.0, 1.0);
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // IMPLEMENTATIONS
@@ -60,7 +62,7 @@ impl Gaussian {
     ///
     /// Panics if variance is not positive.
     #[must_use]
-    pub fn new(mean: f64, variance: f64) -> Self {
+    pub const fn new(mean: f64, variance: f64) -> Self {
         assert!(variance > 0.0);
 
         Self { mean, variance }

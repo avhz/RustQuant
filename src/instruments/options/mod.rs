@@ -11,6 +11,10 @@
 pub mod asian;
 pub use asian::*;
 
+/// Option models.
+pub mod option_models;
+pub use option_models::*;
+
 // /// Bachelier option pricer.
 // pub mod bachelier;
 // pub use bachelier::*;

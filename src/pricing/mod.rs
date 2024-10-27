@@ -13,6 +13,9 @@
 // MODULES
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+pub mod analytic_option_pricer;
+pub use analytic_option_pricer::*;
+
 pub mod monte_carlo_pricer;
 pub use monte_carlo_pricer::*;
 

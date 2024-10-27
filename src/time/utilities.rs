@@ -45,6 +45,15 @@ fn easter_monday(year: usize, is_orthodox: bool) -> u16 {
     EASTER_MONDAYS[usize::from(is_orthodox)][year - 1901]
 }
 
+/// Compute a default year fraction between two dates.
+///
+/// The default year fraction is computed as the
+/// actual number of days between two dates divided by 365.25.
+/// This attempts to account for leap years.
+pub fn year_fraction(start: Date, end: Date) -> f64 {
+    days_between(start, end) as f64 / 365.25
+}
+
 /// Checks if date is a weekend.
 pub fn is_weekend(date: Date) -> bool {
     let w = date.weekday();
@@ -101,11 +110,7 @@ pub fn contains_leap_year(start: Date, end: Date) -> bool {
 
 /// Function to compute the number of days between two dates.
 pub fn days_between(start: Date, end: Date) -> i64 {
-    if start > end {
-        return -days_between(end, start);
-    }
-
-    (end - start).whole_days()
+    ((end - start).abs()).whole_days()
 }
 
 /// Function to get the number of leap years in a range of `Dates`.

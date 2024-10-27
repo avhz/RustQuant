@@ -48,6 +48,17 @@ pub enum ExerciseFlag {
     },
 }
 
+impl ExerciseFlag {
+    /// Get the expiry date of the option.
+    pub fn expiry(&self) -> Date {
+        match self {
+            ExerciseFlag::European { expiry } => *expiry,
+            ExerciseFlag::American { end, .. } => *end,
+            ExerciseFlag::Bermudan { exercise_dates } => exercise_dates[exercise_dates.len() - 1],
+        }
+    }
+}
+
 /// Option strike type enum.
 ///
 /// These are used for options such as

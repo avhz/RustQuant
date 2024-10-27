@@ -7,36 +7,231 @@
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use super::{OptionContract, TypeFlag};
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// IMPORTS
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+use super::{
+    Asay82, Black76, BlackScholes73, GarmanKohlhagen83, GeneralisedBlackScholesMerton, Merton73,
+    TypeFlag,
+};
 use crate::instruments::Payoff;
+use crate::pricing::AnalyticOptionPricer;
+use crate::time::{today, year_fraction};
+use derive_builder::Builder;
+use time::Date;
 
-/// Vanilla option.
-#[derive(Debug, Clone)]
-pub struct VanillaOption {
-    /// The option contract.
-    pub contract: OptionContract,
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// STRUCTS
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    /// Strike price of the option.
+/// European vanilla option.
+#[derive(Debug, Clone, Builder)]
+pub struct EuropeanVanillaOption {
+    /// The strike price of the option.
     pub strike: f64,
+
+    /// The expiry date of the option.
+    pub expiry: Date,
+
+    /// The type of the option (call or put).
+    pub type_flag: TypeFlag,
 }
 
-impl Payoff for VanillaOption {
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// IMPLEMENTATIONS
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+macro_rules! european_vanilla_option_gbsm {
+    ($gbsm_variant:ident) => {
+        impl AnalyticOptionPricer<EuropeanVanillaOption, $gbsm_variant> {
+            /// Print a report of the option price and greeks.
+            pub fn report(&self) {
+                use std::collections::HashMap;
+
+                let map = HashMap::from([
+                    ("price", self.price()),
+                    ("delta", self.delta()),
+                    ("gamma", self.gamma()),
+                    ("theta", self.theta()),
+                    ("vega", self.vega()),
+                    ("rho", self.rho()),
+                    ("vanna", self.vanna()),
+                    ("charm", self.charm()),
+                    ("lambda", self.lambda()),
+                    ("zomma", self.zomma()),
+                    ("speed", self.speed()),
+                    ("color", self.color()),
+                    ("vomma", self.vomma()),
+                    ("ultima", self.ultima()),
+                ]);
+
+                println!("Model: {:?}", self.model);
+                println!("Option: {:?}", self.option);
+                println!("{:#?}", map);
+                println!();
+            }
+
+            /// Calculate the price of the option.
+            pub fn price(&self) -> f64 {
+                let k = self.option.strike;
+                let t = year_fraction(today(), self.option.expiry);
+                let f = self.option.type_flag;
+
+                self.model.price(k, t, f)
+            }
+
+            /// Calculate the delta of the option.
+            pub fn delta(&self) -> f64 {
+                let k = self.option.strike;
+                let t = year_fraction(today(), self.option.expiry);
+                let f = self.option.type_flag;
+
+                self.model.delta(k, t, f)
+            }
+
+            /// Calculate the gamma of the option.
+            pub fn gamma(&self) -> f64 {
+                let k = self.option.strike;
+                let t = year_fraction(today(), self.option.expiry);
+                let f = self.option.type_flag;
+
+                self.model.gamma(k, t, f)
+            }
+
+            /// Calculate the theta of the option.
+            pub fn theta(&self) -> f64 {
+                let k = self.option.strike;
+                let t = year_fraction(today(), self.option.expiry);
+                let f = self.option.type_flag;
+
+                self.model.theta(k, t, f)
+            }
+
+            /// Calculate the vega of the option.
+            pub fn vega(&self) -> f64 {
+                let k = self.option.strike;
+                let t = year_fraction(today(), self.option.expiry);
+                let f = self.option.type_flag;
+
+                self.model.vega(k, t, f)
+            }
+
+            /// Calculate the rho of the option.
+            pub fn rho(&self) -> f64 {
+                let k = self.option.strike;
+                let t = year_fraction(today(), self.option.expiry);
+                let f = self.option.type_flag;
+
+                self.model.rho(k, t, f)
+            }
+
+            /// Calculate the vanna of the option.
+            pub fn vanna(&self) -> f64 {
+                let k = self.option.strike;
+                let t = year_fraction(today(), self.option.expiry);
+                let f = self.option.type_flag;
+
+                self.model.vanna(k, t, f)
+            }
+
+            /// Calculate the charm of the option.
+            pub fn charm(&self) -> f64 {
+                let k = self.option.strike;
+                let t = year_fraction(today(), self.option.expiry);
+                let f = self.option.type_flag;
+
+                self.model.charm(k, t, f)
+            }
+
+            /// Calculate the lambda of the option.
+            pub fn lambda(&self) -> f64 {
+                let k = self.option.strike;
+                let t = year_fraction(today(), self.option.expiry);
+                let f = self.option.type_flag;
+
+                self.model.lambda(k, t, f)
+            }
+
+            /// Calculate the zomma of the option.
+            pub fn zomma(&self) -> f64 {
+                let k = self.option.strike;
+                let t = year_fraction(today(), self.option.expiry);
+                let f = self.option.type_flag;
+
+                self.model.zomma(k, t, f)
+            }
+
+            /// Calculate the speed of the option.
+            pub fn speed(&self) -> f64 {
+                let k = self.option.strike;
+                let t = year_fraction(today(), self.option.expiry);
+                let f = self.option.type_flag;
+
+                self.model.speed(k, t, f)
+            }
+
+            /// Calculate the color of the option.
+            pub fn color(&self) -> f64 {
+                let k = self.option.strike;
+                let t = year_fraction(today(), self.option.expiry);
+                let f = self.option.type_flag;
+
+                self.model.color(k, t, f)
+            }
+
+            /// Calculate the vomma of the option.
+            pub fn vomma(&self) -> f64 {
+                let k = self.option.strike;
+                let t = year_fraction(today(), self.option.expiry);
+                let f = self.option.type_flag;
+
+                self.model.vomma(k, t, f)
+            }
+
+            /// Calculate the ultima of the option.
+            pub fn ultima(&self) -> f64 {
+                let k = self.option.strike;
+                let t = year_fraction(today(), self.option.expiry);
+                let f = self.option.type_flag;
+
+                self.model.ultima(k, t, f)
+            }
+        }
+    };
+}
+
+european_vanilla_option_gbsm!(BlackScholes73);
+european_vanilla_option_gbsm!(Merton73);
+european_vanilla_option_gbsm!(Black76);
+european_vanilla_option_gbsm!(Asay82);
+european_vanilla_option_gbsm!(GarmanKohlhagen83);
+
+impl Payoff for EuropeanVanillaOption {
     type Underlying = f64;
 
     fn payoff(&self, underlying: Self::Underlying) -> f64 {
-        match self.contract.type_flag {
+        match self.type_flag {
             TypeFlag::Call => (underlying - self.strike).max(0.0),
             TypeFlag::Put => (self.strike - underlying).max(0.0),
         }
     }
 }
 
-impl VanillaOption {
+impl EuropeanVanillaOption {
     /// Create a new vanilla option.
-    pub fn new(contract: OptionContract, strike: f64) -> Self {
-        Self { contract, strike }
+    pub fn new(strike: f64, expiry: Date, type_flag: TypeFlag) -> Self {
+        Self {
+            strike,
+            expiry,
+            type_flag,
+        }
     }
 }
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// TESTS
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 #[cfg(test)]
 mod test_vanilla_option_monte_carlo {
@@ -112,75 +307,3 @@ mod test_vanilla_option_monte_carlo {
         println!("Price: {}", price);
     }
 }
-
-// impl Instrument for VanillaOption {
-//     fn price(&self) -> f64 {
-//         1.
-//     }
-
-//     fn error(&self) -> Option<f64> {
-//         None
-//     }
-
-//     fn valuation_date(&self) -> Date {
-//         todo!()
-//     }
-
-//     fn instrument_type(&self) -> &'static str {
-//         todo!()
-//     }
-// }
-
-// impl<C> Priceable<C> for VanillaOption
-// where
-//     C: Calendar + Clone,
-// {
-//     /// VanillaOption pricer implementation.
-//     ///
-//     /// This aksjdfoasj ofdjsod
-//     fn pricer_impl(
-//         &self,
-//         context_data: &Option<ContextData<C>>,
-//         market_data: &mut Option<MarketData<C>>,
-//         // model: &Option<S>,
-//         // engine: &Option<PricingEngine>,
-//     ) -> f64 {
-//         // let cal = context_data.as_ref().unwrap().calendar.as_ref().unwrap();
-//         let eval = context_data.as_ref().unwrap().evaluation_date.unwrap();
-
-//         let s = market_data.as_ref().unwrap().underlying_price.unwrap();
-//         let k = self.strike;
-//         let t = match self.contract.exercise_flag {
-//             ExerciseFlag::European { expiry } => expiry,
-//             ExerciseFlag::American { .. } => todo!(),
-//             ExerciseFlag::Bermudan { .. } => todo!(),
-//         };
-//         // let tau = DayCounter::day_count_factor(
-//         //     cal,
-//         //     eval,
-//         //     t,
-//         //     &context_data.as_ref().unwrap().day_count_convention.unwrap(),
-//         // );
-//         let r = market_data
-//             .as_mut()
-//             .unwrap()
-//             .spot_curve
-//             .as_mut()
-//             .unwrap()
-//             .get_rate(t);
-//         let v = market_data.as_ref().unwrap().volatility.unwrap();
-
-//         let bsm = BlackScholesMerton {
-//             cost_of_carry: r,
-//             underlying_price: s,
-//             strike_price: k,
-//             volatility: v,
-//             risk_free_rate: r,
-//             evaluation_date: Some(eval),
-//             expiration_date: t,
-//             option_type: self.contract.type_flag,
-//         };
-
-//         bsm.price()
-//     }
-// }

@@ -174,7 +174,7 @@ pub trait StochasticProcess: Sync {
     /// Base method for the process' jump term (if applicable).
     fn jump(&self, x: f64, t: f64) -> Option<f64>;
 
-    /// Return the model's parameters as a Vec<f64>.
+    /// Return the model's parameters as a `Vec<f64>`.
     fn parameters(&self) -> Vec<f64> {
         vec![]
     }

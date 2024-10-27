@@ -27,7 +27,7 @@ impl GeometricBrownianMotion {
         }
     }
 
-    /// Return the parameters as a Vec<f64>.
+    /// Return the parameters as a `Vec<f64>`.
     pub fn parameters(&self) -> Vec<f64> {
         vec![self.mu.0(0.0), self.sigma.0(0.0)]
     }

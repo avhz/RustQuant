@@ -16,6 +16,10 @@ use thiserror::Error;
 /// Error type for `RustQuant`.
 #[derive(Debug, Error)]
 pub enum RustQuantError {
+    /// Not implemented error.
+    #[error("Not implemented: {0}")]
+    NotImplemented(String),
+
     /// This error indicates that an problem occurred in the computation.
     #[error("Computation error: {0}")]
     ComputationError(String),
