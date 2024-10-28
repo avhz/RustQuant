@@ -159,17 +159,20 @@ impl DataScanner for Data {
 mod test_io {
     use super::*;
 
+    const READ_PATH: &str = "./src/examples/read";
+    const WRITE_PATH: &str = "./src/examples/write";
+
     #[test]
     fn test_read_write_csv() -> Result<(), RustQuantError> {
         let mut data = Data {
             format: DataFormat::CSV,
-            path: String::from("./src/data/examples/example.csv"),
+            path: format!("{}.csv", READ_PATH), //String::from("./examples/example.csv"),
             data: DataFrame::default(),
         };
 
         data.read()?;
 
-        data.path = String::from("./src/data/examples/write.csv");
+        data.path = format!("{}.csv", WRITE_PATH); //String::from("./examples/write.csv");
 
         data.write()?;
 
@@ -182,13 +185,13 @@ mod test_io {
     fn test_read_write_json() -> Result<(), RustQuantError> {
         let mut data = Data {
             format: DataFormat::JSON,
-            path: String::from("./src/data/examples/example.json"),
+            path: format!("{}.json", READ_PATH),
             data: DataFrame::default(),
         };
 
         data.read()?;
 
-        data.path = String::from("./src/data/examples/write.json");
+        data.path = format!("{}.json", WRITE_PATH);
 
         data.write()?;
 
@@ -201,13 +204,13 @@ mod test_io {
     fn test_read_write_parquet() -> Result<(), RustQuantError> {
         let mut data = Data {
             format: DataFormat::PARQUET,
-            path: String::from("./src/data/examples/example.parquet"),
+            path: format!("{}.parquet", READ_PATH),
             data: DataFrame::default(),
         };
 
         data.read()?;
 
-        data.path = String::from("./src/data/examples/write.parquet");
+        data.path = format!("{}.parquet", WRITE_PATH);
 
         data.write()?;
 
