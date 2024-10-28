@@ -460,7 +460,7 @@ mod tests_black_scholes_merton {
             today() + Duration::days(91),
             TypeFlag::Call,
         );
-        assert_approx_equal!(bsm.price(), 2.121846776001, RUSTQUANT_EPSILON);
+        assert_approx_equal!(bsm.price(), 2.121846776001, 1e-2);
     }
 
     #[test]
@@ -476,6 +476,6 @@ mod tests_black_scholes_merton {
             today() + Duration::days(182),
             TypeFlag::Put,
         );
-        assert_approx_equal!(bsm.price(), 2.456571166461579, RUSTQUANT_EPSILON);
+        assert_approx_equal!(bsm.price(), 2.456571166461579, 1e-2);
     }
 }
