@@ -72,7 +72,6 @@ RustQuant_instruments = { version = "0.2.9", path = "crates/RustQuant_instrument
 RustQuant_iso = { version = "0.2.9", path = "crates/RustQuant_iso" }
 RustQuant_math = { version = "0.2.9", path = "crates/RustQuant_math" }
 RustQuant_ml = { version = "0.2.9", path = "crates/RustQuant_ml" }
-RustQuant_models = { version = "0.2.9", path = "crates/RustQuant_models" }
 RustQuant_portfolios = { version = "0.2.9", path = "crates/RustQuant_portfolios" }
 RustQuant_stochastics = { version = "0.2.9", path = "crates/RustQuant_stochastics" }
 RustQuant_time = { version = "0.2.9", path = "crates/RustQuant_time" }
