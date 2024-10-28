@@ -85,7 +85,7 @@ num = { version = "0.4.1", features = ["rand"] }
 time = { version = "0.3.34", features = ["macros"] }
 
 # https://docs.rs/polars/latest/polars/
-polars = { version = "0.43.1", features = ["docs-selection"] }
+polars = { version = "0.44.0", features = ["docs-selection"] }
 
 # https://docs.rs/uuid/latest/uuid/
 uuid = { version = "1.10.0", features = ["v4", "fast-rng"] }
