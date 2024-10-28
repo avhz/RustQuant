@@ -70,8 +70,8 @@ cargo run --example <example>
 > [!NOTE]  
 > Disclaimer: This is currently a free-time project and not a professional financial software library. Nothing in this library should be taken as financial advice, and I do not recommend you to use it for trading or making financial decisions.
 
-<p align="center">
+<div align="center">
     
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Favhz%2FRustQuant.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Favhz%2FRustQuant?ref=badge_large)
 
-</p>
+</div>
