@@ -1,0 +1,18 @@
+[package]
+name = "RustQuant_portfolios"
+authors.workspace = true
+description.workspace = true
+version.workspace = true
+edition.workspace = true
+readme.workspace = true
+repository.workspace = true
+keywords.workspace = true
+categories.workspace = true
+license.workspace = true
+metadata.workspace = true
+
+[dependencies]
+RustQuant_instruments = { workspace = true }
+time = { workspace = true }
+RustQuant_time = { workspace = true }
+RustQuant_utils = { workspace = true }

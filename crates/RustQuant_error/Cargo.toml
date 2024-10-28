@@ -1,0 +1,18 @@
+[package]
+name = "RustQuant_error"
+authors.workspace = true
+description.workspace = true
+version.workspace = true
+edition.workspace = true
+readme.workspace = true
+repository.workspace = true
+keywords.workspace = true
+categories.workspace = true
+license.workspace = true
+metadata.workspace = true
+
+[dependencies]
+thiserror = { workspace = true }
+rand_distr = { workspace = true }
+polars = { workspace = true }
+yahoo_finance_api = { workspace = true }

@@ -1,0 +1,54 @@
+## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+## RustQuant: A Rust library for quantitative finance tools.
+## Copyright (C) 2022-2024 https://github.com/avhz
+## Dual licensed under Apache 2.0 and MIT.
+## See:
+##      - LICENSE-APACHE.md
+##      - LICENSE-MIT.md
+## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+## GENERAL CONFIGURATION
+## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+[package]
+name = "RustQuant"
+
+authors = { workspace = true }
+description = { workspace = true }
+version = { workspace = true }
+edition = { workspace = true }
+readme = { workspace = true }
+repository = { workspace = true }
+keywords = { workspace = true }
+categories = { workspace = true }
+license = { workspace = true }
+
+
+## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+## RUSTDOC CONFIGURATION
+## Includes KaTeX for math rendering.
+## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+[package.metadata.docs.rs]
+all-features = true
+rustdoc-args = ["--html-in-header", "katex_header.html", "--cfg", "docsrs"]
+
+## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+## DEPENDENCIES
+## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+[dependencies]
+RustQuant_autodiff = { workspace = true }
+RustQuant_cashflows = { workspace = true }
+RustQuant_data = { workspace = true }
+RustQuant_error = { workspace = true }
+RustQuant_instruments = { workspace = true }
+RustQuant_iso = { workspace = true }
+RustQuant_math = { workspace = true }
+RustQuant_ml = { workspace = true }
+RustQuant_portfolios = { workspace = true }
+RustQuant_stochastics = { workspace = true }
+RustQuant_time = { workspace = true }
+RustQuant_trading = { workspace = true }
+RustQuant_utils = { workspace = true }

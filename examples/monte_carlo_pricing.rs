@@ -8,12 +8,13 @@
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 use time::macros::date;
-use RustQuant::instruments::option_flags::*;
-use RustQuant::instruments::options::power::PowerOption;
-use RustQuant::instruments::options::vanilla::VanillaOption;
-use RustQuant::instruments::options::AsianOption;
-use RustQuant::instruments::options::OptionContractBuilder;
-use RustQuant::instruments::BarrierOption;
+use RustQuant::instruments::*;
+// use RustQuant::instruments::option_flags::*;
+// use RustQuant::instruments::options::power::PowerOption;
+// use RustQuant::instruments::options::vanilla::VanillaOption;
+// use RustQuant::instruments::options::AsianOption;
+// use RustQuant::instruments::options::OptionContractBuilder;
+// use RustQuant::instruments::BarrierOption;
 use RustQuant::models::geometric_brownian_motion::GeometricBrownianMotion;
 use RustQuant::pricing::MonteCarloPricer;
 use RustQuant::stochastics::StochasticProcessConfig;
@@ -25,6 +26,7 @@ fn main() {
     let rate = 0.05;
     let time = 1.0;
     let volatility = 0.2;
+    let expiry = date!(2025 - 01 - 01);
 
     // Create the stochastic process.
     let process = GeometricBrownianMotion::new(rate, volatility);
@@ -33,9 +35,7 @@ fn main() {
     // Create the option contract.
     let direction = TypeFlag::Call;
 
-    let exercise = ExerciseFlag::European {
-        expiry: date!(2025 - 01 - 01),
-    };
+    let exercise = ExerciseFlag::European { expiry };
 
     let contract = OptionContractBuilder::default()
         .type_flag(direction)
@@ -45,7 +45,7 @@ fn main() {
         .unwrap();
 
     // VANILLA
-    let vanilla = VanillaOption::new(contract.clone(), strike);
+    let vanilla = EuropeanVanillaOption::new(strike, expiry, direction);
     let asian = AsianOption::new(
         contract.clone(),
         AveragingMethod::ArithmeticDiscrete,

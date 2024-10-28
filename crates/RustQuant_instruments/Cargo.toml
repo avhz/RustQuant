@@ -1,0 +1,26 @@
+[package]
+name = "RustQuant_instruments"
+authors.workspace = true
+description.workspace = true
+version.workspace = true
+edition.workspace = true
+readme.workspace = true
+repository.workspace = true
+keywords.workspace = true
+categories.workspace = true
+license.workspace = true
+metadata.workspace = true
+
+[dependencies]
+## Internal dependencies
+RustQuant_time = { workspace = true }
+RustQuant_math = { workspace = true }
+RustQuant_utils = { workspace = true }
+RustQuant_stochastics = { workspace = true }
+RustQuant_iso = { workspace = true }
+
+## External dependencies
+time = { workspace = true }
+derive_builder = { workspace = true }
+errorfunctions = { workspace = true }
+serde = { workspace = true }
