@@ -1,0 +1,40 @@
+[package]
+name = "RustQuant_stochastics"
+authors.workspace = true
+description.workspace = true
+version.workspace = true
+edition.workspace = true
+readme.workspace = true
+repository.workspace = true
+keywords.workspace = true
+categories.workspace = true
+license.workspace = true
+metadata.workspace = true
+
+[lints]
+workspace = true
+
+[dependencies]
+RustQuant_time = { workspace = true }
+RustQuant_math = { workspace = true }
+RustQuant_utils = { workspace = true }
+RustQuant_ml = { workspace = true }
+
+rand = { workspace = true }
+rayon = { workspace = true }
+rand_distr = { workspace = true }
+nalgebra = { workspace = true }
+ndarray = { workspace = true }
+ndrustfft = { workspace = true }
+num = { workspace = true }
+ndarray-rand = { workspace = true }
+time = { workspace = true }
+
+## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+## RUSTDOC CONFIGURATION
+## Includes KaTeX for math rendering.
+## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+[package.metadata.docs.rs]
+all-features = true
+rustdoc-args = ["--html-in-header", "katex.html", "--cfg", "docsrs"]

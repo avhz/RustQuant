@@ -1,0 +1,27 @@
+[package]
+name = "RustQuant_utils"
+authors.workspace = true
+description.workspace = true
+version.workspace = true
+edition.workspace = true
+readme.workspace = true
+repository.workspace = true
+keywords.workspace = true
+categories.workspace = true
+license.workspace = true
+metadata.workspace = true
+
+[lints]
+workspace = true
+
+[dependencies]
+plotters = { workspace = true }
+
+## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+## RUSTDOC CONFIGURATION
+## Includes KaTeX for math rendering.
+## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+[package.metadata.docs.rs]
+all-features = true
+rustdoc-args = ["--html-in-header", "katex.html", "--cfg", "docsrs"]

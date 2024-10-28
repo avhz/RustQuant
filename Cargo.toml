@@ -7,15 +7,10 @@
 ##      - LICENSE-MIT.md
 ## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-## GENERAL CONFIGURATION
-## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-[package]
-name = "RustQuant"
+[workspace.package]
 authors = ["avhz <RustQuantContact@gmail.com>"]
 description = "A Rust library for quantitative finance."
-version = "0.2.9"
+version = "0.2.11"
 edition = "2021"
 readme = "README.md"
 repository = "https://github.com/avhz/RustQuant"
@@ -29,6 +24,17 @@ keywords = [
 categories = ["finance", "mathematics", "science", "algorithms", "simulation"]
 license = "MIT OR Apache-2.0"
 
+[workspace]
+resolver = "2"
+members = ["crates/*", "examples"]
+
+[workspace.lints.rust]
+missing_docs = "forbid"
+non_snake_case = "allow"
+
+[workspace.lints.clippy]
+undocumented_unsafe_blocks = "forbid"
+doc_markdown = "allow"
 
 ## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ## COMPILATION PROFILES
@@ -48,19 +54,36 @@ debug = 0
 ## Includes KaTeX for math rendering.
 ## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-[package.metadata.docs.rs]
+[workspace.package.metadata.docs.rs]
 all-features = true
-rustdoc-args = ["--html-in-header", "katex_header.html", "--cfg", "docsrs"]
+rustdoc-args = ["--html-in-header", "katex.html", "--cfg", "docsrs"]
 
 ## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ## DEPENDENCIES
 ## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-[dependencies]
+[workspace.dependencies]
+## RustQuant Crates
+RustQuant_autodiff = { version = "0.2.11", path = "crates/RustQuant_autodiff" }
+RustQuant_cashflows = { version = "0.2.11", path = "crates/RustQuant_cashflows" }
+RustQuant_data = { version = "0.2.11", path = "crates/RustQuant_data" }
+RustQuant_error = { version = "0.2.11", path = "crates/RustQuant_error" }
+RustQuant_instruments = { version = "0.2.11", path = "crates/RustQuant_instruments" }
+RustQuant_iso = { version = "0.2.11", path = "crates/RustQuant_iso" }
+RustQuant_math = { version = "0.2.11", path = "crates/RustQuant_math" }
+RustQuant_ml = { version = "0.2.11", path = "crates/RustQuant_ml" }
+RustQuant_portfolios = { version = "0.2.11", path = "crates/RustQuant_portfolios" }
+RustQuant_stochastics = { version = "0.2.11", path = "crates/RustQuant_stochastics" }
+RustQuant_time = { version = "0.2.11", path = "crates/RustQuant_time" }
+RustQuant_trading = { version = "0.2.11", path = "crates/RustQuant_trading" }
+RustQuant_utils = { version = "0.2.11", path = "crates/RustQuant_utils" }
+
+## External Crates
 argmin = "0.10.0"           # https://docs.rs/argmin/latest/argmin/
 argmin-math = "0.4.0"       # https://docs.rs/argmin-math/latest/argmin_math/
 derive_builder = "0.20.0"   # https://docs.rs/derive_builder/latest/derive_builder/
 errorfunctions = "0.2.0"    # https://docs.rs/errorfunctions/latest/errorfunctions/
+finitediff = "0.1.4"        # https://docs.rs/finitediff/latest/finitediff/
 nalgebra = "0.33.0"         # https://docs.rs/nalgebra/latest/nalgebra/
 ndrustfft = "0.5.0"         # https://docs.rs/ndrustfft/latest/ndrustfft/
 ndarray-rand = "0.15.0"     # https://docs.rs/ndarray-rand/latest/ndarray_rand/
@@ -85,18 +108,13 @@ num = { version = "0.4.1", features = ["rand"] }
 time = { version = "0.3.34", features = ["macros"] }
 
 # https://docs.rs/polars/latest/polars/
-polars = { version = "0.43.1", features = ["docs-selection"] }
+polars = { version = "0.44.0", features = ["docs-selection"] }
 
 # https://docs.rs/uuid/latest/uuid/
 uuid = { version = "1.10.0", features = ["v4", "fast-rng"] }
 
-# https://docs.rs/serde/latest/hashbrown/
-# Remove when Polars is updated, since we don't use it directly.
-hashbrown = { version = "=0.14.5", features = ["raw"] }
+# https://docs.rs/serde/latest/serde/
 serde = { version = "1.0.213", features = ["derive"] }
-
-[dev-dependencies]
-finitediff = "0.1.4" # https://docs.rs/finitediff/latest/finitediff/
 
 
 ## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

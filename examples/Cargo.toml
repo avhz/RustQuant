@@ -1,0 +1,26 @@
+[package]
+name = "examples"
+publish = false              # This is an example crate, so don't try to publish it.
+authors.workspace = true
+description.workspace = true
+version.workspace = true
+edition.workspace = true
+readme.workspace = true
+repository.workspace = true
+keywords.workspace = true
+categories.workspace = true
+license.workspace = true
+metadata.workspace = true
+
+[dependencies]
+RustQuant = { path = "../crates/RustQuant" }
+
+plotly = { workspace = true }
+time = { workspace = true }
+rand = { workspace = true }
+nalgebra = { workspace = true }
+rand_distr = { workspace = true }
+statrs = { workspace = true }
+polars = { workspace = true }
+finitediff = { workspace = true }
+plotters = { workspace = true }
