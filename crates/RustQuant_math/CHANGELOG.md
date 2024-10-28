@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.11](https://github.com/avhz/RustQuant/compare/RustQuant_math-v0.2.10...RustQuant_math-v0.2.11) - 2024-10-28
+
+### Other
+
+- release v0.2.10
+
 ## [0.2.10](https://github.com/avhz/RustQuant/releases/tag/RustQuant_math-v0.2.10) - 2024-10-28
 
 ### Fixed
