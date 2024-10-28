@@ -18,7 +18,6 @@
 //! - `Array<Variable<'v>, Ix2>`    <- Work in progress
 
 use super::variables::variable::Variable;
-use ndarray::Array2;
 
 /// Trait to reverse accumulate the gradient for different types.
 pub trait Accumulate<OUT> {

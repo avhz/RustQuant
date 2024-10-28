@@ -15,6 +15,16 @@ metadata.workspace = true
 workspace = true
 
 [dependencies]
-time = { workspace = true }
 RustQuant_iso = { workspace = true }
 RustQuant_utils = { workspace = true }
+
+time = { workspace = true }
+
+## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+## RUSTDOC CONFIGURATION
+## Includes KaTeX for math rendering.
+## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+[package.metadata.docs.rs]
+all-features = true
+rustdoc-args = ["--html-in-header", "katex.html", "--cfg", "docsrs"]

@@ -14,4 +14,11 @@ metadata.workspace = true
 [lints]
 workspace = true
 
-[dependencies]
+## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+## RUSTDOC CONFIGURATION
+## Includes KaTeX for math rendering.
+## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+[package.metadata.docs.rs]
+all-features = true
+rustdoc-args = ["--html-in-header", "katex.html", "--cfg", "docsrs"]

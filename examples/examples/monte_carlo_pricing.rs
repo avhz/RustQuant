@@ -9,15 +9,7 @@
 
 use time::macros::date;
 use RustQuant::instruments::*;
-// use RustQuant::instruments::option_flags::*;
-// use RustQuant::instruments::options::power::PowerOption;
-// use RustQuant::instruments::options::vanilla::VanillaOption;
-// use RustQuant::instruments::options::AsianOption;
-// use RustQuant::instruments::options::OptionContractBuilder;
-// use RustQuant::instruments::BarrierOption;
-use RustQuant::models::geometric_brownian_motion::GeometricBrownianMotion;
-use RustQuant::pricing::MonteCarloPricer;
-use RustQuant::stochastics::StochasticProcessConfig;
+use RustQuant::stochastics::*;
 
 fn main() {
     // Set up the parameters.

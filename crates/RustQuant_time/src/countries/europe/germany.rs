@@ -13,7 +13,7 @@
 
 use crate::calendar::Calendar;
 use crate::utilities::unpack_date;
-use time::{Date, Month, Weekday};
+use time::{Date, Month};
 use RustQuant_iso::*;
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

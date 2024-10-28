@@ -15,10 +15,12 @@ metadata.workspace = true
 workspace = true
 
 [dependencies]
-rand = { workspace = true }
+RustQuant_time = { workspace = true }
 RustQuant_math = { workspace = true }
 RustQuant_utils = { workspace = true }
 RustQuant_ml = { workspace = true }
+
+rand = { workspace = true }
 rayon = { workspace = true }
 rand_distr = { workspace = true }
 nalgebra = { workspace = true }
@@ -27,4 +29,12 @@ ndrustfft = { workspace = true }
 num = { workspace = true }
 ndarray-rand = { workspace = true }
 time = { workspace = true }
-RustQuant_time = { workspace = true }
+
+## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+## RUSTDOC CONFIGURATION
+## Includes KaTeX for math rendering.
+## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+[package.metadata.docs.rs]
+all-features = true
+rustdoc-args = ["--html-in-header", "katex.html", "--cfg", "docsrs"]

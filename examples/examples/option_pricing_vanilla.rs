@@ -1,5 +1,5 @@
 use time::macros::date;
-use RustQuant::{instruments::*, models::model, pricing::AnalyticOptionPricer};
+use RustQuant::instruments::*;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Define the option contract.

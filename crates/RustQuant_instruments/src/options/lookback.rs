@@ -33,8 +33,8 @@ impl Payoff for LookbackOption {
 
         let terminal = s.last().unwrap();
 
-        let s_max = s.iter().max_by(|x, y| x.total_cmp(y)).unwrap_or(&terminal);
-        let s_min = s.iter().min_by(|x, y| x.total_cmp(y)).unwrap_or(&terminal);
+        let s_max = s.iter().max_by(|x, y| x.total_cmp(y)).unwrap_or(terminal);
+        let s_min = s.iter().min_by(|x, y| x.total_cmp(y)).unwrap_or(terminal);
 
         match self.contract.strike_flag {
             Some(StrikeFlag::Fixed) => match self.contract.type_flag {

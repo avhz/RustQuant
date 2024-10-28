@@ -23,8 +23,8 @@
 use std::f64::consts::PI;
 use RustQuant::{
     math::Sequence,
-    plot_vector,
     stochastics::{process::StochasticProcess, StochasticProcessConfig},
+    utils::plot_vector,
 };
 
 fn main() {

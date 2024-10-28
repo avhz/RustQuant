@@ -8,9 +8,6 @@
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 use std::ops::{Div, Mul, Sub};
-use time::Date;
-use time::OffsetDateTime;
-use time::Time;
 use RustQuant_error::RustQuantError;
 
 pub mod linear_interpolator;

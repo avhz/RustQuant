@@ -1,4 +1,3 @@
-use RustQuant::models::*;
 use RustQuant::stochastics::*;
 
 const INITIAL_VALUE: f64 = 10.0;

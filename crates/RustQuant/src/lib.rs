@@ -137,6 +137,7 @@ pub mod trading {
 }
 
 /// The `utils` module.
+#[macro_use]
 pub mod utils {
     pub use RustQuant_utils::*;
 }

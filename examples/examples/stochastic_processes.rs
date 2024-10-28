@@ -6,10 +6,8 @@
 //
 // See the ./images/ directory for the output.
 
-use RustQuant::models::*;
-use RustQuant::plot_vector;
-use RustQuant::stochastics::fractional_brownian_motion::FractionalProcessGeneratorMethod;
 use RustQuant::stochastics::*;
+use RustQuant::utils::plot_vector;
 
 const INITIAL_VALUE: f64 = 10.0;
 const START_TIME: f64 = 0.0;
