@@ -27,6 +27,7 @@ time = { workspace = true }
 derive_builder = { workspace = true }
 errorfunctions = { workspace = true }
 serde = { workspace = true }
+num = { workspace = true }
 
 ## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ## RUSTDOC CONFIGURATION
