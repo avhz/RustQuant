@@ -1,5 +1,6 @@
 [package]
-name = "RustQuant_utils"
+name = "examples"
+publish = false              # This is an example crate, so don't try to publish it.
 authors.workspace = true
 description.workspace = true
 version.workspace = true
@@ -11,8 +12,5 @@ categories.workspace = true
 license.workspace = true
 metadata.workspace = true
 
-[lints]
-workspace = true
-
 [dependencies]
-plotters = { workspace = true }
+RustQuant = { path = "../crates/RustQuant" }

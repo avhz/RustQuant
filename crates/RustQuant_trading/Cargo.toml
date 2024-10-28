@@ -11,5 +11,8 @@ categories.workspace = true
 license.workspace = true
 metadata.workspace = true
 
+[lints]
+workspace = true
+
 [dependencies]
 time = { workspace = true }

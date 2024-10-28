@@ -11,6 +11,9 @@ categories.workspace = true
 license.workspace = true
 metadata.workspace = true
 
+[lints]
+workspace = true
+
 [dependencies]
 RustQuant_instruments = { workspace = true }
 time = { workspace = true }

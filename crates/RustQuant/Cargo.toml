@@ -24,6 +24,8 @@ keywords = { workspace = true }
 categories = { workspace = true }
 license = { workspace = true }
 
+[lints]
+workspace = true
 
 ## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ## RUSTDOC CONFIGURATION

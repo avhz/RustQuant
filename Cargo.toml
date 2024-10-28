@@ -7,11 +7,6 @@
 ##      - LICENSE-MIT.md
 ## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-## GENERAL CONFIGURATION
-## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
 [workspace.package]
 authors = ["avhz <RustQuantContact@gmail.com>"]
 description = "A Rust library for quantitative finance."
@@ -33,6 +28,13 @@ license = "MIT OR Apache-2.0"
 resolver = "2"
 members = ["crates/*", "examples"]
 
+[workspace.lints.rust]
+missing_docs = "forbid"
+non_snake_case = "allow"
+
+[workspace.lints.clippy]
+undocumented_unsafe_blocks = "forbid"
+doc_markdown = "allow"
 
 ## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ## COMPILATION PROFILES
@@ -61,6 +63,7 @@ rustdoc-args = ["--html-in-header", "katex_header.html", "--cfg", "docsrs"]
 ## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 [workspace.dependencies]
+## RustQuant Crates
 RustQuant_autodiff = { version = "0.2.9", path = "crates/RustQuant_autodiff" }
 RustQuant_cashflows = { version = "0.2.9", path = "crates/RustQuant_cashflows" }
 RustQuant_data = { version = "0.2.9", path = "crates/RustQuant_data" }
@@ -76,6 +79,7 @@ RustQuant_time = { version = "0.2.9", path = "crates/RustQuant_time" }
 RustQuant_trading = { version = "0.2.9", path = "crates/RustQuant_trading" }
 RustQuant_utils = { version = "0.2.9", path = "crates/RustQuant_utils" }
 
+## External Crates
 argmin = "0.10.0"           # https://docs.rs/argmin/latest/argmin/
 argmin-math = "0.4.0"       # https://docs.rs/argmin-math/latest/argmin_math/
 derive_builder = "0.20.0"   # https://docs.rs/derive_builder/latest/derive_builder/

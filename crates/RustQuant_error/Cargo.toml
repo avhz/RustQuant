@@ -11,6 +11,9 @@ categories.workspace = true
 license.workspace = true
 metadata.workspace = true
 
+[lints]
+workspace = true
+
 [dependencies]
 thiserror = { workspace = true }
 rand_distr = { workspace = true }

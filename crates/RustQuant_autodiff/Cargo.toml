@@ -10,6 +10,9 @@ keywords.workspace = true
 categories.workspace = true
 license.workspace = true
 
+[lints]
+workspace = true
+
 [dependencies]
 ndarray = { workspace = true }
 errorfunctions = { workspace = true }

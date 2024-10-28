@@ -11,6 +11,9 @@ categories.workspace = true
 license.workspace = true
 metadata.workspace = true
 
+[lints]
+workspace = true
+
 [dependencies]
 RustQuant_autodiff = { workspace = true }
 RustQuant_error = { workspace = true }

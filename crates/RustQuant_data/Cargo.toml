@@ -11,6 +11,9 @@ categories.workspace = true
 license.workspace = true
 metadata.workspace = true
 
+[lints]
+workspace = true
+
 [dependencies]
 derive_builder = { workspace = true }
 RustQuant_time = { workspace = true }

@@ -11,6 +11,9 @@ categories.workspace = true
 license.workspace = true
 metadata.workspace = true
 
+[lints]
+workspace = true
+
 [dependencies]
 rand = { workspace = true }
 RustQuant_math = { workspace = true }
