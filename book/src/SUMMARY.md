@@ -14,13 +14,13 @@
 - [`data`](./Modules/data/data.md)
     - [Curves](./Modules/data/curves.md)
 
-<!-- - [`error`](./Modules/error.md)
+<!-- - [`error`](./Modules/error.md) -->
 - [`instruments`](./Modules/instruments/instruments.md)
-- [`iso`](./Modules/iso/iso.md)
+    - [Options](./Modules/instruments/options.md)
+<!-- - [`iso`](./Modules/iso/iso.md)
 - [`macros`](./Modules/macros.md)
 - [`math`](./Modules/math/math.md)
 - [`ml`](./Modules/ml/ml.md)
-- [`models`](./Modules/models/models.md)
 - [`portfolio`](./Modules/portfolio/portfolio.md)
 - [`stochastics`](./Modules/stochastics/stochastics.md)
 - [`time`](./Modules/time/time.md)
