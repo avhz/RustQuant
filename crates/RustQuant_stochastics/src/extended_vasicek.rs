@@ -64,7 +64,7 @@ mod tests_extended_vasicek {
     use super::*;
     use crate::StochasticProcessConfig;
     use RustQuant_math::*;
-    use RustQuant_utils::{assert_approx_equal, RUSTQUANT_EPSILON as EPS};
+    use RustQuant_utils::assert_approx_equal;
 
     // fn alpha_t(_t: f64) -> f64 {
     //     2.0

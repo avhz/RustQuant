@@ -311,7 +311,7 @@ impl Distribution for ChiSquared {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use RustQuant_utils::{assert_approx_equal, RUSTQUANT_EPSILON as EPS};
+    use RustQuant_utils::assert_approx_equal;
 
     #[test]
     fn test_chi_squared_characteristic_function() {

@@ -378,7 +378,7 @@ impl FiniteDifferencePricer {
 mod tests_finite_difference_pricer_at_the_money {
     use super::*;
     use time::macros::date;
-    use RustQuant_utils::{assert_approx_equal, RUSTQUANT_EPSILON};
+    use RustQuant_utils::assert_approx_equal;
 
     const EPS: f64 = 1e-4;
     const EUROPEAN_CALL: FiniteDifferencePricer = FiniteDifferencePricer {
@@ -517,7 +517,7 @@ mod tests_finite_difference_pricer_at_the_money {
 mod tests_finite_difference_pricer_in_the_money {
     use super::*;
     use time::macros::date;
-    use RustQuant_utils::{assert_approx_equal, RUSTQUANT_EPSILON};
+    use RustQuant_utils::assert_approx_equal;
 
     const EPS: f64 = 1e-5;
     const EUROPEAN_CALL: FiniteDifferencePricer = FiniteDifferencePricer {
@@ -656,7 +656,7 @@ mod tests_finite_difference_pricer_in_the_money {
 mod tests_finite_difference_pricer_out_of_the_money {
     use super::*;
     use time::macros::date;
-    use RustQuant_utils::{assert_approx_equal, RUSTQUANT_EPSILON};
+    use RustQuant_utils::assert_approx_equal;
 
     const EPS: f64 = 1e-5;
     const EUROPEAN_CALL: FiniteDifferencePricer = FiniteDifferencePricer {

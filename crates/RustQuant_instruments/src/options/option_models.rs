@@ -266,48 +266,48 @@ mod bsm {
     use RustQuant_math::{Distribution, N};
 
     #[inline]
-    pub(crate) fn d1(s: f64, k: f64, t: f64, r: f64, b: f64, v: f64) -> f64 {
+    pub(crate) fn d1(s: f64, k: f64, t: f64, b: f64, v: f64) -> f64 {
         ((s / k).ln() + (b + 0.5 * v.powi(2)) * t) / (v * t.sqrt())
     }
 
     #[inline]
-    pub(crate) fn d2(s: f64, k: f64, t: f64, r: f64, b: f64, v: f64) -> f64 {
-        d1(s, k, t, r, b, v) - v * t.sqrt()
+    pub(crate) fn d2(s: f64, k: f64, t: f64, b: f64, v: f64) -> f64 {
+        d1(s, k, t, b, v) - v * t.sqrt()
     }
 
     #[inline]
     pub(crate) fn call_price(s: f64, k: f64, t: f64, r: f64, b: f64, v: f64) -> f64 {
-        let d1 = d1(s, k, t, r, b, v);
-        let d2 = d2(s, k, t, r, b, v);
+        let d1 = d1(s, k, t, b, v);
+        let d2 = d2(s, k, t, b, v);
 
         s * ((b - r) * t).exp() * N.cdf(d1) - k * (-r * t).exp() * N.cdf(d2)
     }
 
     #[inline]
     pub(crate) fn put_price(s: f64, k: f64, t: f64, r: f64, b: f64, v: f64) -> f64 {
-        let d1 = d1(s, k, t, r, b, v);
-        let d2 = d2(s, k, t, r, b, v);
+        let d1 = d1(s, k, t, b, v);
+        let d2 = d2(s, k, t, b, v);
 
         -s * ((b - r) * t).exp() * N.cdf(-d1) + k * (-r * t).exp() * N.cdf(-d2)
     }
 
     #[inline]
     pub(crate) fn call_delta(s: f64, k: f64, t: f64, r: f64, b: f64, v: f64) -> f64 {
-        let d1 = d1(s, k, t, r, b, v);
+        let d1 = d1(s, k, t, b, v);
 
         ((b - r) * t).exp() * N.cdf(d1)
     }
 
     #[inline]
     pub(crate) fn put_delta(s: f64, k: f64, t: f64, r: f64, b: f64, v: f64) -> f64 {
-        let d1 = d1(s, k, t, r, b, v);
+        let d1 = d1(s, k, t, b, v);
 
         ((b - r) * t).exp() * (N.cdf(d1) - 1.0)
     }
 
     #[inline]
     pub(crate) fn call_gamma(s: f64, k: f64, t: f64, r: f64, b: f64, v: f64) -> f64 {
-        let d1 = d1(s, k, t, r, b, v);
+        let d1 = d1(s, k, t, b, v);
 
         ((b - r) * t).exp() * N.pdf(d1) / (s * v * t.sqrt())
     }
@@ -319,8 +319,8 @@ mod bsm {
 
     #[inline]
     pub(crate) fn call_theta(s: f64, k: f64, t: f64, r: f64, b: f64, v: f64) -> f64 {
-        let d1 = d1(s, k, t, r, b, v);
-        let d2 = d2(s, k, t, r, b, v);
+        let d1 = d1(s, k, t, b, v);
+        let d2 = d2(s, k, t, b, v);
 
         -s * ((b - r) * t).exp() * N.pdf(d1) * v / (2.0 * t.sqrt())
             - (b - r) * s * ((b - r) * t).exp() * N.cdf(d1)
@@ -329,8 +329,8 @@ mod bsm {
 
     #[inline]
     pub(crate) fn put_theta(s: f64, k: f64, t: f64, r: f64, b: f64, v: f64) -> f64 {
-        let d1 = d1(s, k, t, r, b, v);
-        let d2 = d2(s, k, t, r, b, v);
+        let d1 = d1(s, k, t, b, v);
+        let d2 = d2(s, k, t, b, v);
 
         -s * ((b - r) * t).exp() * N.pdf(d1) * v / (2.0 * t.sqrt())
             + (b - r) * s * ((b - r) * t).exp() * N.cdf(-d1)
@@ -339,7 +339,7 @@ mod bsm {
 
     #[inline]
     pub(crate) fn call_vega(s: f64, k: f64, t: f64, r: f64, b: f64, v: f64) -> f64 {
-        let d1 = d1(s, k, t, r, b, v);
+        let d1 = d1(s, k, t, b, v);
 
         s * ((b - r) * t).exp() * N.pdf(d1) * t.sqrt()
     }
@@ -351,22 +351,22 @@ mod bsm {
 
     #[inline]
     pub(crate) fn call_rho(s: f64, k: f64, t: f64, r: f64, b: f64, v: f64) -> f64 {
-        let d2 = d2(s, k, t, r, b, v);
+        let d2 = d2(s, k, t, b, v);
 
         k * t * (-r * t).exp() * N.cdf(d2)
     }
 
     #[inline]
     pub(crate) fn put_rho(s: f64, k: f64, t: f64, r: f64, b: f64, v: f64) -> f64 {
-        let d2 = d2(s, k, t, r, b, v);
+        let d2 = d2(s, k, t, b, v);
 
         -k * t * (-r * t).exp() * N.cdf(-d2)
     }
 
     #[inline]
     pub(crate) fn call_vanna(s: f64, k: f64, t: f64, r: f64, b: f64, v: f64) -> f64 {
-        let d1 = d1(s, k, t, r, b, v);
-        let d2 = d2(s, k, t, r, b, v);
+        let d1 = d1(s, k, t, b, v);
+        let d2 = d2(s, k, t, b, v);
 
         -((b - r) * t).exp() * N.pdf(d1) * d2 / v
     }
@@ -378,8 +378,8 @@ mod bsm {
 
     #[inline]
     pub(crate) fn call_charm(s: f64, k: f64, t: f64, r: f64, b: f64, v: f64) -> f64 {
-        let d1 = d1(s, k, t, r, b, v);
-        let d2 = d2(s, k, t, r, b, v);
+        let d1 = d1(s, k, t, b, v);
+        let d2 = d2(s, k, t, b, v);
 
         ((b - r) * t).exp()
             * (N.pdf(d1) * ((b / (v * t.sqrt())) - (d2 / (2.0 * t))) + (b - r) * N.cdf(d1))
@@ -387,8 +387,8 @@ mod bsm {
 
     #[inline]
     pub(crate) fn put_charm(s: f64, k: f64, t: f64, r: f64, b: f64, v: f64) -> f64 {
-        let d1 = d1(s, k, t, r, b, v);
-        let d2 = d2(s, k, t, r, b, v);
+        let d1 = d1(s, k, t, b, v);
+        let d2 = d2(s, k, t, b, v);
 
         ((b - r) * t).exp()
             * (N.pdf(d1) * ((b / (v * t.sqrt())) - (d2 / (2.0 * t))) - (b - r) * N.cdf(-d1))
@@ -406,38 +406,38 @@ mod bsm {
 
     #[inline]
     pub(crate) fn call_zomma(s: f64, k: f64, t: f64, r: f64, b: f64, v: f64) -> f64 {
-        let d1 = d1(s, k, t, r, b, v);
-        let d2 = d2(s, k, t, r, b, v);
+        let d1 = d1(s, k, t, b, v);
+        let d2 = d2(s, k, t, b, v);
 
         call_gamma(s, k, t, r, b, v) * ((d1 * d2 - 1.0) / v)
     }
 
     #[inline]
     pub(crate) fn put_zomma(s: f64, k: f64, t: f64, r: f64, b: f64, v: f64) -> f64 {
-        let d1 = d1(s, k, t, r, b, v);
-        let d2 = d2(s, k, t, r, b, v);
+        let d1 = d1(s, k, t, b, v);
+        let d2 = d2(s, k, t, b, v);
 
         put_gamma(s, k, t, r, b, v) * ((d1 * d2 - 1.0) / v)
     }
 
     #[inline]
     pub(crate) fn call_speed(s: f64, k: f64, t: f64, r: f64, b: f64, v: f64) -> f64 {
-        let d1 = d1(s, k, t, r, b, v);
+        let d1 = d1(s, k, t, b, v);
 
         -call_gamma(s, k, t, r, b, v) * (1.0 + d1 / (v * t.sqrt())) / s
     }
 
     #[inline]
     pub(crate) fn put_speed(s: f64, k: f64, t: f64, r: f64, b: f64, v: f64) -> f64 {
-        let d1 = d1(s, k, t, r, b, v);
+        let d1 = d1(s, k, t, b, v);
 
         -put_gamma(s, k, t, r, b, v) * (1.0 + d1 / (v * t.sqrt())) / s
     }
 
     #[inline]
     pub(crate) fn call_color(s: f64, k: f64, t: f64, r: f64, b: f64, v: f64) -> f64 {
-        let d1 = d1(s, k, t, r, b, v);
-        let d2 = d2(s, k, t, r, b, v);
+        let d1 = d1(s, k, t, b, v);
+        let d2 = d2(s, k, t, b, v);
 
         call_gamma(s, k, t, r, b, v)
             * (r - b + b * d1 / (v * t.sqrt()) + (1.0 - d1 * d2) / (2.0 * t))
@@ -445,8 +445,8 @@ mod bsm {
 
     #[inline]
     pub(crate) fn put_color(s: f64, k: f64, t: f64, r: f64, b: f64, v: f64) -> f64 {
-        let d1 = d1(s, k, t, r, b, v);
-        let d2 = d2(s, k, t, r, b, v);
+        let d1 = d1(s, k, t, b, v);
+        let d2 = d2(s, k, t, b, v);
 
         put_gamma(s, k, t, r, b, v)
             * (r - b + b * d1 / (v * t.sqrt()) + (1.0 - d1 * d2) / (2.0 * t))
@@ -454,32 +454,32 @@ mod bsm {
 
     #[inline]
     pub(crate) fn call_vomma(s: f64, k: f64, t: f64, r: f64, b: f64, v: f64) -> f64 {
-        let d1 = d1(s, k, t, r, b, v);
-        let d2 = d2(s, k, t, r, b, v);
+        let d1 = d1(s, k, t, b, v);
+        let d2 = d2(s, k, t, b, v);
 
         call_vega(s, k, t, r, b, v) * d1 * d2 / v
     }
 
     #[inline]
     pub(crate) fn put_vomma(s: f64, k: f64, t: f64, r: f64, b: f64, v: f64) -> f64 {
-        let d1 = d1(s, k, t, r, b, v);
-        let d2 = d2(s, k, t, r, b, v);
+        let d1 = d1(s, k, t, b, v);
+        let d2 = d2(s, k, t, b, v);
 
         put_vega(s, k, t, r, b, v) * d1 * d2 / v
     }
 
     #[inline]
     pub(crate) fn call_ultima(s: f64, k: f64, t: f64, r: f64, b: f64, v: f64) -> f64 {
-        let d1 = d1(s, k, t, r, b, v);
-        let d2 = d2(s, k, t, r, b, v);
+        let d1 = d1(s, k, t, b, v);
+        let d2 = d2(s, k, t, b, v);
 
         (call_vomma(s, k, t, r, b, v) / v) * (d1 * d2 - d1 / d2 + d2 / d1 - 1.0)
     }
 
     #[inline]
     pub(crate) fn put_ultima(s: f64, k: f64, t: f64, r: f64, b: f64, v: f64) -> f64 {
-        let d1 = d1(s, k, t, r, b, v);
-        let d2 = d2(s, k, t, r, b, v);
+        let d1 = d1(s, k, t, b, v);
+        let d2 = d2(s, k, t, b, v);
 
         (put_vomma(s, k, t, r, b, v) / v) * (d1 * d2 - d1 / d2 + d2 / d1 - 1.0)
     }
@@ -497,11 +497,11 @@ macro_rules! impl_gbsm {
             }
 
             fn d1(&self, k: f64, t: f64) -> f64 {
-                bsm::d1(self.s(), k, t, self.r(), self.b(), self.v)
+                bsm::d1(self.s(), k, t, self.b(), self.v)
             }
 
             fn d2(&self, k: f64, t: f64) -> f64 {
-                bsm::d2(self.s(), k, t, self.r(), self.b(), self.v)
+                bsm::d2(self.s(), k, t, self.b(), self.v)
             }
 
             fn delta(&self, k: f64, t: f64, option_type: TypeFlag) -> f64 {

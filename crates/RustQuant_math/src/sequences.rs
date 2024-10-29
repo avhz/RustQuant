@@ -84,7 +84,7 @@ where
 #[cfg(test)]
 mod tests_sequences {
     use super::*;
-    use RustQuant_utils::{assert_approx_equal, RUSTQUANT_EPSILON as EPS};
+    use RustQuant_utils::assert_approx_equal;
 
     #[test]
     fn test_seq_f64() {

@@ -189,7 +189,7 @@ impl<'v> Ord for Variable<'v> {
 mod tests_variable {
     use super::*;
 
-    use RustQuant_utils::{assert_approx_equal, RUSTQUANT_EPSILON as EPS};
+    use RustQuant_utils::assert_approx_equal;
 
     #[test]
     fn test_value() {

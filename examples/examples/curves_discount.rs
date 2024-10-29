@@ -1,4 +1,3 @@
-use polars::prelude::*;
 use time::macros::date;
 use time::Date;
 use RustQuant::data::Curves;
@@ -6,8 +5,8 @@ use RustQuant::data::{Curve, DiscountCurve};
 use RustQuant::time::oceania::australia::AustraliaCalendar;
 
 fn main() {
-    let cal = AustraliaCalendar;
-    let curve = Curve::<Date>::new_from_slice(&DATES, &RATES);
+    let _cal = AustraliaCalendar;
+    let _curve = Curve::<Date>::new_from_slice(&DATES, &RATES);
 
     let mut discount_curve = DiscountCurve::<Date, AustraliaCalendar>::new(&DATES, &RATES);
 

@@ -56,7 +56,7 @@ mod sde_tests {
     use super::*;
     use crate::StochasticProcessConfig;
     use RustQuant_math::*;
-    use RustQuant_utils::{assert_approx_equal, RUSTQUANT_EPSILON as EPS};
+    use RustQuant_utils::assert_approx_equal;
 
     #[test]
     fn test_brownian_motion() {

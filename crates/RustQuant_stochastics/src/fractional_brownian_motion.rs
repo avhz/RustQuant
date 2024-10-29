@@ -11,7 +11,8 @@ use super::StochasticProcessConfig;
 use crate::process::{StochasticProcess, Trajectories};
 use nalgebra::{DMatrix, DVector, Dim, Dyn, RowDVector};
 use ndarray::{concatenate, prelude::*};
-use ndarray_rand::{rand::random, RandomExt};
+// use ndarray_rand::{rand::random, RandomExt};
+use ndarray_rand::RandomExt;
 use ndrustfft::{ndfft_par, FftHandler};
 use num::{complex::ComplexDistribution, Complex};
 use rand::Rng;
@@ -267,7 +268,7 @@ mod test_fractional_brownian_motion {
     use crate::StochasticProcessConfig;
     use RustQuant_math::*;
     use RustQuant_ml::{Decomposition, LinearRegressionInput};
-    use RustQuant_utils::{assert_approx_equal, RUSTQUANT_EPSILON as EPS};
+    use RustQuant_utils::assert_approx_equal;
 
     fn higuchi_fd(x: &Vec<f64>, kmax: usize) -> f64 {
         let n_times = x.len();

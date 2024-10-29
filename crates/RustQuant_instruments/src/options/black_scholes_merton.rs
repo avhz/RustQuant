@@ -445,7 +445,7 @@ impl BlackScholesMerton {
 mod tests_black_scholes_merton {
     use super::*;
     use time::Duration;
-    use RustQuant_utils::{assert_approx_equal, RUSTQUANT_EPSILON};
+    use RustQuant_utils::assert_approx_equal;
 
     #[test]
     fn black_scholes_1973() {
