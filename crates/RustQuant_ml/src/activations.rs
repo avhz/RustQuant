@@ -8,7 +8,7 @@
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 use nalgebra::DVector;
-use RustQuant_autodiff::{overload::Powi, variables::variable::Variable};
+use RustQuant_autodiff::{overload::Powi, variable::Variable};
 // use statrs::function::erf;
 
 /// Activation functions.

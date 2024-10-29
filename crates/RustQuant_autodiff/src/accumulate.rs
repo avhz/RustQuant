@@ -17,7 +17,7 @@
 //! - `DVector<Variable<'v>>`       <- Currently not possible due to lifetimes
 //! - `Array<Variable<'v>, Ix2>`    <- Work in progress
 
-use super::variables::variable::Variable;
+use super::variable::Variable;
 
 /// Trait to reverse accumulate the gradient for different types.
 pub trait Accumulate<OUT> {
@@ -50,18 +50,3 @@ impl Accumulate<Vec<f64>> for Variable<'_> {
         adjoints
     }
 }
-
-// impl<'v> Accumulate<Array2<Vec<f64>>> for VariableArray<'v> {
-//     /// Function to reverse accumulate the gradient
-//     /// for an `Array2<Variable<'v>>`.
-//     #[inline]
-//     fn accumulate(&self) -> Array2<Vec<f64>> {
-//         let mut adjoints = Array2::from_elem(self.data.dim(), Vec::new());
-
-//         for ((row, col), variable) in self.data.indexed_iter() {
-//             adjoints[(row, col)] = variable.accumulate();
-//         }
-
-//         adjoints
-//     }
-// }

@@ -21,7 +21,7 @@
 //!     - i.e. for functions $f:\mathbb{R}^n \rightarrow \mathbb{R}^m$, where $m \gg n$
 //!
 //! ```
-//! use RustQuant::autodiff::*;
+//! # use RustQuant_autodiff::*;
 //!
 //! // Create a new Graph to store the computations.
 //! let g = Graph::new();
@@ -91,44 +91,6 @@ pub use vertex::*;
 pub mod overload;
 pub use overload::*;
 
-// /// Operator/function overloading.
-// /// This module contains the overloaded operators and primitive functions.
-// /// In Griewank and Walther - Evaluating Derivatives, they refer to this
-// /// as the "elemental library".
-// /// Operations such as `+` and `*` are redefined, along with primitive
-// /// functions such as `sin`, `exp`, and `log`.
-// /// Each overload has an associated test to ensure functionality.
-// pub mod overloading {
-//     /// Overload the standard addition operator (`+`).
-//     pub mod add;
-//     /// Overload the standard division operator (`/`).
-//     pub mod div;
-//     /// Overload the standard f64 type methods.
-//     pub mod f64;
-//     /// Overload the iterator traits.
-//     pub mod iter;
-//     /// Overload the standard logarithm function (`log`).
-//     pub mod log;
-//     /// Overload the standard min/max functions (`min` and `max`).
-//     pub mod minmax;
-//     /// Overload the standard multiplication operator (`*`).
-//     pub mod mul;
-//     /// Overload the power functions.
-//     pub mod pow;
-//     /// Overloading functions from `statrs`.
-//     pub mod statrs;
-//     /// Overload the standard subtraction operator (`-`).
-//     pub mod sub;
-// }
-// pub use overloading::{log::*, minmax::*, pow::*};
-
 /// `Variable`s for `autodiff`.
-pub mod variables {
-    // /// Implements `Variable`s for `nalgebra`.
-    // pub mod nalgebra;
-    // /// Implements `Variable`s for `ndarray`.
-    // pub mod ndarray;
-    /// Base trait for all `Variable`s.
-    pub mod variable;
-}
-pub use variables::variable::*;
+pub mod variable;
+pub use variable::*;

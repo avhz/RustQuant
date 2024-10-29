@@ -73,7 +73,7 @@
 //! $$
 
 use std::time::{Duration, Instant};
-use RustQuant_autodiff::{variables::variable::Variable, Accumulate, Gradient, Graph};
+use RustQuant_autodiff::{variable::Variable, Accumulate, Gradient, Graph};
 
 // use ::log::{info, max_level, warn, Level};
 
@@ -222,7 +222,7 @@ impl GradientDescent {
 mod test_gradient_descent {
     use super::*;
     use RustQuant_autodiff::overload::Powf;
-    use RustQuant_autodiff::variables::variable::Variable;
+    use RustQuant_autodiff::variable::Variable;
 
     // Test the creation of a new GradientDescent optimizer.
     #[test]

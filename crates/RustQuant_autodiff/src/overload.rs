@@ -7,8 +7,13 @@
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use crate::{variables::variable::Variable, vertex::Arity};
+use crate::{variable::Variable, vertex::Arity};
+use std::iter::{Product, Sum};
+use std::ops::Neg;
 use std::ops::{Add, AddAssign};
+use std::ops::{Div, DivAssign};
+use std::ops::{Mul, MulAssign};
+use std::ops::{Sub, SubAssign};
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 /// Overload the standard addition operator (`+`).
@@ -46,7 +51,7 @@ impl<'v> Add<Variable<'v>> for Variable<'v> {
     type Output = Variable<'v>;
 
     /// ```
-    /// use RustQuant::autodiff::*;
+    /// # use RustQuant_autodiff::*;
     ///
     /// let g = Graph::new();
     ///
@@ -79,7 +84,7 @@ impl<'v> Add<f64> for Variable<'v> {
     type Output = Variable<'v>;
 
     /// ```
-    /// use RustQuant::autodiff::*;
+    /// # use RustQuant_autodiff::*;
     ///
     /// let g = Graph::new();
     ///
@@ -109,7 +114,7 @@ impl<'v> Add<Variable<'v>> for f64 {
     type Output = Variable<'v>;
 
     /// ```
-    /// use RustQuant::autodiff::*;    
+    /// # use RustQuant_autodiff::*;    
     ///
     /// let g = Graph::new();
     ///
@@ -127,64 +132,6 @@ impl<'v> Add<Variable<'v>> for f64 {
         other + self
     }
 }
-
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// UNIT TESTS
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-#[cfg(test)]
-mod test_overload {
-    use crate::{Accumulate, Gradient, Graph};
-    use RustQuant_utils::{assert_approx_equal, RUSTQUANT_EPSILON as EPS};
-
-    #[test]
-    fn test_add() {
-        // Variable + Variable
-        let g = Graph::new();
-
-        let x = g.var(1.0);
-        let y = g.var(2.0);
-        let z = x + y;
-        let grad = z.accumulate();
-
-        assert_approx_equal!(z.value, 3.0, EPS);
-        assert_approx_equal!(grad.wrt(&x), 1.0, EPS);
-        assert_approx_equal!(grad.wrt(&y), 1.0, EPS);
-
-        // Variable + f64
-        let g = Graph::new();
-
-        let x = g.var(1.0);
-        let y = 2.0;
-        let z = x + y;
-        let grad = z.accumulate();
-
-        assert_approx_equal!(z.value, 3.0, EPS);
-        assert_approx_equal!(grad.wrt(&x), 1.0, EPS);
-
-        // f64 + Variable
-        let g = Graph::new();
-
-        let x = 1.0;
-        let y = g.var(2.0);
-        let z = x + y;
-        let grad = z.accumulate();
-
-        assert_approx_equal!(z.value, 3.0, EPS);
-        assert_approx_equal!(grad.wrt(&y), 1.0, EPS);
-    }
-}
-
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// RustQuant: A Rust library for quantitative finance tools.
-// Copyright (C) 2023 https://github.com/avhz
-// Dual licensed under Apache 2.0 and MIT.
-// See:
-//      - LICENSE-APACHE.md
-//      - LICENSE-MIT.md
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-use std::ops::{Div, DivAssign};
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 /// Overload the standard division operator (`/`).
@@ -222,7 +169,7 @@ impl<'v> Div<Variable<'v>> for Variable<'v> {
     type Output = Variable<'v>;
 
     /// ```
-    /// use RustQuant::autodiff::*;
+    /// # use RustQuant_autodiff::*;
     ///  
     /// let g = Graph::new();
     ///
@@ -249,7 +196,7 @@ impl<'v> Div<f64> for Variable<'v> {
     type Output = Variable<'v>;
 
     /// ```
-    /// use RustQuant::autodiff::*;
+    /// # use RustQuant_autodiff::*;
     ///
     /// let g = Graph::new();
     ///
@@ -274,7 +221,7 @@ impl<'v> Div<Variable<'v>> for f64 {
     type Output = Variable<'v>;
 
     /// ```
-    /// use RustQuant::autodiff::*;
+    /// # use RustQuant_autodiff::*;
     ///   
     /// let g = Graph::new();
     ///
@@ -302,64 +249,6 @@ impl<'v> Div<Variable<'v>> for f64 {
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// UNIT TESTS
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-#[cfg(test)]
-mod test_overload_div {
-    use crate::{Accumulate, Gradient, Graph};
-    use RustQuant_utils::{assert_approx_equal, RUSTQUANT_EPSILON as EPS};
-
-    #[test]
-    fn test_div() {
-        // Variable / Variable
-        let g = Graph::new();
-
-        let x = g.var(1.0);
-        let y = g.var(2.0);
-        let z = x / y;
-        let grad = z.accumulate();
-
-        assert_approx_equal!(z.value, 0.5, EPS);
-        assert_approx_equal!(grad.wrt(&x), 0.5, EPS);
-        assert_approx_equal!(grad.wrt(&y), -0.25, EPS);
-
-        // Variable / f64
-        let g = Graph::new();
-
-        let x = g.var(1.0);
-        let y = 2.0;
-        let z = x / y;
-        let grad = z.accumulate();
-
-        assert_approx_equal!(z.value, 0.5, EPS);
-        assert_approx_equal!(grad.wrt(&x), 0.5, EPS);
-
-        // f64 / Variable
-        let g = Graph::new();
-
-        let x = 1.0;
-        let y = g.var(2.0);
-        let z = x / y;
-        let grad = z.accumulate();
-
-        assert_approx_equal!(z.value, 0.5, EPS);
-        assert_approx_equal!(grad.wrt(&y), -0.25, EPS);
-    }
-}
-
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// RustQuant: A Rust library for quantitative finance tools.
-// Copyright (C) 2023 https://github.com/avhz
-// Dual licensed under Apache 2.0 and MIT.
-// See:
-//      - LICENSE-APACHE.md
-//      - LICENSE-MIT.md
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-use std::ops::Neg;
-
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // OVERLOADING: STANDARD MATH OPERATORS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -381,7 +270,7 @@ impl<'v> Variable<'v> {
     /// d/dx abs(x) = sign(x)
     ///
     /// ```
-    /// use RustQuant::autodiff::*;
+    /// # use RustQuant_autodiff::*;
     ///
     /// let g = Graph::new();
     ///
@@ -413,7 +302,7 @@ impl<'v> Variable<'v> {
     /// d/dx cos^-1(x) = - 1 / sqrt(1 - x^2)
     ///
     /// ```
-    /// use RustQuant::autodiff::*;
+    /// # use RustQuant_autodiff::*;
     ///
     /// let g = Graph::new();
     ///
@@ -441,7 +330,7 @@ impl<'v> Variable<'v> {
     /// d/dx cosh^-1(x) = 1 / ( sqrt(x-1) * sqrt(x+1) )
     ///
     /// ```
-    /// use RustQuant::autodiff::*;
+    /// # use RustQuant_autodiff::*;
     ///
     /// let g = Graph::new();
     ///
@@ -469,7 +358,7 @@ impl<'v> Variable<'v> {
     /// d/dx sin^-1(x) = 1 / sqrt(1 - x^2)
     ///
     /// ```
-    /// use RustQuant::autodiff::*;
+    /// # use RustQuant_autodiff::*;
     ///
     /// let g = Graph::new();
     ///
@@ -503,7 +392,7 @@ impl<'v> Variable<'v> {
     /// d/dx sinh^-1(x) = 1 / sqrt(1 + x^2)
     ///
     /// ```
-    /// use RustQuant::autodiff::*;
+    /// # use RustQuant_autodiff::*;
     ///
     /// let g = Graph::new();
     ///
@@ -532,7 +421,7 @@ impl<'v> Variable<'v> {
     /// d/dx tan^-1(x) = 1 / (1 + x^2)
     ///
     /// ```
-    /// use RustQuant::autodiff::*;
+    /// # use RustQuant_autodiff::*;
     ///
     /// let g = Graph::new();
     ///
@@ -561,8 +450,8 @@ impl<'v> Variable<'v> {
     /// d/dx tanh^-1(x) = 1 / (1 + x^2)
     ///
     /// ```
-    /// use RustQuant::assert_approx_equal;
-    /// use RustQuant::autodiff::*;
+    /// # use RustQuant_utils::assert_approx_equal;
+    /// # use RustQuant_autodiff::*;
     ///
     /// let g = Graph::new();
     ///
@@ -591,8 +480,8 @@ impl<'v> Variable<'v> {
     /// d/dx cuberoot(x) = 1 / ( 3 * x^(2/3) )
     ///
     /// ```
-    /// use RustQuant::assert_approx_equal;
-    /// use RustQuant::autodiff::*;
+    /// # use RustQuant_utils::assert_approx_equal;
+    /// # use RustQuant_autodiff::*;
     ///
     /// let g = Graph::new();
     ///
@@ -621,8 +510,8 @@ impl<'v> Variable<'v> {
     /// d/dx cos(x) = -sin(x)
     ///
     /// ```
-    /// use RustQuant::assert_approx_equal;
-    /// use RustQuant::autodiff::*;
+    /// # use RustQuant_utils::assert_approx_equal;
+    /// # use RustQuant_autodiff::*;
     ///
     /// let g = Graph::new();
     ///
@@ -650,8 +539,8 @@ impl<'v> Variable<'v> {
     /// d/dx cosh(x) = sinh(x)
     ///
     /// ```
-    /// use RustQuant::assert_approx_equal;
-    /// use RustQuant::autodiff::*;
+    /// # use RustQuant_utils::assert_approx_equal;
+    /// # use RustQuant_autodiff::*;
     ///
     /// let g = Graph::new();
     ///
@@ -678,7 +567,7 @@ impl<'v> Variable<'v> {
     /// d/dx exp(x) = exp(x) = y
     ///
     /// ```
-    /// use RustQuant::autodiff::*;
+    /// # use RustQuant_autodiff::*;
     ///  
     /// let g = Graph::new();
     ///
@@ -705,8 +594,8 @@ impl<'v> Variable<'v> {
     /// d/dx 2^x = 2^x * ln(2)
     ///
     /// ```
-    /// use RustQuant::assert_approx_equal;
-    /// use RustQuant::autodiff::*;
+    /// # use RustQuant_utils::assert_approx_equal;
+    /// # use RustQuant_autodiff::*;
     ///
     /// let g = Graph::new();
     ///
@@ -735,8 +624,8 @@ impl<'v> Variable<'v> {
     /// d/dx exp(x) - 1 = exp(x)
     ///
     /// ```
-    /// use RustQuant::assert_approx_equal;
-    /// use RustQuant::autodiff::*;
+    /// # use RustQuant_utils::assert_approx_equal;
+    /// # use RustQuant_autodiff::*;
     ///
     /// let g = Graph::new();
     ///
@@ -764,7 +653,7 @@ impl<'v> Variable<'v> {
     /// d/dx ln(x) = 1 / x
     ///
     /// ```
-    /// use RustQuant::autodiff::*;
+    /// # use RustQuant_autodiff::*;
     ///   
     /// let g = Graph::new();
     ///
@@ -791,8 +680,8 @@ impl<'v> Variable<'v> {
     /// d/dx ln(1+x) = 1 / (1+x)
     ///
     /// ```
-    /// use RustQuant::assert_approx_equal;
-    /// use RustQuant::autodiff::*;
+    /// # use RustQuant_utils::assert_approx_equal;
+    /// # use RustQuant_autodiff::*;
     ///
     /// let g = Graph::new();
     ///
@@ -819,8 +708,8 @@ impl<'v> Variable<'v> {
     /// d/dx log_10(x) = 1 / x
     ///
     /// ```
-    /// use RustQuant::assert_approx_equal;
-    /// use RustQuant::autodiff::*;
+    /// # use RustQuant_utils::assert_approx_equal;
+    /// # use RustQuant_autodiff::*;
     ///
     /// let g = Graph::new();
     ///
@@ -847,8 +736,8 @@ impl<'v> Variable<'v> {
     /// d/dx log_2(x) = 1 / x
     ///
     /// ```
-    /// use RustQuant::assert_approx_equal;
-    /// use RustQuant::autodiff::*;
+    /// # use RustQuant_utils::assert_approx_equal;
+    /// # use RustQuant_autodiff::*;
     ///
     /// let g = Graph::new();
     ///
@@ -887,7 +776,7 @@ impl<'v> Variable<'v> {
     /// d/dx 1 / x =  - 1 / x^2
     ///
     /// ```
-    /// use RustQuant::autodiff::*;
+    /// # use RustQuant_autodiff::*;
     ///
     /// let g = Graph::new();
     ///
@@ -916,8 +805,8 @@ impl<'v> Variable<'v> {
     /// d/dx sin(x) = cos(x)
     ///
     /// ```
-    /// use RustQuant::assert_approx_equal;
-    /// use RustQuant::autodiff::*;
+    /// # use RustQuant_utils::assert_approx_equal;
+    /// # use RustQuant_autodiff::*;
     ///
     /// let g = Graph::new();
     ///
@@ -944,8 +833,8 @@ impl<'v> Variable<'v> {
     /// d/dx sinh(x) =  cosh(x)
     ///
     /// ```
-    /// use RustQuant::assert_approx_equal;
-    /// use RustQuant::autodiff::*;
+    /// # use RustQuant_utils::assert_approx_equal;
+    /// # use RustQuant_autodiff::*;
     ///
     /// let g = Graph::new();
     ///
@@ -972,7 +861,7 @@ impl<'v> Variable<'v> {
     /// d/dx sqrt(x) =  1 / 2*sqrt(x)
     ///
     /// ```
-    /// use RustQuant::autodiff::*;
+    /// # use RustQuant_autodiff::*;
     ///
     /// let g = Graph::new();
     ///
@@ -1001,8 +890,8 @@ impl<'v> Variable<'v> {
     /// d/dx tan(x) = 1 / cos^2(x) = sec^2(x)
     ///
     /// ```
-    /// use RustQuant::assert_approx_equal;
-    /// use RustQuant::autodiff::*;
+    /// # use RustQuant_utils::assert_approx_equal;
+    /// # use RustQuant_autodiff::*;
     ///
     /// let g = Graph::new();
     ///
@@ -1031,8 +920,8 @@ impl<'v> Variable<'v> {
     /// d/dx tanh(x) = sech^2(x) = 1 / cosh^2(x)
     ///
     /// ```
-    /// use RustQuant::assert_approx_equal;
-    /// use RustQuant::autodiff::*;
+    /// # use RustQuant_utils::assert_approx_equal;
+    /// # use RustQuant_autodiff::*;
     ///
     /// let g = Graph::new();
     ///
@@ -1059,100 +948,12 @@ impl<'v> Variable<'v> {
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// UNIT TESTS
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-#[cfg(test)]
-mod test_overloading_f64 {
-    use crate::*;
-    use RustQuant_utils::{assert_approx_equal, RUSTQUANT_EPSILON as EPS};
-
-    #[test]
-    fn test_values() {
-        let g = Graph::new();
-
-        let x = g.var(1.0);
-
-        // VALUES
-        assert_approx_equal!((-x).value, -1.0, EPS);
-        assert_approx_equal!(x.log2().value, 0.0, EPS);
-        assert_approx_equal!(x.exp2().value, 2.0, EPS);
-        assert_approx_equal!(x.exp_m1().value, 1.718_281_828_459_045, EPS);
-        assert_approx_equal!(x.ln().value, 0.0, EPS);
-        assert_approx_equal!(x.ln_1p().value, std::f64::consts::LN_2, EPS);
-        assert_approx_equal!(x.log10().value, 0.0, EPS);
-        assert_approx_equal!(x.log2().value, 0.0, EPS);
-        assert_approx_equal!(x.recip().value, 1.0, EPS);
-        assert_approx_equal!(x.sqrt().value, 1.0, EPS);
-        assert_approx_equal!(x.cbrt().value, 1.0, EPS);
-        assert_approx_equal!(x.sin().value, 0.841_470_984_807_896_5, EPS);
-        assert_approx_equal!(x.cos().value, 0.540_302_305_868_139_8, EPS);
-        assert_approx_equal!(x.tan().value, 1.557_407_724_654_902_3, EPS);
-        assert_approx_equal!(x.asin().value, std::f64::consts::FRAC_PI_2, EPS);
-        assert_approx_equal!(x.acos().value, 0.0, EPS);
-        assert_approx_equal!(x.atan().value, std::f64::consts::FRAC_PI_4, EPS);
-        assert_approx_equal!(x.sinh().value, 1.175_201_193_643_801_4, EPS);
-        assert_approx_equal!(x.cosh().value, 1.543_080_634_815_243_7, EPS);
-        assert_approx_equal!(x.tanh().value, 0.761_594_155_955_764_9, EPS);
-        assert_approx_equal!(x.asinh().value, 0.881_373_587_019_543, EPS);
-        assert_approx_equal!(x.acosh().value, 0.0, EPS);
-        assert!(x.atanh().is_infinite() && x.atanh().is_positive());
-        assert_approx_equal!(x.abs().value, 1.0, EPS);
-    }
-
-    #[test]
-    fn test_gradients() {
-        let g = Graph::new();
-
-        let x = g.var(1.0);
-
-        // GRADIENTS
-        assert_approx_equal!((-x).accumulate().wrt(&x), -1.0, EPS);
-        assert_approx_equal!(x.log2().accumulate().wrt(&x), 1.0, EPS);
-        assert_approx_equal!(x.exp2().accumulate().wrt(&x), 1.386_294_361_119_890_6, EPS);
-        assert_approx_equal!(x.exp_m1().accumulate().wrt(&x), std::f64::consts::E, EPS);
-        assert_approx_equal!(x.ln().accumulate().wrt(&x), 1.0, EPS);
-        assert_approx_equal!(x.ln().accumulate().wrt(&x), 1.0, EPS);
-        assert_approx_equal!(x.ln_1p().accumulate().wrt(&x), 0.5, EPS);
-        assert_approx_equal!(x.log10().accumulate().wrt(&x), 1.0, EPS);
-        assert_approx_equal!(x.log2().accumulate().wrt(&x), 1.0, EPS);
-        assert_approx_equal!(x.recip().accumulate().wrt(&x), -1.0, EPS);
-        assert_approx_equal!(x.sqrt().accumulate().wrt(&x), 0.5, EPS);
-        assert_approx_equal!(x.cbrt().accumulate().wrt(&x), 0.333_333_333_333_333_3, EPS);
-        assert_approx_equal!(x.sin().accumulate().wrt(&x), 0.540_302_305_868_139_8, EPS);
-        assert_approx_equal!(x.cos().accumulate().wrt(&x), -0.841_470_984_807_896_5, EPS);
-        assert_approx_equal!(x.tan().accumulate().wrt(&x), 3.425_518_820_814_759, EPS);
-        assert_approx_equal!(x.sinh().accumulate().wrt(&x), 1.543_080_634_815_243_7, EPS);
-        assert_approx_equal!(x.atan().accumulate().wrt(&x), 0.5, EPS);
-        assert_approx_equal!(x.cosh().accumulate().wrt(&x), 1.175_201_193_643_801_4, EPS);
-        assert_approx_equal!(x.tanh().accumulate().wrt(&x), 0.419_974_341_614_026_14, EPS);
-        assert_approx_equal!(x.asinh().accumulate().wrt(&x), 1.0 / 2_f64.sqrt(), EPS);
-        assert_approx_equal!(x.abs().accumulate().wrt(&x), 1.0, EPS);
-        assert!(x.atanh().accumulate().wrt(&x).is_nan());
-        assert!(x.acosh().accumulate().wrt(&x).is_nan());
-        assert!(x.asin().accumulate().wrt(&x).is_nan());
-        assert!(x.acos().accumulate().wrt(&x).is_nan());
-    }
-}
-
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// RustQuant: A Rust library for quantitative finance tools.
-// Copyright (C) 2023 https://github.com/avhz
-// Dual licensed under Apache 2.0 and MIT.
-// See:
-//      - LICENSE-APACHE.md
-//      - LICENSE-MIT.md
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-use std::iter::{Product, Sum};
-
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // OVERLOADING: ITERATORS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 impl<'v> Sum<Variable<'v>> for Variable<'v> {
     /// ```
-    /// use RustQuant::autodiff::*;
+    /// # use RustQuant_autodiff::*;
     ///
     /// let g = Graph::new();
     ///
@@ -1175,7 +976,7 @@ impl<'v> Sum<Variable<'v>> for Variable<'v> {
 
 impl<'v> Product<Variable<'v>> for Variable<'v> {
     /// ```
-    /// use RustQuant::autodiff::*;
+    /// # use RustQuant_autodiff::*;
     ///
     /// let g = Graph::new();
     ///
@@ -1200,60 +1001,6 @@ impl<'v> Product<Variable<'v>> for Variable<'v> {
             .expect("Cannot call product() since vector is empty. Exiting ...")
     }
 }
-
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// UNIT TESTS
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-#[cfg(test)]
-mod test_overload_iter {
-    use super::*;
-    use crate::variables::variable::Variable;
-    use crate::{Accumulate, Gradient, Graph};
-    use RustQuant_utils::{assert_approx_equal, RUSTQUANT_EPSILON as EPS};
-
-    #[test]
-    fn test_sum() {
-        let g = Graph::new();
-
-        let params = (0..100).map(|x| g.var(f64::from(x))).collect::<Vec<_>>();
-        let sum = params.iter().copied().sum::<Variable>();
-        let derivs = sum.accumulate();
-
-        for i in derivs.wrt(&params) {
-            assert_approx_equal!(i, 1.0, EPS);
-        }
-    }
-
-    #[test]
-    fn test_product() {
-        let g = Graph::new();
-
-        let params = (1..=5).map(|x| g.var(f64::from(x))).collect::<Vec<_>>();
-        let prod = params.iter().copied().product::<Variable>();
-
-        let derivs = prod.accumulate();
-        let true_gradient = [120.0, 60.0, 40.0, 30.0, 24.0];
-
-        let expects = derivs.wrt(&params);
-        let n = expects.len();
-        let m = true_gradient.len();
-        assert_eq!(n, m);
-
-        for (&expect, &gradient) in expects.iter().zip(true_gradient.iter()) {
-            assert_approx_equal!(expect, gradient, EPS);
-        }
-    }
-}
-
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// RustQuant: A Rust library for quantitative finance tools.
-// Copyright (C) 2023 https://github.com/avhz
-// Dual licensed under Apache 2.0 and MIT.
-// See:
-//      - LICENSE-APACHE.md
-//      - LICENSE-MIT.md
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // OVERLOADING: LOGARITHM
@@ -1336,15 +1083,6 @@ impl<'v> Log<f64> for Variable<'v> {
         }
     }
 }
-
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// RustQuant: A Rust library for quantitative finance tools.
-// Copyright (C) 2023 https://github.com/avhz
-// Dual licensed under Apache 2.0 and MIT.
-// See:
-//      - LICENSE-APACHE.md
-//      - LICENSE-MIT.md
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // OVERLOADING: MIN
@@ -1491,65 +1229,6 @@ impl<'v> Max<Variable<'v>> for f64 {
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// UNIT TESTS
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-#[cfg(test)]
-mod test_overloading_minmax {
-    use super::*;
-    use crate::*;
-    use RustQuant_utils::{assert_approx_equal, RUSTQUANT_EPSILON as EPS};
-
-    #[test]
-    fn test_values() {
-        let g = Graph::new();
-
-        let x = g.var(1.0);
-        let y = g.var(2.0);
-
-        // VALUES
-        assert!(Min::min(&x, y) == 1.0);
-        assert!(Max::max(&x, y) == 2.0);
-        assert!(Min::min(&x, 2_f64) == 1.0);
-        assert!(Max::max(&x, 2_f64) == 2.0);
-        assert!(Max::max(&x, 2_f64) == 2.0);
-        assert!(Min::min(&2_f64, x) == 1.0);
-        assert!(Max::max(&2_f64, x) == 2.0);
-    }
-
-    #[test]
-    fn test_gradients() {
-        let g = Graph::new();
-
-        let x = g.var(1.0);
-        let y = g.var(2.0);
-
-        // GRADIENTS
-        assert_approx_equal!(Min::min(&x, y).accumulate().wrt(&x), 1.0, EPS);
-        assert_approx_equal!(Min::min(&x, y).accumulate().wrt(&y), 0.0, EPS);
-        assert_approx_equal!(Max::max(&x, y).accumulate().wrt(&x), 0.0, EPS);
-        assert_approx_equal!(Max::max(&x, y).accumulate().wrt(&y), 1.0, EPS);
-
-        assert_approx_equal!(Min::min(&x, 2_f64).accumulate().wrt(&x), 1.0, EPS);
-        assert_approx_equal!(Max::max(&x, 2_f64).accumulate().wrt(&x), 0.0, EPS);
-
-        assert_approx_equal!(Min::min(&2_f64, x).accumulate().wrt(&x), 0.0, EPS);
-        assert_approx_equal!(Max::max(&2_f64, x).accumulate().wrt(&x), 1.0, EPS);
-    }
-}
-
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// RustQuant: A Rust library for quantitative finance tools.
-// Copyright (C) 2023 https://github.com/avhz
-// Dual licensed under Apache 2.0 and MIT.
-// See:
-//      - LICENSE-APACHE.md
-//      - LICENSE-MIT.md
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-use std::ops::{Mul, MulAssign};
-
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 /// Overload the standard multiplication operator (`*`).
 /// d/dx x * y = y
 /// d/dy x * y = x
@@ -1585,7 +1264,7 @@ impl<'v> Mul<Variable<'v>> for Variable<'v> {
     type Output = Variable<'v>;
 
     /// ```
-    /// use RustQuant::autodiff::*;
+    /// # use RustQuant_autodiff::*;
     ///
     /// let g = Graph::new();
     ///
@@ -1620,7 +1299,7 @@ impl<'v> Mul<f64> for Variable<'v> {
     type Output = Variable<'v>;
 
     /// ```
-    /// use RustQuant::autodiff::*;
+    /// # use RustQuant_autodiff::*;
     ///
     /// let g = Graph::new();
     ///
@@ -1650,7 +1329,7 @@ impl<'v> Mul<Variable<'v>> for f64 {
     type Output = Variable<'v>;
 
     /// ```
-    /// use RustQuant::autodiff::*;
+    /// # use RustQuant_autodiff::*;
     ///
     /// let g = Graph::new();
     ///
@@ -1668,63 +1347,6 @@ impl<'v> Mul<Variable<'v>> for f64 {
         other * self
     }
 }
-
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// UNIT TESTS
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-#[cfg(test)]
-mod test_overload_mul {
-    use super::*;
-    use crate::{Accumulate, Gradient, Graph};
-    use RustQuant_utils::{assert_approx_equal, RUSTQUANT_EPSILON as EPS};
-
-    #[test]
-    fn test_mul() {
-        // Variable * Variable
-        let g = Graph::new();
-
-        let x = g.var(1.0);
-        let y = g.var(2.0);
-        let z = x * y;
-        let grad = z.accumulate();
-
-        assert_approx_equal!(z.value, 2.0, EPS);
-        assert_approx_equal!(grad.wrt(&x), 2.0, EPS);
-        assert_approx_equal!(grad.wrt(&y), 1.0, EPS);
-
-        // Variable * f64
-        let g = Graph::new();
-
-        let x = g.var(1.0);
-        let y = 2.0;
-        let z = x * y;
-        let grad = z.accumulate();
-
-        assert_approx_equal!(z.value, 2.0, EPS);
-        assert_approx_equal!(grad.wrt(&x), 2.0, EPS);
-
-        // f64 * Variable
-        let g = Graph::new();
-
-        let x = 1.0;
-        let y = g.var(2.0);
-        let z = x * y;
-        let grad = z.accumulate();
-
-        assert_approx_equal!(z.value, 2.0, EPS);
-        assert_approx_equal!(grad.wrt(&y), 1.0, EPS);
-    }
-}
-
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// RustQuant: A Rust library for quantitative finance tools.
-// Copyright (C) 2023 https://github.com/avhz
-// Dual licensed under Apache 2.0 and MIT.
-// See:
-//      - LICENSE-APACHE.md
-//      - LICENSE-MIT.md
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // OVERLOADING: POWER FUNCTION TRAITS
@@ -1865,12 +1487,481 @@ impl<'v> Powi<Variable<'v>> for f64 {
     }
 }
 
+use std::f64::consts::PI;
+
+impl<'v> Variable<'v> {
+    /// Error function.
+    /// d/dx erf(x) = 2e^(-x^2) / sqrt(PI)
+    ///
+    /// ```
+    /// # use RustQuant_utils::assert_approx_equal;
+    /// # use RustQuant_autodiff::*;
+    ///
+    /// let g = Graph::new();
+    ///
+    /// let x = g.var(1.0);
+    /// let z = x.erf();
+    /// let grad = z.accumulate();
+    ///
+    /// assert_approx_equal!(z.value,      0.84270079294, 1e-10);
+    /// assert_approx_equal!(grad.wrt(&x), 0.41510749742, 1e-10);
+    /// ```
+    #[must_use]
+    #[inline]
+    pub fn erf(self) -> Self {
+        // use statrs::function::erf::erf;
+
+        Variable {
+            graph: self.graph,
+            value: errorfunctions::RealErrorFunctions::erf(self.value),
+            index: self.graph.push(
+                Arity::Unary,
+                &[self.index],
+                &[2.0 * self.value.powi(2).neg().exp() / PI.sqrt()],
+            ),
+        }
+    }
+
+    /// Error function (complementary).
+    /// d/dx erfc(x) = -2e^(-x^2) / sqrt(PI)
+    ///
+    /// ```
+    /// # use RustQuant_utils::assert_approx_equal;
+    /// # use RustQuant_autodiff::*;
+    ///
+    /// let g = Graph::new();
+    ///
+    /// let x = g.var(1.0);
+    /// let z = x.erfc();
+    /// let grad = z.accumulate();
+    ///
+    /// assert_approx_equal!(z.value,       0.15729920705, 1e-10);
+    /// assert_approx_equal!(grad.wrt(&x), -0.41510749742, 1e-10);
+    /// ```
+    #[must_use]
+    #[inline]
+    pub fn erfc(self) -> Self {
+        // use statrs::function::erf::erfc;
+
+        Variable {
+            graph: self.graph,
+            value: errorfunctions::RealErrorFunctions::erfc(self.value),
+            index: self.graph.push(
+                Arity::Unary,
+                &[self.index],
+                &[((2.0 * self.value.powi(2).neg().exp()).neg() / PI.sqrt())],
+            ),
+        }
+    }
+}
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/// Overload the standard subtraction operator (`-`).
+/// d/dx x - y = 1
+/// d/dy x - y = -1
+
+/// `SubAssign`: Variable<'v> -= Variable<'v>
+impl<'v> SubAssign<Variable<'v>> for Variable<'v> {
+    #[inline]
+    fn sub_assign(&mut self, other: Variable<'v>) {
+        assert!(std::ptr::eq(self.graph, other.graph));
+
+        *self = *self - other;
+    }
+}
+
+/// `SubAssign`: Variable<'v> -= f64
+impl<'v> SubAssign<f64> for Variable<'v> {
+    #[inline]
+    fn sub_assign(&mut self, other: f64) {
+        *self = *self - other;
+    }
+}
+
+/// `SubAssign`: f64 -= Variable<'v>
+impl<'v> SubAssign<Variable<'v>> for f64 {
+    #[inline]
+    fn sub_assign(&mut self, other: Variable<'v>) {
+        *self = *self - other.value;
+    }
+}
+
+/// Variable<'v> - Variable<'v>
+impl<'v> Sub<Variable<'v>> for Variable<'v> {
+    type Output = Variable<'v>;
+
+    /// ```
+    /// # use RustQuant_autodiff::*;    
+    ///
+    /// let g = Graph::new();
+    ///
+    /// let x = g.var(5.0);
+    /// let y = g.var(2.0);
+    /// let z = x - y;
+    ///
+    /// let grad = z.accumulate();
+    ///
+    /// assert_eq!(z.value, 3.0);
+    /// assert_eq!(grad.wrt(&x), 1.0);
+    /// assert_eq!(grad.wrt(&y), -1.0);
+    /// ```
+    #[inline]
+    fn sub(self, other: Variable<'v>) -> Self::Output {
+        assert!(std::ptr::eq(self.graph, other.graph));
+
+        self.add(other.neg())
+    }
+}
+
+/// Variable<'v> - f64
+impl<'v> Sub<f64> for Variable<'v> {
+    type Output = Variable<'v>;
+
+    /// ```
+    /// # use RustQuant_autodiff::*;
+    ///
+    /// let g = Graph::new();
+    ///
+    /// let x = g.var(5.0);
+    /// let a = 2.0;
+    /// let z = x - a;
+    ///
+    /// let grad = z.accumulate();
+    ///
+    /// assert_eq!(z.value, 3.0);
+    /// assert_eq!(grad.wrt(&x), 1.0);
+    /// ```
+    #[inline]
+    fn sub(self, other: f64) -> Self::Output {
+        self.add(other.neg())
+    }
+}
+
+/// f64 - Variable<'v>
+impl<'v> Sub<Variable<'v>> for f64 {
+    type Output = Variable<'v>;
+
+    /// ```
+    /// # use RustQuant_autodiff::*;   
+    ///  
+    /// let g = Graph::new();
+    ///
+    /// let a = 5.0;
+    /// let x = g.var(2.0);
+    /// let z = a - x;
+    ///
+    /// let grad = z.accumulate();
+    ///
+    /// assert_eq!(z.value, 3.0);
+    /// assert_eq!(grad.wrt(&x), -1.0);
+    /// ```
+    #[inline]
+    fn sub(self, other: Variable<'v>) -> Self::Output {
+        Variable {
+            graph: other.graph,
+            value: self - other.value,
+            index: other
+                .graph
+                .push(Arity::Binary, &[other.index, other.index], &[0.0, -1.0]),
+        }
+    }
+}
+
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // UNIT TESTS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 #[cfg(test)]
-mod test_overload_pow {
+mod test_overloading {
+    use super::*;
+    use crate::*;
+    use RustQuant_utils::{assert_approx_equal, RUSTQUANT_EPSILON as EPS};
+
+    #[test]
+    fn test_div() {
+        // Variable / Variable
+        let g = Graph::new();
+
+        let x = g.var(1.0);
+        let y = g.var(2.0);
+        let z = x / y;
+        let grad = z.accumulate();
+
+        assert_approx_equal!(z.value, 0.5, EPS);
+        assert_approx_equal!(grad.wrt(&x), 0.5, EPS);
+        assert_approx_equal!(grad.wrt(&y), -0.25, EPS);
+
+        // Variable / f64
+        let g = Graph::new();
+
+        let x = g.var(1.0);
+        let y = 2.0;
+        let z = x / y;
+        let grad = z.accumulate();
+
+        assert_approx_equal!(z.value, 0.5, EPS);
+        assert_approx_equal!(grad.wrt(&x), 0.5, EPS);
+
+        // f64 / Variable
+        let g = Graph::new();
+
+        let x = 1.0;
+        let y = g.var(2.0);
+        let z = x / y;
+        let grad = z.accumulate();
+
+        assert_approx_equal!(z.value, 0.5, EPS);
+        assert_approx_equal!(grad.wrt(&y), -0.25, EPS);
+    }
+
+    #[test]
+    fn test_add() {
+        // Variable + Variable
+        let g = Graph::new();
+
+        let x = g.var(1.0);
+        let y = g.var(2.0);
+        let z = x + y;
+        let grad = z.accumulate();
+
+        assert_approx_equal!(z.value, 3.0, EPS);
+        assert_approx_equal!(grad.wrt(&x), 1.0, EPS);
+        assert_approx_equal!(grad.wrt(&y), 1.0, EPS);
+
+        // Variable + f64
+        let g = Graph::new();
+
+        let x = g.var(1.0);
+        let y = 2.0;
+        let z = x + y;
+        let grad = z.accumulate();
+
+        assert_approx_equal!(z.value, 3.0, EPS);
+        assert_approx_equal!(grad.wrt(&x), 1.0, EPS);
+
+        // f64 + Variable
+        let g = Graph::new();
+
+        let x = 1.0;
+        let y = g.var(2.0);
+        let z = x + y;
+        let grad = z.accumulate();
+
+        assert_approx_equal!(z.value, 3.0, EPS);
+        assert_approx_equal!(grad.wrt(&y), 1.0, EPS);
+    }
+
+    #[test]
+    fn test_values() {
+        let g = Graph::new();
+
+        let x = g.var(1.0);
+
+        // VALUES
+        assert_approx_equal!((-x).value, -1.0, EPS);
+        assert_approx_equal!(x.log2().value, 0.0, EPS);
+        assert_approx_equal!(x.exp2().value, 2.0, EPS);
+        assert_approx_equal!(x.exp_m1().value, 1.718_281_828_459_045, EPS);
+        assert_approx_equal!(x.ln().value, 0.0, EPS);
+        assert_approx_equal!(x.ln_1p().value, std::f64::consts::LN_2, EPS);
+        assert_approx_equal!(x.log10().value, 0.0, EPS);
+        assert_approx_equal!(x.log2().value, 0.0, EPS);
+        assert_approx_equal!(x.recip().value, 1.0, EPS);
+        assert_approx_equal!(x.sqrt().value, 1.0, EPS);
+        assert_approx_equal!(x.cbrt().value, 1.0, EPS);
+        assert_approx_equal!(x.sin().value, 0.841_470_984_807_896_5, EPS);
+        assert_approx_equal!(x.cos().value, 0.540_302_305_868_139_8, EPS);
+        assert_approx_equal!(x.tan().value, 1.557_407_724_654_902_3, EPS);
+        assert_approx_equal!(x.asin().value, std::f64::consts::FRAC_PI_2, EPS);
+        assert_approx_equal!(x.acos().value, 0.0, EPS);
+        assert_approx_equal!(x.atan().value, std::f64::consts::FRAC_PI_4, EPS);
+        assert_approx_equal!(x.sinh().value, 1.175_201_193_643_801_4, EPS);
+        assert_approx_equal!(x.cosh().value, 1.543_080_634_815_243_7, EPS);
+        assert_approx_equal!(x.tanh().value, 0.761_594_155_955_764_9, EPS);
+        assert_approx_equal!(x.asinh().value, 0.881_373_587_019_543, EPS);
+        assert_approx_equal!(x.acosh().value, 0.0, EPS);
+        assert!(x.atanh().is_infinite() && x.atanh().is_positive());
+        assert_approx_equal!(x.abs().value, 1.0, EPS);
+    }
+
+    #[test]
+    fn test_gradients() {
+        let g = Graph::new();
+
+        let x = g.var(1.0);
+
+        // GRADIENTS
+        assert_approx_equal!((-x).accumulate().wrt(&x), -1.0, EPS);
+        assert_approx_equal!(x.log2().accumulate().wrt(&x), 1.0, EPS);
+        assert_approx_equal!(x.exp2().accumulate().wrt(&x), 1.386_294_361_119_890_6, EPS);
+        assert_approx_equal!(x.exp_m1().accumulate().wrt(&x), std::f64::consts::E, EPS);
+        assert_approx_equal!(x.ln().accumulate().wrt(&x), 1.0, EPS);
+        assert_approx_equal!(x.ln().accumulate().wrt(&x), 1.0, EPS);
+        assert_approx_equal!(x.ln_1p().accumulate().wrt(&x), 0.5, EPS);
+        assert_approx_equal!(x.log10().accumulate().wrt(&x), 1.0, EPS);
+        assert_approx_equal!(x.log2().accumulate().wrt(&x), 1.0, EPS);
+        assert_approx_equal!(x.recip().accumulate().wrt(&x), -1.0, EPS);
+        assert_approx_equal!(x.sqrt().accumulate().wrt(&x), 0.5, EPS);
+        assert_approx_equal!(x.cbrt().accumulate().wrt(&x), 0.333_333_333_333_333_3, EPS);
+        assert_approx_equal!(x.sin().accumulate().wrt(&x), 0.540_302_305_868_139_8, EPS);
+        assert_approx_equal!(x.cos().accumulate().wrt(&x), -0.841_470_984_807_896_5, EPS);
+        assert_approx_equal!(x.tan().accumulate().wrt(&x), 3.425_518_820_814_759, EPS);
+        assert_approx_equal!(x.sinh().accumulate().wrt(&x), 1.543_080_634_815_243_7, EPS);
+        assert_approx_equal!(x.atan().accumulate().wrt(&x), 0.5, EPS);
+        assert_approx_equal!(x.cosh().accumulate().wrt(&x), 1.175_201_193_643_801_4, EPS);
+        assert_approx_equal!(x.tanh().accumulate().wrt(&x), 0.419_974_341_614_026_14, EPS);
+        assert_approx_equal!(x.asinh().accumulate().wrt(&x), 1.0 / 2_f64.sqrt(), EPS);
+        assert_approx_equal!(x.abs().accumulate().wrt(&x), 1.0, EPS);
+        assert!(x.atanh().accumulate().wrt(&x).is_nan());
+        assert!(x.acosh().accumulate().wrt(&x).is_nan());
+        assert!(x.asin().accumulate().wrt(&x).is_nan());
+        assert!(x.acos().accumulate().wrt(&x).is_nan());
+    }
+
+    #[test]
+    fn test_sum() {
+        let g = Graph::new();
+
+        let params = (0..100).map(|x| g.var(f64::from(x))).collect::<Vec<_>>();
+        let sum = params.iter().copied().sum::<Variable>();
+        let derivs = sum.accumulate();
+
+        for i in derivs.wrt(&params) {
+            assert_approx_equal!(i, 1.0, EPS);
+        }
+    }
+
+    #[test]
+    fn test_product() {
+        let g = Graph::new();
+
+        let params = (1..=5).map(|x| g.var(f64::from(x))).collect::<Vec<_>>();
+        let prod = params.iter().copied().product::<Variable>();
+
+        let derivs = prod.accumulate();
+        let true_gradient = [120.0, 60.0, 40.0, 30.0, 24.0];
+
+        let expects = derivs.wrt(&params);
+        let n = expects.len();
+        let m = true_gradient.len();
+        assert_eq!(n, m);
+
+        for (&expect, &gradient) in expects.iter().zip(true_gradient.iter()) {
+            assert_approx_equal!(expect, gradient, EPS);
+        }
+    }
+
+    #[test]
+    fn test_values_ad() {
+        let g = Graph::new();
+
+        let x = g.var(1.0);
+        let y = g.var(2.0);
+
+        // VALUES
+        assert!(Min::min(&x, y) == 1.0);
+        assert!(Max::max(&x, y) == 2.0);
+        assert!(Min::min(&x, 2_f64) == 1.0);
+        assert!(Max::max(&x, 2_f64) == 2.0);
+        assert!(Max::max(&x, 2_f64) == 2.0);
+        assert!(Min::min(&2_f64, x) == 1.0);
+        assert!(Max::max(&2_f64, x) == 2.0);
+    }
+
+    #[test]
+    fn test_gradients_ad() {
+        let g = Graph::new();
+
+        let x = g.var(1.0);
+        let y = g.var(2.0);
+
+        // GRADIENTS
+        assert_approx_equal!(Min::min(&x, y).accumulate().wrt(&x), 1.0, EPS);
+        assert_approx_equal!(Min::min(&x, y).accumulate().wrt(&y), 0.0, EPS);
+        assert_approx_equal!(Max::max(&x, y).accumulate().wrt(&x), 0.0, EPS);
+        assert_approx_equal!(Max::max(&x, y).accumulate().wrt(&y), 1.0, EPS);
+
+        assert_approx_equal!(Min::min(&x, 2_f64).accumulate().wrt(&x), 1.0, EPS);
+        assert_approx_equal!(Max::max(&x, 2_f64).accumulate().wrt(&x), 0.0, EPS);
+
+        assert_approx_equal!(Min::min(&2_f64, x).accumulate().wrt(&x), 0.0, EPS);
+        assert_approx_equal!(Max::max(&2_f64, x).accumulate().wrt(&x), 1.0, EPS);
+    }
+
+    #[test]
+    fn test_mul() {
+        // Variable * Variable
+        let g = Graph::new();
+
+        let x = g.var(1.0);
+        let y = g.var(2.0);
+        let z = x * y;
+        let grad = z.accumulate();
+
+        assert_approx_equal!(z.value, 2.0, EPS);
+        assert_approx_equal!(grad.wrt(&x), 2.0, EPS);
+        assert_approx_equal!(grad.wrt(&y), 1.0, EPS);
+
+        // Variable * f64
+        let g = Graph::new();
+
+        let x = g.var(1.0);
+        let y = 2.0;
+        let z = x * y;
+        let grad = z.accumulate();
+
+        assert_approx_equal!(z.value, 2.0, EPS);
+        assert_approx_equal!(grad.wrt(&x), 2.0, EPS);
+
+        // f64 * Variable
+        let g = Graph::new();
+
+        let x = 1.0;
+        let y = g.var(2.0);
+        let z = x * y;
+        let grad = z.accumulate();
+
+        assert_approx_equal!(z.value, 2.0, EPS);
+        assert_approx_equal!(grad.wrt(&y), 1.0, EPS);
+    }
+
+    #[test]
+    fn test_sub() {
+        // Variable - Variable
+        let g = Graph::new();
+
+        let x = g.var(1.0);
+        let y = g.var(2.0);
+        let z = x - y;
+        let grad = z.accumulate();
+
+        assert!((z.value - -1.0).abs() < f64::EPSILON);
+        assert!((grad.wrt(&x) - 1.0).abs() < f64::EPSILON);
+        assert!((grad.wrt(&y) - -1.0).abs() < f64::EPSILON);
+
+        // Variable - f64
+        let g = Graph::new();
+
+        let x = g.var(1.0);
+        let y = 2.0;
+        let z = x - y;
+        let grad = z.accumulate();
+
+        assert!((z.value - -1.0).abs() < f64::EPSILON);
+        assert!((grad.wrt(&x) - 1.0).abs() < f64::EPSILON);
+
+        // f64 - Variable
+        let g = Graph::new();
+
+        let x = 1.0;
+        let y = g.var(2.0);
+        let z = x - y;
+        let grad = z.accumulate();
+
+        assert!((z.value - -1.0).abs() < f64::EPSILON);
+        assert!((grad.wrt(&y) - -1.0).abs() < f64::EPSILON);
+    }
+
     // use crate::autodiff::{Graph, Variable};
 
     // #[test]
@@ -1911,250 +2002,4 @@ mod test_overload_pow {
     //     let derivs = y.accumulate(); // d/dx 3^x = 3^x * ln(3)
     //     assert_approx_equal!(derivs.wrt(&x), (27.0f64).ln(), 1e-8);
     // }
-}
-
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// RustQuant: A Rust library for quantitative finance tools.
-// Copyright (C) 2023 https://github.com/avhz
-// Dual licensed under Apache 2.0 and MIT.
-// See:
-//      - LICENSE-APACHE.md
-//      - LICENSE-MIT.md
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-use std::f64::consts::PI;
-
-impl<'v> Variable<'v> {
-    /// Error function.
-    /// d/dx erf(x) = 2e^(-x^2) / sqrt(PI)
-    ///
-    /// ```
-    /// use RustQuant::assert_approx_equal;
-    /// use RustQuant::autodiff::*;
-    ///
-    /// let g = Graph::new();
-    ///
-    /// let x = g.var(1.0);
-    /// let z = x.erf();
-    /// let grad = z.accumulate();
-    ///
-    /// assert_approx_equal!(z.value,      0.84270079294, 1e-10);
-    /// assert_approx_equal!(grad.wrt(&x), 0.41510749742, 1e-10);
-    /// ```
-    #[must_use]
-    #[inline]
-    pub fn erf(self) -> Self {
-        // use statrs::function::erf::erf;
-
-        Variable {
-            graph: self.graph,
-            value: errorfunctions::RealErrorFunctions::erf(self.value),
-            index: self.graph.push(
-                Arity::Unary,
-                &[self.index],
-                &[2.0 * self.value.powi(2).neg().exp() / PI.sqrt()],
-            ),
-        }
-    }
-
-    /// Error function (complementary).
-    /// d/dx erfc(x) = -2e^(-x^2) / sqrt(PI)
-    ///
-    /// ```
-    /// use RustQuant::assert_approx_equal;
-    /// use RustQuant::autodiff::*;
-    ///
-    /// let g = Graph::new();
-    ///
-    /// let x = g.var(1.0);
-    /// let z = x.erfc();
-    /// let grad = z.accumulate();
-    ///
-    /// assert_approx_equal!(z.value,       0.15729920705, 1e-10);
-    /// assert_approx_equal!(grad.wrt(&x), -0.41510749742, 1e-10);
-    /// ```
-    #[must_use]
-    #[inline]
-    pub fn erfc(self) -> Self {
-        // use statrs::function::erf::erfc;
-
-        Variable {
-            graph: self.graph,
-            value: errorfunctions::RealErrorFunctions::erfc(self.value),
-            index: self.graph.push(
-                Arity::Unary,
-                &[self.index],
-                &[((2.0 * self.value.powi(2).neg().exp()).neg() / PI.sqrt())],
-            ),
-        }
-    }
-}
-
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// RustQuant: A Rust library for quantitative finance tools.
-// Copyright (C) 2023 https://github.com/avhz
-// Dual licensed under Apache 2.0 and MIT.
-// See:
-//      - LICENSE-APACHE.md
-//      - LICENSE-MIT.md
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-use std::ops::{Sub, SubAssign};
-
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/// Overload the standard subtraction operator (`-`).
-/// d/dx x - y = 1
-/// d/dy x - y = -1
-
-/// `SubAssign`: Variable<'v> -= Variable<'v>
-impl<'v> SubAssign<Variable<'v>> for Variable<'v> {
-    #[inline]
-    fn sub_assign(&mut self, other: Variable<'v>) {
-        assert!(std::ptr::eq(self.graph, other.graph));
-
-        *self = *self - other;
-    }
-}
-
-/// `SubAssign`: Variable<'v> -= f64
-impl<'v> SubAssign<f64> for Variable<'v> {
-    #[inline]
-    fn sub_assign(&mut self, other: f64) {
-        *self = *self - other;
-    }
-}
-
-/// `SubAssign`: f64 -= Variable<'v>
-impl<'v> SubAssign<Variable<'v>> for f64 {
-    #[inline]
-    fn sub_assign(&mut self, other: Variable<'v>) {
-        *self = *self - other.value;
-    }
-}
-
-/// Variable<'v> - Variable<'v>
-impl<'v> Sub<Variable<'v>> for Variable<'v> {
-    type Output = Variable<'v>;
-
-    /// ```
-    /// use RustQuant::autodiff::*;    
-    ///
-    /// let g = Graph::new();
-    ///
-    /// let x = g.var(5.0);
-    /// let y = g.var(2.0);
-    /// let z = x - y;
-    ///
-    /// let grad = z.accumulate();
-    ///
-    /// assert_eq!(z.value, 3.0);
-    /// assert_eq!(grad.wrt(&x), 1.0);
-    /// assert_eq!(grad.wrt(&y), -1.0);
-    /// ```
-    #[inline]
-    fn sub(self, other: Variable<'v>) -> Self::Output {
-        assert!(std::ptr::eq(self.graph, other.graph));
-
-        self.add(other.neg())
-    }
-}
-
-/// Variable<'v> - f64
-impl<'v> Sub<f64> for Variable<'v> {
-    type Output = Variable<'v>;
-
-    /// ```
-    /// use RustQuant::autodiff::*;
-    ///
-    /// let g = Graph::new();
-    ///
-    /// let x = g.var(5.0);
-    /// let a = 2.0;
-    /// let z = x - a;
-    ///
-    /// let grad = z.accumulate();
-    ///
-    /// assert_eq!(z.value, 3.0);
-    /// assert_eq!(grad.wrt(&x), 1.0);
-    /// ```
-    #[inline]
-    fn sub(self, other: f64) -> Self::Output {
-        self.add(other.neg())
-    }
-}
-
-/// f64 - Variable<'v>
-impl<'v> Sub<Variable<'v>> for f64 {
-    type Output = Variable<'v>;
-
-    /// ```
-    /// use RustQuant::autodiff::*;   
-    ///  
-    /// let g = Graph::new();
-    ///
-    /// let a = 5.0;
-    /// let x = g.var(2.0);
-    /// let z = a - x;
-    ///
-    /// let grad = z.accumulate();
-    ///
-    /// assert_eq!(z.value, 3.0);
-    /// assert_eq!(grad.wrt(&x), -1.0);
-    /// ```
-    #[inline]
-    fn sub(self, other: Variable<'v>) -> Self::Output {
-        Variable {
-            graph: other.graph,
-            value: self - other.value,
-            index: other
-                .graph
-                .push(Arity::Binary, &[other.index, other.index], &[0.0, -1.0]),
-        }
-    }
-}
-
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// UNIT TESTS
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-#[cfg(test)]
-mod test_overload_sub {
-    use crate::{Accumulate, Gradient, Graph};
-
-    #[test]
-    fn test_sub() {
-        // Variable - Variable
-        let g = Graph::new();
-
-        let x = g.var(1.0);
-        let y = g.var(2.0);
-        let z = x - y;
-        let grad = z.accumulate();
-
-        assert!((z.value - -1.0).abs() < f64::EPSILON);
-        assert!((grad.wrt(&x) - 1.0).abs() < f64::EPSILON);
-        assert!((grad.wrt(&y) - -1.0).abs() < f64::EPSILON);
-
-        // Variable - f64
-        let g = Graph::new();
-
-        let x = g.var(1.0);
-        let y = 2.0;
-        let z = x - y;
-        let grad = z.accumulate();
-
-        assert!((z.value - -1.0).abs() < f64::EPSILON);
-        assert!((grad.wrt(&x) - 1.0).abs() < f64::EPSILON);
-
-        // f64 - Variable
-        let g = Graph::new();
-
-        let x = 1.0;
-        let y = g.var(2.0);
-        let z = x - y;
-        let grad = z.accumulate();
-
-        assert!((z.value - -1.0).abs() < f64::EPSILON);
-        assert!((grad.wrt(&y) - -1.0).abs() < f64::EPSILON);
-    }
 }
