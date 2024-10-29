@@ -6,6 +6,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.12](https://github.com/avhz/RustQuant/compare/RustQuant_instruments-v0.2.11...RustQuant_instruments-v0.2.12) - 2024-10-29
+
+### Added
+
+- Heston93 model impl
+
+### Fixed
+
+- failing tests in `instruments::options::black_scholes_merton`
+
+### Other
+
+- katex header in sub-crates
+
 ## [0.2.11](https://github.com/avhz/RustQuant/releases/tag/RustQuant_instruments-v0.2.11) - 2024-10-28
 
 ### Fixed
