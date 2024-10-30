@@ -1,16 +1,16 @@
 [project]
 name = "RustQuant"
-requires-python = ">=3.8"
 dynamic = ["version"]
+requires-python = ">=3.8"
 classifiers = [
     "Programming Language :: Rust",
     "Programming Language :: Python :: Implementation :: CPython",
     "Programming Language :: Python :: Implementation :: PyPy",
 ]
 
+[tool.maturin]
+features = ["pyo3/extension-module"]
+
 [build-system]
 requires = ["maturin>=1.7,<2.0"]
 build-backend = "maturin"
-
-[tool.maturin]
-features = ["pyo3/extension-module"]

@@ -68,6 +68,14 @@ pub struct Heston93 {
     sigma: f64,
 }
 
+/// Bachelier (1900) option pricing parameters.
+#[derive(Debug, Clone, Serialize, Deserialize, Copy)]
+pub struct Bachelier {
+    f: f64,
+    r: f64,
+    v: f64,
+}
+
 /// Generalised Black-Scholes-Merton option pricing model and it's Greeks.
 pub trait GeneralisedBlackScholesMerton {
     /// Price a European option.
@@ -255,6 +263,13 @@ impl Heston93 {
             theta,
             sigma,
         }
+    }
+}
+
+impl Bachelier {
+    /// Create a new Bachelier (1900) option pricing parameters.
+    pub fn new(f: f64, r: f64, v: f64) -> Self {
+        Self { f, r, v }
     }
 }
 
@@ -941,5 +956,223 @@ impl Heston93 {
         (
             self.s, self.v, self.r, self.q, self.rho, self.kappa, self.theta, self.sigma,
         )
+    }
+}
+
+mod bachelier {
+    use std::f64::consts::{FRAC_PI_2, PI};
+    use RustQuant_math::{gaussian::N, Distribution};
+
+    /// Price a European call option using the Bacheller model.
+    #[inline]
+    pub(crate) fn call_price(f: f64, k: f64, t: f64, r: f64, v: f64) -> f64 {
+        let d = d(f, k, t, v);
+        let df = df(r, t);
+        let price = (f - k) * N.cdf(d) + v * t.sqrt() * N.pdf(d);
+
+        df * price
+    }
+
+    /// Price a European put option using the Bacheller model.
+    #[inline]
+    pub(crate) fn put_price(f: f64, k: f64, t: f64, r: f64, v: f64) -> f64 {
+        let d = d(f, k, t, v);
+        let df = df(r, t);
+        let price = (k - f) * N.cdf(-d) + v * t.sqrt() * N.pdf(d);
+
+        df * price
+    }
+
+    #[inline]
+    fn d(f: f64, k: f64, t: f64, v: f64) -> f64 {
+        (f - k) / (v * t.sqrt())
+    }
+
+    #[inline]
+    fn df(r: f64, t: f64) -> f64 {
+        (-r * t).exp()
+    }
+
+    #[inline]
+    pub(crate) fn atm_price(t: f64, v: f64) -> f64 {
+        v * (t / (2. * PI)).sqrt()
+    }
+
+    #[inline]
+    pub(crate) fn atm_vol(price: f64, t: f64) -> f64 {
+        price * (2. * PI / t).sqrt()
+    }
+
+    const A: [f64; 8] = [
+        3.994_961_687_345_134e-1,
+        2.100_960_795_068_497e+1,
+        4.980_340_217_855_084e+1,
+        5.988_761_102_690_991e+2,
+        1.848_489_695_437_094e+3,
+        6.106_322_407_867_059e+3,
+        2.493_415_285_349_361e+4,
+        1.266_458_051_348_246e+4,
+    ];
+
+    const B: [f64; 9] = [
+        4.990_534_153_589_422e+1,
+        3.093_573_936_743_112e+1,
+        1.495_105_008_310_999e+3,
+        1.323_614_537_899_738e+3,
+        1.598_919_697_679_745e+4,
+        2.392_008_891_720_782e+4,
+        3.608_817_108_375_034e+3,
+        -2.067_719_486_400_926e+2,
+        1.174_240_599_306_013e+1,
+    ];
+
+    #[inline]
+    pub(crate) fn call_iv(price: f64, f: f64, k: f64, t: f64) -> f64 {
+        let v = (f - k).abs() / (2. * price - (f - k));
+        let eta = v / v.atanh();
+
+        let mut sum1 = 0.0;
+        let mut sum2 = 0.0;
+
+        for k in 0..A.len() {
+            sum1 += A[k] * eta.powi(k as i32);
+        }
+
+        for k in 0..B.len() {
+            sum2 += B[k] * eta.powi(k as i32);
+        }
+
+        let hn = eta.sqrt() * sum1 / (1. + sum2);
+
+        (FRAC_PI_2 / t).sqrt() * (2. * price - (f - k)) * hn
+    }
+
+    #[inline]
+    pub(crate) fn put_iv(price: f64, f: f64, k: f64, t: f64) -> f64 {
+        let v = (f - k).abs() / (2. * price + (f - k));
+        let eta = v / v.atanh();
+
+        let mut sum1 = 0.0;
+        let mut sum2 = 0.0;
+
+        for k in 0..A.len() {
+            sum1 += A[k] * eta.powi(k as i32);
+        }
+
+        for k in 1..=B.len() {
+            sum2 += B[k] * eta.powi(k as i32);
+        }
+
+        let hn = eta.sqrt() * sum1 / (1. + sum2);
+
+        (FRAC_PI_2 / t).sqrt() * (2. * price + (f - k)) * hn
+    }
+
+    #[inline]
+    pub(crate) fn call_delta(f: f64, k: f64, t: f64, v: f64) -> f64 {
+        let d = d(f, k, t, v);
+        N.cdf(d)
+    }
+
+    #[inline]
+    pub(crate) fn put_delta(f: f64, k: f64, t: f64, v: f64) -> f64 {
+        let d = d(f, k, t, v);
+        N.cdf(d) - 1.0
+    }
+
+    #[inline]
+    pub(crate) fn call_gamma(f: f64, k: f64, t: f64, v: f64) -> f64 {
+        let d = d(f, k, t, v);
+        N.pdf(d) / (v * t.sqrt())
+    }
+
+    #[inline]
+    pub(crate) fn put_gamma(f: f64, k: f64, t: f64, v: f64) -> f64 {
+        call_gamma(f, k, t, v)
+    }
+
+    #[inline]
+    pub(crate) fn call_vega(f: f64, k: f64, t: f64, v: f64) -> f64 {
+        let d = d(f, k, t, v);
+        t.sqrt() * N.pdf(d)
+    }
+
+    #[inline]
+    pub(crate) fn put_vega(f: f64, k: f64, t: f64, v: f64) -> f64 {
+        call_vega(f, k, t, v)
+    }
+
+    #[inline]
+    pub(crate) fn call_theta(f: f64, k: f64, t: f64, v: f64) -> f64 {
+        let d = d(f, k, t, v);
+
+        -v * N.pdf(d) / (2. * t.sqrt())
+    }
+
+    #[inline]
+    pub(crate) fn put_theta(f: f64, k: f64, t: f64, v: f64) -> f64 {
+        let d = d(f, k, t, v);
+
+        -v * N.pdf(d) / (2. * t.sqrt())
+    }
+}
+
+impl Bachelier {
+    /// Price a European option using the Bachelier model.
+    pub fn price(&self, k: f64, t: f64, option_type: TypeFlag) -> f64 {
+        match option_type {
+            TypeFlag::Call => bachelier::call_price(self.f, k, t, self.r, self.v),
+            TypeFlag::Put => bachelier::put_price(self.f, k, t, self.r, self.v),
+        }
+    }
+
+    /// ATM price of a European option using the Bachelier model.
+    pub fn atm_price(&self, t: f64) -> f64 {
+        bachelier::atm_price(t, self.v)
+    }
+
+    /// ATM volatility of a European option using the Bachelier model.
+    pub fn atm_vol(&self, price: f64, t: f64) -> f64 {
+        bachelier::atm_vol(price, t)
+    }
+
+    /// Implied volatility of a European option using the Bachelier model.
+    pub fn iv(&self, price: f64, k: f64, t: f64, option_type: TypeFlag) -> f64 {
+        match option_type {
+            TypeFlag::Call => bachelier::call_iv(price, self.f, k, t),
+            TypeFlag::Put => bachelier::put_iv(price, self.f, k, t),
+        }
+    }
+
+    /// Delta of a European option using the Bachelier model.
+    pub fn delta(&self, k: f64, t: f64, option_type: TypeFlag) -> f64 {
+        match option_type {
+            TypeFlag::Call => bachelier::call_delta(self.f, k, t, self.v),
+            TypeFlag::Put => bachelier::put_delta(self.f, k, t, self.v),
+        }
+    }
+
+    /// Gamma of a European option using the Bachelier model.
+    pub fn gamma(&self, k: f64, t: f64, option_type: TypeFlag) -> f64 {
+        match option_type {
+            TypeFlag::Call => bachelier::call_gamma(self.f, k, t, self.v),
+            TypeFlag::Put => bachelier::put_gamma(self.f, k, t, self.v),
+        }
+    }
+
+    /// Vega of a European option using the Bachelier model.
+    pub fn vega(&self, k: f64, t: f64, option_type: TypeFlag) -> f64 {
+        match option_type {
+            TypeFlag::Call => bachelier::call_vega(self.f, k, t, self.v),
+            TypeFlag::Put => bachelier::put_vega(self.f, k, t, self.v),
+        }
+    }
+
+    /// Theta of a European option using the Bachelier model.
+    pub fn theta(&self, k: f64, t: f64, option_type: TypeFlag) -> f64 {
+        match option_type {
+            TypeFlag::Call => bachelier::call_theta(self.f, k, t, self.v),
+            TypeFlag::Put => bachelier::put_theta(self.f, k, t, self.v),
+        }
     }
 }

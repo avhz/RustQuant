@@ -15,6 +15,7 @@ use super::{
     Asay82, Black76, BlackScholes73, GarmanKohlhagen83, GeneralisedBlackScholesMerton, Merton73,
     TypeFlag,
 };
+use super::{Bachelier, Heston93};
 use crate::AnalyticOptionPricer;
 use crate::Payoff;
 use derive_builder::Builder;
@@ -26,7 +27,7 @@ use RustQuant_time::{today, year_fraction};
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 /// European vanilla option.
-#[derive(Debug, Clone, Builder)]
+#[derive(Debug, Clone, Builder, Copy)]
 pub struct EuropeanVanillaOption {
     /// The strike price of the option.
     pub strike: f64,
@@ -41,6 +42,28 @@ pub struct EuropeanVanillaOption {
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // IMPLEMENTATIONS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+impl Payoff for EuropeanVanillaOption {
+    type Underlying = f64;
+
+    fn payoff(&self, underlying: Self::Underlying) -> f64 {
+        match self.type_flag {
+            TypeFlag::Call => (underlying - self.strike).max(0.0),
+            TypeFlag::Put => (self.strike - underlying).max(0.0),
+        }
+    }
+}
+
+impl EuropeanVanillaOption {
+    /// Create a new vanilla option.
+    pub fn new(strike: f64, expiry: Date, type_flag: TypeFlag) -> Self {
+        Self {
+            strike,
+            expiry,
+            type_flag,
+        }
+    }
+}
 
 macro_rules! european_vanilla_option_gbsm {
     ($gbsm_variant:ident) => {
@@ -207,25 +230,147 @@ european_vanilla_option_gbsm!(Black76);
 european_vanilla_option_gbsm!(Asay82);
 european_vanilla_option_gbsm!(GarmanKohlhagen83);
 
-impl Payoff for EuropeanVanillaOption {
-    type Underlying = f64;
+impl AnalyticOptionPricer<EuropeanVanillaOption, Heston93> {
+    /// Calculate the price of the option.
+    pub fn price(&self) -> f64 {
+        let k = self.option.strike;
+        let t = year_fraction(today(), self.option.expiry);
+        let f = self.option.type_flag;
 
-    fn payoff(&self, underlying: Self::Underlying) -> f64 {
-        match self.type_flag {
-            TypeFlag::Call => (underlying - self.strike).max(0.0),
-            TypeFlag::Put => (self.strike - underlying).max(0.0),
-        }
+        self.model.price(k, t, f)
+    }
+
+    /// Calculate the delta of the option.
+    pub fn delta(&self) -> f64 {
+        let k = self.option.strike;
+        let t = year_fraction(today(), self.option.expiry);
+        let f = self.option.type_flag;
+
+        self.model.delta(k, t, f)
+    }
+
+    /// Calculate the gamma of the option.
+    pub fn gamma(&self) -> f64 {
+        let k = self.option.strike;
+        let t = year_fraction(today(), self.option.expiry);
+        let f = self.option.type_flag;
+
+        self.model.gamma(k, t, f)
+    }
+
+    /// Calculate the rho of the option.
+    pub fn rho(&self) -> f64 {
+        let k = self.option.strike;
+        let t = year_fraction(today(), self.option.expiry);
+        let f = self.option.type_flag;
+
+        self.model.rho(k, t, f)
+    }
+
+    /// Print a report of the option price and greeks.
+    pub fn report(&self) {
+        use std::collections::HashMap;
+
+        let map = HashMap::from([
+            ("price", self.price()),
+            ("delta", self.delta()),
+            ("gamma", self.gamma()),
+            ("rho", self.rho()),
+        ]);
+
+        println!("Model: {:?}", self.model);
+        println!("Option: {:?}", self.option);
+        println!("{:#?}", map);
+        println!();
     }
 }
 
-impl EuropeanVanillaOption {
-    /// Create a new vanilla option.
-    pub fn new(strike: f64, expiry: Date, type_flag: TypeFlag) -> Self {
-        Self {
-            strike,
-            expiry,
-            type_flag,
-        }
+impl AnalyticOptionPricer<EuropeanVanillaOption, Bachelier> {
+    /// Calculate the price of the option.
+    pub fn price(&self) -> f64 {
+        let k = self.option.strike;
+        let t = year_fraction(today(), self.option.expiry);
+        let f = self.option.type_flag;
+
+        self.model.price(k, t, f)
+    }
+
+    /// Calculate the atm price of the option.
+    pub fn atm_price(&self) -> f64 {
+        let t = year_fraction(today(), self.option.expiry);
+
+        self.model.atm_price(t)
+    }
+
+    /// Calculate the atm vol of the option.
+    pub fn atm_vol(&self, price: f64) -> f64 {
+        let t = year_fraction(today(), self.option.expiry);
+
+        self.model.atm_vol(price, t)
+    }
+
+    /// Calculate the implied volatility of the option.
+    pub fn iv(&self, price: f64) -> f64 {
+        let k = self.option.strike;
+        let t = year_fraction(today(), self.option.expiry);
+        let f = self.option.type_flag;
+
+        self.model.iv(price, k, t, f)
+    }
+
+    /// Calculate the delta of the option.
+    pub fn delta(&self) -> f64 {
+        let k = self.option.strike;
+        let t = year_fraction(today(), self.option.expiry);
+        let f = self.option.type_flag;
+
+        self.model.delta(k, t, f)
+    }
+
+    /// Calculate the gamma of the option.
+    pub fn gamma(&self) -> f64 {
+        let k = self.option.strike;
+        let t = year_fraction(today(), self.option.expiry);
+        let f = self.option.type_flag;
+
+        self.model.gamma(k, t, f)
+    }
+
+    /// Calculate the theta of the option.
+    pub fn theta(&self) -> f64 {
+        let k = self.option.strike;
+        let t = year_fraction(today(), self.option.expiry);
+        let f = self.option.type_flag;
+
+        self.model.theta(k, t, f)
+    }
+
+    /// Calculate the vega of the option.
+    pub fn vega(&self) -> f64 {
+        let k = self.option.strike;
+        let t = year_fraction(today(), self.option.expiry);
+        let f = self.option.type_flag;
+
+        self.model.vega(k, t, f)
+    }
+
+    /// Print a report of the option price and greeks.
+    pub fn report(&self) {
+        use std::collections::HashMap;
+
+        let map = HashMap::from([
+            ("price", self.price()),
+            ("atm_price", self.atm_price()),
+            ("delta", self.delta()),
+            ("gamma", self.gamma()),
+            ("theta", self.theta()),
+            ("vega", self.vega()),
+        ]);
+
+        println!("Model: {:?}", self.model);
+        println!("Option: {:?}", self.option);
+        println!("{:#?}", map);
+        println!();
     }
 }
 
