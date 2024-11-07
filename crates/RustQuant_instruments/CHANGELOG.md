@@ -6,6 +6,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.0](https://github.com/avhz/RustQuant/compare/RustQuant_instruments-v0.2.12...RustQuant_instruments-v0.3.0) - 2024-11-07
+
+### Added
+
+- add Heston and Bachelier models to AnalyticOptionPricer
+
+### Other
+
+- some small lints
+
 ## [0.2.12](https://github.com/avhz/RustQuant/compare/RustQuant_instruments-v0.2.11...RustQuant_instruments-v0.2.12) - 2024-10-29
 
 ### Added
