@@ -59,6 +59,8 @@ pub mod north_america {
     pub mod canada;
     /// United States holidays and calendars.
     pub mod united_states;
+	/// Mexico holidays and calendars
+	pub mod mexico;
 }
 
 /// Calendars implemented for Oceanian countries.
