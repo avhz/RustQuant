@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.1](https://github.com/avhz/RustQuant/compare/RustQuant_cashflows-v0.3.0...RustQuant_cashflows-v0.3.1) - 2024-11-10
+
+### Other
+
+- fix failing doc-tests (add RustQuant dev-dep)
+
 ## [0.2.12](https://github.com/avhz/RustQuant/compare/RustQuant_cashflows-v0.2.11...RustQuant_cashflows-v0.2.12) - 2024-10-29
 
 ### Other
