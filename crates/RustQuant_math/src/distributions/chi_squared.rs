@@ -60,7 +60,7 @@ impl Distribution for ChiSquared {
     /// # Examples
     /// ```
     /// # use num::Complex;
-    /// # use RustQuant::assert_approx_equal;
+    /// # use RustQuant::utils::assert_approx_equal;
     /// # use RustQuant::math::distributions::*;
     ///
     /// let chi = ChiSquared::new(1);
@@ -79,7 +79,7 @@ impl Distribution for ChiSquared {
     /// Probability density function of the Chi-Squared distribution.
     /// # Examples
     /// ```
-    /// # use RustQuant::assert_approx_equal;
+    /// # use RustQuant::utils::assert_approx_equal;
     /// # use RustQuant::math::distributions::*;
     ///
     /// let chi = ChiSquared::new(1);
@@ -99,7 +99,7 @@ impl Distribution for ChiSquared {
     /// Using this method will call `self.pdf(x)` instead
     /// # Examples
     /// ```
-    /// # use RustQuant::assert_approx_equal;
+    /// # use RustQuant::utils::assert_approx_equal;
     /// # use RustQuant::math::distributions::*;
     ///
     /// let chi = ChiSquared::new(1);
@@ -114,7 +114,7 @@ impl Distribution for ChiSquared {
     /// Cumulative distribution function of the Chi-Squared distribution.
     /// # Examples
     /// ```
-    /// # use RustQuant::assert_approx_equal;
+    /// # use RustQuant::utils::assert_approx_equal;
     /// # use RustQuant::math::distributions::*;
     ///
     /// let chi = ChiSquared::new(1);
@@ -132,7 +132,7 @@ impl Distribution for ChiSquared {
     /// Inverse (quantile) distribution function of the Chi-Squared distribution.
     /// # Examples
     /// ```
-    /// # use RustQuant::assert_approx_equal;
+    /// # use RustQuant::utils::assert_approx_equal;
     /// # use RustQuant::math::distributions::*;
     ///
     /// let chi = ChiSquared::new(1);
@@ -174,7 +174,7 @@ impl Distribution for ChiSquared {
     /// Median of the Chi-Squared distribution.
     /// # Examples
     /// ```
-    /// # use RustQuant::assert_approx_equal;
+    /// # use RustQuant::utils::assert_approx_equal;
     /// # use RustQuant::math::distributions::*;
     ///
     /// let chi = ChiSquared::new(1);
@@ -214,7 +214,7 @@ impl Distribution for ChiSquared {
     /// Skewness of the Chi-Squared distribution.
     /// # Examples
     /// ```
-    /// # use RustQuant::assert_approx_equal;
+    /// # use RustQuant::utils::assert_approx_equal;
     /// # use RustQuant::math::distributions::*;
     ///
     /// let chi = ChiSquared::new(1);
@@ -240,7 +240,7 @@ impl Distribution for ChiSquared {
     /// Entropy of the Chi-Squared distribution.
     /// # Examples
     /// ```
-    /// # use RustQuant::assert_approx_equal;
+    /// # use RustQuant::utils::assert_approx_equal;
     /// # use RustQuant::math::distributions::*;
     ///
     /// let chi = ChiSquared::new(1);
@@ -256,7 +256,7 @@ impl Distribution for ChiSquared {
     /// Moment-generating function of the Chi-Squared distribution.
     /// # Examples
     /// ```
-    /// # use RustQuant::assert_approx_equal;
+    /// # use RustQuant::utils::assert_approx_equal;
     /// # use RustQuant::math::distributions::*;
     ///
     /// let chi = ChiSquared::new(1);
@@ -272,7 +272,7 @@ impl Distribution for ChiSquared {
     /// Generates a random sample from a Chi-Squared distribution.
     /// # Examples
     /// ```
-    /// # use RustQuant::assert_approx_equal;
+    /// # use RustQuant::utils::assert_approx_equal;
     /// # use RustQuant::math::distributions::*;
     ///
     /// let chi = ChiSquared::new(100);

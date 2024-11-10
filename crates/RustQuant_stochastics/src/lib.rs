@@ -29,14 +29,14 @@
 //!
 //! ```rust
 //! use RustQuant::stochastics::*;
-//! use RustQuant::models::*;
 //!
 //! // Create new GBM with mu and sigma.
 //! let gbm = GeometricBrownianMotion::new(0.05, 0.9);
 //!
 //! // Generate path using Euler-Maruyama scheme.
 //! // Parameters: x_0, t_0, t_n, n, sims, parallel.
-//! let output = (&gbm).euler_maruyama(10.0, 0.0, 0.5, 10, 1, false);
+//! let config = StochasticProcessConfig::new(10., 0., 0.5, 10, 1, false);
+//! let output = (&gbm).euler_maruyama(&config);
 //!
 //! println!("GBM = {:?}", output.paths);
 //! ```

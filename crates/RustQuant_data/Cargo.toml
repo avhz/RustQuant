@@ -14,6 +14,9 @@ metadata.workspace = true
 [lints]
 workspace = true
 
+[dev-dependencies]
+RustQuant = { path = "../RustQuant" }
+
 [dependencies]
 derive_builder = { workspace = true }
 RustQuant_time = { workspace = true }

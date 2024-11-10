@@ -49,7 +49,7 @@ impl Gaussian {
     /// New instance of a Gaussian distribution.
     /// # Examples
     /// ```
-    /// # use RustQuant::assert_approx_equal;
+    /// # use RustQuant::utils::assert_approx_equal;
     /// # use RustQuant::math::distributions::*;
     ///
     /// let gaussian = Gaussian::new(0.0, 1.0);
@@ -73,7 +73,7 @@ impl Distribution for Gaussian {
     /// Characteristic function of the Gaussian distribution.
     /// # Examples
     /// ```
-    /// # use RustQuant::assert_approx_equal;
+    /// # use RustQuant::utils::assert_approx_equal;
     /// # use RustQuant::math::distributions::*;
     ///
     /// let gaussian = Gaussian::new(0.0, 1.0);
@@ -92,7 +92,7 @@ impl Distribution for Gaussian {
     /// Probability density function of the Gaussian distribution.
     /// # Examples
     /// ```
-    /// # use RustQuant::assert_approx_equal;
+    /// # use RustQuant::utils::assert_approx_equal;
     /// # use RustQuant::math::distributions::*;
     ///
     /// let gaussian = Gaussian::new(0.0, 1.0);
@@ -112,7 +112,7 @@ impl Distribution for Gaussian {
     /// Using this method will call `self.pdf()` instead.
     /// # Examples
     /// ```
-    /// # use RustQuant::assert_approx_equal;
+    /// # use RustQuant::utils::assert_approx_equal;
     /// # use RustQuant::math::distributions::*;
     ///
     /// let gaussian = Gaussian::new(0.0, 1.0);
@@ -126,7 +126,7 @@ impl Distribution for Gaussian {
     /// Cumulative distribution function of the Gaussian distribution.
     /// # Examples
     /// ```
-    /// # use RustQuant::assert_approx_equal;
+    /// # use RustQuant::utils::assert_approx_equal;
     /// # use RustQuant::math::distributions::*;
     ///
     /// let gaussian = Gaussian::new(0.0, 1.0);
@@ -144,7 +144,7 @@ impl Distribution for Gaussian {
     /// Inverse distribution (quantile) function of the Gaussian distribution.
     /// # Examples
     /// ```
-    /// # use RustQuant::assert_approx_equal;
+    /// # use RustQuant::utils::assert_approx_equal;
     /// # use RustQuant::math::distributions::*;
     /// # use std::f64::INFINITY;
     ///
@@ -233,7 +233,7 @@ impl Distribution for Gaussian {
     /// The kurtosis of the Gaussian distribution is equal to 0.
     /// # Examples
     /// ```
-    /// # use RustQuant::assert_approx_equal;
+    /// # use RustQuant::utils::assert_approx_equal;
     /// # use RustQuant::math::distributions::*;
     ///
     /// let gaussian = Gaussian::new(0.0, 1.0);
@@ -247,7 +247,7 @@ impl Distribution for Gaussian {
     /// Returns the entropy of the Gaussian distribution.
     /// # Examples
     /// ```
-    /// # use RustQuant::assert_approx_equal;
+    /// # use RustQuant::utils::assert_approx_equal;
     /// # use RustQuant::math::distributions::*;
     ///
     /// let gaussian = Gaussian::new(0.0, 1.0);
@@ -261,7 +261,7 @@ impl Distribution for Gaussian {
     /// Returns the moment generating function of the Gaussian distribution.
     /// # Examples
     /// ```
-    /// # use RustQuant::assert_approx_equal;
+    /// # use RustQuant::utils::assert_approx_equal;
     /// # use RustQuant::math::distributions::*;
     ///
     /// let gaussian = Gaussian::new(0.0, 1.0);
@@ -278,7 +278,7 @@ impl Distribution for Gaussian {
     /// Standard Normal Random Variates Generator.
     /// # Examples
     /// ```
-    /// # use RustQuant::assert_approx_equal;
+    /// # use RustQuant::utils::assert_approx_equal;
     /// # use RustQuant::math::distributions::*;
     ///
     /// let gaussian = Gaussian::new(0.0, 1.0);

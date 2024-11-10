@@ -14,12 +14,11 @@
 //! # Example
 //!
 //! ```
-//! # use RustQuant::portfolio::{Portfolio, Position};
-//! # use RustQuant::instruments::options::{BlackScholesMerton, TypeFlag};
-//! # use RustQuant::iso::USD;
+//! # use RustQuant::portfolios::{Portfolio, Position};
+//! # use RustQuant::instruments::*;;
 //! # use time::{Duration, OffsetDateTime};
 //! # use std::collections::HashMap;
-//! # use RustQuant::assert_approx_equal;
+//! # use RustQuant::utils::assert_approx_equal;
 //! # use RustQuant::time::today;
 //!
 //! // Create a position of 100 call options.

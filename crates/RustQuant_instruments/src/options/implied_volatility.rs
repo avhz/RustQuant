@@ -74,7 +74,7 @@ pub(crate) const MAXIMUM_RATIONAL_CUBIC_CONTROL_PARAMETER_VALUE: f64 =
 /// ```
 /// use RustQuant::instruments::options::implied_volatility::*;
 /// use RustQuant::instruments::options::TypeFlag;
-/// use RustQuant::assert_approx_equal;
+/// use RustQuant::utils::assert_approx_equal;
 ///
 /// let price = 12.3;
 /// let S = 100.0;

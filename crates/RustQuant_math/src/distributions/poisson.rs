@@ -30,7 +30,7 @@ impl Poisson {
     /// New instance of a Poisson distribution.
     /// # Examples
     /// ```
-    /// # use RustQuant::assert_approx_equal;
+    /// # use RustQuant::utils::assert_approx_equal;
     /// # use RustQuant::math::distributions::*;
     ///
     /// let poisson = Poisson::new(1.0);
@@ -54,7 +54,7 @@ impl Distribution for Poisson {
     /// Characteristic function of the Poisson distribution.
     /// # Examples
     /// ```
-    /// # use RustQuant::assert_approx_equal;
+    /// # use RustQuant::utils::assert_approx_equal;
     /// # use RustQuant::math::distributions::*;
     ///
     /// let poisson = Poisson::new(1.0);
@@ -71,7 +71,7 @@ impl Distribution for Poisson {
     /// Using this method will call `self.pmf()` instead.
     /// # Examples
     /// ```
-    /// # use RustQuant::assert_approx_equal;
+    /// # use RustQuant::utils::assert_approx_equal;
     /// # use RustQuant::math::distributions::*;
     ///
     /// let poisson = Poisson::new(1.0);
@@ -85,7 +85,7 @@ impl Distribution for Poisson {
     /// Probability mass function of the Poisson distribution.
     /// # Examples
     /// ```
-    /// # use RustQuant::assert_approx_equal;
+    /// # use RustQuant::utils::assert_approx_equal;
     /// # use RustQuant::math::distributions::*;
     ///
     /// let poisson = Poisson::new(1.0);
@@ -100,7 +100,7 @@ impl Distribution for Poisson {
     /// Cumulative distribution function of the Poisson distribution.
     /// # Examples
     /// ```
-    /// # use RustQuant::assert_approx_equal;
+    /// # use RustQuant::utils::assert_approx_equal;
     /// # use RustQuant::math::distributions::*;
     ///
     /// let poisson = Poisson::new(1.0);
@@ -115,7 +115,7 @@ impl Distribution for Poisson {
     /// Inverse cumulative distribution function of the Poisson distribution.
     /// # Examples
     /// ```
-    /// # use RustQuant::assert_approx_equal;
+    /// # use RustQuant::utils::assert_approx_equal;
     /// # use RustQuant::math::distributions::*;
     /// # use std::f64::INFINITY;
     /// # use std::f64::NAN;
@@ -197,7 +197,7 @@ impl Distribution for Poisson {
     /// Returns the skewness of the Poisson distribution.
     /// # Examples
     /// ```
-    /// # use RustQuant::assert_approx_equal;
+    /// # use RustQuant::utils::assert_approx_equal;
     /// # use RustQuant::math::distributions::*;
     ///
     /// let poisson = Poisson::new(2.0);
@@ -210,7 +210,7 @@ impl Distribution for Poisson {
     /// Returns the kurtosis of the Poisson distribution.
     /// # Examples
     /// ```
-    /// # use RustQuant::assert_approx_equal;
+    /// # use RustQuant::utils::assert_approx_equal;
     /// # use RustQuant::math::distributions::*;
     ///
     /// let poisson = Poisson::new(2.0);
@@ -228,7 +228,7 @@ impl Distribution for Poisson {
     /// Returns the moment generating function of the Poisson distribution.
     /// # Examples
     /// ```
-    /// # use RustQuant::assert_approx_equal;
+    /// # use RustQuant::utils::assert_approx_equal;
     /// # use RustQuant::math::distributions::*;
     ///
     /// let poisson = Poisson::new(1.0);
@@ -242,7 +242,7 @@ impl Distribution for Poisson {
     /// Generates a random sample from a Poisson distribution using the
     /// # Examples
     /// ```
-    /// # use RustQuant::assert_approx_equal;
+    /// # use RustQuant::utils::assert_approx_equal;
     /// # use RustQuant::math::distributions::*;
     ///
     /// let poisson = Poisson::new(1.0);

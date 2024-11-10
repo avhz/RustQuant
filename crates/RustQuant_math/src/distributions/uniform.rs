@@ -34,9 +34,8 @@ impl Uniform {
     /// New instance of a Uniform distribution.
     /// # Examples
     /// ```
-    /// # use RustQuant::assert_approx_equal;
-    /// # use RustQuant::math::distributions::{Distribution, Uniform};
-    /// # use RustQuant::math::distributions::DistributionClass;
+    /// # use RustQuant::utils::assert_approx_equal;
+    /// # use RustQuant::math::*;
     ///
     /// let dist = Uniform::new(0.0, 1.0, DistributionClass::Continuous);
     ///
@@ -65,9 +64,8 @@ impl Distribution for Uniform {
     /// Characteristic function of the Uniform distribution.
     /// # Examples
     /// ```
-    /// # use RustQuant::assert_approx_equal;
-    /// # use RustQuant::math::distributions::{Distribution, Uniform};
-    /// # use RustQuant::math::distributions::DistributionClass;
+    /// # use RustQuant::utils::assert_approx_equal;
+    /// # use RustQuant::math::*;
     ///
     /// let dist = Uniform::new(0.0, 1.0, DistributionClass::Continuous);
     /// let cf = dist.cf(1.0);
@@ -92,9 +90,8 @@ impl Distribution for Uniform {
     /// Probability density function of the Uniform distribution.
     /// # Examples
     /// ```
-    /// # use RustQuant::assert_approx_equal;
-    /// # use RustQuant::math::distributions::{Distribution, Uniform};
-    /// # use RustQuant::math::distributions::DistributionClass;
+    /// # use RustQuant::utils::assert_approx_equal;
+    /// # use RustQuant::math::*;
     ///
     /// let dist = Uniform::new(0.0, 1.0, DistributionClass::Continuous);
     ///
@@ -122,9 +119,8 @@ impl Distribution for Uniform {
     /// Probability mass function of the Uniform distribution.
     /// # Examples
     /// ```
-    /// # use RustQuant::assert_approx_equal;
-    /// # use RustQuant::math::distributions::{Distribution, Uniform};
-    /// # use RustQuant::math::distributions::DistributionClass;
+    /// # use RustQuant::utils::assert_approx_equal;
+    /// # use RustQuant::math::*;
     ///
     /// let dist = Uniform::new(0.0, 1.0, DistributionClass::Discrete);
     ///
@@ -152,9 +148,8 @@ impl Distribution for Uniform {
     /// Cumulative distribution function of the Uniform distribution.
     /// # Examples
     /// ```
-    /// # use RustQuant::assert_approx_equal;
-    /// # use RustQuant::math::distributions::{Distribution, Uniform};
-    /// # use RustQuant::math::distributions::DistributionClass;
+    /// # use RustQuant::utils::assert_approx_equal;
+    /// # use RustQuant::math::*;
     ///
     /// let dist = Uniform::new(0.0, 1.0, DistributionClass::Continuous);
     ///
@@ -187,9 +182,8 @@ impl Distribution for Uniform {
     /// Note: Only implemented for the continuous distribution.
     /// # Examples
     /// ```
-    /// # use RustQuant::assert_approx_equal;
-    /// # use RustQuant::math::distributions::{Distribution, Uniform};
-    /// # use RustQuant::math::distributions::DistributionClass;
+    /// # use RustQuant::utils::assert_approx_equal;
+    /// # use RustQuant::math::*;
     ///
     /// let dist = Uniform::new(0.0, 1.0, DistributionClass::Continuous);
     ///
@@ -207,9 +201,8 @@ impl Distribution for Uniform {
     /// The mean of the Uniform distribution is equal to its median.
     /// # Examples
     /// ```
-    /// # use RustQuant::assert_approx_equal;
-    /// # use RustQuant::math::distributions::{Distribution, Uniform};
-    /// # use RustQuant::math::distributions::DistributionClass;
+    /// # use RustQuant::utils::assert_approx_equal;
+    /// # use RustQuant::math::*;
     ///
     /// let dist = Uniform::new(0.0, 1.0, DistributionClass::Continuous);
     ///
@@ -223,9 +216,8 @@ impl Distribution for Uniform {
     /// The mean of the Uniform distribution is equal to its median.
     /// # Examples
     /// ```
-    /// # use RustQuant::assert_approx_equal;
-    /// # use RustQuant::math::distributions::{Distribution, Uniform};
-    /// # use RustQuant::math::distributions::DistributionClass;
+    /// # use RustQuant::utils::assert_approx_equal;
+    /// # use RustQuant::math::*;
     ///
     /// let dist = Uniform::new(0.0, 1.0, DistributionClass::Continuous);
     ///
@@ -238,9 +230,8 @@ impl Distribution for Uniform {
     /// Mode of the Uniform distribution.
     /// # Examples
     /// ```
-    /// # use RustQuant::assert_approx_equal;
-    /// # use RustQuant::math::distributions::{Distribution, Uniform};
-    /// # use RustQuant::math::distributions::DistributionClass;
+    /// # use RustQuant::utils::assert_approx_equal;
+    /// # use RustQuant::math::*;
     ///
     /// let dist = Uniform::new(0.0, 1.0, DistributionClass::Continuous);
     ///
@@ -256,9 +247,8 @@ impl Distribution for Uniform {
     /// Variance of the Uniform distribution.
     /// # Examples
     /// ```
-    /// # use RustQuant::assert_approx_equal;
-    /// # use RustQuant::math::distributions::{Distribution, Uniform};
-    /// # use RustQuant::math::distributions::DistributionClass;
+    /// # use RustQuant::utils::assert_approx_equal;
+    /// # use RustQuant::math::*;
     ///
     /// let dist = Uniform::new(0.0, 1.0, DistributionClass::Continuous);
     ///
@@ -275,8 +265,7 @@ impl Distribution for Uniform {
     /// The skewness of the Uniform distribution is equal to 0.
     /// # Examples
     /// ```
-    /// # use RustQuant::math::distributions::{Distribution, Uniform};
-    /// # use RustQuant::math::distributions::DistributionClass;
+    /// # use RustQuant::math::*;
     ///
     /// let dist = Uniform::new(0.0, 1.0, DistributionClass::Continuous);
     ///
@@ -289,9 +278,8 @@ impl Distribution for Uniform {
     /// Kurtosis of the Uniform distribution.
     /// # Examples
     /// ```
-    /// # use RustQuant::assert_approx_equal;
-    /// # use RustQuant::math::distributions::{Distribution, Uniform};
-    /// # use RustQuant::math::distributions::DistributionClass;
+    /// # use RustQuant::utils::assert_approx_equal;
+    /// # use RustQuant::math::*;
     ///
     /// let dist = Uniform::new(0.0, 1.0, DistributionClass::Continuous);
     ///
@@ -309,9 +297,8 @@ impl Distribution for Uniform {
     /// Entropy of the Uniform distribution.
     /// # Examples
     /// ```
-    /// # use RustQuant::assert_approx_equal;
-    /// # use RustQuant::math::distributions::{Distribution, Uniform};
-    /// # use RustQuant::math::distributions::DistributionClass;
+    /// # use RustQuant::utils::assert_approx_equal;
+    /// # use RustQuant::math::*;
     ///
     /// let dist = Uniform::new(0.5, 1.0, DistributionClass::Continuous);
     ///
@@ -327,9 +314,8 @@ impl Distribution for Uniform {
     /// Moment generating function of the Uniform distribution.
     /// # Examples
     /// ```
-    /// # use RustQuant::assert_approx_equal;
-    /// # use RustQuant::math::distributions::{Distribution, Uniform};
-    /// # use RustQuant::math::distributions::DistributionClass;
+    /// # use RustQuant::utils::assert_approx_equal;
+    /// # use RustQuant::math::*;
     ///
     /// let dist = Uniform::new(0.0, 1.0, DistributionClass::Continuous);
     ///
@@ -351,9 +337,8 @@ impl Distribution for Uniform {
     /// Generates a random sample from a Uniform distribution.
     /// # Examples
     /// ```
-    /// # use RustQuant::assert_approx_equal;
-    /// # use RustQuant::math::distributions::{Distribution, Uniform};
-    /// # use RustQuant::math::distributions::DistributionClass;
+    /// # use RustQuant::utils::assert_approx_equal;
+    /// # use RustQuant::math::*;
     ///
     /// let dist = Uniform::new(0.0, 1.0, DistributionClass::Continuous);
     /// let sample = dist.sample(1000).unwrap();

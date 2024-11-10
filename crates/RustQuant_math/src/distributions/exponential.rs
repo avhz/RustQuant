@@ -54,7 +54,7 @@ impl Distribution for Exponential {
     }
 
     /// ```
-    /// use RustQuant::assert_approx_equal;
+    /// use RustQuant::utils::assert_approx_equal;
     /// use RustQuant::math::distributions::*;
     ///
     /// let exp = Exponential::new(1.0);
@@ -68,7 +68,7 @@ impl Distribution for Exponential {
     }
 
     /// ```
-    /// use RustQuant::assert_approx_equal;
+    /// use RustQuant::utils::assert_approx_equal;
     /// use RustQuant::math::distributions::*;
     ///
     /// let exp = Exponential::new(1.0);
@@ -80,7 +80,7 @@ impl Distribution for Exponential {
     }
 
     /// ```
-    /// use RustQuant::assert_approx_equal;
+    /// use RustQuant::utils::assert_approx_equal;
     /// use RustQuant::math::distributions::*;
     ///
     /// let exp = Exponential::new(1.0);
@@ -94,7 +94,7 @@ impl Distribution for Exponential {
     }
 
     /// ```
-    /// use RustQuant::assert_approx_equal;
+    /// use RustQuant::utils::assert_approx_equal;
     /// use RustQuant::math::distributions::*;
     ///
     /// let exp = Exponential::new(1.0);
@@ -106,7 +106,7 @@ impl Distribution for Exponential {
     }
 
     /// ```
-    /// use RustQuant::assert_approx_equal;
+    /// use RustQuant::utils::assert_approx_equal;
     /// use RustQuant::math::distributions::*;
     ///
     /// let exp = Exponential::new(1.0);
@@ -118,7 +118,7 @@ impl Distribution for Exponential {
     }
 
     /// ```
-    /// use RustQuant::assert_approx_equal;
+    /// use RustQuant::utils::assert_approx_equal;
     /// use RustQuant::math::distributions::*;
     ///
     /// let exp = Exponential::new(1.0);
@@ -130,7 +130,7 @@ impl Distribution for Exponential {
     }
 
     /// ```
-    /// use RustQuant::assert_approx_equal;
+    /// use RustQuant::utils::assert_approx_equal;
     /// use RustQuant::math::distributions::*;
     ///
     /// let exp = Exponential::new(1.0);
@@ -142,7 +142,7 @@ impl Distribution for Exponential {
     }
 
     /// ```
-    /// use RustQuant::assert_approx_equal;
+    /// use RustQuant::utils::assert_approx_equal;
     /// use RustQuant::math::distributions::*;
     ///
     /// let exp = Exponential::new(1.0);
@@ -154,7 +154,7 @@ impl Distribution for Exponential {
     }
 
     /// ```
-    /// use RustQuant::assert_approx_equal;
+    /// use RustQuant::utils::assert_approx_equal;
     /// use RustQuant::math::distributions::*;
     ///
     /// let exp = Exponential::new(1.0);
@@ -166,7 +166,7 @@ impl Distribution for Exponential {
     }
 
     /// ```
-    /// use RustQuant::assert_approx_equal;
+    /// use RustQuant::utils::assert_approx_equal;
     /// use RustQuant::math::distributions::*;
     ///
     /// let exp = Exponential::new(1.0);
@@ -178,7 +178,7 @@ impl Distribution for Exponential {
     }
 
     /// ```
-    /// use RustQuant::assert_approx_equal;
+    /// use RustQuant::utils::assert_approx_equal;
     /// use RustQuant::math::distributions::*;
     ///
     /// let exp = Exponential::new(1.0);
@@ -190,7 +190,7 @@ impl Distribution for Exponential {
     }
 
     /// ```
-    /// use RustQuant::assert_approx_equal;
+    /// use RustQuant::utils::assert_approx_equal;
     /// use RustQuant::math::distributions::*;
     ///
     /// let exp = Exponential::new(1.0);

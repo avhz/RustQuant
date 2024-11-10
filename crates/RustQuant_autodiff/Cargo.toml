@@ -13,6 +13,9 @@ license.workspace = true
 [lints]
 workspace = true
 
+[dev-dependencies]
+RustQuant = { path = "../RustQuant" }
+
 [dependencies]
 ndarray = { workspace = true }
 errorfunctions = { workspace = true }

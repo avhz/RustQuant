@@ -35,7 +35,7 @@ impl Bernoulli {
     /// New instance of a Bernoulli distribution.
     /// # Examples
     /// ```
-    /// # use RustQuant::assert_approx_equal;
+    /// # use RustQuant::utils::assert_approx_equal;
     /// # use RustQuant::math::distributions::*;
     ///
     /// let bernoulli = Bernoulli::new(0.5);
@@ -59,7 +59,7 @@ impl Distribution for Bernoulli {
     /// Characteristic function of the Bernoulli distribution.
     /// # Examples
     /// ```
-    /// # use RustQuant::assert_approx_equal;
+    /// # use RustQuant::utils::assert_approx_equal;
     /// # use RustQuant::math::distributions::*;
     ///
     /// let bernoulli = Bernoulli::new(0.5);
@@ -237,7 +237,7 @@ impl Distribution for Bernoulli {
     /// Entropy of the Bernoulli distribution.
     /// # Examples
     /// ```
-    /// # use RustQuant::assert_approx_equal;
+    /// # use RustQuant::utils::assert_approx_equal;
     /// # use RustQuant::math::distributions::*;
     ///
     /// let bernoulli = Bernoulli::new(0.5);
@@ -251,7 +251,7 @@ impl Distribution for Bernoulli {
     /// Moment generating function of the Bernoulli distribution.
     /// # Examples
     /// ```
-    /// # use RustQuant::assert_approx_equal;
+    /// # use RustQuant::utils::assert_approx_equal;
     /// # use RustQuant::math::distributions::*;
     ///
     /// let bernoulli = Bernoulli::new(0.5);
@@ -265,7 +265,7 @@ impl Distribution for Bernoulli {
     /// Generate random samples from a Bernoulli distribution.
     /// # Examples
     /// ```
-    /// # use RustQuant::assert_approx_equal;
+    /// # use RustQuant::utils::assert_approx_equal;
     /// # use RustQuant::math::distributions::*;
     ///
     /// let bernoulli = Bernoulli::new(0.5);

@@ -14,6 +14,9 @@ metadata.workspace = true
 [lints]
 workspace = true
 
+[dev-dependencies]
+RustQuant = { path = "../RustQuant" }
+
 [dependencies]
 RustQuant_autodiff = { workspace = true }
 RustQuant_error = { workspace = true }
