@@ -20,7 +20,7 @@ use RustQuant_iso::*;
 // STRUCTS, ENUMS, TRAITS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-/// HongKong national holiday calendar.
+/// Singapore national holiday calendar.
 pub struct SingaporeCalendar;
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -79,7 +79,7 @@ impl Default for SingaporeCalendar {
 }
 
 impl SingaporeCalendar {
-    /// Create a new instance of the Hong Kong calendar.
+    /// Create a new instance of the Singapore calendar.
     pub fn new() -> Self {
         Self
     }
