@@ -13,8 +13,8 @@
 
 use crate::calendar::Calendar;
 use crate::utilities::unpack_date;
-use serde::Deserialize;
 use reqwest::{blocking::Client, Error};
+use serde::Deserialize;
 use time::{Date, Weekday};
 use RustQuant_iso::*;
 
@@ -25,11 +25,10 @@ use RustQuant_iso::*;
 /// Israel a national holiday calendar.
 pub struct IsraelCalendar;
 
-
 // Two structs to capture response
 #[derive(Deserialize, Debug)]
 struct ResponseData {
-    items: Vec<Item>, 
+    items: Vec<Item>,
 }
 
 #[derive(Deserialize, Debug)]
@@ -43,20 +42,19 @@ struct Item {
 
 fn jewish_holiday(date: &String) -> Result<bool, Error> {
     let url = "https://www.hebcal.com/hebcal";
-    
-    let params = [("v", "1"), ("cfg", "json"), ("maj", "on"), ("start", date), ("end", date)];
 
+    let params = [
+        ("v", "1"),
+        ("cfg", "json"),
+        ("maj", "on"),
+        ("start", date),
+        ("end", date),
+    ];
 
-    let response = Client::new()
-    .get(url)
-    .query(&params)
-    .send()
-    .map_err(|e| {
+    let response = Client::new().get(url).query(&params).send().map_err(|e| {
         eprintln!("Failed to send request: {}", e);
         e
     })?;
-
-    println!("{:?}", &response);
 
     let json: ResponseData = response.json().map_err(|e| {
         eprintln!("Failed to parse Json response: {}", e);
@@ -65,7 +63,6 @@ fn jewish_holiday(date: &String) -> Result<bool, Error> {
 
     Ok(!json.items.is_empty())
 }
-
 
 impl Calendar for IsraelCalendar {
     fn name(&self) -> &'static str {
@@ -83,9 +80,9 @@ impl Calendar for IsraelCalendar {
     fn is_holiday(&self, date: Date) -> bool {
         let (y, m, d, wd, yd, em) = unpack_date(date, false);
         let m = m as u8;
-        
+
         // Jewish weekend (Friday, Saturday)
-        if ( wd == Weekday::Friday || wd == Weekday::Saturday) {
+        if (wd == Weekday::Friday || wd == Weekday::Saturday) {
             return true;
         }
 
