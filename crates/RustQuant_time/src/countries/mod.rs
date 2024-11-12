@@ -80,3 +80,9 @@ pub mod south_america {
     /// Chile holidays and calendars.
     pub mod chile;
 }
+
+/// Calanders implemented for Middle Eastern countries. 
+pub mod middle_east {
+    /// Israeli (Jewish) holidays and calander, implemented with an external API.
+    pub mod israel;
+}
