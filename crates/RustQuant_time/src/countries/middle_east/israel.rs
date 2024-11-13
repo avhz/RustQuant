@@ -11,12 +11,42 @@
 // IMPORTS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+use heca_lib::prelude::HebrewMonth;
+use time::{Date, Weekday};
+
+use chrono::Utc;
+use chrono::offset::TimeZone;
+use heca_lib::HebrewDate;
+
 use crate::calendar::Calendar;
 use crate::utilities::unpack_date;
-use reqwest::{blocking::Client, Error};
-use serde::Deserialize;
-use time::{Date, Weekday};
 use RustQuant_iso::*;
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// CONSTANTS
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+const JEWISH_HOLIDAYS: [(u8, u8); 19] = [
+    (12, 29),     // Jewish new year (Rosh Hashana) I
+    (1, 1),     // Jewish new year (Rosh Hashana) II
+    (1, 2),     // Jewish new year (Rosh Hashana) II
+    (1, 9),    // Yom Kippur I
+    (1, 10),    // Yom Kippur II
+    (1, 14),    // Sukkot I 
+    (1, 15),    // Sukkot II 
+    (1, 22),    // Simchat Torah I
+    (1, 23),    // Simchat Torah II
+    (6, 14),    // Purim 
+    (7, 14),    // Passover I
+    (7, 15),    // Passover II
+    (7, 20),    // Passover two I
+    (7, 21),    // Passover two II
+    (8, 5),     // Memorial day
+    (8, 6),     // Independence day
+    (9, 5),     // Shavut I
+    (9, 6),     // Shavut I
+    (11, 9),    // Tisha Be'av
+];
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // STRUCTS, ENUMS, TRAITS
@@ -25,44 +55,10 @@ use RustQuant_iso::*;
 /// Israel a national holiday calendar.
 pub struct IsraelCalendar;
 
-// Two structs to capture response
-#[derive(Deserialize, Debug)]
-struct ResponseData {
-    items: Vec<Item>,
-}
-
-#[derive(Deserialize, Debug)]
-struct Item {
-    title: String,
-}
-
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // IMPLEMENTATIONS, METHODS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-fn jewish_holiday(date: &String) -> Result<bool, Error> {
-    let url = "https://www.hebcal.com/hebcal";
-
-    let params = [
-        ("v", "1"),
-        ("cfg", "json"),
-        ("maj", "on"),
-        ("start", date),
-        ("end", date),
-    ];
-
-    let response = Client::new().get(url).query(&params).send().map_err(|e| {
-        eprintln!("Failed to send request: {}", e);
-        e
-    })?;
-
-    let json: ResponseData = response.json().map_err(|e| {
-        eprintln!("Failed to parse Json response: {}", e);
-        e
-    })?;
-
-    Ok(!json.items.is_empty())
-}
 
 impl Calendar for IsraelCalendar {
     fn name(&self) -> &'static str {
@@ -78,7 +74,7 @@ impl Calendar for IsraelCalendar {
     }
 
     fn is_holiday(&self, date: Date) -> bool {
-        let (y, m, d, wd, yd, em) = unpack_date(date, false);
+        let (y, m, d, wd, _, _) = unpack_date(date, false);
         let m = m as u8;
 
         // Jewish weekend (Friday, Saturday)
@@ -86,13 +82,29 @@ impl Calendar for IsraelCalendar {
             return true;
         }
 
-        match jewish_holiday(&format!("{:04}-{:02}-{:02}", y, m, d)) {
-            Ok(is_holiday) => is_holiday,
-            Err(e) => {
-                eprintln!("Error checking Jewish holiday: {}", e);
-                false // default to non-holiday if there's an error
-            }
-        }
+        let hebrew_date: HebrewDate = Utc.with_ymd_and_hms(y.into(), m.into(), d.into(), 0, 0, 0).unwrap().try_into().unwrap();
+        let month = match hebrew_date.month() {
+            HebrewMonth::Tishrei => 1,
+            HebrewMonth::Cheshvan => 2,
+            HebrewMonth::Kislev => 3,
+            HebrewMonth::Teves => 4,
+            HebrewMonth::Shvat => 5,
+            HebrewMonth::Adar => 6,
+            HebrewMonth::Adar1 => 6,
+            HebrewMonth::Adar2 => 100, // Adar 2 is a leap-year month and never has a holiday. 100 is an arbitrary escape value.
+            HebrewMonth::Nissan => 7,
+            HebrewMonth::Iyar => 8,
+            HebrewMonth::Sivan => 9,
+            HebrewMonth::Tammuz => 10,
+            HebrewMonth::Av => 11,
+            HebrewMonth::Elul => 12,
+        };
+
+        let date_tuple: (u8, u8) = (month, hebrew_date.day().get() as u8); 
+        println!("{:?}", hebrew_date);
+        println!("{:?}", date_tuple);
+
+        JEWISH_HOLIDAYS.contains(&date_tuple)
     }
 }
 
