@@ -27,10 +27,10 @@ use RustQuant_iso::*;
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 const JEWISH_HOLIDAYS: [(u8, u8); 19] = [
-    (12, 29),     // Jewish new year (Rosh Hashana) I
+    (12, 29),   // Jewish new year (Rosh Hashana) I
     (1, 1),     // Jewish new year (Rosh Hashana) II
     (1, 2),     // Jewish new year (Rosh Hashana) II
-    (1, 9),    // Yom Kippur I
+    (1, 9),     // Yom Kippur I
     (1, 10),    // Yom Kippur II
     (1, 14),    // Sukkot I 
     (1, 15),    // Sukkot II 
@@ -41,8 +41,8 @@ const JEWISH_HOLIDAYS: [(u8, u8); 19] = [
     (7, 15),    // Passover II
     (7, 20),    // Passover two I
     (7, 21),    // Passover two II
-    (8, 5),     // Memorial day
-    (8, 6),     // Independence day
+    (8, 4),     // Memorial day
+    (8, 5),     // Independence day
     (9, 5),     // Shavut I
     (9, 6),     // Shavut I
     (11, 9),    // Tisha Be'av
@@ -91,7 +91,7 @@ impl Calendar for IsraelCalendar {
             HebrewMonth::Shvat => 5,
             HebrewMonth::Adar => 6,
             HebrewMonth::Adar1 => 6,
-            HebrewMonth::Adar2 => 100, // Adar 2 is a leap-year month and never has a holiday. 100 is an arbitrary escape value.
+            HebrewMonth::Adar2 => 100, // Adar2 is a leap-year month and never has a holiday. 100 is an arbitrary escape value.
             HebrewMonth::Nissan => 7,
             HebrewMonth::Iyar => 8,
             HebrewMonth::Sivan => 9,
@@ -100,11 +100,7 @@ impl Calendar for IsraelCalendar {
             HebrewMonth::Elul => 12,
         };
 
-        let date_tuple: (u8, u8) = (month, hebrew_date.day().get() as u8); 
-        println!("{:?}", hebrew_date);
-        println!("{:?}", date_tuple);
-
-        JEWISH_HOLIDAYS.contains(&date_tuple)
+        JEWISH_HOLIDAYS.contains(&(month, hebrew_date.day().get() as u8))
     }
 }
 
@@ -138,15 +134,20 @@ mod test_israel {
     #[test]
     fn test_is_public_holiday() {
         let calendar = IsraelCalendar;
-        let purim = date!(2024 - 03 - 24); // Purim holiday 2024
-        let sukkot = date!(2024 - 10 - 17); // Sukkot holiday 2024
+        let purim = date!(2024 - 03 - 24);      // Purim holiday 2024
+        let sukkot = date!(2024 - 10 - 17);     // Sukkot holiday 2024
         let passover_23 = date!(2023 - 4 - 05); // Passover eve 2023
         let passover_24 = date!(2023 - 4 - 22); // Passover eve 2024
+        let shavuot_26 = date!(2026 - 5 - 22);  // Shavuot 2026
+        let memorial_26 = date!(2026 - 4 - 21); // Memorial day 2026
 
         assert!(!calendar.is_business_day(purim));
         assert!(!calendar.is_business_day(sukkot));
         assert!(!calendar.is_business_day(passover_23));
         assert!(!calendar.is_business_day(passover_24));
+        assert!(!calendar.is_business_day(shavuot_26));
+        assert!(!calendar.is_business_day(memorial_26));
+
     }
 
     // Test to verify if the is_business_day() method properly accounts for regular business days.
