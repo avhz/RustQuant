@@ -11,12 +11,9 @@
 // IMPORTS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use heca_lib::prelude::HebrewMonth;
 use time::{Date, Weekday};
 
-use chrono::Utc;
-use chrono::offset::TimeZone;
-use heca_lib::HebrewDate;
+use icu;
 
 use crate::calendar::Calendar;
 use crate::utilities::unpack_date;
@@ -26,26 +23,23 @@ use RustQuant_iso::*;
 // CONSTANTS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-const JEWISH_HOLIDAYS: [(u8, u8); 19] = [
-    (12, 29),   // Jewish new year (Rosh Hashana) I
-    (1, 1),     // Jewish new year (Rosh Hashana) II
-    (1, 2),     // Jewish new year (Rosh Hashana) II
-    (1, 9),     // Yom Kippur I
-    (1, 10),    // Yom Kippur II
-    (1, 14),    // Sukkot I 
-    (1, 15),    // Sukkot II 
-    (1, 22),    // Simchat Torah I
-    (1, 23),    // Simchat Torah II
-    (6, 14),    // Purim 
-    (7, 14),    // Passover I
-    (7, 15),    // Passover II
-    (7, 20),    // Passover two I
-    (7, 21),    // Passover two II
-    (8, 4),     // Memorial day
-    (8, 5),     // Independence day
-    (9, 5),     // Shavut I
-    (9, 6),     // Shavut I
-    (11, 9),    // Tisha Be'av
+const JEWISH_HOLIDAYS: [(u8, u8); 16] = [
+    (12, 29), // Jewish new year (Rosh Hashana) I
+    (1, 1),   // Jewish new year (Rosh Hashana) II
+    (1, 2),   // Jewish new year (Rosh Hashana) II
+    (1, 9),   // Yom Kippur I
+    (1, 10),  // Yom Kippur II
+    (1, 14),  // Sukkot I
+    (1, 15),  // Sukkot II
+    (1, 22),  // Simchat Torah I
+    (1, 23),  // Simchat Torah II
+    (6, 14),  // Purim
+    (7, 14),  // Passover I
+    (7, 15),  // Passover II
+    (7, 20),  // Passover two I
+    (7, 21),  // Passover two II
+    (9, 5),   // Shavut I
+    (9, 6),   // Shavut I
 ];
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -59,6 +53,14 @@ pub struct IsraelCalendar;
 // IMPLEMENTATIONS, METHODS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+impl IsraelCalendar {
+    /// Hebrew weekend is Friday and Saturday,
+    /// as opposed to Saturday and Sunday in the Gregorian calendar.
+    fn is_weekend(&self, date: Date) -> bool {
+        let wd = date.weekday();
+        wd == Weekday::Friday || wd == Weekday::Saturday
+    }
+}
 
 impl Calendar for IsraelCalendar {
     fn name(&self) -> &'static str {
@@ -73,34 +75,44 @@ impl Calendar for IsraelCalendar {
         XTAE
     }
 
+    fn is_business_day(&self, date: Date) -> bool {
+        !self.is_weekend(date) && !self.is_holiday(date)
+    }
+
     fn is_holiday(&self, date: Date) -> bool {
         let (y, m, d, wd, _, _) = unpack_date(date, false);
         let m = m as u8;
+        let iso_date = icu::calendar::Date::try_new_iso_date(y, m, d)
+            .expect("Failed to initialize ISO Date instance for constructing Hebrew date.");
 
-        // Jewish weekend (Friday, Saturday)
-        if (wd == Weekday::Friday || wd == Weekday::Saturday) {
-            return true;
+        let hebrew_date = iso_date.to_calendar(icu::calendar::hebrew::Hebrew);
+        let mut hebrew_month = hebrew_date.month().ordinal as u8;
+        let hebrew_day = hebrew_date.day_of_month().0 as u8;
+
+        if hebrew_date.is_in_leap_year() && hebrew_month > 7 {
+            hebrew_month -= 1;
         }
 
-        let hebrew_date: HebrewDate = Utc.with_ymd_and_hms(y.into(), m.into(), d.into(), 0, 0, 0).unwrap().try_into().unwrap();
-        let month = match hebrew_date.month() {
-            HebrewMonth::Tishrei => 1,
-            HebrewMonth::Cheshvan => 2,
-            HebrewMonth::Kislev => 3,
-            HebrewMonth::Teves => 4,
-            HebrewMonth::Shvat => 5,
-            HebrewMonth::Adar => 6,
-            HebrewMonth::Adar1 => 6,
-            HebrewMonth::Adar2 => 100, // Adar2 is a leap-year month and never has a holiday. 100 is an arbitrary escape value.
-            HebrewMonth::Nissan => 7,
-            HebrewMonth::Iyar => 8,
-            HebrewMonth::Sivan => 9,
-            HebrewMonth::Tammuz => 10,
-            HebrewMonth::Av => 11,
-            HebrewMonth::Elul => 12,
+        let is_independence_or_memorial_day = match &(hebrew_month, hebrew_day, wd) {
+            (8, 3..=4, Weekday::Thursday) => true,
+            (8, 2..=3, Weekday::Wednesday) => true,
+            (8, 5, Weekday::Monday) => true,
+            (8, 6, Weekday::Tuesday) => true,
+            (8, 5, Weekday::Wednesday) => true,
+            (8, 4, Weekday::Tuesday) => true,
+            _ => false,
         };
 
-        JEWISH_HOLIDAYS.contains(&(month, hebrew_date.day().get() as u8))
+        let is_tisha_beav = match &(hebrew_month, hebrew_day, wd) {
+            (11, 10, Weekday::Sunday) => true,
+            (11, 9, Weekday::Saturday) => false,
+            (11, 9, _) => true,
+            _ => false,
+        };
+
+        JEWISH_HOLIDAYS.contains(&(hebrew_month, hebrew_day))
+            || is_independence_or_memorial_day
+            || is_tisha_beav
     }
 }
 
@@ -112,6 +124,7 @@ impl Calendar for IsraelCalendar {
 mod test_israel {
     use super::*;
     use time::macros::date;
+    use time::Month;
 
     // Test to verify the name() method.
     #[test]
@@ -134,20 +147,68 @@ mod test_israel {
     #[test]
     fn test_is_public_holiday() {
         let calendar = IsraelCalendar;
-        let purim = date!(2024 - 03 - 24);      // Purim holiday 2024
-        let sukkot = date!(2024 - 10 - 17);     // Sukkot holiday 2024
-        let passover_23 = date!(2023 - 4 - 05); // Passover eve 2023
-        let passover_24 = date!(2023 - 4 - 22); // Passover eve 2024
-        let shavuot_26 = date!(2026 - 5 - 22);  // Shavuot 2026
-        let memorial_26 = date!(2026 - 4 - 21); // Memorial day 2026
-
-        assert!(!calendar.is_business_day(purim));
-        assert!(!calendar.is_business_day(sukkot));
-        assert!(!calendar.is_business_day(passover_23));
-        assert!(!calendar.is_business_day(passover_24));
-        assert!(!calendar.is_business_day(shavuot_26));
-        assert!(!calendar.is_business_day(memorial_26));
-
+        let holidays = vec![
+            (2024, 3, 24),  // Purim
+            (2024, 4, 22),  // Passover Eve
+            (2024, 4, 23),  // Passover
+            (2024, 4, 28),  // Passover II Eve
+            (2024, 4, 29),  // Passover II
+            (2024, 5, 13),  // Memorial Day
+            (2024, 5, 14),  // Independence Day
+            (2024, 6, 11),  // Pentecost (Shavuot) Eve
+            (2024, 6, 12),  // Pentecost (Shavuot)
+            (2024, 8, 13),  // Fast Day (Tisha B'Av)
+            (2024, 10, 3),  // Jewish New Year I
+            (2024, 10, 4),  // Jewish New Year II
+            (2024, 10, 11), // Yom Kippur Eve
+            (2024, 10, 17), // Feast of Tabernacles (Sukkoth)
+            (2024, 10, 24), // Rejoicing of the Law (Simchat Tora)
+            (2025, 3, 14),  // Purim
+            (2025, 4, 13),  // Passover
+            (2025, 6, 2),   // Pentecost (Shavuot)
+            (2025, 8, 3),   // Fast Day (Tisha B'Av)
+            (2025, 9, 23),  // Jewish New Year I
+            (2025, 9, 24),  // Jewish New Year II
+            (2025, 10, 2),  // Yom Kippur
+            (2025, 10, 7),  // Feast of Tabernacles (Sukkoth)
+            (2025, 10, 14), // Rejoicing of the Law (Simchat Tora)
+            (2015, 3, 5),   // Purim
+            (2015, 4, 10),  // Passover II
+            (2015, 4, 23),  // Independence Day
+            (2015, 5, 24),  // Pentecost (Shavuot)
+            (2015, 7, 26),  // Fast Day
+            (2015, 9, 14),  // Jewish New Year I
+            (2015, 9, 15),  // Jewish New Year II
+            (2015, 9, 23),  // Yom Kippur
+            (2015, 9, 28),  // Feast of Tabernacles (Sukkoth)
+            (2015, 10, 5),  // Rejoicing of the Law (Simchat Tora)
+            (2018, 3, 1),   // Purim
+            (2018, 4, 6),   // Passover II
+            (2018, 4, 19),  // Independence Day
+            (2018, 5, 20),  // Pentecost (Shavuot)
+            (2018, 7, 22),  // Fast Day
+            (2018, 9, 10),  // Jewish New Year I
+            (2018, 9, 11),  // Jewish New Year II
+            (2018, 9, 18),  // Yom Kippur Eve
+            (2018, 9, 19),  // Yom Kippur
+            (2018, 9, 24),  // Feast of Tabernacles (Sukkoth)
+            (2018, 10, 1),  // Rejoicing of the Law (Simchat Tora)
+            (2017, 3, 12),  // Purim
+            (2017, 4, 11),  // Passover 1
+            (2017, 4, 17),  // Passover II
+            (2017, 5, 2),   // Independence Day
+            (2017, 5, 31),  // Pentecost (Shavuot)
+            (2017, 8, 1),   // Fast Day
+            (2017, 9, 21),  // Jewish New Year I
+            (2017, 9, 22),  // Jewish New Year II
+            (2017, 9, 29),  // Yom Kippur Eve
+            (2017, 10, 5),  // Feast of Tabernacles (Sukkoth)
+            (2017, 10, 12), // Rejoicing of the Law (Simchat Tora)
+        ];
+        for (y, m, d) in holidays {
+            let date = Date::from_calendar_date(y, Month::try_from(m).unwrap(), d).unwrap();
+            assert!(!calendar.is_business_day(date));
+        }
     }
 
     // Test to verify if the is_business_day() method properly accounts for regular business days.
