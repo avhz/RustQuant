@@ -85,6 +85,7 @@ argmin-math = "0.4.0"       # https://docs.rs/argmin-math/latest/argmin_math/
 derive_builder = "0.20.0"   # https://docs.rs/derive_builder/latest/derive_builder/
 errorfunctions = "0.2.0"    # https://docs.rs/errorfunctions/latest/errorfunctions/
 finitediff = "0.1.4"        # https://docs.rs/finitediff/latest/finitediff/
+icu = "1.5.0"               # https://docs.rs/icu/latest/icu/
 nalgebra = "0.33.0"         # https://docs.rs/nalgebra/latest/nalgebra/
 ndrustfft = "0.5.0"         # https://docs.rs/ndrustfft/latest/ndrustfft/
 ndarray-rand = "0.15.0"     # https://docs.rs/ndarray-rand/latest/ndarray_rand/

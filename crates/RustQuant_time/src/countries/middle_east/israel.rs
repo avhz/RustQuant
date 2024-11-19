@@ -7,16 +7,10 @@
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// IMPORTS
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-use time::{Date, Weekday};
-
-use icu;
-
 use crate::calendar::Calendar;
 use crate::utilities::unpack_date;
+use icu;
+use time::{Date, Weekday};
 use RustQuant_iso::*;
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -46,7 +40,7 @@ const JEWISH_HOLIDAYS: [(u8, u8); 16] = [
 // STRUCTS, ENUMS, TRAITS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-/// Israel a national holiday calendar.
+/// Israel national holiday calendar.
 pub struct IsraelCalendar;
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -93,22 +87,22 @@ impl Calendar for IsraelCalendar {
             hebrew_month -= 1;
         }
 
-        let is_independence_or_memorial_day = match &(hebrew_month, hebrew_day, wd) {
-            (8, 3..=4, Weekday::Thursday) => true,
-            (8, 2..=3, Weekday::Wednesday) => true,
-            (8, 5, Weekday::Monday) => true,
-            (8, 6, Weekday::Tuesday) => true,
-            (8, 5, Weekday::Wednesday) => true,
-            (8, 4, Weekday::Tuesday) => true,
-            _ => false,
-        };
+        // Check if the date is Independence Day or Memorial Day.
+        let is_independence_or_memorial_day = matches!(
+            &(hebrew_month, hebrew_day, wd),
+            (8, 3..=4, Weekday::Thursday)
+                | (8, 2..=3, Weekday::Wednesday)
+                | (8, 5, Weekday::Monday)
+                | (8, 6, Weekday::Tuesday)
+                | (8, 5, Weekday::Wednesday)
+                | (8, 4, Weekday::Tuesday)
+        );
 
-        let is_tisha_beav = match &(hebrew_month, hebrew_day, wd) {
-            (11, 10, Weekday::Sunday) => true,
-            (11, 9, Weekday::Saturday) => false,
-            (11, 9, _) => true,
-            _ => false,
-        };
+        // Check if the date is Tisha Beav.
+        let is_tisha_beav = matches!(
+            &(hebrew_month, hebrew_day, wd),
+            (11, 10, Weekday::Sunday) | (11, 9, Weekday::Saturday) | (11, 9, _)
+        );
 
         JEWISH_HOLIDAYS.contains(&(hebrew_month, hebrew_day))
             || is_independence_or_memorial_day

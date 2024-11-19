@@ -26,4 +26,4 @@ jobs:
       # TEST THE LIBRARY
       # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       - name: Run unit tests.
-        run: cargo test --lib # --verbose
+        run: cargo test --lib --verbose --all-features --all-targets --no-fail-fast
