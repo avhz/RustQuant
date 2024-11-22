@@ -57,6 +57,10 @@ impl IsraelCalendar {
 }
 
 impl Calendar for IsraelCalendar {
+    fn new() -> Self {
+        Self
+    }
+
     fn name(&self) -> &'static str {
         "Israel"
     }

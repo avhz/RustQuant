@@ -30,6 +30,10 @@ pub struct BotswanaCalendar;
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 impl Calendar for BotswanaCalendar {
+    fn new() -> Self {
+        Self
+    }
+
     fn name(&self) -> &'static str {
         "Botswana"
     }

@@ -13,59 +13,76 @@
 
 use crate::calendar::Calendar;
 use crate::utilities::unpack_date;
-use time::{Date, Month, Weekday};
+use time::{Date, Month};
 use RustQuant_iso::*;
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // STRUCTS, ENUMS, TRAITS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-/// Finland national holiday calendar.
-pub struct FinlandCalendar;
+/// Brazil national holiday calendar.
+pub struct BrazilCalendar;
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // IMPLEMENTATIONS, METHODS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-impl Calendar for FinlandCalendar {
+impl Calendar for BrazilCalendar {
+    fn new() -> Self {
+        Self
+    }
+
     fn name(&self) -> &'static str {
-        "Finland"
+        "Brazil"
     }
 
     fn country_code(&self) -> ISO_3166 {
-        FINLAND
+        BRAZIL
     }
 
     fn market_identifier_code(&self) -> ISO_10383 {
-        XHEL
+        BVMF
     }
 
     fn is_holiday(&self, date: Date) -> bool {
-        let (_y, m, d, wd, yd, em) = unpack_date(date, false);
+        let (y, m, d, _, yd, em) = unpack_date(date, false);
 
         if (
             // New Year's Day
             (d == 1 && m == Month::January)
-            // Epiphany
-            || (d == 6 && m == Month::January)
-            // Good Friday
-            || (yd == em-3)
-            // Easter Monday
-            || (yd == em)
-            // Ascension Thursday
-            || (yd == em+38)
-            // Labour Day
+
+            // Tiradentes Day
+            || (d == 21 && m == Month::April)
+
+            // Labor Day
             || (d == 1 && m == Month::May)
-            // Midsummer Eve (Friday between June 18-24)
-            || (wd == Weekday::Friday && (18..=24).contains(&d) && m == Month::June)
+
             // Independence Day
-            || (d == 6 && m == Month::December)
-            // Christmas Eve
-            || (d == 24 && m == Month::December)
+            || (d == 7 && m == Month::September)
+
+            // Nossa Sra. Aparecida Day
+            || (d == 12 && m == Month::October)
+
+            // All Souls Day
+            || (d == 2 && m == Month::November)
+
+            // Republic Day
+            || (d == 15 && m == Month::November)
+
+            // Black Awareness Day
+            || (d == 20 && m == Month::November && y >= 2024)
+
             // Christmas
             || (d == 25 && m == Month::December)
-            // Boxing Day
-            || (d == 26 && m == Month::December)
+
+            // Passion of Christ
+            || (yd == em-3)
+
+            // Carnival
+            || (yd == em-49 || yd == em-48)
+
+            // Corpus Christi
+            || (yd == em+59)
         ) {
             return true;
         }

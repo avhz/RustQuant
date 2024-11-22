@@ -1,6 +1,6 @@
 use time::{macros::date, Date};
-use RustQuant::data::{Curves, SpotCurve};
-use RustQuant::time::oceania::australia::AustraliaCalendar;
+use RustQuant::data::*;
+use RustQuant::time::*;
 
 fn main() {
     let mut spot_curve = SpotCurve::<Date, AustraliaCalendar>::new(&DATES, &RATES);

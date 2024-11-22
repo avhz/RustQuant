@@ -13,73 +13,66 @@
 
 use crate::calendar::Calendar;
 use crate::utilities::unpack_date;
-use time::{Date, Month};
+use time::{Date, Month, Weekday};
 use RustQuant_iso::*;
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // STRUCTS, ENUMS, TRAITS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-/// Brazil national holiday calendar.
-pub struct BrazilCalendar;
+/// Argentina national holiday calendar.
+pub struct ArgentinaCalendar;
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // IMPLEMENTATIONS, METHODS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-impl Calendar for BrazilCalendar {
+impl Calendar for ArgentinaCalendar {
+    fn new() -> Self {
+        Self
+    }
+
     fn name(&self) -> &'static str {
-        "Brazil"
+        "Argentina"
     }
 
     fn country_code(&self) -> ISO_3166 {
-        BRAZIL
+        ARGENTINA
     }
 
     fn market_identifier_code(&self) -> ISO_10383 {
-        BVMF
+        XBUE
     }
 
     fn is_holiday(&self, date: Date) -> bool {
-        let (y, m, d, _, yd, em) = unpack_date(date, false);
+        let (_, m, d, wd, yd, em) = unpack_date(date, false);
 
-        if (
-            // New Year's Day
-            (d == 1 && m == Month::January)
-
-            // Tiradentes Day
-            || (d == 21 && m == Month::April)
-
-            // Labor Day
-            || (d == 1 && m == Month::May)
-
-            // Independence Day
-            || (d == 7 && m == Month::September)
-
-            // Nossa Sra. Aparecida Day
-            || (d == 12 && m == Month::October)
-
-            // All Souls Day
-            || (d == 2 && m == Month::November)
-
-            // Republic Day
-            || (d == 15 && m == Month::November)
-
-            // Black Awareness Day
-            || (d == 20 && m == Month::November && y >= 2024)
-
-            // Christmas
-            || (d == 25 && m == Month::December)
-
-            // Passion of Christ
+        if
+        // New Year's Day
+        (d == 1 && m == Month::January)
+            // Holy Thursday
+            || (yd == em-4)
+            // Good Friday
             || (yd == em-3)
-
-            // Carnival
-            || (yd == em-49 || yd == em-48)
-
-            // Corpus Christi
-            || (yd == em+59)
-        ) {
+            // Labour Day
+            || (d == 1 && m == Month::May)
+            // May Revolution
+            || (d == 25 && m == Month::May)
+            // Death of General Manuel Belgrano
+            || ((15..=21).contains(&d) && wd == Weekday::Monday && m == Month::June)
+            // Independence Day
+            || (d == 9 && m == Month::July)
+            // Death of General José de San Martín
+            || ((15..=21).contains(&d) && wd == Weekday::Monday && m == Month::August)
+            // Columbus Day
+            || ((d == 10 || d == 11 || d == 12 || d == 15 || d == 16) && wd == Weekday::Monday && m == Month::October)
+            // Immaculate Conception
+            || (d == 8 && m == Month::December)
+            // Christmas Eve
+            || (d == 24 && m == Month::December)
+            // New Year's Eve
+            || ((d == 31 || (d == 30 && wd == Weekday::Friday)) && m == Month::December)
+        {
             return true;
         }
 

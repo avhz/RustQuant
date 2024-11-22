@@ -1,8 +1,7 @@
 use time::macros::date;
 use time::Date;
-use RustQuant::data::Curves;
-use RustQuant::data::{Curve, DiscountCurve};
-use RustQuant::time::oceania::australia::AustraliaCalendar;
+use RustQuant::data::*;
+use RustQuant::time::*;
 
 fn main() {
     let _cal = AustraliaCalendar;

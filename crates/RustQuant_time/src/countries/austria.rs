@@ -20,52 +20,75 @@ use RustQuant_iso::*;
 // STRUCTS, ENUMS, TRAITS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-/// Hungary national holiday calendar.
-pub struct HungaryCalendar;
+/// Austria national holiday calendar.
+pub struct AustriaCalendar;
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // IMPLEMENTATIONS, METHODS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-impl Calendar for HungaryCalendar {
+impl Calendar for AustriaCalendar {
+    fn new() -> Self {
+        Self
+    }
+
     fn name(&self) -> &'static str {
-        "Hungary"
+        "Austria"
     }
 
     fn country_code(&self) -> ISO_3166 {
-        HUNGARY
+        AUSTRIA
     }
 
     fn market_identifier_code(&self) -> ISO_10383 {
-        XBUD
+        EXAA
     }
 
     fn is_holiday(&self, date: Date) -> bool {
-        let (_y, m, d, _wd, yd, em) = unpack_date(date, false);
+        let (y, m, d, _, yd, em) = unpack_date(date, false);
 
         if (
             // New Year's Day
-            (d == 1 && m == Month::January)
-            // 1848 Revolution Memorial Day
-            || (d == 15 && m == Month::March)
-            // Good Friday
-            || (yd == em - 3)
+            (d == 1 && m == Month::January) ||
+
+            // Epiphany
+            (d == 6 && m == Month::January) ||
+
             // Easter Monday
-            || (yd == em)
-            // Labor Day / May Day
-            || (d == 1 && m == Month::May)
+            (yd == em) ||
+
+            // Ascension Thurday 
+            (yd == em+38) ||
+
             // Whit Monday
-            || (yd == em + 49)
-            // Hungary National Day
-            || (d == 20 && m == Month::August)
-            // 1956 Revolution Memorial Day
-            || (d == 23 && m == Month::October)
+            (yd == em+49) ||
+
+            // Corpus Christi
+            (yd == em+59) ||
+
+            // Labour Day
+            (d == 1 && m == Month::May) ||
+
+            // Assumption
+            (d == 15 && m == Month::August) ||
+
+            // National Holiday since 1967
+            (d == 26 && m == Month::October && y >= 1967) ||
+
+            // National Holiday 1919-1934
+            (d == 12 && m == Month::November && (1919..=1934).contains(&y)) ||
+
             // All Saints' Day
-            || (d == 1 && m == Month::November)
+            (d == 1 && m == Month::November) ||
+
+            // Immaculate Conception
+            (d == 8 && m == Month::December) ||
+
             // Christmas
-            || (d == 25 && m == Month::December)
-            // Second Day of Christmas
-            || (d == 26 && m == Month::December)
+            (d == 25 && m == Month::December) ||
+
+            // St. Stephen
+            (d == 26 && m == Month::December)
         ) {
             return true;
         }
@@ -79,23 +102,23 @@ impl Calendar for HungaryCalendar {
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 #[cfg(test)]
-mod test_hungary {
+mod test_austria {
     use super::*;
     use time::macros::date;
 
     // Test to verify the name() method.
     #[test]
     fn test_name() {
-        let calendar = HungaryCalendar;
-        assert_eq!(calendar.name(), "Hungary");
+        let calendar = AustriaCalendar;
+        assert_eq!(calendar.name(), "Austria");
     }
 
     // Test to verify if weekends are not considered business days.
     #[test]
     fn test_is_weekend() {
-        let calendar = HungaryCalendar;
-        let sat = date!(2024 - 01 - 13);
-        let sun = date!(2024 - 01 - 14);
+        let calendar = AustriaCalendar;
+        let sat = date!(2023 - 08 - 26);
+        let sun = date!(2023 - 08 - 27);
         assert!(!calendar.is_business_day(sat));
         assert!(!calendar.is_business_day(sun));
     }
@@ -103,31 +126,27 @@ mod test_hungary {
     // Test to verify if the is_business_day() method properly accounts for public holidays.
     #[test]
     fn test_is_public_holiday() {
-        let calendar = HungaryCalendar;
-        let new_years_day = date!(2024 - 01 - 01);
-        let revolution_1848_day = date!(2024 - 03 - 15);
-        let labour_day = date!(2024 - 05 - 01);
-        let national_holiday = date!(2024 - 08 - 20);
-        let revolution_1956_day = date!(2024 - 10 - 23);
-        let christmas = date!(2024 - 12 - 25);
-        let second_christmas_day = date!(2024 - 12 - 26);
+        let calendar = AustriaCalendar;
+        let new_years_day = date!(2023 - 01 - 01);
+        let epiphany = date!(2023 - 01 - 06);
+        let labour_day = date!(2023 - 05 - 01);
+        let national_holiday = date!(2023 - 10 - 26);
+        let christmas = date!(2023 - 12 - 25);
 
         assert!(!calendar.is_business_day(new_years_day));
-        assert!(!calendar.is_business_day(revolution_1848_day));
+        assert!(!calendar.is_business_day(epiphany));
         assert!(!calendar.is_business_day(labour_day));
         assert!(!calendar.is_business_day(national_holiday));
-        assert!(!calendar.is_business_day(revolution_1956_day));
         assert!(!calendar.is_business_day(christmas));
-        assert!(!calendar.is_business_day(second_christmas_day));
     }
 
     // Test to verify if the is_business_day() method properly accounts for regular business days.
     #[test]
     fn test_is_regular_business_day() {
-        let calendar = HungaryCalendar;
-        let regular_day1 = date!(2024 - 03 - 07);
-        let regular_day2 = date!(2024 - 07 - 02);
-        let regular_day3 = date!(2024 - 12 - 11);
+        let calendar = AustriaCalendar;
+        let regular_day1 = date!(2023 - 02 - 01);
+        let regular_day2 = date!(2023 - 07 - 12);
+        let regular_day3 = date!(2023 - 11 - 17);
 
         assert!(calendar.is_business_day(regular_day1));
         assert!(calendar.is_business_day(regular_day2));

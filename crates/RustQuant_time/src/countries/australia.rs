@@ -18,7 +18,18 @@ use RustQuant_iso::*;
 #[derive(Debug, Clone, Copy)]
 pub struct AustraliaCalendar;
 
+impl AustraliaCalendar {
+    /// Creates a new instance of the Australian calendar.
+    pub fn new() -> Self {
+        Self
+    }
+}
+
 impl Calendar for AustraliaCalendar {
+    fn new() -> Self {
+        Self
+    }
+
     fn name(&self) -> &'static str {
         "Australia"
     }

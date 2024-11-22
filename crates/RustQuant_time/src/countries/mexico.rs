@@ -13,83 +13,62 @@
 
 use crate::calendar::Calendar;
 use crate::utilities::unpack_date;
-use time::{Date, Month};
+use time::{Date, Month, Weekday};
 use RustQuant_iso::*;
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // STRUCTS, ENUMS, TRAITS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-/// Austria national holiday calendar.
-pub struct AustriaCalendar;
+/// Mexico national holiday calendar.
+pub struct MexicoCalendar;
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // IMPLEMENTATIONS, METHODS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-impl Calendar for AustriaCalendar {
+impl Calendar for MexicoCalendar {
+    fn new() -> Self {
+        Self
+    }
+
     fn name(&self) -> &'static str {
-        "Austria"
-    }
-
-    fn country_code(&self) -> ISO_3166 {
-        AUSTRIA
-    }
-
-    fn market_identifier_code(&self) -> ISO_10383 {
-        EXAA
+        "Mexico"
     }
 
     fn is_holiday(&self, date: Date) -> bool {
-        let (y, m, d, _, yd, em) = unpack_date(date, false);
+        let (y, m, d, wd, _, _) = unpack_date(date, false);
 
-        if (
-            // New Year's Day
-            (d == 1 && m == Month::January) ||
-
-            // Epiphany
-            (d == 6 && m == Month::January) ||
-
-            // Easter Monday
-            (yd == em) ||
-
-            // Ascension Thurday 
-            (yd == em+38) ||
-
-            // Whit Monday
-            (yd == em+49) ||
-
-            // Corpus Christi
-            (yd == em+59) ||
-
-            // Labour Day
-            (d == 1 && m == Month::May) ||
-
-            // Assumption
-            (d == 15 && m == Month::August) ||
-
-            // National Holiday since 1967
-            (d == 26 && m == Month::October && y >= 1967) ||
-
-            // National Holiday 1919-1934
-            (d == 12 && m == Month::November && (1919..=1934).contains(&y)) ||
-
-            // All Saints' Day
-            (d == 1 && m == Month::November) ||
-
-            // Immaculate Conception
-            (d == 8 && m == Month::December) ||
-
-            // Christmas
-            (d == 25 && m == Month::December) ||
-
-            // St. Stephen
-            (d == 26 && m == Month::December)
-        ) {
+        if
+        // New Year's Day
+        (d == 1 && m == Month::January)
+			// Constitution day (first Monday in February)
+			|| (d <= 7 && m == Month::February && wd == Weekday::Monday)
+			// Benito Juárez Birthday (third Monday in March)
+			|| (m == Month::March && (15..=21).contains(&d) && wd == Weekday::Monday)
+			// Labour Day
+			|| (d == 1 && m == Month::May)
+			// Independence day
+			|| (d == 16 && m == Month::September)
+			// Revolution Day (third Monday in November)
+			|| ((15..=21).contains(&d) && wd == Weekday::Monday && m == Month::November)
+			// President transition every 6 years (2018, 2024, 2030, ....)
+			|| (d == 1 && m == Month::October && (y - 2018) % 6 == 0)
+			// Christmas Eve
+			|| (d == 25 && m == Month::December)
+        {
             return true;
         }
 
         false
+    }
+
+    fn country_code(&self) -> ISO_3166 {
+        MEXICO
+    }
+
+    fn market_identifier_code(&self) -> ISO_10383 {
+        XMEX
     }
 }
 
@@ -98,21 +77,21 @@ impl Calendar for AustriaCalendar {
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 #[cfg(test)]
-mod test_austria {
+mod test_mexico_calendar {
     use super::*;
     use time::macros::date;
 
     // Test to verify the name() method.
     #[test]
     fn test_name() {
-        let calendar = AustriaCalendar;
-        assert_eq!(calendar.name(), "Austria");
+        let calendar = MexicoCalendar;
+        assert_eq!(calendar.name(), "Mexico");
     }
 
     // Test to verify if weekends are not considered business days.
     #[test]
     fn test_is_weekend() {
-        let calendar = AustriaCalendar;
+        let calendar = MexicoCalendar;
         let sat = date!(2023 - 08 - 26);
         let sun = date!(2023 - 08 - 27);
         assert!(!calendar.is_business_day(sat));
@@ -122,27 +101,33 @@ mod test_austria {
     // Test to verify if the is_business_day() method properly accounts for public holidays.
     #[test]
     fn test_is_public_holiday() {
-        let calendar = AustriaCalendar;
-        let new_years_day = date!(2023 - 01 - 01);
-        let epiphany = date!(2023 - 01 - 06);
-        let labour_day = date!(2023 - 05 - 01);
-        let national_holiday = date!(2023 - 10 - 26);
+        let calendar = MexicoCalendar;
+        let new_years_day = date!(2024 - 01 - 01);
+        let constitution_day = date!(2024 - 02 - 05); // First Monday of February
+        let benito_juarez_day = date!(2024 - 03 - 18); // Third Monday of March
+        let labour_day = date!(2024 - 05 - 01);
+        let independence_day = date!(2024 - 09 - 16);
+        let revolution_day = date!(2024 - 11 - 18); // Third Monday in November
+        let presidential_transition_day = date!(2030 - 10 - 01); // This might need adjustment
         let christmas = date!(2023 - 12 - 25);
 
         assert!(!calendar.is_business_day(new_years_day));
-        assert!(!calendar.is_business_day(epiphany));
+        assert!(!calendar.is_business_day(constitution_day));
+        assert!(!calendar.is_business_day(benito_juarez_day));
         assert!(!calendar.is_business_day(labour_day));
-        assert!(!calendar.is_business_day(national_holiday));
+        assert!(!calendar.is_business_day(independence_day));
+        assert!(!calendar.is_business_day(revolution_day));
+        assert!(!calendar.is_business_day(presidential_transition_day));
         assert!(!calendar.is_business_day(christmas));
     }
 
     // Test to verify if the is_business_day() method properly accounts for regular business days.
     #[test]
     fn test_is_regular_business_day() {
-        let calendar = AustriaCalendar;
-        let regular_day1 = date!(2023 - 02 - 01);
-        let regular_day2 = date!(2023 - 07 - 12);
-        let regular_day3 = date!(2023 - 11 - 17);
+        let calendar = MexicoCalendar;
+        let regular_day1 = date!(2023 - 03 - 15);
+        let regular_day2 = date!(2023 - 08 - 15);
+        let regular_day3 = date!(2023 - 10 - 25);
 
         assert!(calendar.is_business_day(regular_day1));
         assert!(calendar.is_business_day(regular_day2));

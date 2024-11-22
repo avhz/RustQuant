@@ -20,72 +20,66 @@ use RustQuant_iso::*;
 // STRUCTS, ENUMS, TRAITS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-/// Czech Republic national holiday calendar.
-pub struct CzechRepublicCalendar;
+/// Germany national holiday calendar.
+pub struct GermanyCalendar;
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // IMPLEMENTATIONS, METHODS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-impl Calendar for CzechRepublicCalendar {
+impl Calendar for GermanyCalendar {
+    fn new() -> Self {
+        Self
+    }
+
     fn name(&self) -> &'static str {
-        "Czech Republic"
+        "Germany"
     }
 
     fn country_code(&self) -> ISO_3166 {
-        CZECH_REPUBLIC
+        GERMANY
     }
 
     fn market_identifier_code(&self) -> ISO_10383 {
-        XPRA
+        XFRA
     }
 
     fn is_holiday(&self, date: Date) -> bool {
-        let (y, m, d, _wd, yd, em) = unpack_date(date, false);
+        let (_y, m, d, _wd, yd, em) = unpack_date(date, false);
 
         if (
             // New Year's Day
-            (d == 1 && m == Month::January)
+            d == 1 && m == Month::January
 
             // Good Friday
-            || (yd == em - 3 && y >= 2016)
+            || yd == em - 3
 
             // Easter Monday
-            || (yd == em)
+            || yd == em
+
+            // Ascension Thursday
+            || yd == em + 38
+
+            // Whit Monday
+            || yd == em + 49
+
+            // Corpus Christi
+            || yd == em + 59
 
             // Labour Day
-            || (d == 1 && m == Month::May)
+            || d == 1 && m == Month::May
 
-            // Liberation Day
-            || (d == 8 && m == Month::May)
-
-            // SS. Cyril and Methodius
-            || (d == 5 && m == Month::July)
-
-            // Jan Hus Day
-            || (d == 6 && m == Month::July)
-
-            // Czech Statehood Day
-            || (d == 28 && m == Month::September)
-
-            // Independence Day
-            || (d == 28 && m == Month::October)
-
-            // Struggle for Freedom and Democracy Day
-            || (d == 17 && m == Month::November)
+            // National Day
+            || d == 3 && m == Month::October
 
             // Christmas Eve
-            || (d == 24 && m == Month::December)
+            || d == 24 && m == Month::December
 
             // Christmas
-            || (d == 25 && m == Month::December)
+            || d == 25 && m == Month::December
 
-            // St. Stephen
-            || (d == 26 && m == Month::December)
-
-            // Miscellaneous
-            || (d == 2 && m == Month::January && y == 2004)
-            || (d == 31 && m == Month::December && y == 2004)
+            // Boxing Day
+            || d == 26 && m == Month::December
         ) {
             return true;
         }

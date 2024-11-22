@@ -13,62 +13,64 @@
 
 use crate::calendar::Calendar;
 use crate::utilities::unpack_date;
-use time::{Date, Month, Weekday};
+use time::{Date, Month};
 use RustQuant_iso::*;
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // STRUCTS, ENUMS, TRAITS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-/// Argentina national holiday calendar.
-pub struct ArgentinaCalendar;
+/// France national holiday calendar.
+pub struct FranceCalendar;
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // IMPLEMENTATIONS, METHODS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-impl Calendar for ArgentinaCalendar {
+impl Calendar for FranceCalendar {
+    fn new() -> Self {
+        Self
+    }
+
     fn name(&self) -> &'static str {
-        "Argentina"
+        "France"
     }
 
     fn country_code(&self) -> ISO_3166 {
-        ARGENTINA
+        FRANCE
     }
 
     fn market_identifier_code(&self) -> ISO_10383 {
-        XBUE
+        XPAR
     }
 
     fn is_holiday(&self, date: Date) -> bool {
-        let (_, m, d, wd, yd, em) = unpack_date(date, false);
+        let (_y, m, d, _wd, yd, em) = unpack_date(date, false);
 
-        if
-        // New Year's Day
-        (d == 1 && m == Month::January)
-            // Holy Thursday
-            || (yd == em-4)
-            // Good Friday
-            || (yd == em-3)
-            // Labour Day
+        if (
+            // Jour de l'An
+            (d == 1 && m == Month::January)
+            // Lundi de Paques
+            || (yd == em)
+            // Fete du Travail
             || (d == 1 && m == Month::May)
-            // May Revolution
-            || (d == 25 && m == Month::May)
-            // Death of General Manuel Belgrano
-            || ((15..=21).contains(&d) && wd == Weekday::Monday && m == Month::June)
-            // Independence Day
-            || (d == 9 && m == Month::July)
-            // Death of General José de San Martín
-            || ((15..=21).contains(&d) && wd == Weekday::Monday && m == Month::August)
-            // Columbus Day
-            || ((d == 10 || d == 11 || d == 12 || d == 15 || d == 16) && wd == Weekday::Monday && m == Month::October)
-            // Immaculate Conception
-            || (d == 8 && m == Month::December)
-            // Christmas Eve
-            || (d == 24 && m == Month::December)
-            // New Year's Eve
-            || ((d == 31 || (d == 30 && wd == Weekday::Friday)) && m == Month::December)
-        {
+            // Victoire 1945
+            || (d == 8 && m == Month::May)
+            // Ascension
+            || (d == 10 && m == Month::May)
+            // Pentecote
+            || (d == 21 && m == Month::May)
+            // Fete nationale
+            || (d == 14 && m == Month::July)
+            // Assomption
+            || (d == 15 && m == Month::August)
+            // Toussaint
+            || (d == 1 && m == Month::November)
+            // Armistice 1918
+            || (d == 11 && m == Month::November)
+            // Noel
+            || (d == 25 && m == Month::December)
+        ) {
             return true;
         }
 

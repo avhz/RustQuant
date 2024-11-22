@@ -72,7 +72,12 @@ macro_rules! iso_10383 {
         $description:literal,
     )*) => {
         $(
-            /// $description
+            #[doc = concat!(
+                "**MIC: ", stringify!($mic), "** (Operating MIC: ", $operating_mic, ")\n\n",
+                "* Country Code: ", $iso_3166, "\n",
+                "* City: ", $city, "\n",
+                "* Status: ", stringify!($status)
+            )]
             pub const $mic: ISO_10383 = ISO_10383 {
                 operating_mic: $operating_mic,
                 country_code: $iso_3166,

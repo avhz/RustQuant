@@ -20,52 +20,76 @@ use RustQuant_iso::*;
 // STRUCTS, ENUMS, TRAITS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-/// France national holiday calendar.
-pub struct FranceCalendar;
+/// Czech Republic national holiday calendar.
+pub struct CzechRepublicCalendar;
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // IMPLEMENTATIONS, METHODS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-impl Calendar for FranceCalendar {
+impl Calendar for CzechRepublicCalendar {
+    fn new() -> Self {
+        Self
+    }
+
     fn name(&self) -> &'static str {
-        "France"
+        "Czech Republic"
     }
 
     fn country_code(&self) -> ISO_3166 {
-        FRANCE
+        CZECH_REPUBLIC
     }
 
     fn market_identifier_code(&self) -> ISO_10383 {
-        XPAR
+        XPRA
     }
 
     fn is_holiday(&self, date: Date) -> bool {
-        let (_y, m, d, _wd, yd, em) = unpack_date(date, false);
+        let (y, m, d, _wd, yd, em) = unpack_date(date, false);
 
         if (
-            // Jour de l'An
+            // New Year's Day
             (d == 1 && m == Month::January)
-            // Lundi de Paques
+
+            // Good Friday
+            || (yd == em - 3 && y >= 2016)
+
+            // Easter Monday
             || (yd == em)
-            // Fete du Travail
+
+            // Labour Day
             || (d == 1 && m == Month::May)
-            // Victoire 1945
+
+            // Liberation Day
             || (d == 8 && m == Month::May)
-            // Ascension
-            || (d == 10 && m == Month::May)
-            // Pentecote
-            || (d == 21 && m == Month::May)
-            // Fete nationale
-            || (d == 14 && m == Month::July)
-            // Assomption
-            || (d == 15 && m == Month::August)
-            // Toussaint
-            || (d == 1 && m == Month::November)
-            // Armistice 1918
-            || (d == 11 && m == Month::November)
-            // Noel
+
+            // SS. Cyril and Methodius
+            || (d == 5 && m == Month::July)
+
+            // Jan Hus Day
+            || (d == 6 && m == Month::July)
+
+            // Czech Statehood Day
+            || (d == 28 && m == Month::September)
+
+            // Independence Day
+            || (d == 28 && m == Month::October)
+
+            // Struggle for Freedom and Democracy Day
+            || (d == 17 && m == Month::November)
+
+            // Christmas Eve
+            || (d == 24 && m == Month::December)
+
+            // Christmas
             || (d == 25 && m == Month::December)
+
+            // St. Stephen
+            || (d == 26 && m == Month::December)
+
+            // Miscellaneous
+            || (d == 2 && m == Month::January && y == 2004)
+            || (d == 31 && m == Month::December && y == 2004)
         ) {
             return true;
         }

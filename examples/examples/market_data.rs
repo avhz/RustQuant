@@ -1,5 +1,5 @@
-use RustQuant::data::{MarketData, MarketDataBuilder};
-use RustQuant::time::oceania::australia::AustraliaCalendar;
+use RustQuant::data::*;
+use RustQuant::time::*;
 
 fn main() {
     let market_data: MarketData<AustraliaCalendar> = MarketDataBuilder::default()

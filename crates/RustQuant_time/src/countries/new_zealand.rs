@@ -18,6 +18,10 @@ use RustQuant_iso::*;
 pub struct NewZealandCalendar;
 
 impl Calendar for NewZealandCalendar {
+    fn new() -> Self {
+        Self
+    }
+
     fn name(&self) -> &'static str {
         "New Zealand"
     }

@@ -8,10 +8,7 @@
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 use time::macros::date;
-use RustQuant::time::{
-    countries::oceania::australia::AustraliaCalendar, DateRollingConvention, DayCountConvention,
-    Scheduler,
-};
+use RustQuant::time::*;
 
 fn main() {
     let cal = AustraliaCalendar;
