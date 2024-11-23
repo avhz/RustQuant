@@ -6,6 +6,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.0](https://github.com/avhz/RustQuant/compare/RustQuant_time-v0.3.1...RustQuant_time-v0.4.0) - 2024-11-22
+
+### Other
+
+- fix ISO 10383 constants docs
+- switch to matches macro
+- Removed chrono and added icu, updated independence/memorial/tisha-beav holiday rules
+- Added tests and fixed memorial day
+- Jewish holidays update check using heca_lib
+- Removed unused println plus formatting
+- Basic support for Israel (Jewish) Calander
+- Fix Singapore calendar docs (remove Hong-Kong reference)
+
 ## [0.3.1](https://github.com/avhz/RustQuant/compare/RustQuant_time-v0.3.0...RustQuant_time-v0.3.1) - 2024-11-10
 
 ### Other
