@@ -1,3 +1,5 @@
+// ANCHOR: stochastic_processes
+
 // Run this example using:
 //      cargo run --example stochastic_processes
 //
@@ -68,6 +70,8 @@ fn main() {
 
     plot_trajectories(&gbm_out, true);
 }
+
+// ANCHOR_END: stochastic_processes
 
 use plotly::{common::Mode, Plot, Scatter};
 

@@ -1,5 +1,6 @@
-use std::f64::consts::PI;
+// ANCHOR: numerical_integration
 
+use std::{f64::consts::PI, time::Instant};
 use RustQuant::math::*;
 
 fn main() {
@@ -16,3 +17,5 @@ fn main() {
     // Standard Normal Distribution PDF has integral of 1.
     println!("Integral = {}", integral); // ~= 1.0
 }
+
+// ANCHOR_END: numerical_integration

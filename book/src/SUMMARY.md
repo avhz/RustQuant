@@ -8,21 +8,19 @@
 
 # Modules
 
-<!-- - [`autodiff`](./Modules/autodiff/autodiff.md)
-- [`cashflows`](./Modules/cashflows/cashflows.md) -->
+- [`autodiff`](./Modules/autodiff.md)
+- [`data`](./Modules/data.md)
+- [`instruments`](./Modules/instruments.md)
+- [`math`](./Modules/math.md)
+- [`stochastics`](./Modules/stochastics.md)
 
-- [`data`](./Modules/data/data.md)
-    - [Curves](./Modules/data/curves.md)
-
+<!-- - [`cashflows`](./Modules/cashflows/cashflows.md) -->
 <!-- - [`error`](./Modules/error.md) -->
-- [`instruments`](./Modules/instruments/instruments.md)
-    - [Options](./Modules/instruments/options.md)
 <!-- - [`iso`](./Modules/iso/iso.md)
 - [`macros`](./Modules/macros.md)
 - [`math`](./Modules/math/math.md)
 - [`ml`](./Modules/ml/ml.md)
 - [`portfolio`](./Modules/portfolio/portfolio.md)
-- [`stochastics`](./Modules/stochastics/stochastics.md)
 - [`time`](./Modules/time/time.md)
 - [`trading`](./Modules/trading/trading.md) -->
 

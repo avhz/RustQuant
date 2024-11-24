@@ -9,6 +9,7 @@ use RustQuant::autodiff::*;
 // 5. Profit.
 
 fn main() {
+    // ANCHOR: simple_expressions
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // SIMPLE EXPRESSIONS
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -31,6 +32,9 @@ fn main() {
     println!("dz/dy = {}", gradient.wrt(&y));
     println!("grad = {:?}", gradient.wrt(&[x, y]));
 
+    // ANCHOR_END: simple_expressions
+
+    // ANCHOR: block_expressions
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // BLOCK EXPRESSIONS
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -52,6 +56,9 @@ fn main() {
     println!("df/dy = {}", grad.wrt(&y));
     println!("grad = {:?}", grad.wrt(&[x, y]));
 
+    // ANCHOR_END: block_expressions
+
+    // ANCHOR: closures
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // CLOSURES
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -70,6 +77,9 @@ fn main() {
     println!("dz/dy = {}", grad.wrt(&y));
     println!("grad = {:?}", grad.wrt(&[x, y]));
 
+    // ANCHOR_END: closures
+
+    // ANCHOR: functions
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // PROPER FUNCTIONS.
     //
@@ -108,4 +118,6 @@ fn main() {
     // Print the graphviz output.
     // You can copy and paste this into your Graphviz viewer of choice.
     println!("{}", graphviz(&graph, &variables));
+
+    // ANCHOR_END: functions
 }
