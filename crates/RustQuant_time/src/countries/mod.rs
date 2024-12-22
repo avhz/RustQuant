@@ -66,6 +66,9 @@ pub use indonesia::*;
 /// Israeli (Jewish) holidays and calander, implemented with an external API.
 pub mod israel;
 pub use israel::*;
+/// Italy holidays and calendars.
+pub mod italy;
+pub use italy::*;
 /// Mexico holidays and calendars
 pub mod mexico;
 pub use mexico::*;
