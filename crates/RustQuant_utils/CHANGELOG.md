@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.1](https://github.com/avhz/RustQuant/compare/RustQuant_utils-v0.4.0...RustQuant_utils-v0.4.1) - 2025-02-09
+
+### Other
+
+- Expand plot_vector macro to plot multiple vectors
+
 ## [0.2.12](https://github.com/avhz/RustQuant/compare/RustQuant_utils-v0.2.11...RustQuant_utils-v0.2.12) - 2024-10-29
 
 ### Other
