@@ -88,7 +88,7 @@ impl<T> Graph<T> where T: Initial + Clone + Copy {
     /// Useful for larger functions with many inputs.
     #[inline]
     pub fn vars<'v>(&'v self, values: &[T]) -> Vec<Variable<'v, T>> {
-        values.iter().map(|val| self.var(val.clone())).collect()
+        values.iter().map(|&val| self.var(val)).collect()
     }
 
     /// Returns the length of the graph so new vertices can index to the correct position.
