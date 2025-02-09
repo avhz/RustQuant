@@ -20,6 +20,7 @@ RustQuant = { path = "../RustQuant" }
 ndarray = { workspace = true }
 errorfunctions = { workspace = true }
 RustQuant_utils = { workspace = true }
+num-traits = "0.2.19"
 
 ## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ## RUSTDOC CONFIGURATION

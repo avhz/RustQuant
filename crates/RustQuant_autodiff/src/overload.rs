@@ -7,6 +7,7 @@
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+use crate::DiffOps;
 use crate::{variable::Variable, vertex::Arity};
 use std::iter::{Product, Sum};
 use std::ops::Neg;
@@ -47,9 +48,11 @@ impl<'v> AddAssign<Variable<'v>> for f64 {
 }
 
 /// Variable<'v> + Variable<'v>
-impl<'v> Add<Variable<'v>> for Variable<'v> {
-    type Output = Variable<'v>;
-
+impl<'v, T> Add<Variable<'v, T>> for Variable<'v, T>
+where
+    T: DiffOps,
+{
+    type Output = Variable<'v, T>;
     /// ```
     /// # use RustQuant_autodiff::*;
     ///
@@ -66,22 +69,27 @@ impl<'v> Add<Variable<'v>> for Variable<'v> {
     /// assert_eq!(grad.wrt(&y), 1.0);
     /// ```
     #[inline]
-    fn add(self, other: Variable<'v>) -> Self::Output {
+    fn add(self, other: Variable<'v, T>) -> Self::Output {
         assert!(std::ptr::eq(self.graph, other.graph));
 
         Variable {
             graph: self.graph,
             value: self.value + other.value,
-            index: self
-                .graph
-                .push(Arity::Binary, &[self.index, other.index], &[1.0, 1.0]),
+            index: self.graph.push(
+                Arity::Binary,
+                &[self.index, other.index],
+                &[T::one(), T::one()],
+            ),
         }
     }
 }
 
 /// Variable<'v> + f64
-impl<'v> Add<f64> for Variable<'v> {
-    type Output = Variable<'v>;
+impl<'v, T> Add<f64> for Variable<'v, T>
+where
+    T: DiffOps,
+{
+    type Output = Variable<'v, T>;
 
     /// ```
     /// # use RustQuant_autodiff::*;
@@ -102,16 +110,21 @@ impl<'v> Add<f64> for Variable<'v> {
         Variable {
             graph: self.graph,
             value: self.value + other,
-            index: self
-                .graph
-                .push(Arity::Binary, &[self.index, self.index], &[1.0, 0.0]),
+            index: self.graph.push(
+                Arity::Binary,
+                &[self.index, self.index],
+                &[T::one(), T::zero()],
+            ),
         }
     }
 }
 
 /// f64 + Variable<'v>
-impl<'v> Add<Variable<'v>> for f64 {
-    type Output = Variable<'v>;
+impl<'v, T> Add<Variable<'v, T>> for f64
+where
+    T: DiffOps,
+{
+    type Output = Variable<'v, T>;
 
     /// ```
     /// # use RustQuant_autodiff::*;    
@@ -128,7 +141,7 @@ impl<'v> Add<Variable<'v>> for f64 {
     /// assert_eq!(grad.wrt(&x), 1.0);
     /// ```
     #[inline]
-    fn add(self, other: Variable<'v>) -> Self::Output {
+    fn add(self, other: Variable<'v, T>) -> Self::Output {
         other + self
     }
 }
@@ -165,8 +178,11 @@ impl<'v> DivAssign<Variable<'v>> for f64 {
 }
 
 /// Variable<'v> / Variable<'v>
-impl<'v> Div<Variable<'v>> for Variable<'v> {
-    type Output = Variable<'v>;
+impl<'v, T> Div<Variable<'v, T>> for Variable<'v, T>
+where
+    T: DiffOps,
+{
+    type Output = Variable<'v, T>;
 
     /// ```
     /// # use RustQuant_autodiff::*;
@@ -184,7 +200,7 @@ impl<'v> Div<Variable<'v>> for Variable<'v> {
     /// assert_eq!(grad.wrt(&y), - 5.0 / (2.0 * 2.0));
     /// ```
     #[inline]
-    fn div(self, other: Variable<'v>) -> Self::Output {
+    fn div(self, other: Variable<'v, T>) -> Self::Output {
         assert!(std::ptr::eq(self.graph, other.graph));
 
         self * other.recip()
@@ -192,8 +208,11 @@ impl<'v> Div<Variable<'v>> for Variable<'v> {
 }
 
 /// Variable<'v> / f64
-impl<'v> Div<f64> for Variable<'v> {
-    type Output = Variable<'v>;
+impl<'v, T> Div<f64> for Variable<'v, T>
+where
+    T: DiffOps,
+{
+    type Output = Variable<'v, T>;
 
     /// ```
     /// # use RustQuant_autodiff::*;
@@ -252,7 +271,10 @@ impl<'v> Div<Variable<'v>> for f64 {
 // OVERLOADING: STANDARD MATH OPERATORS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-impl<'v> std::ops::Neg for Variable<'v> {
+impl<'v, T> std::ops::Neg for Variable<'v, T>
+where
+    T: DiffOps,
+{
     type Output = Self;
 
     #[inline]
@@ -265,7 +287,10 @@ impl<'v> std::ops::Neg for Variable<'v> {
 // OVERLOADING: PRIMITIVE FUNCTIONS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-impl<'v> Variable<'v> {
+impl<'v, T> Variable<'v, T>
+where
+    T: DiffOps,
+{
     /// Absolute value function.
     /// d/dx abs(x) = sign(x)
     ///
@@ -321,7 +346,7 @@ impl<'v> Variable<'v> {
             index: self.graph.push(
                 Arity::Unary,
                 &[self.index],
-                &[((1.0 - self.value.powi(2)).sqrt()).recip().neg()],
+                &[((T::one() - self.value.powi(2)).sqrt()).recip().neg()],
             ),
         }
     }
@@ -349,7 +374,10 @@ impl<'v> Variable<'v> {
             index: self.graph.push(
                 Arity::Unary,
                 &[self.index],
-                &[((self.value - 1.0).sqrt() * (self.value + 1.0).sqrt()).recip()],
+                &[
+                    ((self.value - T::one()).sqrt() * (self.value + T::one()).sqrt())
+                        .recip(),
+                ],
             ),
         }
     }
@@ -376,15 +404,9 @@ impl<'v> Variable<'v> {
         Variable {
             graph: self.graph,
             value: self.value.asin(),
-            index: self.graph.push(
-                Arity::Unary,
-                &[self.index],
-                &[if (self.value > -1.0) && (self.value < 1.0) {
-                    ((1.0 - self.value.powi(2)).sqrt()).recip()
-                } else {
-                    f64::NAN
-                }],
-            ),
+            index: self
+                .graph
+                .push(Arity::Unary, &[self.index], &[self.value.asin_diff()]),
         }
     }
 
@@ -412,7 +434,7 @@ impl<'v> Variable<'v> {
             index: self.graph.push(
                 Arity::Unary,
                 &[self.index],
-                &[((1.0 + self.value.powi(2)).sqrt()).recip()],
+                &[((self.value.powi(2) + 1.0).sqrt()).recip()],
             ),
         }
     }
@@ -441,7 +463,7 @@ impl<'v> Variable<'v> {
             index: self.graph.push(
                 Arity::Unary,
                 &[self.index],
-                &[((1.0 + self.value.powi(2)).recip())],
+                &[((self.value.powi(2) + 1.0).recip())],
             ),
         }
     }
@@ -471,7 +493,7 @@ impl<'v> Variable<'v> {
             index: self.graph.push(
                 Arity::Unary,
                 &[self.index],
-                &[((1.0 - self.value.powi(2)).recip())],
+                &[-(self.value.powi(2) - 1.0).recip()],
             ),
         }
     }
@@ -501,7 +523,7 @@ impl<'v> Variable<'v> {
             index: self.graph.push(
                 Arity::Unary,
                 &[self.index],
-                &[((3.0 * self.value.powf(2.0 / 3.0)).recip())],
+                &[self.value.cbrt() / (self.value * 3.0)],
             ),
         }
     }
@@ -615,7 +637,7 @@ impl<'v> Variable<'v> {
             index: self.graph.push(
                 Arity::Unary,
                 &[self.index],
-                &[2_f64.powf(self.value) * 2_f64.ln()],
+                &[self.value.exp2() * 2_f64.ln()],
             ),
         }
     }
@@ -698,9 +720,11 @@ impl<'v> Variable<'v> {
         Variable {
             graph: self.graph,
             value: self.value.ln_1p(),
-            index: self
-                .graph
-                .push(Arity::Unary, &[self.index], &[(1.0 + self.value).recip()]),
+            index: self.graph.push(
+                Arity::Unary,
+                &[self.index],
+                &[(self.value + 1.0).recip()],
+            ),
         }
     }
 
@@ -881,7 +905,7 @@ impl<'v> Variable<'v> {
             index: self.graph.push(
                 Arity::Unary,
                 &[self.index],
-                &[(2.0 * self.value.sqrt()).recip()],
+                &[(self.value.sqrt() * 2.0).recip()],
             ),
         }
     }
@@ -1260,8 +1284,11 @@ impl<'v> MulAssign<Variable<'v>> for f64 {
 }
 
 /// Variable<'v> * Variable<'v>
-impl<'v> Mul<Variable<'v>> for Variable<'v> {
-    type Output = Variable<'v>;
+impl<'v, T> Mul<Variable<'v, T>> for Variable<'v, T>
+where
+    T: DiffOps,
+{
+    type Output = Variable<'v, T>;
 
     /// ```
     /// # use RustQuant_autodiff::*;
@@ -1279,7 +1306,7 @@ impl<'v> Mul<Variable<'v>> for Variable<'v> {
     /// assert_eq!(grad.wrt(&y), 5.0);
     /// ```
     #[inline]
-    fn mul(self, other: Variable<'v>) -> Self::Output {
+    fn mul(self, other: Variable<'v, T>) -> Self::Output {
         assert!(std::ptr::eq(self.graph, other.graph));
 
         Variable {
@@ -1295,8 +1322,11 @@ impl<'v> Mul<Variable<'v>> for Variable<'v> {
 }
 
 /// Variable<'v> * f64
-impl<'v> Mul<f64> for Variable<'v> {
-    type Output = Variable<'v>;
+impl<'v, T> Mul<f64> for Variable<'v, T>
+where
+    T: DiffOps,
+{
+    type Output = Variable<'v, T>;
 
     /// ```
     /// # use RustQuant_autodiff::*;
@@ -1317,9 +1347,11 @@ impl<'v> Mul<f64> for Variable<'v> {
         Variable {
             graph: self.graph,
             value: self.value * other,
-            index: self
-                .graph
-                .push(Arity::Binary, &[self.index, self.index], &[other, 0.0]),
+            index: self.graph.push(
+                Arity::Binary,
+                &[self.index, self.index],
+                &[T::one() * other, T::zero()],
+            ),
         }
     }
 }
@@ -1429,11 +1461,11 @@ pub trait Powi<T> {
 }
 
 // Variable<'v> ^ Variable<'v>
-impl<'v> Powi<Variable<'v>> for Variable<'v> {
-    type Output = Variable<'v>;
+impl<'v, T> Powi<Variable<'v, T>> for Variable<'v, T> where T: DiffOps {
+    type Output = Variable<'v, T>;
 
     #[inline]
-    fn powi(&self, other: Variable<'v>) -> Self::Output {
+    fn powi(&self, other: Variable<'v, T>) -> Self::Output {
         assert!(std::ptr::eq(self.graph, other.graph));
 
         Self::Output {
@@ -1443,8 +1475,8 @@ impl<'v> Powi<Variable<'v>> for Variable<'v> {
                 Arity::Binary,
                 &[self.index, other.index],
                 &[
-                    other.value * f64::powf(self.value, other.value - 1.),
-                    f64::powf(self.value, other.value) * f64::ln(self.value),
+                    other.value * self.value.powf(other.value - 1.0),
+                    self.value.powf(other.value) * self.value.ln(),
                 ],
             ),
         }
@@ -1489,7 +1521,10 @@ impl<'v> Powi<Variable<'v>> for f64 {
 
 use std::f64::consts::PI;
 
-impl<'v> Variable<'v> {
+impl<'v, T> Variable<'v, T>
+where
+    T: DiffOps,
+{
     /// Error function.
     /// d/dx erf(x) = 2e^(-x^2) / sqrt(PI)
     ///
@@ -1513,11 +1548,11 @@ impl<'v> Variable<'v> {
 
         Variable {
             graph: self.graph,
-            value: errorfunctions::RealErrorFunctions::erf(self.value),
+            value: self.value.erf(),
             index: self.graph.push(
                 Arity::Unary,
                 &[self.index],
-                &[2.0 * self.value.powi(2).neg().exp() / PI.sqrt()],
+                &[self.value.powi(2).neg().exp() * 2.0 / PI.sqrt()],
             ),
         }
     }
@@ -1545,11 +1580,11 @@ impl<'v> Variable<'v> {
 
         Variable {
             graph: self.graph,
-            value: errorfunctions::RealErrorFunctions::erfc(self.value),
+            value: self.value.erfc(),
             index: self.graph.push(
                 Arity::Unary,
                 &[self.index],
-                &[((2.0 * self.value.powi(2).neg().exp()).neg() / PI.sqrt())],
+                &[((self.value.powi(2).neg().exp()).neg() * 2.0 / PI.sqrt())],
             ),
         }
     }
@@ -1587,8 +1622,11 @@ impl<'v> SubAssign<Variable<'v>> for f64 {
 }
 
 /// Variable<'v> - Variable<'v>
-impl<'v> Sub<Variable<'v>> for Variable<'v> {
-    type Output = Variable<'v>;
+impl<'v, T> Sub<Variable<'v, T>> for Variable<'v, T>
+where
+    T: DiffOps,
+{
+    type Output = Variable<'v, T>;
 
     /// ```
     /// # use RustQuant_autodiff::*;    
@@ -1606,7 +1644,7 @@ impl<'v> Sub<Variable<'v>> for Variable<'v> {
     /// assert_eq!(grad.wrt(&y), -1.0);
     /// ```
     #[inline]
-    fn sub(self, other: Variable<'v>) -> Self::Output {
+    fn sub(self, other: Variable<'v, T>) -> Self::Output {
         assert!(std::ptr::eq(self.graph, other.graph));
 
         self.add(other.neg())
