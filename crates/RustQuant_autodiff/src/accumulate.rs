@@ -17,6 +17,12 @@
 //! - `DVector<Variable<'v>>`       <- Currently not possible due to lifetimes
 //! - `Array<Variable<'v>, Ix2>`    <- Work in progress
 
+use std::ops::AddAssign;
+
+use num_traits::{One, Zero};
+
+use crate::DiffOps;
+
 use super::variable::Variable;
 
 /// Trait to reverse accumulate the gradient for different types.
@@ -25,18 +31,18 @@ pub trait Accumulate<OUT> {
     fn accumulate(&self) -> OUT;
 }
 
-impl Accumulate<Vec<f64>> for Variable<'_> {
+impl<T> Accumulate<Vec<T>> for Variable<'_, T> where T: Zero + One + Copy + AddAssign {
     /// Function to reverse accumulate the gradient for a `Variable`.
     /// 1. Allocate the array of adjoints.
     /// 2. Set the seed (dx/dx = 1).
     /// 3. Traverse the graph backwards, updating the adjoints for the parent vertices.
     #[inline]
-    fn accumulate(&self) -> Vec<f64> {
+    fn accumulate(&self) -> Vec<T> {
         // Set the seed.
         // The seed is the derivative of the output with respect to itself.
         // dy/dy = 1
-        let mut adjoints = vec![0.0; self.graph.len()];
-        adjoints[self.index] = 1.0; // SEED
+        let mut adjoints = vec![T::zero(); self.graph.len()];
+        adjoints[self.index] = T::one(); // SEED
 
         // Traverse the graph backwards and update the adjoints for the parent vertices.
         // This is simply the generalised chain rule.
