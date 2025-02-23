@@ -62,7 +62,7 @@ impl StochasticProcess for ExtendedVasicek {
 #[cfg(test)]
 mod tests_extended_vasicek {
     use super::*;
-    use crate::StochasticProcessConfig;
+    use crate::{StochasticProcessConfig, StochasticScheme};
     use RustQuant_math::*;
     use RustQuant_utils::assert_approx_equal;
 
@@ -81,9 +81,11 @@ mod tests_extended_vasicek {
 
         let ev = ExtendedVasicek::new(alpha, sigma, theta);
 
-        let config = StochasticProcessConfig::new(10.0, 0.0, 1.0, 150, 1000, false);
+        let config = StochasticProcessConfig::new(
+            10.0, 0.0, 1.0, 150, StochasticScheme::EulerMaruyama, 1000, false, None
+        );
 
-        let output = ev.euler_maruyama(&config);
+        let output = ev.monte_carlo(&config);
 
         // Test the distribution of the final values.
         let X_T: Vec<f64> = output

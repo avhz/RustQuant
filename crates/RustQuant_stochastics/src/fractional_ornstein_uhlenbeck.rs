@@ -79,7 +79,7 @@ impl StochasticProcess for FractionalOrnsteinUhlenbeck {
         ]
     }
 
-    fn euler_maruyama(&self, config: &StochasticProcessConfig) -> Trajectories {
+    fn monte_carlo(&self, config: &StochasticProcessConfig) -> Trajectories {
         let (x_0, t_0, t_n, n_steps, m_paths, parallel) = config.unpack();
 
         let fgn = match self.method {
@@ -129,6 +129,8 @@ impl StochasticProcess for FractionalOrnsteinUhlenbeck {
 
 #[cfg(test)]
 mod tests_fractional_ornstein_uhlenbeck {
+    use crate::StochasticScheme;
+
     use super::*;
 
     #[test]
@@ -142,8 +144,10 @@ mod tests_fractional_ornstein_uhlenbeck {
             FractionalProcessGeneratorMethod::FFT,
         );
 
-        let config = StochasticProcessConfig::new(10.0, 0.0, 0.5, 100, 100, false);
+        let config = StochasticProcessConfig::new(
+            10.0, 0.0, 0.5, 100, StochasticScheme::EulerMaruyama, 100, false, None
+        );
         #[allow(dead_code)]
-        let _output = fou.euler_maruyama(&config);
+        let _output = fou.monte_carlo(&config);
     }
 }

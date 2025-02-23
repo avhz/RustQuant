@@ -41,7 +41,7 @@ macro_rules! impl_monte_carlo_pricer {
                 config: &StochasticProcessConfig,
                 rate: f64,
             ) -> f64 {
-                let out = process.euler_maruyama(&config);
+                let out = process.monte_carlo(&config);
 
                 let n = out.paths.len();
 

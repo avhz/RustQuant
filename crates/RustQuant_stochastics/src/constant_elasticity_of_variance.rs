@@ -67,14 +67,16 @@ impl StochasticProcess for ConstantElasticityOfVariance {
 #[cfg(test)]
 mod tests_cev {
     use super::*;
-    use crate::StochasticProcessConfig;
+    use crate::{StochasticProcessConfig, StochasticScheme};
     use RustQuant_math::*;
 
     #[test]
     fn test_cev_process() {
         let cev = ConstantElasticityOfVariance::new(0.05, 0.9, 0.45);
-        let config = StochasticProcessConfig::new(10.0, 0.0, 0.5, 100, 100, false);
-        let output = cev.euler_maruyama(&config);
+        let config = StochasticProcessConfig::new(
+            10.0, 0.0, 0.5, 100, StochasticScheme::EulerMaruyama, 100, false, None
+        );
+        let output = cev.monte_carlo(&config);
 
         // Test the distribution of the final values.
         let X_T: Vec<f64> = output

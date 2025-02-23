@@ -74,7 +74,7 @@ impl StochasticProcess for MertonJumpDiffusion {
         vec![self.mu.0(0.0), self.sigma.0(0.0), self.lambda.0(0.0)]
     }
 
-    fn euler_maruyama(&self, config: &StochasticProcessConfig) -> Trajectories {
+    fn monte_carlo(&self, config: &StochasticProcessConfig) -> Trajectories {
         let (x_0, t_0, t_n, n_steps, m_paths, parallel) = config.unpack();
 
         assert!(t_0 < t_n);
@@ -127,15 +127,17 @@ impl StochasticProcess for MertonJumpDiffusion {
 #[cfg(test)]
 mod tests_gbm_bridge {
     use super::*;
-    use crate::StochasticProcessConfig;
+    use crate::{StochasticProcessConfig, StochasticScheme};
     use RustQuant_math::*;
     use RustQuant_utils::assert_approx_equal;
 
     #[test]
     fn test_geometric_brownian_motion_bridge() {
         let mjd = MertonJumpDiffusion::new(0.05, 0.9, 1.0, 0.0, 0.3);
-        let config = StochasticProcessConfig::new(10.0, 0.0, 0.5, 125, 10000, false);
-        let output = mjd.euler_maruyama(&config);
+        let config = StochasticProcessConfig::new(
+            10.0, 0.0, 0.5, 125, StochasticScheme::EulerMaruyama, 10000, false, None
+        );
+        let output = mjd.monte_carlo(&config);
 
         // Test the distribution of the final values.
         let X_T: Vec<f64> = output

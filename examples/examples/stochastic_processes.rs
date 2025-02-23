@@ -37,21 +37,23 @@ fn main() {
 
     // Generate path using Euler-Maruyama scheme.
     // Parameters: x_0, t_0, t_n, n, sims, parallel.
-    let config = StochasticProcessConfig::new(INITIAL_VALUE, START_TIME, END_TIME, NUM_STEPS, NUM_SIMS, PARALLEL);
+    let config = StochasticProcessConfig::new(
+        INITIAL_VALUE, START_TIME, END_TIME, NUM_STEPS, StochasticScheme::EulerMaruyama, NUM_SIMS, PARALLEL, None
+    );
 
-    let abm_out = abm.euler_maruyama(&config);
-    let bdt_out = bdt.euler_maruyama(&config);
-    let bm_out  = bm.euler_maruyama(&config);
-    let cir_out = cir.euler_maruyama(&config);
-    let ev_out  = ev.euler_maruyama(&config);
-    let gbm_out = gbm.euler_maruyama(&config);
-    let hl_out  = hl.euler_maruyama(&config);
-    let hw_out  = hw.euler_maruyama(&config);
-    let ou_out  = ou.euler_maruyama(&config);
-    let fbm_out = fbm.euler_maruyama(&config);
-    let mjd_out = mjd.euler_maruyama(&config);
-    let gbb_out = gbb.euler_maruyama(&config);
-    let cev_out = cev.euler_maruyama(&config);
+    let abm_out = abm.monte_carlo(&config);
+    let bdt_out = bdt.monte_carlo(&config);
+    let bm_out  = bm.monte_carlo(&config);
+    let cir_out = cir.monte_carlo(&config);
+    let ev_out  = ev.monte_carlo(&config);
+    let gbm_out = gbm.monte_carlo(&config);
+    let hl_out  = hl.monte_carlo(&config);
+    let hw_out  = hw.monte_carlo(&config);
+    let ou_out  = ou.monte_carlo(&config);
+    let fbm_out = fbm.monte_carlo(&config);
+    let mjd_out = mjd.monte_carlo(&config);
+    let gbb_out = gbb.monte_carlo(&config);
+    let cev_out = cev.monte_carlo(&config);
 
     // Plot the paths.
     plot_vector!(abm_out.paths[0].clone(), "./images/arithmetic_brownian_motion.png");

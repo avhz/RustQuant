@@ -22,9 +22,7 @@
 
 use std::f64::consts::PI;
 use RustQuant::{
-    math::Sequence,
-    stochastics::{process::StochasticProcess, StochasticProcessConfig},
-    utils::plot_vector,
+    math::Sequence, prelude::StochasticScheme, stochastics::{process::StochasticProcess, StochasticProcessConfig}, utils::plot_vector
 };
 
 fn main() {
@@ -44,8 +42,10 @@ fn main() {
     };
 
     // Generate a path and plot it.
-    let config = StochasticProcessConfig::new(0.01, 0.0, 10.0, 500, 1, false);
-    let output = custom_process.euler_maruyama(&config);
+    let config = StochasticProcessConfig::new(
+        0.01, 0.0, 10.0, 500, StochasticScheme::EulerMaruyama, 1, false, None
+    );
+    let output = custom_process.monte_carlo(&config);
     plot_vector!(output.paths[0], "./images/ricker_wavelet_process.png");
 }
 

@@ -389,7 +389,7 @@ mod test_vanilla_option_monte_carlo {
     use std::time::Instant;
     use time::macros::date;
     use RustQuant_stochastics::geometric_brownian_motion::GeometricBrownianMotion;
-    use RustQuant_stochastics::StochasticProcessConfig;
+    use RustQuant_stochastics::{StochasticProcessConfig, StochasticScheme};
 
     #[test]
     fn test_vanilla_option_monte_carlo() {
@@ -410,7 +410,9 @@ mod test_vanilla_option_monte_carlo {
         let process = GeometricBrownianMotion::new(interest_rate, volatility);
 
         let config =
-            StochasticProcessConfig::new(underlying, 0.0, time_to_maturity, 1, 1_000_000, true);
+            StochasticProcessConfig::new(
+                underlying, 0.0, time_to_maturity, 1, StochasticScheme::EulerMaruyama,1_000_000, true, None
+            );
 
         let start = Instant::now();
         let price = option.price_monte_carlo(&process, &config, interest_rate);
@@ -442,7 +444,9 @@ mod test_vanilla_option_monte_carlo {
         let process = GeometricBrownianMotion::new(interest_rate, volatility);
 
         let config =
-            StochasticProcessConfig::new(underlying, 0.0, time_to_maturity, 1000, 1000, true);
+            StochasticProcessConfig::new(
+                underlying, 0.0, time_to_maturity, 1000, StochasticScheme::EulerMaruyama,1000, true, None
+            );
 
         let start = Instant::now();
         let price = option.price_monte_carlo(&process, &config, interest_rate);

@@ -35,8 +35,8 @@
 //!
 //! // Generate path using Euler-Maruyama scheme.
 //! // Parameters: x_0, t_0, t_n, n, sims, parallel.
-//! let config = StochasticProcessConfig::new(10., 0., 0.5, 10, 1, false);
-//! let output = (&gbm).euler_maruyama(&config);
+//! let config = StochasticProcessConfig::new(10., 0., 0.5, 10, StochasticScheme::EulerMaruyama, 1, false, None);
+//! let output = (&gbm).monte_carlo(&config);
 //!
 //! println!("GBM = {:?}", output.paths);
 //! ```

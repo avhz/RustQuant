@@ -78,7 +78,7 @@ impl StochasticProcess for FractionalCoxIngersollRoss {
         ]
     }
 
-    fn euler_maruyama(&self, config: &StochasticProcessConfig) -> Trajectories {
+    fn monte_carlo(&self, config: &StochasticProcessConfig) -> Trajectories {
         let (t_0, x_0, t_n, n_steps, m_paths, parallel) = config.unpack();
 
         let fgn = match self.method {
@@ -94,7 +94,8 @@ impl StochasticProcess for FractionalCoxIngersollRoss {
                     self.hurst,
                     FractionalProcessGeneratorMethod::FFT,
                 );
-                FractionalBrownianMotion::fgn_fft(&fbm, n_steps, t_n)
+                // FractionalBrownianMotion::fgn_fft(&fbm, n_steps, t_n)
+                fbm.fgn_fft(n_steps, t_n)
             }
         };
 
@@ -129,7 +130,7 @@ impl StochasticProcess for FractionalCoxIngersollRoss {
 #[cfg(test)]
 mod test_fractional_cir {
     use super::*;
-    use crate::fractional_ornstein_uhlenbeck::FractionalOrnsteinUhlenbeck;
+    use crate::{fractional_ornstein_uhlenbeck::FractionalOrnsteinUhlenbeck, StochasticScheme};
 
     #[test]
     #[ignore = "Hard to test."]
@@ -142,10 +143,12 @@ mod test_fractional_cir {
             FractionalProcessGeneratorMethod::FFT,
         );
 
-        let config = StochasticProcessConfig::new(10.0, 0.0, 0.5, 100, 100, false);
+        let config = StochasticProcessConfig::new(
+            10.0, 0.0, 0.5, 100, StochasticScheme::EulerMaruyama, 100, false, None
+        );
 
         #[allow(dead_code)]
-        let _output = fou.euler_maruyama(&config);
+        let _output = fou.monte_carlo(&config);
 
         std::result::Result::Ok(())
     }

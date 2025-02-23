@@ -56,7 +56,7 @@ impl StochasticProcess for HoLee {
 #[cfg(test)]
 mod tests_ho_lee {
     use super::*;
-    use crate::StochasticProcessConfig;
+    use crate::{StochasticProcessConfig, StochasticScheme};
     use RustQuant_math::*;
     use RustQuant_utils::assert_approx_equal;
     // Test a simple case where theta_t is constant
@@ -71,8 +71,10 @@ mod tests_ho_lee {
 
         // X_0 = 10.0
         // T = 1.0
-        let config = StochasticProcessConfig::new(10.0, 0.0, 1.0, 125, 1000, false);
-        let output = hl.euler_maruyama(&config);
+        let config = StochasticProcessConfig::new(
+            10.0, 0.0, 1.0, 125, StochasticScheme::EulerMaruyama, 1000, false, None
+        );
+        let output = hl.monte_carlo(&config);
 
         // Test the distribution of the final values.
         let X_T: Vec<f64> = output

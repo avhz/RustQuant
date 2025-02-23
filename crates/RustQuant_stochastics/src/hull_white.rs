@@ -62,7 +62,7 @@ impl StochasticProcess for HullWhite {
 #[cfg(test)]
 mod tests_hull_white {
     use super::*;
-    use crate::StochasticProcessConfig;
+    use crate::{StochasticProcessConfig, StochasticScheme};
     use RustQuant_math::*;
     use RustQuant_utils::assert_approx_equal;
 
@@ -77,9 +77,11 @@ mod tests_hull_white {
         let sigma = 2.0;
 
         let hw = HullWhite::new(alpha, sigma, theta);
-        let config = StochasticProcessConfig::new(10.0, 0.0, 1.0, 150, 1000, false);
+        let config = StochasticProcessConfig::new(
+            10.0, 0.0, 1.0, 150, StochasticScheme::EulerMaruyama, 1000, false, None
+        );
 
-        let output = hw.euler_maruyama(&config);
+        let output = hw.monte_carlo(&config);
 
         // Test the distribution of the final values.
         let X_T: Vec<f64> = output
