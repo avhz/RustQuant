@@ -124,3 +124,10 @@ pub use nelson_siegel_svensson::*;
 /// Curve model trait.
 pub mod curve_model;
 pub use curve_model::*;
+
+/// Fractional Brownian Motion.
+pub mod fractional_process;
+pub use fractional_process::*;
+
+/// Private monte carlo module.
+mod monte_carlo;

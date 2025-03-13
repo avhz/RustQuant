@@ -7,13 +7,11 @@
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use super::StochasticProcessConfig;
 use crate::model_parameter::ModelParameter;
-use crate::process::{StochasticProcess, Trajectories};
-use rand_distr::Distribution;
-use rayon::prelude::*;
+use crate::process::{StochasticProcess, StochasticProcessConfig};
+use crate::monte_carlo::run_monte_carlo;
 use RustQuant_math::Gaussian;
-use RustQuant_math::{Distribution as LocalDistribution, Poisson};
+use RustQuant_math::Distribution as LocalDistribution;
 
 /// Struct containing the Merton Jump Diffusion parameters.
 /// The Merton Jump Diffusion is a stochastic process that models a path-dependent option.
@@ -74,53 +72,8 @@ impl StochasticProcess for MertonJumpDiffusion {
         vec![self.mu.0(0.0), self.sigma.0(0.0), self.lambda.0(0.0)]
     }
 
-    fn monte_carlo(&self, config: &StochasticProcessConfig) -> Trajectories {
-        let (x_0, t_0, t_n, n_steps, m_paths, parallel) = config.unpack();
-
-        assert!(t_0 < t_n);
-
-        let dt: f64 = (t_n - t_0) / (n_steps as f64);
-
-        // Initialise empty paths and fill in the time points.
-        let mut paths = vec![vec![x_0; n_steps + 1]; m_paths];
-        let times: Vec<f64> = (0..=n_steps).map(|t| t_0 + dt * (t as f64)).collect();
-
-        let path_generator = |path: &mut Vec<f64>| {
-            let mut rng = rand::thread_rng();
-            let scale = dt.sqrt();
-
-            let dW: Vec<f64> = rand_distr::Normal::new(0.0, 1.0)
-                .unwrap()
-                .sample_iter(&mut rng)
-                .take(n_steps)
-                .map(|z| z * scale)
-                .collect();
-
-            let jumps = Poisson::new(self.lambda.0(0.0) * dt)
-                .sample(n_steps)
-                .unwrap();
-
-            for t in 0..n_steps {
-                if jumps[t] > 0.0 {
-                    path[t + 1] = path[t]
-                        + self.drift(path[t], times[t]) * dt
-                        + self.diffusion(path[t], times[t]) * dW[t]
-                        + self.jump(path[t], times[t]).unwrap_or(0.0);
-                } else {
-                    path[t + 1] = path[t]
-                        + self.drift(path[t], times[t]) * dt
-                        + self.diffusion(path[t], times[t]) * dW[t];
-                }
-            }
-        };
-
-        if parallel {
-            paths.par_iter_mut().for_each(path_generator);
-        } else {
-            paths.iter_mut().for_each(path_generator);
-        }
-
-        Trajectories { times, paths }
+    fn monte_carlo(&self, config: &StochasticProcessConfig) -> crate::process::Trajectories {
+        run_monte_carlo(self, config, Some(self.lambda.0(0.0)), None)
     }
 }
 

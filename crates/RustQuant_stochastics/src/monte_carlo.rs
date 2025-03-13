@@ -175,9 +175,7 @@ fn calculate_jump<T: StochasticProcess>(
 
 #[cfg(test)]
 mod test_process {
-    use crate::geometric_brownian_motion::GeometricBrownianMotion;
     use crate::{StochasticScheme, StochasticProcessConfig, StochasticProcess};
-    use std::time::Instant;
     use super::run_monte_carlo;
 
     #[test]

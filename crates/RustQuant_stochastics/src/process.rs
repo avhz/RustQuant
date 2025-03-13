@@ -15,11 +15,9 @@
 //! do not explicitly depend on the time `t`.
 
 use rand::prelude::Distribution;
-use rand::{rngs::StdRng, SeedableRng};
 use rayon::prelude::*;
-use time::format_description::modifier::UnixTimestamp;
-use std::sync::Arc;
-// use statrs::distribution::Normal;
+
+use crate::monte_carlo::run_monte_carlo;
 
 /// Struct to contain the time points and path values of the process.
 pub struct Trajectories {
@@ -206,120 +204,6 @@ impl StochasticProcessConfig {
     }
 }
 
-// fn select_scheme<'a, T: StochasticProcess>(
-//     obj: &'a T,
-//     noise_path: Vec<f64>,
-//     dt: f64,
-//     config: &'a StochasticProcessConfig,
-// ) -> Box<dyn Fn(&mut Vec<f64>) + Send + Sync + 'a> {
-
-// fn noise()
-
-fn select_scheme<'a, T: StochasticProcess>(
-        obj: &'a T,
-        noise_path: Option<Vec<f64>>,
-        dt: f64,
-        config: &'a StochasticProcessConfig,
-    ) -> Trajectories {
-    assert!(config.t_0 < config.t_n);
-
-    // let times: &[f64] = &(0..=config.n_steps)
-    //     .map(|t| config.t_0 + dt * (t as f64))
-    //     .collect::<Vec<f64>>();
-    // let mut paths: Vec<Vec<f64>> = vec![vec![config.x_0; config.n_steps + 1]; config.m_paths];
-
-    let times: Vec<f64> = (0..=config.n_steps)
-        .map(|t| config.t_0 + dt * (t as f64))
-        .collect();
-
-    let scheme = match config.scheme {
-        StochasticScheme::EulerMaruyama => Box::new({
-            // let obj = obj;
-            // let times = times.clone();
-            move |path: &mut Vec<f64>| {
-                // let (x_0, n_steps, times) = config.unpack_for_scheme(dt.clone(), config);
-                path.clear();
-                path.push(config.x_0);
-                let mut dw: f64 = 1.0;
-
-                for t in 0..config.n_steps {
-                    // dw = diffusion_scale * normal_dist.sample(&mut rng);
-                    path.push(
-                        path[t]
-                            + obj.drift(path[t], times[t]) * dt
-                            + obj.diffusion(path[t], times[t]) * dw,
-                    );
-                }
-            }
-        }) as Box<dyn Fn(&mut Vec<f64>) + Send + Sync>,
-        StochasticScheme::Milstein => Box::new({
-            move |path: &mut Vec<f64>| {
-                // let (x_0, n_steps, times) = config.unpack_for_scheme(dt, config);
-                path.clear();
-                path.push(config.x_0);
-                let mut dw: f64 = 1.0;
-                for t in 0..config.n_steps {
-                    // dw = diffusion_scale * normal_dist.sample(&mut rng);
-                    path.push(
-                        path[t]
-                            + obj.drift(path[t], times[t]) * dt
-                            + obj.diffusion(path[t], times[t]) * dw
-                            + 0.5
-                                * (obj.diffusion(path[t], times[t])
-                                    * ((obj.diffusion(path[t] + 1e-5, times[t])
-                                        - obj.diffusion(path[t] - 1e-5, times[t]))
-                                        / 2.0
-                                        * 1e-5)
-                                    * ((dw * dw) - dt)),
-                    );
-                }
-            }
-        }) as Box<dyn Fn(&mut Vec<f64>) + Send + Sync>,
-        StochasticScheme::StrangSplitting => Box::new({
-            move |path: &mut Vec<f64>| {
-                // let (x_0, n_steps, times) = config.unpack_for_scheme(dt, config);
-                path.clear();
-                path.push(config.x_0);
-                let mut dw: f64 = 1.0;
-
-                for t in 0..config.n_steps {
-                    // dw = diffusion_scale * normal_dist.sample(&mut rng);
-                    path.push(
-                        path[t]
-                            + 0.5 * obj.drift(path[t], times[t]) * dt
-                            + obj.diffusion(
-                                path[t] + 0.5 * obj.drift(path[t], times[t]) * dt,
-                                times[t] + 0.5 * dt,
-                            ) * dw
-                            + 0.5 * obj.drift(path[t], times[t]) * dt,
-                    )
-                }
-            }
-        }) as Box<dyn Fn(&mut Vec<f64>) + Send + Sync>,
-    };
-
-    let mut paths: Vec<Vec<f64>> = vec![vec![config.x_0; config.n_steps + 1]; config.m_paths];
-
-    // fractional passes in only a clsure into for_each
-    // get non-fractional in the same state
-    if config.parallel {
-        paths.par_iter_mut().enumerate().for_each(|(i, path)| {
-            // let rng: StdRng = StdRng::seed_from_u64(base_seed.wrapping_add(i as u64));
-            scheme(path);
-        });
-    } else {
-        paths.iter_mut().enumerate().for_each(|(i, path)| {
-            // let rng: StdRng = StdRng::seed_from_u64(base_seed.wrapping_add(i as u64));
-            scheme(path);
-        });
-    }
-
-    Trajectories {
-        times: times.to_vec(),
-        paths: paths,
-    }
-}
-
 /// Trait to implement stochastic processes.
 #[allow(clippy::module_name_repetitions)]
 pub trait StochasticProcess: Sync {
@@ -337,84 +221,19 @@ pub trait StochasticProcess: Sync {
         vec![]
     }
 
-    /// Simulate via Monte-Carlo.
-    fn _monte_carlo(&self, config: &StochasticProcessConfig, noise_path: Vec<f64>) -> Trajectories {
-        // let p = times.as_sl;
-        // let times_slice: &[f64] = &times;
-
-        let dt: f64 = (config.t_n - config.t_0) / (config.n_steps as f64);
-
-        // needs to be generalised
-        let base_seed: u64 = config.seed.unwrap_or_else(rand::random);
-        let normal_dist: rand_distr::Normal<f64> = rand_distr::Normal::new(0.0, 1.0).unwrap();
-        let diffusion_scale: f64 = dt.sqrt();
-
-        let noise_path: Vec<f64> = (0..config.n_steps)
-            .map(|t| {
-                let rng: StdRng = StdRng::seed_from_u64(base_seed.wrapping_add(t as u64));
-                diffusion_scale * normal_dist.sample(&mut rng)
-            })
-            .collect();
-
-        // Return scheme here
-
-        if config.parallel {
-            paths.par_iter_mut().enumerate().for_each(|(i, path)| {
-                let rng: StdRng = StdRng::seed_from_u64(base_seed.wrapping_add(i as u64));
-                scheme(path);
-            });
-        } else {
-            paths.iter_mut().enumerate().for_each(|(i, path)| {
-                let rng: StdRng = StdRng::seed_from_u64(base_seed.wrapping_add(i as u64));
-                scheme(path);
-            });
-        }
-
-        Trajectories {
-            times: times.to_vec(),
-            paths: paths,
-        }
-    }
-}
-
-pub trait MonteCarlo: StochasticProcess {
-
-    fn monte_carlo(&self, config: StochasticProcessConfig)
+    /// Runs a Monte Carlo simulation for a stochastic process.
+    fn monte_carlo(&self, config: &StochasticProcessConfig) -> Trajectories
     where
         Self: Sized,
     {
-        let dt: f64 = (config.t_n - config.t_0) / (config.n_steps as f64);
-
-        let base_seed: u64 = config.seed.unwrap_or_else(rand::random);
-        let normal_dist: rand_distr::Normal<f64> = rand_distr::Normal::new(0.0, 1.0).unwrap();
-        let diffusion_scale: f64 = dt.sqrt();
-
-        let noise_path: Vec<f64> = (0..config.n_steps)
-        .map(|t| {
-            let mut rng: StdRng = StdRng::seed_from_u64(base_seed.wrapping_add(t as u64));
-            diffusion_scale * normal_dist.sample(&mut rng)
-        })
-        .collect();
-
-        let dt: f64 = (config.t_n - config.t_0) / (config.n_steps as f64);
-        select_scheme(self, noise_path, dt, &config);
+        run_monte_carlo(self, config, None, None)
     }
-
-}
-
-pub trait FractionalMonteCarlo: StochasticProcess {
-
-    fn monte_carlo(config: StochasticProcessConfig) {
-        
-    }
-
 }
 
 #[cfg(test)]
 mod test_process {
     use crate::geometric_brownian_motion::GeometricBrownianMotion;
-    use crate::process::StochasticProcess;
-    use crate::{StochasticProcessConfig, StochasticScheme};
+    use crate::{StochasticScheme, StochasticProcessConfig, StochasticProcess};
     use std::time::Instant;
 
     #[test]
