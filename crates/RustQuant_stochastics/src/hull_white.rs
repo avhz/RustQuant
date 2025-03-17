@@ -81,7 +81,7 @@ mod tests_hull_white {
             10.0, 0.0, 1.0, 150, StochasticScheme::EulerMaruyama, 1000, false, None
         );
 
-        let output = hw.monte_carlo(&config);
+        let output = hw.generate(&config);
 
         // Test the distribution of the final values.
         let X_T: Vec<f64> = output

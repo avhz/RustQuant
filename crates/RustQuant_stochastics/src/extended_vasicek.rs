@@ -85,7 +85,7 @@ mod tests_extended_vasicek {
             10.0, 0.0, 1.0, 150, StochasticScheme::EulerMaruyama, 1000, false, None
         );
 
-        let output = ev.monte_carlo(&config);
+        let output = ev.generate(&config);
 
         // Test the distribution of the final values.
         let X_T: Vec<f64> = output

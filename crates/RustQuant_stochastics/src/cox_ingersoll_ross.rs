@@ -77,7 +77,7 @@ mod tests_cir {
             10.0, 0.0, 0.5, 100, StochasticScheme::EulerMaruyama, 100, false, None
         );
 
-        let output = cir.monte_carlo(&config);
+        let output = cir.generate(&config);
 
         // Test the distribution of the final values.
         let X_T: Vec<f64> = output

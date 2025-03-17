@@ -9,7 +9,7 @@
 
 use crate::model_parameter::ModelParameter;
 use crate::process::{StochasticProcess, StochasticProcessConfig};
-use crate::monte_carlo::run_monte_carlo;
+use crate::simulation::simulate_stochatic_process;
 use RustQuant_math::Gaussian;
 use RustQuant_math::Distribution as LocalDistribution;
 
@@ -72,8 +72,8 @@ impl StochasticProcess for MertonJumpDiffusion {
         vec![self.mu.0(0.0), self.sigma.0(0.0), self.lambda.0(0.0)]
     }
 
-    fn monte_carlo(&self, config: &StochasticProcessConfig) -> crate::process::Trajectories {
-        run_monte_carlo(self, config, Some(self.lambda.0(0.0)), None)
+    fn generate(&self, config: &StochasticProcessConfig) -> crate::process::Trajectories {
+        simulate_stochatic_process(self, config, Some(self.lambda.0(0.0)), None)
     }
 }
 
@@ -90,7 +90,7 @@ mod tests_gbm_bridge {
         let config = StochasticProcessConfig::new(
             10.0, 0.0, 0.5, 125, StochasticScheme::EulerMaruyama, 10000, false, None
         );
-        let output = mjd.monte_carlo(&config);
+        let output = mjd.generate(&config);
 
         // Test the distribution of the final values.
         let X_T: Vec<f64> = output

@@ -1,3 +1,12 @@
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// RustQuant: A Rust library for quantitative finance tools.
+// Copyright (C) 2023 https://github.com/avhz
+// Dual licensed under Apache 2.0 and MIT.
+// See:
+//      - LICENSE-APACHE.md
+//      - LICENSE-MIT.md
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 use rayon::prelude::*;
 use rand::prelude::Distribution;
 use rand::{rngs::StdRng, SeedableRng};
@@ -10,7 +19,7 @@ enum NoiseGenerator {
     Fractional((fn(f64, usize, f64, Option<u64>) -> Vec<f64>, f64)),
 }
 
-pub(crate) fn run_monte_carlo<T: StochasticProcess>(
+pub(crate) fn simulate_stochatic_process<T: StochasticProcess>(
         stochastic_process: &T,
         config: &StochasticProcessConfig,
         jump_config: Option<f64>,
@@ -176,11 +185,10 @@ fn calculate_jump<T: StochasticProcess>(
 #[cfg(test)]
 mod test_process {
     use crate::{StochasticScheme, StochasticProcessConfig, StochasticProcess};
-    use super::run_monte_carlo;
+    use super::simulate_stochatic_process;
 
     #[test]
-    fn test_run_monte_carlo() {
-
+    fn test_run_simulate_stochastic_process() {
         struct CustomProcess {
             pub mu: f64,
         
@@ -215,6 +223,6 @@ mod test_process {
 
         let stochastic_process = CustomProcess { mu: 0.1, sigma: 0.2 };
 
-        run_monte_carlo(&stochastic_process, &config, Some(1.0), None);
+        simulate_stochatic_process(&stochastic_process, &config, Some(1.0), None);
     }
 }

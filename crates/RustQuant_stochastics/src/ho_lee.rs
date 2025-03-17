@@ -74,7 +74,7 @@ mod tests_ho_lee {
         let config = StochasticProcessConfig::new(
             10.0, 0.0, 1.0, 125, StochasticScheme::EulerMaruyama, 1000, false, None
         );
-        let output = hl.monte_carlo(&config);
+        let output = hl.generate(&config);
 
         // Test the distribution of the final values.
         let X_T: Vec<f64> = output

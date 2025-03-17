@@ -41,7 +41,7 @@ macro_rules! impl_monte_carlo_pricer {
                 config: &StochasticProcessConfig,
                 rate: f64,
             ) -> f64 {
-                let out = process.monte_carlo(&config);
+                let out = process.generate(&config);
 
                 let n = out.paths.len();
 

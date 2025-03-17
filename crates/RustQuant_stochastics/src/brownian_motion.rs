@@ -87,7 +87,7 @@ mod sde_tests {
         let config = StochasticProcessConfig::new(
             0.0, 0.0, 0.5, 100, StochasticScheme::EulerMaruyama, 1000, false, None
         );
-        let output_serial = bm.monte_carlo(&config);
+        let output_serial = bm.generate(&config);
         // let output_parallel = (&bm).euler_maruyama(10.0, 0.0, 0.5, 100, 10, true);
 
         // let file1 = "./images/BM1.png";

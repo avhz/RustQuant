@@ -85,7 +85,7 @@ mod tests_black_derman_toy {
         let config = StochasticProcessConfig::new(
             0.13, 0.0, 1.0, 100, StochasticScheme::EulerMaruyama, 1000, false, None
         );
-        let output = hw.monte_carlo(&config);
+        let output = hw.generate(&config);
 
         // Test the distribution of the final values.
         let X_T: Vec<f64> = output
@@ -108,7 +108,7 @@ mod tests_black_derman_toy {
         let config = StochasticProcessConfig::new(
             0.13, 0.0, 1.0, 100, crate::StochasticScheme::EulerMaruyama, 1000, false, None
         );
-        let output = hw.monte_carlo(&config);
+        let output = hw.generate(&config);
 
         // Test the distribution of the final values.
         let X_T: Vec<f64> = output

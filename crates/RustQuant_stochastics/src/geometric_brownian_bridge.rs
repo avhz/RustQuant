@@ -90,7 +90,7 @@ mod tests_gbm_bridge {
             10.0, 0.0, 0.5, 125, StochasticScheme::EulerMaruyama, 10000, false, None
         );
 
-        let output = gbm.monte_carlo(&config);
+        let output = gbm.generate(&config);
 
         // Test the distribution of the final values.
         let X_T: Vec<f64> = output

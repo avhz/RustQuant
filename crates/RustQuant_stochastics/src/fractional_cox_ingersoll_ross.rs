@@ -8,7 +8,7 @@
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 use crate::process::{StochasticProcessConfig, StochasticProcess, Trajectories};
-use crate::fractional_process::{fractional_monte_carlo, FractionalProcessGeneratorMethod};
+use crate::fractional_process::{simulate_fractional_stochastic_process, FractionalProcessGeneratorMethod};
 use crate::model_parameter::ModelParameter;
 
 /// Struct containing the Ornstein-Uhlenbeck process parameters.
@@ -73,8 +73,8 @@ impl StochasticProcess for FractionalCoxIngersollRoss {
         ]
     }
 
-    fn monte_carlo(&self, config: &StochasticProcessConfig) -> Trajectories {
-        fractional_monte_carlo(self, config, &self.method, self.hurst)
+    fn generate(&self, config: &StochasticProcessConfig) -> Trajectories {
+        simulate_fractional_stochastic_process(self, config, &self.method, self.hurst)
     }
 }
 
@@ -103,7 +103,7 @@ mod test_fractional_cir {
         );
 
         #[allow(dead_code)]
-        let _output = fou.monte_carlo(&config);
+        let _output = fou.generate(&config);
 
         std::result::Result::Ok(())
     }

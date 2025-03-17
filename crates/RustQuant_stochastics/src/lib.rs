@@ -36,7 +36,7 @@
 //! // Generate path using Euler-Maruyama scheme.
 //! // Parameters: x_0, t_0, t_n, n, sims, parallel.
 //! let config = StochasticProcessConfig::new(10., 0., 0.5, 10, StochasticScheme::EulerMaruyama, 1, false, None);
-//! let output = (&gbm).monte_carlo(&config);
+//! let output = (&gbm).generate(&config);
 //!
 //! println!("GBM = {:?}", output.paths);
 //! ```
@@ -129,5 +129,5 @@ pub use curve_model::*;
 pub mod fractional_process;
 pub use fractional_process::*;
 
-/// Private monte carlo module.
-mod monte_carlo;
+/// Private stochastic process simulation module.
+mod simulation;

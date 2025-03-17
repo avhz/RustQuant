@@ -65,7 +65,7 @@ fn main() {
     let config = StochasticProcessConfig::new(
         INITIAL_VALUE, START_TIME, END_TIME, NUM_STEPS, StochasticScheme::EulerMaruyama, NUM_SIMS, PARALLEL, None
     );
-    let gbm_out = gbm.monte_carlo(&config);
+    let gbm_out = gbm.generate(&config);
 
     // Price the options. 
     println!("Up-and-out call: {}", barrier_option_payoff(&gbm_out.paths[0], 10.0, 12.0, OptionType::Call, BarrierType::UpAndOut));

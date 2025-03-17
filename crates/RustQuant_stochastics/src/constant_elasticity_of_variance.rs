@@ -76,7 +76,7 @@ mod tests_cev {
         let config = StochasticProcessConfig::new(
             10.0, 0.0, 0.5, 100, StochasticScheme::EulerMaruyama, 100, false, None
         );
-        let output = cev.monte_carlo(&config);
+        let output = cev.generate(&config);
 
         // Test the distribution of the final values.
         let X_T: Vec<f64> = output

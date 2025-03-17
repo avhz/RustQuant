@@ -41,19 +41,19 @@ fn main() {
         INITIAL_VALUE, START_TIME, END_TIME, NUM_STEPS, StochasticScheme::EulerMaruyama, NUM_SIMS, PARALLEL, None
     );
 
-    let abm_out = abm.monte_carlo(&config);
-    let bdt_out = bdt.monte_carlo(&config);
-    let bm_out  = bm.monte_carlo(&config);
-    let cir_out = cir.monte_carlo(&config);
-    let ev_out  = ev.monte_carlo(&config);
-    let gbm_out = gbm.monte_carlo(&config);
-    let hl_out  = hl.monte_carlo(&config);
-    let hw_out  = hw.monte_carlo(&config);
-    let ou_out  = ou.monte_carlo(&config);
-    let fbm_out = fbm.monte_carlo(&config);
-    let mjd_out = mjd.monte_carlo(&config);
-    let gbb_out = gbb.monte_carlo(&config);
-    let cev_out = cev.monte_carlo(&config);
+    let abm_out = abm.generate(&config);
+    let bdt_out = bdt.generate(&config);
+    let bm_out  = bm.generate(&config);
+    let cir_out = cir.generate(&config);
+    let ev_out  = ev.generate(&config);
+    let gbm_out = gbm.generate(&config);
+    let hl_out  = hl.generate(&config);
+    let hw_out  = hw.generate(&config);
+    let ou_out  = ou.generate(&config);
+    let fbm_out = fbm.generate(&config);
+    let mjd_out = mjd.generate(&config);
+    let gbb_out = gbb.generate(&config);
+    let cev_out = cev.generate(&config);
 
     // Plot the paths.
     plot_vector!(abm_out.paths[0].clone(), "./images/arithmetic_brownian_motion.png");

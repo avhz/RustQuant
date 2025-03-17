@@ -17,7 +17,7 @@
 use rand::prelude::Distribution;
 use rayon::prelude::*;
 
-use crate::monte_carlo::run_monte_carlo;
+use crate::simulation::simulate_stochatic_process;
 
 /// Struct to contain the time points and path values of the process.
 pub struct Trajectories {
@@ -221,12 +221,12 @@ pub trait StochasticProcess: Sync {
         vec![]
     }
 
-    /// Runs a Monte Carlo simulation for a stochastic process.
-    fn monte_carlo(&self, config: &StochasticProcessConfig) -> Trajectories
+    /// Simulate the stochastic process.
+    fn generate(&self, config: &StochasticProcessConfig) -> Trajectories
     where
         Self: Sized,
     {
-        run_monte_carlo(self, config, None, None)
+        simulate_stochatic_process(self, config, None, None)
     }
 }
 
@@ -251,13 +251,13 @@ mod test_process {
         );
 
         let start = Instant::now();
-        gbm.monte_carlo(&config);
+        gbm.generate(&config);
         let serial = start.elapsed();
 
         println!("Serial: \t {:?}", serial);
 
         let start = Instant::now();
-        gbm.monte_carlo(&config);
+        gbm.generate(&config);
         let parallel = start.elapsed();
 
         println!("Parallel: \t {:?}", parallel);
@@ -282,13 +282,13 @@ mod test_process {
         );
 
         let start = Instant::now();
-        gbm.monte_carlo(&config);
+        gbm.generate(&config);
         let serial = start.elapsed();
 
         println!("Serial: \t {:?}", serial);
 
         let start = Instant::now();
-        gbm.monte_carlo(&config);
+        gbm.generate(&config);
         let parallel = start.elapsed();
 
         println!("Parallel: \t {:?}", parallel);
@@ -313,13 +313,13 @@ mod test_process {
         );
 
         let start = Instant::now();
-        gbm.monte_carlo(&config);
+        gbm.generate(&config);
         let serial = start.elapsed();
 
         println!("Serial: \t {:?}", serial);
 
         let start = Instant::now();
-        gbm.monte_carlo(&config);
+        gbm.generate(&config);
         let parallel = start.elapsed();
 
         println!("Parallel: \t {:?}", parallel);

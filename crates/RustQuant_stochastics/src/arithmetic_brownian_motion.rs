@@ -67,7 +67,7 @@ mod tests_abm {
         let config = StochasticProcessConfig::new(
             10.0, 0.0, 0.5, 125, StochasticScheme::EulerMaruyama, 1000, false, None
         );
-        let output = abm.monte_carlo(&config);
+        let output = abm.generate(&config);
 
         // let file1 = "./images/ABM1.png";
         // plot_vector((&output.trajectories[0]).clone(), file1).unwrap();

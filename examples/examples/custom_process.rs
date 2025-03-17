@@ -45,7 +45,7 @@ fn main() {
     let config = StochasticProcessConfig::new(
         0.01, 0.0, 10.0, 500, StochasticScheme::EulerMaruyama, 1, false, None
     );
-    let output = custom_process.monte_carlo(&config);
+    let output = custom_process.generate(&config);
     plot_vector!(output.paths[0], "./images/ricker_wavelet_process.png");
 }
 

@@ -1,5 +1,14 @@
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// RustQuant: A Rust library for quantitative finance tools.
+// Copyright (C) 2023 https://github.com/avhz
+// Dual licensed under Apache 2.0 and MIT.
+// See:
+//      - LICENSE-APACHE.md
+//      - LICENSE-MIT.md
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 use super::process::*;
-use crate::monte_carlo::run_monte_carlo;
+use crate::simulation::simulate_stochatic_process;
 use rand::{rngs::StdRng, SeedableRng};
 use rand_distr::StandardNormal;
 use nalgebra::{DMatrix, DVector, Dim, Dyn, RowDVector};
@@ -19,7 +28,7 @@ pub enum FractionalProcessGeneratorMethod {
 }
 
 /// Function to run the monte carlo method for the fractional stochastic process.
-pub(crate) fn fractional_monte_carlo<T: StochasticProcess>(
+pub(crate) fn simulate_fractional_stochastic_process<T: StochasticProcess>(
     stochastic_process: &T, 
     config: &StochasticProcessConfig, 
     method: &FractionalProcessGeneratorMethod, 
@@ -29,7 +38,7 @@ pub(crate) fn fractional_monte_carlo<T: StochasticProcess>(
         FractionalProcessGeneratorMethod::CHOLESKY => fgn_cholesky,
         FractionalProcessGeneratorMethod::FFT => fgn_fft
     };
-    run_monte_carlo(stochastic_process, &config, None,Some((fgn, hurst)))
+    simulate_stochatic_process(stochastic_process, &config, None,Some((fgn, hurst)))
 }
 
 /// Autocovariance function (ACF).

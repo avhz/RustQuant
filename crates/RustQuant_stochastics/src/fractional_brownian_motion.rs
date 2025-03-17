@@ -8,7 +8,7 @@
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 use crate::process::{StochasticProcess, Trajectories, StochasticProcessConfig};
-use crate::fractional_process::{fractional_monte_carlo, FractionalProcessGeneratorMethod};
+use crate::fractional_process::{simulate_fractional_stochastic_process, FractionalProcessGeneratorMethod};
 
 /// Struct containing the Fractional Brownian Motion parameters.
 #[derive(Debug)]
@@ -57,8 +57,8 @@ impl StochasticProcess for FractionalBrownianMotion {
         vec![self.hurst]
     }
 
-    fn monte_carlo(&self, config: &StochasticProcessConfig) -> Trajectories {
-        fractional_monte_carlo(self, config, &self.method, self.hurst)
+    fn generate(&self, config: &StochasticProcessConfig) -> Trajectories {
+        simulate_fractional_stochastic_process(self, config, &self.method, self.hurst)
     }
 }
 
@@ -80,7 +80,7 @@ mod test_fractional_brownian_motion {
         let config = StochasticProcessConfig::new(
             0.0, 0.0, 0.5,100, StochasticScheme::EulerMaruyama,1000, false, None
         );
-        let output_serial = fbm.monte_carlo(&config);
+        let output_serial = fbm.generate(&config);
         // let output_parallel = (&bm).euler_maruyama(10.0, 0.0, 0.5, 100, 10, true);
 
         // Test the distribution of the final values.
