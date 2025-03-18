@@ -216,3 +216,155 @@ impl LongstaffScwhartzPricer {
         (in_the_money_indices, in_the_money_assets)
     }
 }
+
+#[cfg(test)]
+mod tests_longstaff_schwartz_pricer_at_the_money {
+    use super::*;
+    use time::macros::date;
+
+    const TOLERANCE: f64 = 0.25;
+    const ATM_CALL_EXPECTED_PRICE: f64 = 0.680;
+    const ATM_PUT_EXPECTED_PRICE: f64 = 0.243;
+
+    #[test]
+    fn test_longstaff_schwartz_call_at_the_money() {
+        let longstaff_schwartz_pricer = LongstaffScwhartzPricer::new(
+            10.0, 
+            10.0, 
+            0.05, 
+            0.1, 
+            Some(date!(2024 - 01 - 01)), 
+            date!(2025 - 01 - 01), 
+            5000, 
+            TypeFlag::Call, 
+            600
+        );
+
+        assert!(
+            (longstaff_schwartz_pricer.generate_price() - ATM_CALL_EXPECTED_PRICE).abs() < TOLERANCE
+        );
+    }
+
+    #[test]
+    fn test_longstaff_schwartz_put_at_the_money() {
+        let longstaff_schwartz_pricer = LongstaffScwhartzPricer::new(
+            10.0, 
+            10.0, 
+            0.05, 
+            0.1, 
+            Some(date!(2024 - 01 - 01)), 
+            date!(2025 - 01 - 01), 
+            5000, 
+            TypeFlag::Put, 
+            600
+        );
+
+        assert!(
+            (longstaff_schwartz_pricer.generate_price() - ATM_PUT_EXPECTED_PRICE).abs() < TOLERANCE
+        );
+    }
+}
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// UNIT TESTS: IN THE MONEY
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+#[cfg(test)]
+mod tests_longstaff_schwartz_pricer_in_the_money {
+    use super::*;
+    use time::macros::date;
+
+    const TOLERANCE: f64 = 0.25;
+    const ITM_CALL_EXPECTED_PRICE: f64 = 5.4889;
+    const ITM_PUT_EXPECTED_PRICE: f64 = 5.0000;
+
+    #[test]
+    fn test_longstaff_schwartz_call_in_the_money() {
+        let longstaff_schwartz_pricer = LongstaffScwhartzPricer::new(
+            15.0, 
+            10.0, 
+            0.05, 
+            0.1, 
+            Some(date!(2024 - 01 - 01)), 
+            date!(2025 - 01 - 01), 
+            5000, 
+            TypeFlag::Call, 
+            600
+        );
+
+        assert!(
+            (longstaff_schwartz_pricer.generate_price() - ITM_CALL_EXPECTED_PRICE).abs() < TOLERANCE
+        );
+    }
+
+    #[test]
+    fn test_longstaff_schwartz_put_in_the_money() {
+        let longstaff_schwartz_pricer = LongstaffScwhartzPricer::new(
+            10.0, 
+            15.0, 
+            0.05, 
+            0.1, 
+            Some(date!(2024 - 01 - 01)), 
+            date!(2025 - 01 - 01), 
+            5000, 
+            TypeFlag::Put, 
+            600
+        );
+
+        assert!(
+            (longstaff_schwartz_pricer.generate_price() - ITM_PUT_EXPECTED_PRICE).abs() < TOLERANCE
+        );
+    }
+}
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// UNIT TESTS: OUT OF THE MONEY
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+#[cfg(test)]
+mod tests_longstaff_schwartz_pricer_out_the_money {
+    use super::*;
+    use time::macros::date;
+
+    const TOLERANCE: f64 = 0.25;
+    const OTM_CALL_EXPECTED_PRICE: f64 = 0.0000;
+    const OTM_PUT_EXPECTED_PRICE: f64 = 0.0000;
+
+    #[test]
+    fn test_longstaff_schwartz_call_out_the_money() {
+        let longstaff_schwartz_pricer = LongstaffScwhartzPricer::new(
+            10.0, 
+            15.0, 
+            0.05, 
+            0.1, 
+            Some(date!(2024 - 01 - 01)), 
+            date!(2025 - 01 - 01), 
+            5000, 
+            TypeFlag::Call, 
+            600
+        );
+
+        assert!(
+            (longstaff_schwartz_pricer.generate_price() - OTM_CALL_EXPECTED_PRICE).abs() < TOLERANCE
+        );
+    }
+
+    #[test]
+    fn test_longstaff_schwartz_put_out_the_money() {
+        let longstaff_schwartz_pricer = LongstaffScwhartzPricer::new(
+            15.0, 
+            10.0, 
+            0.05, 
+            0.1, 
+            Some(date!(2024 - 01 - 01)), 
+            date!(2025 - 01 - 01), 
+            5000, 
+            TypeFlag::Put, 
+            600
+        );
+
+        assert!(
+            (longstaff_schwartz_pricer.generate_price() - OTM_PUT_EXPECTED_PRICE).abs() < TOLERANCE
+        );
+    }
+}
