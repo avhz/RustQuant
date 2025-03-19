@@ -243,9 +243,10 @@ mod tests_longstaff_schwartz_pricer_at_the_money {
             0.1, 
             Some(date!(2024 - 01 - 01)), 
             date!(2025 - 01 - 01), 
-            5000, 
+            1000, 
             TypeFlag::Call, 
-            600
+            500,
+            None
         );
 
         assert!(
@@ -262,9 +263,10 @@ mod tests_longstaff_schwartz_pricer_at_the_money {
             0.1, 
             Some(date!(2024 - 01 - 01)), 
             date!(2025 - 01 - 01), 
-            5000, 
+            1000, 
             TypeFlag::Put, 
-            600
+            500,
+            None
         );
 
         assert!(
@@ -295,11 +297,12 @@ mod tests_longstaff_schwartz_pricer_in_the_money {
             0.1, 
             Some(date!(2024 - 01 - 01)), 
             date!(2025 - 01 - 01), 
-            5000, 
+            1000, 
             TypeFlag::Call, 
-            600
+            500,
+            None
         );
-
+        
         assert!(
             (longstaff_schwartz_pricer.generate_price() - ITM_CALL_EXPECTED_PRICE).abs() < TOLERANCE
         );
@@ -314,9 +317,10 @@ mod tests_longstaff_schwartz_pricer_in_the_money {
             0.1, 
             Some(date!(2024 - 01 - 01)), 
             date!(2025 - 01 - 01), 
-            5000, 
+            1000, 
             TypeFlag::Put, 
-            600
+            500,
+            None
         );
 
         assert!(
@@ -347,9 +351,10 @@ mod tests_longstaff_schwartz_pricer_out_the_money {
             0.1, 
             Some(date!(2024 - 01 - 01)), 
             date!(2025 - 01 - 01), 
-            5000, 
+            1000, 
             TypeFlag::Call, 
-            600
+            500,
+            None
         );
 
         assert!(
@@ -366,13 +371,64 @@ mod tests_longstaff_schwartz_pricer_out_the_money {
             0.1, 
             Some(date!(2024 - 01 - 01)), 
             date!(2025 - 01 - 01), 
-            5000, 
+            1000, 
             TypeFlag::Put, 
-            600
+            500,
+            None
         );
 
         assert!(
             (longstaff_schwartz_pricer.generate_price() - OTM_PUT_EXPECTED_PRICE).abs() < TOLERANCE
+        );
+    }
+}
+
+#[cfg(test)]
+mod tests_longstaff_schwartz_pricer_seeded {
+    use super::*;
+    use time::macros::date;
+
+    const TOLERANCE: f64 = 0.25;
+    const CALL_SEEDED_EXPECTED_PRICE: f64 = 5.4889;
+    const PUT_SEEDED_PUT_EXPECTED_PRICE: f64 = 0.0000;
+
+    #[test]
+    fn test_longstaff_schwartz_call_seeded() {
+        let longstaff_schwartz_pricer = LongstaffScwhartzPricer::new(
+            15.0, 
+            10.0, 
+            0.05, 
+            0.1, 
+            Some(date!(2024 - 01 - 01)), 
+            date!(2025 - 01 - 01), 
+            1000, 
+            TypeFlag::Call, 
+            500,
+            Some(1234)
+        );
+        
+        assert!(
+            (longstaff_schwartz_pricer.generate_price() - CALL_SEEDED_EXPECTED_PRICE).abs() < TOLERANCE
+        );
+    }
+
+    #[test]
+    fn test_longstaff_schwartz_put_seeded() {
+        let longstaff_schwartz_pricer = LongstaffScwhartzPricer::new(
+            15.0, 
+            10.0, 
+            0.05, 
+            0.1, 
+            Some(date!(2024 - 01 - 01)), 
+            date!(2025 - 01 - 01), 
+            1000, 
+            TypeFlag::Put, 
+            500,
+            Some(9876)
+        );
+
+        assert!(
+            (longstaff_schwartz_pricer.generate_price() - PUT_SEEDED_PUT_EXPECTED_PRICE).abs() < TOLERANCE
         );
     }
 }
