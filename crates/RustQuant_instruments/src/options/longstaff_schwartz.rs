@@ -1,6 +1,6 @@
 use time::Date;
 use nalgebra::{DMatrix, DVector};
-use rand::thread_rng;
+use rand::{rngs::StdRng, SeedableRng};
 use rand_distr::{Normal, Distribution};
 use RustQuant_time::{today, DayCountConvention};
 use crate::option_flags::TypeFlag;
@@ -24,7 +24,9 @@ pub struct LongstaffScwhartzPricer {
         /// Option Type
         pub type_flag: TypeFlag,
         /// Number of simulations
-        pub num_simulations: u64
+        pub num_simulations: u64,
+        /// Seed
+        pub seed: Option<u64>
 }
 
 impl LongstaffScwhartzPricer {
@@ -41,6 +43,7 @@ impl LongstaffScwhartzPricer {
         time_steps: u32,
         type_flag: TypeFlag,
         num_simulations: u64,
+        seed: Option<u64>
     ) -> Self {
         assert!(evaluation_date.unwrap_or(today()) < expiration_date);
         assert!(initial_price > 0.0, "initial_price must be positive!");
@@ -59,13 +62,14 @@ impl LongstaffScwhartzPricer {
             expiration_date,
             time_steps,
             type_flag,
-            num_simulations
+            num_simulations,
+            seed
         }
     }
 
     /// Run Longstaff-Schwartz pricing method for American options.
     pub fn generate_price(&self) -> f64 {
-        let mut current_time;
+        // let mut current_time;
         let end_time: f64 = self.year_fraction();
         let delta_t: f64 = end_time / self.time_steps as f64;
         let mut markov_chain: Vec<f64> = self.generate_end_points(end_time);
@@ -74,9 +78,9 @@ impl LongstaffScwhartzPricer {
         let mut regression_index: i32;
 
         for time_step in (1..self.time_steps).rev() {
-            current_time = (time_step as f64) * delta_t;
+            // current_time = (time_step as f64) * delta_t;
             markov_chain = self.backwards_time_induction(
-                markov_chain, delta_t, current_time
+                markov_chain, delta_t, time_step
             );
             asset_prices = self.calculate_asset_prices(&markov_chain);
             let (in_the_money_indices, in_the_money_assets) = self.in_the_money_assets(&asset_prices);
@@ -151,7 +155,7 @@ impl LongstaffScwhartzPricer {
     }
 
     fn generate_end_points(&self, end_time: f64) -> Vec<f64> {
-        let mut rng: rand::prelude::ThreadRng = thread_rng();
+        let mut rng = StdRng::seed_from_u64(self.seed.unwrap_or_else(rand::random));
         let normal_distribution: Normal<f64> = Normal::new(0.0, 1.0).unwrap();
         let mut markov_chain: Vec<f64> = vec![];
         for _ in 0..self.num_simulations {
@@ -182,14 +186,18 @@ impl LongstaffScwhartzPricer {
         }
     }
 
-    fn backwards_time_induction(&self, mut markov_chain: Vec<f64>, delta_t: f64, time: f64) -> Vec<f64> {
+    fn backwards_time_induction(&self, mut markov_chain: Vec<f64>, delta_t: f64, time_step: u32) -> Vec<f64> {
 
-        let mut rng: rand::prelude::ThreadRng = thread_rng();
+        let mut rng = match self.seed {
+            Some(seed) => StdRng::seed_from_u64(seed.wrapping_add(time_step as u64)),
+            None => StdRng::seed_from_u64(rand::random())
+        };
         let normal_distribution: Normal<f64> = Normal::new(0.0, 1.0).unwrap();
 
+        let current_time: f64 = (time_step as f64) * delta_t;
         for i in 0..self.num_simulations {
-            markov_chain[i as usize] = (markov_chain[i as usize] * time / (time + delta_t))
-                + self.volatility * (time * delta_t / (time + delta_t)).sqrt() * normal_distribution.sample(&mut rng)
+            markov_chain[i as usize] = (markov_chain[i as usize] * current_time / (current_time + delta_t))
+                + self.volatility * (current_time * delta_t / (current_time + delta_t)).sqrt() * normal_distribution.sample(&mut rng)
         }
         markov_chain
     }
