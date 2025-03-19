@@ -45,7 +45,7 @@ impl LongstaffScwhartzPricer {
         num_simulations: u64,
         seed: Option<u64>
     ) -> Self {
-        assert!(evaluation_date.unwrap_or(today()) < expiration_date);
+        assert!(evaluation_date.unwrap_or(today()) < expiration_date, "expiration_date must be after evaluation_date!");
         assert!(initial_price > 0.0, "initial_price must be positive!");
         assert!(strike_price > 0.0, "strike_price must be positive!");
         assert!(risk_free_rate > 0.0, "risk_free_rate must be positive!");
@@ -69,7 +69,6 @@ impl LongstaffScwhartzPricer {
 
     /// Run Longstaff-Schwartz pricing method for American options.
     pub fn generate_price(&self) -> f64 {
-        // let mut current_time;
         let end_time: f64 = self.year_fraction();
         let delta_t: f64 = end_time / self.time_steps as f64;
         let mut markov_chain: Vec<f64> = self.generate_end_points(end_time);
@@ -78,7 +77,7 @@ impl LongstaffScwhartzPricer {
         let mut regression_index: i32;
 
         for time_step in (1..self.time_steps).rev() {
-            // current_time = (time_step as f64) * delta_t;
+
             markov_chain = self.backwards_time_induction(
                 markov_chain, delta_t, time_step
             );
