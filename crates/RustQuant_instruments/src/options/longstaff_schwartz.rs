@@ -386,14 +386,17 @@ mod tests_longstaff_schwartz_pricer_out_the_money {
     }
 }
 
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// UNIT TESTS: SEED
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 #[cfg(test)]
 mod tests_longstaff_schwartz_pricer_seeded {
     use super::*;
     use time::macros::date;
 
-    const TOLERANCE: f64 = 0.25;
-    const CALL_SEEDED_EXPECTED_PRICE: f64 = 5.4889;
-    const PUT_SEEDED_PUT_EXPECTED_PRICE: f64 = 0.0000;
+    const CALL_SEEDED_EXPECTED_PRICE: f64 = 5.575_013_446_249_429;
+    const PUT_SEEDED_EXPECTED_PRICE: f64 = 5.009_667_419_662_556;
 
     #[test]
     fn test_longstaff_schwartz_call_seeded() {
@@ -409,17 +412,15 @@ mod tests_longstaff_schwartz_pricer_seeded {
             500,
             Some(1234)
         );
-        
-        assert!(
-            (longstaff_schwartz_pricer.generate_price() - CALL_SEEDED_EXPECTED_PRICE).abs() < TOLERANCE
-        );
+
+        assert!(longstaff_schwartz_pricer.generate_price() == CALL_SEEDED_EXPECTED_PRICE);
     }
 
     #[test]
     fn test_longstaff_schwartz_put_seeded() {
         let longstaff_schwartz_pricer = LongstaffScwhartzPricer::new(
-            15.0, 
             10.0, 
+            15.0, 
             0.05, 
             0.1, 
             Some(date!(2024 - 01 - 01)), 
@@ -430,8 +431,6 @@ mod tests_longstaff_schwartz_pricer_seeded {
             Some(9876)
         );
 
-        assert!(
-            (longstaff_schwartz_pricer.generate_price() - PUT_SEEDED_PUT_EXPECTED_PRICE).abs() < TOLERANCE
-        );
+        assert!(longstaff_schwartz_pricer.generate_price() == PUT_SEEDED_EXPECTED_PRICE);
     }
 }
