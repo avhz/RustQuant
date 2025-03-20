@@ -224,6 +224,10 @@ impl LongstaffScwhartzPricer {
     }
 }
 
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// UNIT TESTS: AT THE MONEY
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 #[cfg(test)]
 mod tests_longstaff_schwartz_pricer_at_the_money {
     use super::*;
