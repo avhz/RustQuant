@@ -232,8 +232,9 @@ impl LongstaffScwhartzPricer {
 mod tests_longstaff_schwartz_pricer_at_the_money {
     use super::*;
     use time::macros::date;
+    use RustQuant_utils::assert_approx_equal;
 
-    const TOLERANCE: f64 = 0.25;
+    const TOLERANCE: f64 = 0.125;
     const ATM_CALL_EXPECTED_PRICE: f64 = 0.680;
     const ATM_PUT_EXPECTED_PRICE: f64 = 0.243;
 
@@ -252,8 +253,10 @@ mod tests_longstaff_schwartz_pricer_at_the_money {
             None
         );
 
-        assert!(
-            (longstaff_schwartz_pricer.generate_price() - ATM_CALL_EXPECTED_PRICE).abs() < TOLERANCE
+        assert_approx_equal!(
+            longstaff_schwartz_pricer.generate_price(),
+            ATM_CALL_EXPECTED_PRICE,
+            TOLERANCE
         );
     }
 
@@ -272,8 +275,10 @@ mod tests_longstaff_schwartz_pricer_at_the_money {
             None
         );
 
-        assert!(
-            (longstaff_schwartz_pricer.generate_price() - ATM_PUT_EXPECTED_PRICE).abs() < TOLERANCE
+        assert_approx_equal!(
+            longstaff_schwartz_pricer.generate_price(),
+            ATM_PUT_EXPECTED_PRICE,
+            TOLERANCE
         );
     }
 }
@@ -286,8 +291,9 @@ mod tests_longstaff_schwartz_pricer_at_the_money {
 mod tests_longstaff_schwartz_pricer_in_the_money {
     use super::*;
     use time::macros::date;
+    use RustQuant_utils::assert_approx_equal;
 
-    const TOLERANCE: f64 = 0.25;
+    const TOLERANCE: f64 = 0.125;
     const ITM_CALL_EXPECTED_PRICE: f64 = 5.4889;
     const ITM_PUT_EXPECTED_PRICE: f64 = 5.0000;
 
@@ -305,9 +311,10 @@ mod tests_longstaff_schwartz_pricer_in_the_money {
             500,
             None
         );
-        
-        assert!(
-            (longstaff_schwartz_pricer.generate_price() - ITM_CALL_EXPECTED_PRICE).abs() < TOLERANCE
+        assert_approx_equal!(
+            longstaff_schwartz_pricer.generate_price(),
+            ITM_CALL_EXPECTED_PRICE,
+            TOLERANCE
         );
     }
 
@@ -326,8 +333,10 @@ mod tests_longstaff_schwartz_pricer_in_the_money {
             None
         );
 
-        assert!(
-            (longstaff_schwartz_pricer.generate_price() - ITM_PUT_EXPECTED_PRICE).abs() < TOLERANCE
+        assert_approx_equal!(
+            longstaff_schwartz_pricer.generate_price(),
+            ITM_PUT_EXPECTED_PRICE,
+            TOLERANCE
         );
     }
 }
@@ -340,8 +349,9 @@ mod tests_longstaff_schwartz_pricer_in_the_money {
 mod tests_longstaff_schwartz_pricer_out_the_money {
     use super::*;
     use time::macros::date;
+    use RustQuant_utils::assert_approx_equal;
 
-    const TOLERANCE: f64 = 0.25;
+    const TOLERANCE: f64 = 0.125;
     const OTM_CALL_EXPECTED_PRICE: f64 = 0.0000;
     const OTM_PUT_EXPECTED_PRICE: f64 = 0.0000;
 
@@ -360,8 +370,10 @@ mod tests_longstaff_schwartz_pricer_out_the_money {
             None
         );
 
-        assert!(
-            (longstaff_schwartz_pricer.generate_price() - OTM_CALL_EXPECTED_PRICE).abs() < TOLERANCE
+        assert_approx_equal!(
+            longstaff_schwartz_pricer.generate_price(),
+            OTM_CALL_EXPECTED_PRICE,
+            TOLERANCE
         );
     }
 
@@ -380,8 +392,10 @@ mod tests_longstaff_schwartz_pricer_out_the_money {
             None
         );
 
-        assert!(
-            (longstaff_schwartz_pricer.generate_price() - OTM_PUT_EXPECTED_PRICE).abs() < TOLERANCE
+        assert_approx_equal!(
+            longstaff_schwartz_pricer.generate_price(),
+            OTM_PUT_EXPECTED_PRICE,
+            TOLERANCE
         );
     }
 }
