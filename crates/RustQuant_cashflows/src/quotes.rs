@@ -50,6 +50,7 @@ impl SimpleQuote {
     pub fn set_value(&mut self, value: Option<f64>) -> f64 {
         let diff = match (&self.value, &value) {
             (Some(old_value), Some(new_value)) => new_value - old_value,
+            (None, Some(new_value)) => *new_value,
             _ => 0.0,
         };
 
@@ -62,9 +63,24 @@ impl SimpleQuote {
         diff
     }
 
-    /// Reset the quote value.
+    /// Resets the value of the quote to `None`.
+    ///
+    /// This method clears the current value of the quote, effectively making it invalid.
+    ///
+    /// # Examples
+    ///
+    /// ```rust
+    /// use RustQuant::money::{Quote, SimpleQuote};
+    ///
+    /// let mut quote = SimpleQuote::new(Some(10.0));
+    /// assert!(quote.is_valid());
+    ///
+    /// quote.reset();
+    /// assert!(!quote.is_valid());
+    /// assert_eq!(quote.value(), None);
+    /// ```
     pub fn reset(&mut self) {
-        self.set_value(None);
+        self.value = None;
     }
 }
 
