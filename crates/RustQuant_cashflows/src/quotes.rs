@@ -35,8 +35,8 @@ impl SimpleQuote {
     ///
     /// # Returns
     ///
-    /// * `f64` - The difference between the new value and the old value. If either the old value or the
-    ///   new value is not present, the difference will be 0.0.
+    /// * `f64` - The difference between the new value and the old value. If the new value is not present,
+    ///  the difference will be 0.0.
     ///
     /// # Examples
     ///
