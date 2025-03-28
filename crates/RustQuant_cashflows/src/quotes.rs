@@ -41,7 +41,7 @@ impl SimpleQuote {
     /// # Examples
     ///
     /// ```rust
-    /// use RustQuant::money::SimpleQuote;
+    /// use RustQuant::cashflows::SimpleQuote;
     ///
     /// let mut quote = SimpleQuote::new(Some(10.0));
     /// let diff = quote.set_value(Some(15.0));
@@ -70,7 +70,7 @@ impl SimpleQuote {
     /// # Examples
     ///
     /// ```rust
-    /// use RustQuant::money::{Quote, SimpleQuote};
+    /// use RustQuant::cashflows::{Quote, SimpleQuote};
     ///
     /// let mut quote = SimpleQuote::new(Some(10.0));
     /// assert!(quote.is_valid());
