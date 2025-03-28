@@ -27,7 +27,26 @@ impl SimpleQuote {
         SimpleQuote { value }
     }
 
-    /// Set the quote value.
+    /// Sets the value of the quote and returns the difference between the new value and the old value.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - An optional new value to set.
+    ///
+    /// # Returns
+    ///
+    /// * `f64` - The difference between the new value and the old value. If either the old value or the
+    ///   new value is not present, the difference will be 0.0.
+    ///
+    /// # Examples
+    ///
+    /// ```rust
+    /// use RustQuant::money::SimpleQuote;
+    ///
+    /// let mut quote = SimpleQuote::new(Some(10.0));
+    /// let diff = quote.set_value(Some(15.0));
+    /// assert_eq!(diff, 5.0);
+    /// ```
     pub fn set_value(&mut self, value: Option<f64>) -> f64 {
         let diff = match (&self.value, &value) {
             (Some(old_value), Some(new_value)) => new_value - old_value,
