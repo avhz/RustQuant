@@ -1,7 +1,7 @@
 ![](./images/logo.png)
 
 <p align="center">
-    <a href="#license" alt="license">
+    <a href="https://github.com/lifechange777/RustQuant/blob/4edcc9e9dbcdc8aaa38c421c2733ab4a84c88144/LICENSE-APACHE.md" alt="license">
         <img alt="License" src="https://img.shields.io/badge/Dual_License-MIT_and_Apache_2.0-black?logo=apache"></a>
     <a href="#version" alt="version">
         <img alt="Crates.io" src="https://img.shields.io/crates/v/RustQuant?logo=rust&color=black"></a>
