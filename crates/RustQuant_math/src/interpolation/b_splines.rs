@@ -142,3 +142,85 @@ where
         Ok(value)
     }
 }
+
+#[cfg(test)]
+mod tests_b_splines {
+    use super::*;
+    use RustQuant_utils::{assert_approx_equal, RUSTQUANT_EPSILON};
+
+    #[test]
+    fn test_b_spline_uniform_knots() {
+        let knots = vec![0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0];
+        let control_points = vec![-1.0, 2.0, 0.0, -1.0];
+        
+        let mut interpolator = BSplineInterpolator::new(knots.clone(), control_points.clone(), 2).unwrap();
+        let _ = interpolator.fit();
+
+        assert_approx_equal!(
+            1.375,
+            interpolator.interpolate(2.5).unwrap(),
+            RUSTQUANT_EPSILON
+        );
+    }
+
+    #[test]
+    fn test_b_spline_non_uniform_knots() {
+        let knots = vec![0.0, 1.0, 3.0, 4.0, 6.0, 7.0, 8.0, 10.0, 11.0];
+        let control_points = vec![2.0, -1.0, 1.0, 0.0, 1.0];
+        
+        let mut interpolator = BSplineInterpolator::new(knots.clone(), control_points.clone(), 3).unwrap();
+        let _ = interpolator.fit();
+
+        assert_approx_equal!(
+            0.058333333333333,
+            interpolator.interpolate(5.0).unwrap(),
+            RUSTQUANT_EPSILON
+        );
+    }
+
+    #[test]
+    fn test_b_spline_dates() {
+        let now = time::OffsetDateTime::now_utc();
+        let knots: Vec<time::OffsetDateTime> = vec![
+            now,
+            now + time::Duration::days(1),
+            now + time::Duration::days(2),
+            now + time::Duration::days(3),
+            now + time::Duration::days(4),
+            now + time::Duration::days(5),
+            now + time::Duration::days(6),
+        ];
+        let control_points = vec![-1.0, 2.0, 0.0, -1.0];
+        
+        let mut interpolator = BSplineInterpolator::new(
+            knots.clone(), control_points, 2
+        ).unwrap();
+        let _ = interpolator.fit();
+
+        assert_approx_equal!(
+            1.375,
+            interpolator
+                .interpolate(knots[2] + time::Duration::hours(12))
+                .unwrap(),
+            RUSTQUANT_EPSILON
+        );
+    }
+
+    #[test]
+    fn test_b_spline_inconsistent_parameters() {
+        let knots = vec![0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7];
+        let control_points = vec![0., 1., 0., 1., 0., 1., 0.];
+        
+        assert!(BSplineInterpolator::new(knots, control_points, 3).is_err())
+    }
+
+    #[test]
+    fn test_b_spline_out_of_range() {
+        let knots = vec![0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1];
+        let control_points = vec![0., 1., 0., 1., 0., 1., 0.];
+        let mut interpolator = BSplineInterpolator::new(knots, control_points, 3).unwrap();
+        let _ = interpolator.fit();
+
+        assert!(interpolator.interpolate(0.95).is_err());
+    }
+}
