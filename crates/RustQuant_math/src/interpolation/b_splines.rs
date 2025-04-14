@@ -153,7 +153,7 @@ mod tests_b_splines {
         let knots = vec![0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0];
         let control_points = vec![-1.0, 2.0, 0.0, -1.0];
         
-        let mut interpolator = BSplineInterpolator::new(knots.clone(), control_points.clone(), 2).unwrap();
+        let mut interpolator = BSplineInterpolator::new(knots, control_points, 2).unwrap();
         let _ = interpolator.fit();
 
         assert_approx_equal!(
@@ -168,7 +168,7 @@ mod tests_b_splines {
         let knots = vec![0.0, 1.0, 3.0, 4.0, 6.0, 7.0, 8.0, 10.0, 11.0];
         let control_points = vec![2.0, -1.0, 1.0, 0.0, 1.0];
         
-        let mut interpolator = BSplineInterpolator::new(knots.clone(), control_points.clone(), 3).unwrap();
+        let mut interpolator = BSplineInterpolator::new(knots, control_points, 3).unwrap();
         let _ = interpolator.fit();
 
         assert_approx_equal!(
