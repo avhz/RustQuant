@@ -7,7 +7,7 @@
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use std::ops::{Div, Mul, Sub};
+use std::ops::{Div, Mul, Sub, AddAssign};
 use RustQuant_error::RustQuantError;
 
 pub mod linear_interpolator;
@@ -20,11 +20,11 @@ pub use exponential_interpolator::*;
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 /// Trait describing requirements to be interpolated.
-pub trait InterpolationValue: num::Num + std::fmt::Debug + Copy + Clone + Sized {}
+pub trait InterpolationValue: num::Num + AddAssign + std::fmt::Debug + Copy + Clone + Sized {}
 
 /// Trait describing requirements to be an index of interpolation.
 pub trait InterpolationIndex:
-    Sub<Self, Output = Self::Delta> + PartialOrd + Copy + Clone + Sized
+    Sub<Self, Output = Self::Delta> + PartialOrd + Copy + Clone + Sized + std::fmt::Display
 {
     /// Type of the difference of `Self` - `Self`
     type Delta: Div<Self::Delta, Output = Self::DeltaDiv>
@@ -60,7 +60,7 @@ where
     fn add_point(&mut self, point: (IndexType, ValueType));
 }
 
-impl<T> InterpolationValue for T where T: num::Num + std::fmt::Debug + Copy + Clone + Sized {}
+impl<T> InterpolationValue for T where T: num::Num + AddAssign + std::fmt::Debug + Copy + Clone + Sized {}
 
 macro_rules! impl_interpolation_index {
     ($a:ty, $b:ty, $c:ty) => {
