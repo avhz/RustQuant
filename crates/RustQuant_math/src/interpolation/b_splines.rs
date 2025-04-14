@@ -208,19 +208,31 @@ mod tests_b_splines {
 
     #[test]
     fn test_b_spline_inconsistent_parameters() {
-        let knots = vec![0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7];
-        let control_points = vec![0., 1., 0., 1., 0., 1., 0.];
-        
-        assert!(BSplineInterpolator::new(knots, control_points, 3).is_err())
+        let knots = vec![0.0, 1.0, 2.0, 3.0, 4.0,];
+        let control_points = vec![-1.0, 2.0, 0.0, -1.0];
+
+        match BSplineInterpolator::new(knots.clone(), control_points.clone(), 2) {
+            Ok(_) => panic!("Constructor did not throw an error!"),
+            Err(e) => assert_eq!(
+                e.to_string(),
+                "For 4 control points and degree 2, we need 4 + 2 + 1 (7) knots."
+            )
+        }
     }
 
     #[test]
     fn test_b_spline_out_of_range() {
-        let knots = vec![0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1];
-        let control_points = vec![0., 1., 0., 1., 0., 1., 0.];
-        let mut interpolator = BSplineInterpolator::new(knots, control_points, 3).unwrap();
+        let knots = vec![0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0];
+        let control_points = vec![-1.0, 2.0, 0.0, -1.0];
+        let mut interpolator = BSplineInterpolator::new(knots, control_points, 2).unwrap();
         let _ = interpolator.fit();
 
-        assert!(interpolator.interpolate(0.95).is_err());
+        match interpolator.interpolate(5.5) {
+            Ok(_) => panic!("Interpolation should have failed!"),
+            Err(e) => assert_eq!(
+                e.to_string(),
+                "Point 5.5 is outside of the interpolation range [2, 4]"
+            )
+        }
     }
 }
