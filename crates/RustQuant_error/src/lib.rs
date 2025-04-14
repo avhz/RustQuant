@@ -115,6 +115,14 @@ pub enum RustQuantError {
     /// Outside of interpolation range.
     #[error("Outside of interpolation range.")]
     OutsideOfRange,
+
+    /// Inconsistent B-Spline parameter lengths.
+    #[error("For {0} control points and degree {1}, we need {0} + {1} + 1 ({2}) knots.")]
+    BSplineInvalidParameters(usize, usize, usize),
+
+    /// Outside of B-Spline interpolation range.
+    #[error("{0}")]
+    BSplineOutsideOfRange(String),
 }
 
 /// Curve error enum.
