@@ -64,7 +64,7 @@ where
         }
 
         knots.sort_by(|a, b| a.partial_cmp(b).unwrap());
-        // println!("Knots: {:?}", knots);
+
         Ok(Self {
             knots,
             control_points,
