@@ -98,3 +98,47 @@ where
         left_term + right_term
     }
 }
+
+impl<IndexType, ValueType> Interpolator<IndexType, ValueType>
+    for BSplineInterpolator<IndexType, ValueType>
+where
+    IndexType: InterpolationIndex<DeltaDiv = ValueType>,
+    ValueType: InterpolationValue,
+{
+    fn fit(&mut self) -> Result<(), RustQuantError> {
+
+        self.fitted = true;
+        Ok(())
+    }
+
+    fn range(&self) -> (IndexType, IndexType) {
+        (*self.knots.first().unwrap(), *self.knots.last().unwrap())
+    }
+
+    fn add_point(&mut self, point: (IndexType, ValueType)) {
+        let idx = self.knots.partition_point(|&x| x < point.0);
+        self.knots.insert(idx, point.0);
+        self.control_points.insert(self.control_points.len(), point.1);
+    }
+
+
+    fn interpolate(&self, point: IndexType) -> Result<ValueType, RustQuantError> {
+        if !(point.ge(&self.knots[self.degree]) && point.le(&self.knots[self.knots.len() - self.degree - 1])) {
+            
+            let error_message: String = format!(
+                "Point {} is outside of the interpolation range [{}, {}]",
+                point,
+                self.knots[self.degree],
+                self.knots[self.knots.len() - self.degree - 1]
+            );
+            return Err(RustQuantError::BSplineOutsideOfRange(error_message));
+        }
+
+        let mut value = ValueType::zero();
+        for (index, control_point) in self.control_points.iter().enumerate() {
+            value += self.cox_de_boor(point, index, self.degree) * (*control_point);
+        }
+
+        Ok(value)
+    }
+}
