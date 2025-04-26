@@ -65,7 +65,7 @@ impl StochasticProcess for CoxIngersollRoss {
 #[cfg(test)]
 mod tests_cir {
     use super::*;
-    use crate::StochasticProcessConfig;
+    use crate::{StochasticProcessConfig, StochasticScheme};
     use RustQuant_math::*;
     use RustQuant_utils::assert_approx_equal;
 
@@ -73,9 +73,11 @@ mod tests_cir {
     fn test_cox_ingersoll_ross() {
         let cir = CoxIngersollRoss::new(0.15, 0.45, 0.01);
 
-        let config = StochasticProcessConfig::new(10.0, 0.0, 0.5, 100, 100, false);
+        let config = StochasticProcessConfig::new(
+            10.0, 0.0, 0.5, 100, StochasticScheme::EulerMaruyama, 100, false, None
+        );
 
-        let output = cir.euler_maruyama(&config);
+        let output = cir.generate(&config);
 
         // Test the distribution of the final values.
         let X_T: Vec<f64> = output

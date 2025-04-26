@@ -22,7 +22,16 @@ fn main() {
 
     // Create the stochastic process.
     let process = GeometricBrownianMotion::new(rate, volatility);
-    let config = StochasticProcessConfig::new(underlying, 0.0, time, 365, 100_000, true);
+    let config = StochasticProcessConfig::new(
+        underlying,
+        0.0,
+        time,
+        365,
+        StochasticScheme::EulerMaruyama,
+        100_000,
+        true,
+        None
+    );
 
     // Create the option contract.
     let direction = TypeFlag::Call;

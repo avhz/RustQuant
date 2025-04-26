@@ -35,8 +35,8 @@
 //!
 //! // Generate path using Euler-Maruyama scheme.
 //! // Parameters: x_0, t_0, t_n, n, sims, parallel.
-//! let config = StochasticProcessConfig::new(10., 0., 0.5, 10, 1, false);
-//! let output = (&gbm).euler_maruyama(&config);
+//! let config = StochasticProcessConfig::new(10., 0., 0.5, 10, StochasticScheme::EulerMaruyama, 1, false, None);
+//! let output = (&gbm).generate(&config);
 //!
 //! println!("GBM = {:?}", output.paths);
 //! ```
@@ -124,3 +124,10 @@ pub use nelson_siegel_svensson::*;
 /// Curve model trait.
 pub mod curve_model;
 pub use curve_model::*;
+
+/// Fractional Brownian Motion.
+pub mod fractional_process;
+pub use fractional_process::*;
+
+/// Private stochastic process simulation module.
+mod simulation;

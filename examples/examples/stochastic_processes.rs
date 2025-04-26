@@ -37,21 +37,23 @@ fn main() {
 
     // Generate path using Euler-Maruyama scheme.
     // Parameters: x_0, t_0, t_n, n, sims, parallel.
-    let config = StochasticProcessConfig::new(INITIAL_VALUE, START_TIME, END_TIME, NUM_STEPS, NUM_SIMS, PARALLEL);
+    let config = StochasticProcessConfig::new(
+        INITIAL_VALUE, START_TIME, END_TIME, NUM_STEPS, StochasticScheme::EulerMaruyama, NUM_SIMS, PARALLEL, None
+    );
 
-    let abm_out = abm.euler_maruyama(&config);
-    let bdt_out = bdt.euler_maruyama(&config);
-    let bm_out  = bm.euler_maruyama(&config);
-    let cir_out = cir.euler_maruyama(&config);
-    let ev_out  = ev.euler_maruyama(&config);
-    let gbm_out = gbm.euler_maruyama(&config);
-    let hl_out  = hl.euler_maruyama(&config);
-    let hw_out  = hw.euler_maruyama(&config);
-    let ou_out  = ou.euler_maruyama(&config);
-    let fbm_out = fbm.euler_maruyama(&config);
-    let mjd_out = mjd.euler_maruyama(&config);
-    let gbb_out = gbb.euler_maruyama(&config);
-    let cev_out = cev.euler_maruyama(&config);
+    let abm_out = abm.generate(&config);
+    let bdt_out = bdt.generate(&config);
+    let bm_out  = bm.generate(&config);
+    let cir_out = cir.generate(&config);
+    let ev_out  = ev.generate(&config);
+    let gbm_out = gbm.generate(&config);
+    let hl_out  = hl.generate(&config);
+    let hw_out  = hw.generate(&config);
+    let ou_out  = ou.generate(&config);
+    let fbm_out = fbm.generate(&config);
+    let mjd_out = mjd.generate(&config);
+    let gbb_out = gbb.generate(&config);
+    let cev_out = cev.generate(&config);
 
     // Plot the paths.
     plot_vector!(abm_out.paths[0].clone(), "./images/arithmetic_brownian_motion.png");
