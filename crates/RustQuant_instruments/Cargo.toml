@@ -32,6 +32,9 @@ derive_builder = { workspace = true }
 errorfunctions = { workspace = true }
 serde = { workspace = true }
 num = { workspace = true }
+nalgebra = { workspace = true }
+rand = { workspace = true }
+rand_distr = { workspace = true }
 
 ## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ## RUSTDOC CONFIGURATION
