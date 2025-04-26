@@ -6,6 +6,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.5.0](https://github.com/avhz/RustQuant/compare/RustQuant_math-v0.4.0...RustQuant_math-v0.5.0) - 2025-04-26
+
+### Other
+
+- Amend unit tests to ensure correct error message is prompted
+- Remove unnecessary cloning in tests
+- Create b_spline submodule + make struct publicly accessible
+- Amend traits to utilise AddAssign operation + provide ability to display InterpolationIndex (for BSplineOutsideOfRange error)
+- Unit tests
+- Implement Interpolator trait for BSplineInterpolator struct
+- Define B-Spline struct, constructor + method for the Cox de Boor algorithm
+
 ## [0.3.1](https://github.com/avhz/RustQuant/compare/RustQuant_math-v0.3.0...RustQuant_math-v0.3.1) - 2024-11-10
 
 ### Other

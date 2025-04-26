@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.5.0](https://github.com/avhz/RustQuant/compare/RustQuant_error-v0.4.0...RustQuant_error-v0.5.0) - 2025-04-26
+
+### Other
+
+- Define errors specific to B-Spline implementation
+
 ## [0.2.12](https://github.com/avhz/RustQuant/compare/RustQuant_error-v0.2.11...RustQuant_error-v0.2.12) - 2024-10-29
 
 ### Other
