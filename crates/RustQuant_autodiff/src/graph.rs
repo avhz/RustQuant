@@ -17,7 +17,9 @@
 // IMPORTS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use crate::{variable::Variable, Arity, Vertex};
+use num_traits::Zero;
+
+use crate::{variable::Variable, Arity, DiffOps, Initial, Vertex};
 use std::cell::RefCell;
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -26,9 +28,9 @@ use std::cell::RefCell;
 
 /// Struct to contain the graph (Wengert list), as a vector of `Vertex`s.
 #[derive(Debug, Clone)]
-pub struct Graph {
+pub struct Graph<T = f64> {
     /// Vector containing the vertices in the Wengert List.
-    pub vertices: RefCell<Vec<Vertex>>,
+    pub vertices: RefCell<Vec<Vertex<T>>>,
 }
 // pub struct Graph(RefCell<Rc<[Vertex]>>);
 
@@ -40,7 +42,7 @@ impl Default for Graph {
 }
 
 /// Implementation for the `Graph` struct.
-impl Graph {
+impl<T> Graph<T> where T: Initial + Clone + Copy {
     /// Instantiate a new graph.
     #[must_use]
     #[inline]
@@ -74,7 +76,7 @@ impl Graph {
     /// Add a new variable to the graph.
     /// Returns a new `Variable` instance (the contents of a vertex).
     #[inline]
-    pub fn var(&self, value: f64) -> Variable {
+    pub fn var(&self, value: T) -> Variable<T> {
         Variable {
             graph: self,
             value,
@@ -85,7 +87,7 @@ impl Graph {
     /// Add multiple variables (a slice) to the graph.
     /// Useful for larger functions with many inputs.
     #[inline]
-    pub fn vars<'v>(&'v self, values: &[f64]) -> Vec<Variable<'v>> {
+    pub fn vars<'v>(&'v self, values: &[T]) -> Vec<Variable<'v, T>> {
         values.iter().map(|&val| self.var(val)).collect()
     }
 
@@ -113,7 +115,7 @@ impl Graph {
         self.vertices
             .borrow_mut()
             .iter_mut()
-            .for_each(|vertex| vertex.partials = [0.0; 2]);
+            .for_each(|vertex| vertex.partials = [T::zero(), T::zero()]);
     }
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -122,7 +124,7 @@ impl Graph {
 
     /// Pushes a vertex to the graph.
     #[inline]
-    pub fn push(&self, arity: Arity, parents: &[usize], partials: &[f64]) -> usize {
+    pub fn push(&self, arity: Arity, parents: &[usize], partials: &[T]) -> usize {
         let mut vertices = self.vertices.borrow_mut();
         let len = vertices.len();
 
@@ -140,7 +142,7 @@ impl Graph {
                 assert!(parents.is_empty());
 
                 Vertex {
-                    partials: [0.0, 0.0],
+                    partials: [T::zero(), T::zero()],
                     parents: [len, len],
                 }
             }
@@ -157,7 +159,7 @@ impl Graph {
                 assert!(parents.len() == 1);
 
                 Vertex {
-                    partials: [partials[0], 0.0],
+                    partials: [partials[0], T::zero()],
                     parents: [parents[0], len],
                 }
             }

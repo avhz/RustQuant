@@ -91,6 +91,14 @@ pub use vertex::*;
 pub mod overload;
 pub use overload::*;
 
+/// `DiffOps`s for `autodiff`.
+pub mod diff_traits;
+pub use diff_traits::*;
+
+/// `Symbol`s for `autodiff`.
+pub mod symbol;
+pub use symbol::*;
+
 /// `Variable`s for `autodiff`.
 pub mod variable;
 pub use variable::*;
