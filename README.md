@@ -23,7 +23,7 @@
 </p>
 
 <p align="center">
-    <a href="#discord" alt="discord">
+    <a href="https://discord.com/invite/gMdv8Hpuwr" alt="discord">
         <img alt="Discord" src="https://img.shields.io/discord/1146771658082881636?logo=discord"></a>
 </p>
 
