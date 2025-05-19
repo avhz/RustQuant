@@ -79,3 +79,7 @@ pub use supershare::*;
 /// Log contracts and options.
 pub mod log;
 pub use log::*;
+
+/// Longstaff-Schwartz pricer.
+pub mod longstaff_schwartz;
+pub use longstaff_schwartz::*;

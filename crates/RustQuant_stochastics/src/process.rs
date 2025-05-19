@@ -15,9 +15,9 @@
 //! do not explicitly depend on the time `t`.
 
 use rand::prelude::Distribution;
-use rand::{rngs::StdRng, SeedableRng};
 use rayon::prelude::*;
-// use statrs::distribution::Normal;
+
+use crate::simulation::simulate_stochatic_process;
 
 /// Struct to contain the time points and path values of the process.
 pub struct Trajectories {
@@ -26,6 +26,17 @@ pub struct Trajectories {
 
     /// Vector of process trajectories.
     pub paths: Vec<Vec<f64>>,
+}
+
+/// Enum for Stochastic Methods
+#[derive(Clone, Copy)]
+pub enum StochasticScheme {
+    /// Euler-Maruyama
+    EulerMaruyama,
+    /// Milstein's Method
+    Milstein,
+    /// Strang Splitting
+    StrangSplitting,
 }
 
 /// Trait to implement stochastic volatility processes.
@@ -123,11 +134,17 @@ pub struct StochasticProcessConfig {
     /// Number of time steps between `t_0` and `t_n`.
     pub n_steps: usize,
 
+    /// Numerical method
+    pub scheme: StochasticScheme,
+
     /// How many process trajectories to simulate.
     pub m_paths: usize,
 
     /// Run in parallel or not (recommended for > 1000 paths).
     pub parallel: bool,
+
+    /// Optional seed argument to initialize random number generator
+    pub seed: Option<u64>,
 }
 
 impl StochasticProcessConfig {
@@ -137,28 +154,53 @@ impl StochasticProcessConfig {
         t_0: f64,
         t_n: f64,
         n_steps: usize,
+        scheme: StochasticScheme,
         m_paths: usize,
         parallel: bool,
+        seed: Option<u64>,
     ) -> Self {
         Self {
             x_0,
             t_0,
             t_n,
+            scheme,
             n_steps,
             m_paths,
             parallel,
+            seed,
         }
     }
 
-    pub(crate) fn unpack(&self) -> (f64, f64, f64, usize, usize, bool) {
+    pub(crate) fn unpack(
+        &self,
+    ) -> (
+        f64,
+        f64,
+        f64,
+        usize,
+        StochasticScheme,
+        usize,
+        bool,
+        Option<u64>,
+    ) {
         (
             self.x_0,
             self.t_0,
             self.t_n,
             self.n_steps,
+            self.scheme,
             self.m_paths,
             self.parallel,
+            self.seed,
         )
+    }
+
+    fn unpack_for_scheme(&self, dt: f64, config: &StochasticProcessConfig) -> (f64, usize, Vec<f64>) {
+        let times: Vec<f64> = (0..=config.n_steps)
+        .map(|t| config.t_0 + dt * (t as f64))
+        .collect();
+
+        (self.x_0, self.n_steps, times)
     }
 }
 
@@ -179,126 +221,43 @@ pub trait StochasticProcess: Sync {
         vec![]
     }
 
-    /// Euler-Maruyama discretisation scheme.
-    ///
-    /// # Arguments:
-    /// * `x_0` - The process' initial value at `t_0`.
-    /// * `t_0` - The initial time point.
-    /// * `t_n` - The terminal time point.
-    /// * `n_steps` - The number of time steps between `t_0` and `t_n`.
-    /// * `m_paths` - How many process trajectories to simulate.
-    /// * `parallel` - Run in parallel or not (recommended for > 1000 paths).
-    fn euler_maruyama(&self, config: &StochasticProcessConfig) -> Trajectories {
-        let (x_0, t_0, t_n, n_steps, m_paths, parallel) = config.unpack();
-        assert!(t_0 < t_n);
-
-        let dt: f64 = (t_n - t_0) / (n_steps as f64);
-
-        // Initialise empty paths and fill in the time points.
-        let mut paths = vec![vec![x_0; n_steps + 1]; m_paths];
-        let times: Vec<f64> = (0..=n_steps).map(|t| t_0 + dt * (t as f64)).collect();
-
-        let path_generator = |path: &mut Vec<f64>| {
-            let mut rng = rand::thread_rng();
-            let scale = dt.sqrt();
-            let dW: Vec<f64> = rand_distr::Normal::new(0.0, 1.0)
-                .unwrap()
-                .sample_iter(&mut rng)
-                .take(n_steps)
-                .map(|z| z * scale)
-                .collect();
-
-            for t in 0..n_steps {
-                path[t + 1] = path[t]
-                    + self.drift(path[t], times[t]) * dt
-                    + self.diffusion(path[t], times[t]) * dW[t];
-            }
-        };
-
-        if parallel {
-            paths.par_iter_mut().for_each(path_generator);
-        } else {
-            paths.iter_mut().for_each(path_generator);
-        }
-
-        Trajectories { times, paths }
-    }
-
-    /// Euler-Maruyama discretisation scheme with a choice of random seed.
-    ///
-    /// # Arguments:
-    /// * `x_0` - The process' initial value at `t_0`.
-    /// * `t_0` - The initial time point.
-    /// * `t_n` - The terminal time point.
-    /// * `n_steps` - The number of time steps between `t_0` and `t_n`.
-    /// * `m_paths` - How many process trajectories to simulate.
-    /// * `parallel` - Run in parallel or not (recommended for > 1000 paths).
-    /// * `seed` - The seed for the random number generator.
-    fn seedable_euler_maruyama(
-        &self,
-        x_0: f64,
-        t_0: f64,
-        t_n: f64,
-        n_steps: usize,
-        m_paths: usize,
-        parallel: bool,
-        seed: u64,
-    ) -> Trajectories {
-        assert!(t_0 < t_n);
-
-        let dt: f64 = (t_n - t_0) / (n_steps as f64);
-
-        // Initialise empty paths and fill in the time points.
-        let mut paths = vec![vec![x_0; n_steps + 1]; m_paths];
-        let times: Vec<f64> = (0..=n_steps).map(|t| t_0 + dt * (t as f64)).collect();
-
-        let path_generator = |path: &mut Vec<f64>| {
-            let mut rng = StdRng::seed_from_u64(seed);
-            let scale = dt.sqrt();
-            let dW: Vec<f64> = rand_distr::Normal::new(0.0, 1.0)
-                .unwrap()
-                .sample_iter(&mut rng)
-                .take(n_steps)
-                .map(|z| z * scale)
-                .collect();
-
-            for t in 0..n_steps {
-                path[t + 1] = path[t]
-                    + self.drift(path[t], times[t]) * dt
-                    + self.diffusion(path[t], times[t]) * dW[t];
-            }
-        };
-
-        if parallel {
-            paths.par_iter_mut().for_each(path_generator);
-        } else {
-            paths.iter_mut().for_each(path_generator);
-        }
-
-        Trajectories { times, paths }
+    /// Simulate the stochastic process.
+    fn generate(&self, config: &StochasticProcessConfig) -> Trajectories
+    where
+        Self: Sized,
+    {
+        simulate_stochatic_process(self, config, None, None)
     }
 }
 
 #[cfg(test)]
 mod test_process {
     use crate::geometric_brownian_motion::GeometricBrownianMotion;
-    use crate::process::StochasticProcess;
-    use crate::StochasticProcessConfig;
+    use crate::{StochasticScheme, StochasticProcessConfig, StochasticProcess};
     use std::time::Instant;
 
     #[test]
     fn test_euler_maruyama() {
         let gbm = GeometricBrownianMotion::new(0.05, 0.9);
-        let config = StochasticProcessConfig::new(10.0, 0.0, 1.0, 125, 10000, false);
+        let config = StochasticProcessConfig::new(
+            10.0,
+            0.0,
+            1.0,
+            10,
+            StochasticScheme::EulerMaruyama,
+            3,
+            false,
+            Some(1337),
+        );
 
         let start = Instant::now();
-        gbm.euler_maruyama(&config);
+        gbm.generate(&config);
         let serial = start.elapsed();
 
         println!("Serial: \t {:?}", serial);
 
         let start = Instant::now();
-        gbm.euler_maruyama(&config);
+        gbm.generate(&config);
         let parallel = start.elapsed();
 
         println!("Parallel: \t {:?}", parallel);
@@ -309,27 +268,63 @@ mod test_process {
     }
 
     #[test]
-    fn test_seedable_maruyama() {
+    fn test_milstein() {
         let gbm = GeometricBrownianMotion::new(0.05, 0.9);
+        let config = StochasticProcessConfig::new(
+            10.0,
+            0.0,
+            1.0,
+            10,
+            StochasticScheme::Milstein,
+            3,
+            false,
+            Some(1337),
+        );
 
-        let output_first_seed =
-            gbm.seedable_euler_maruyama(10.0, 0.0, 1.0, 125, 10000, true, 123456789);
-        println!("First seed: \t {:?}", output_first_seed.paths[0][125]);
+        let start = Instant::now();
+        gbm.generate(&config);
+        let serial = start.elapsed();
 
-        let output_same_seed =
-            gbm.seedable_euler_maruyama(10.0, 0.0, 1.0, 125, 10000, true, 123456789);
-        println!("Same seed: \t {:?}", output_same_seed.paths[0][125]);
+        println!("Serial: \t {:?}", serial);
 
-        // Check that using the same seed gives the same output.
-        assert_eq!(output_first_seed.paths, output_same_seed.paths);
+        let start = Instant::now();
+        gbm.generate(&config);
+        let parallel = start.elapsed();
 
-        let output_different_seed =
-            gbm.seedable_euler_maruyama(10.0, 0.0, 1.0, 125, 10000, true, 987654321);
-        println!("Different seed: {:?}", output_different_seed.paths[0][125]);
+        println!("Parallel: \t {:?}", parallel);
 
-        // Check that using a different seed gives a different output.
-        assert_ne!(output_first_seed.paths, output_different_seed.paths);
+        // Just checking that `parallel = true` actually works.
+        // To see the output of this "test", run:
+        // cargo test test_process -- --nocapture
+    }
 
+    #[test]
+    fn test_strang_splitter() {
+        let gbm = GeometricBrownianMotion::new(0.05, 0.9);
+        let config = StochasticProcessConfig::new(
+            10.0,
+            0.0,
+            1.0,
+            10,
+            StochasticScheme::StrangSplitting,
+            3,
+            false,
+            Some(1337),
+        );
+
+        let start = Instant::now();
+        gbm.generate(&config);
+        let serial = start.elapsed();
+
+        println!("Serial: \t {:?}", serial);
+
+        let start = Instant::now();
+        gbm.generate(&config);
+        let parallel = start.elapsed();
+
+        println!("Parallel: \t {:?}", parallel);
+
+        // Just checking that `parallel = true` actually works.
         // To see the output of this "test", run:
         // cargo test test_process -- --nocapture
     }

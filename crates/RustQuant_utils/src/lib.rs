@@ -95,6 +95,72 @@ macro_rules! plot_vector {
             .draw()
             .unwrap();
     }};
+    ($($v:expr),+ => $file:expr) => {{
+        use plotters::prelude::*;
+
+        let series: Vec<_> = vec![$($v),+];
+
+        let mut global_min = std::f64::MAX;
+        let mut global_max = std::f64::MIN;
+        let mut global_x_max: usize = 0;
+        for s in series.iter() {
+            for &val in s.iter() {
+                if val < global_min {
+                    global_min = val;
+                }
+                if val > global_max {
+                    global_max = val;
+                }
+            }
+            if s.len() > global_x_max {
+                global_x_max = s.len();
+            }
+        }
+
+        let root = BitMapBackend::new($file, (640, 480)).into_drawing_area();
+        root.fill(&WHITE).unwrap();
+
+        let mut chart = ChartBuilder::on(&root)
+            .caption($file, ("sans-serif", 30).into_font())
+            .margin(5)
+            .x_label_area_size(30)
+            .y_label_area_size(30)
+            .build_cartesian_2d(
+                0f64..(global_x_max as f64),
+                (global_min * 0.95)..(global_max * 1.05) // 5% padding on y-axis
+            )
+            .unwrap();
+
+        chart.configure_mesh().draw().unwrap();
+
+        let colors = [RED, BLUE, GREEN, CYAN, MAGENTA, YELLOW, BLACK];
+
+        for (i, s) in series.iter().enumerate() {
+            let points: Vec<(f64, f64)> = s
+                .iter()
+                .enumerate()
+                .map(|(idx, &val)| (idx as f64, val))
+                .collect();
+
+            chart
+                .draw_series(LineSeries::new(points, colors[i % colors.len()]))
+                .unwrap()
+                .label(format!("Series {}", i))
+                .legend(move |(x, y)| {
+                    PathElement::new(
+                        vec![(x, y), (x + 20, y)],
+                        colors[i % colors.len()].clone(),
+                    )
+                });
+        }
+
+        chart
+            .configure_series_labels()
+            .background_style(WHITE.mix(0.8))
+            .border_style(&BLACK)
+            .draw()
+            .unwrap();
+    }};
 }
 
 #[cfg(test)]
@@ -139,6 +205,30 @@ mod tests_plotters {
             }
         } else {
             println!("File does not exist.");
+        }
+    }
+
+    #[test]
+    fn test_plot_vector_macro_multi() {
+        let v1 = [1.0, 2.0, 3.0, 4.0, 5.0, 4.0, 6.0, 3.0, 7.0, 2.0, 8.0, 1.0];
+        let v2 = [2.0, 3.0, 4.0, 5.0, 4.0, 6.0, 3.0, 7.0, 2.0, 8.0, 1.0, 8.0];
+        let file = "./plot_macro2.png";
+
+        // THIS WORKS.
+        plot_vector!(v1, v2 => &file);
+
+        // Check if the file exists
+        if std::path::PathBuf::from(file).exists() {
+            println!("File exists. Attempting to remove...");
+
+            // Remove the file
+            if let Err(e) = std::fs::remove_file(file) {
+                println!("Failed to remove file");
+            } else {
+                println!("Successfully removed file.");
+            }
+        } else {
+            println!("File does not exist");
         }
     }
 }
