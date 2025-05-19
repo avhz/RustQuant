@@ -9,6 +9,8 @@
 
 use std::fmt;
 
+use crate::DiffOps;
+
 /// Struct defining the vertex of the computational graph.
 ///
 /// Operations are assumed to be binary (e.g. x + y),
@@ -16,9 +18,9 @@ use std::fmt;
 /// To deal with unary or nullary operations, we just adjust the weights
 /// (partials) and the dependencies (parents).
 #[derive(Clone, Copy, Debug)]
-pub struct Vertex {
+pub struct Vertex<T = f64> {
     /// Array that contains the partial derivatives wrt to x and y.
-    pub partials: [f64; 2],
+    pub partials: [T; 2],
 
     /// Array that contains the indices of the parent vertices.
     pub parents: [usize; 2],
