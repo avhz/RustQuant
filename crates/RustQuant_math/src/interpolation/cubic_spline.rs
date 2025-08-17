@@ -415,3 +415,80 @@ where
         }
     }
 }
+
+#[cfg(test)]
+mod tests_cubic_spline_interpolation {
+    use super::*;
+    use RustQuant_utils::{assert_approx_equal, RUSTQUANT_EPSILON};
+
+    #[test]
+    fn test_natural_cubic_interpolation() {
+
+        let xs: Vec<f64> = vec![0., 1., 2., 3., 4.];
+        let ys: Vec<f64> = vec![0., 1., 16., 81., 256.];
+
+        let mut interpolator: CubicSplineInterpolator<f64, f64> = CubicSplineInterpolator::new(xs, ys).unwrap();
+        let _ = interpolator.fit();
+
+        assert_approx_equal!(
+            36.64909523809524,
+            interpolator.interpolate(2.5).unwrap(),
+            RUSTQUANT_EPSILON
+        );
+    }
+
+    #[test]
+    fn test_natural_cubic_interpolation_dates() {
+        let now: time::OffsetDateTime = time::OffsetDateTime::now_utc();
+
+        let xs: Vec<time::OffsetDateTime> = vec![
+            now,
+            now + time::Duration::days(1),
+            now + time::Duration::days(2),
+            now + time::Duration::days(3),
+            now + time::Duration::days(4),
+        ];
+
+        let ys: Vec<f64> = vec![0., 1., 16., 81., 256.];
+
+        let mut interpolator: CubicSplineInterpolator<time::OffsetDateTime, f64> = CubicSplineInterpolator::new(xs.clone(), ys).unwrap();
+        let _ = interpolator.fit();
+
+        assert_approx_equal!(
+            36.64909523809524,
+            interpolator
+                .interpolate(xs[2] + time::Duration::hours(12))
+                .unwrap(),
+            RUSTQUANT_EPSILON
+        );
+    }
+
+    #[test]
+    fn test_cubic_interpolation_out_of_range() {
+        let xs: Vec<f64> = vec![1., 2., 3., 4., 5.];
+        let ys = vec![1., 2., 3., 4., 5.];
+
+        let mut interpolator: CubicSplineInterpolator<f64, f64> = CubicSplineInterpolator::new(xs, ys).unwrap();
+        let _ = interpolator.fit();
+
+        assert!(interpolator.interpolate(6.).is_err());
+    }
+
+    #[test]
+    fn test_cubic_interpolation_add_range_and_refit() {
+        let xs: Vec<f64> = vec![0., 1., 2., 3., 4.];
+        let ys: Vec<f64> = vec![0., 1., 16., 81., 256.];
+
+        let mut interpolator: CubicSplineInterpolator<f64, f64> = CubicSplineInterpolator::new(xs, ys).unwrap();
+        let _ = interpolator.fit();
+
+        interpolator.add_point((5.0, 625.0));
+        let _ = interpolator.fit();
+
+        assert_approx_equal!(
+            39.966361318634604,
+            interpolator.interpolate(2.5).unwrap(),
+            RUSTQUANT_EPSILON
+        );
+    }
+}
