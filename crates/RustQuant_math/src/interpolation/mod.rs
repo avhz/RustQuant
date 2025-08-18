@@ -19,11 +19,14 @@ pub use exponential_interpolator::*;
 pub mod b_splines;
 pub use b_splines::*;
 
+pub mod lagrange_interpolator;
+pub use lagrange_interpolator::*;
+
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 /// Trait describing requirements to be interpolated.
-pub trait InterpolationValue: num::Num + AddAssign + std::fmt::Debug + Copy + Clone + Sized {}
+pub trait InterpolationValue: num::Num + AddAssign + MulAssign + std::fmt::Debug + Copy + Clone + Sized {}
 
 /// Trait describing requirements to be an index of interpolation.
 pub trait InterpolationIndex:
