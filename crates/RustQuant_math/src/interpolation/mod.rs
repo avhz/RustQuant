@@ -26,7 +26,7 @@ pub use lagrange_interpolator::*;
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 /// Trait describing requirements to be interpolated.
-pub trait InterpolationValue: num::Num + AddAssign + MulAssign + std::fmt::Debug + Copy + Clone + Sized {}
+pub trait InterpolationValue: num::Num + AddAssign + std::fmt::Debug + Copy + Clone + Sized {}
 
 /// Trait describing requirements to be an index of interpolation.
 pub trait InterpolationIndex:

@@ -69,20 +69,20 @@ where
         })
     }
 
-    fn cardinal_function(&self, point: IndexType, pivot: IndexType, index: usize) -> ValueType {
-        let mut lagrange_basis: ValueType = ValueType::one();
+    fn lagrange_basis(&self, point: IndexType, node: IndexType, index: usize) -> ValueType {
+        let mut basis: ValueType = ValueType::one();
         for (i, x) in self.xs.iter().enumerate() {
             if i != index {
-                lagrange_basis *= (point - *x) / (pivot - *x);
+                basis *= (point - *x) / (node - *x);
             }
         }
-        lagrange_basis
+        basis
     }
 
     fn lagrange_polynomial(&self, point: IndexType) -> ValueType {
         let mut polynomial: ValueType = ValueType::zero();
         for (i, (x, y)) in self.xs.iter().zip(&self.ys).enumerate() {
-            polynomial += *y * self.cardinal_function(point, *x, i);
+            polynomial += *y * self.lagrange_basis(point, *x, i);
             
         }
         polynomial
