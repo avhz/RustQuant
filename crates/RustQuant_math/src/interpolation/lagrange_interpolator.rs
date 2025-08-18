@@ -127,3 +127,64 @@ where
         Ok(self.lagrange_polynomial(point))
     }
 }
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Unit tests
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+#[cfg(test)]
+mod tests_lagrange_interpolation {
+    use super::*;
+    use RustQuant_utils::{assert_approx_equal, RUSTQUANT_EPSILON};
+
+    #[test]
+    fn test_lagrange_interpolation() {
+        let xs: Vec<f64> = vec![0., 1., 2., 3., 4.];
+        let ys: Vec<f64> = vec![1., 2., 4., 8., 16.];
+
+        let mut interpolator = LagrangeInterpolator::new(xs, ys).unwrap();
+        let _ = interpolator.fit();
+
+        assert_approx_equal!(
+            5.6484375,
+            interpolator.interpolate(2.5).unwrap(),
+            RUSTQUANT_EPSILON
+        );
+    }
+
+    #[test]
+    fn test_lagrange_interpolation_dates() {
+        let now: time::OffsetDateTime = time::OffsetDateTime::now_utc();
+
+        let xs: Vec<time::OffsetDateTime> = vec![
+            now,
+            now + time::Duration::days(1),
+            now + time::Duration::days(2),
+            now + time::Duration::days(3),
+            now + time::Duration::days(4),
+        ];
+        let ys: Vec<f64> = vec![1., 2., 4., 8., 16.];
+
+        let mut interpolator: LagrangeInterpolator<time::OffsetDateTime, f64> = LagrangeInterpolator::new(xs.clone(), ys).unwrap();
+        let _ = interpolator.fit();
+
+        assert_approx_equal!(
+            5.6484375,
+            interpolator
+                .interpolate(xs[2] + time::Duration::hours(12))
+                .unwrap(),
+            RUSTQUANT_EPSILON
+        );
+    }
+
+    #[test]
+    fn test_linear_interpolation_out_of_range() {
+        let xs: Vec<f64> = vec![1., 2., 3., 4., 5.];
+        let ys: Vec<f64> = vec![1., 2., 3., 4., 5.];
+
+        let mut interpolator: LagrangeInterpolator<f64, f64> = LagrangeInterpolator::new(xs, ys).unwrap();
+        let _ = interpolator.fit();
+
+        assert!(interpolator.interpolate(6.).is_err());
+    }
+}
