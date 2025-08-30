@@ -7,49 +7,19 @@
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// IMPORTS
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-use crate::calendar::Calendar;
-use crate::utilities::unpack_date;
+use crate::utilities::*;
 use time::{Date, Month, Weekday};
-use RustQuant_iso::*;
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// STRUCTS, ENUMS, TRAITS
+// FUNCTIONS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-/// Argentina national holiday calendar.
-pub struct ArgentinaCalendar;
+pub(crate) fn is_holiday_impl_argentina(date: Date) -> bool {
+    let (_, m, d, wd, yd, em) = unpack_date(date, false);
 
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// IMPLEMENTATIONS, METHODS
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-impl Calendar for ArgentinaCalendar {
-    fn new() -> Self {
-        Self
-    }
-
-    fn name(&self) -> &'static str {
-        "Argentina"
-    }
-
-    fn country_code(&self) -> ISO_3166 {
-        ARGENTINA
-    }
-
-    fn market_identifier_code(&self) -> ISO_10383 {
-        XBUE
-    }
-
-    fn is_holiday(&self, date: Date) -> bool {
-        let (_, m, d, wd, yd, em) = unpack_date(date, false);
-
-        if
-        // New Year's Day
-        (d == 1 && m == Month::January)
+    if
+    // New Year's Day
+    is_christmas_day(date)
             // Holy Thursday
             || (yd == em-4)
             // Good Friday
@@ -69,15 +39,14 @@ impl Calendar for ArgentinaCalendar {
             // Immaculate Conception
             || (d == 8 && m == Month::December)
             // Christmas Eve
-            || (d == 24 && m == Month::December)
+            || is_christmas_eve(date)
             // New Year's Eve
-            || ((d == 31 || (d == 30 && wd == Weekday::Friday)) && m == Month::December)
-        {
-            return true;
-        }
-
-        false
+            || is_new_years_eve(date)
+    {
+        return true;
     }
+
+    false
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

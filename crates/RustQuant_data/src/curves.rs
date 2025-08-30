@@ -270,20 +270,6 @@ impl_curve!(time::Time);
 impl_curve!(time::OffsetDateTime);
 impl_curve!(time::PrimitiveDateTime);
 
-// Implement the Curve for unsigned integer types.
-// impl_curve!(u64);
-// impl_curve!(u32);
-// impl_curve!(u16);
-// impl_curve!(u8);
-// impl_curve!(usize);
-
-// Implement the Curve for signed integer types.
-// impl_curve!(i64);
-// impl_curve!(i32);
-// impl_curve!(i16);
-// impl_curve!(i8);
-// impl_curve!(isize);
-
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // CURVE RELATED CONSTANTS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -296,7 +282,7 @@ const CURVE_OPTIM_SWARM_SIZE: usize = 1000;
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 /// Generic trait for curves.
-pub trait Curves<C> {
+pub trait Curves {
     /// Create a new curve from a set of `Date`s and rates (`f64`s).
     fn new(dates: &[Date], rates: &[f64]) -> Self;
 
@@ -324,10 +310,7 @@ pub trait Curves<C> {
 
 macro_rules! impl_specific_curve_cost_function {
     ($curve:ident, $curve_function:ident) => {
-        impl<C> CostFunction for &$curve<Date, C>
-        where
-            C: Calendar,
-        {
+        impl CostFunction for &$curve<Date> {
             type Param = Vec<f64>;
             type Output = f64;
 
@@ -359,9 +342,7 @@ macro_rules! impl_specific_curve_cost_function {
 
 macro_rules! impl_specific_curve {
     ($curve:ident, $curve_function:ident) => {
-        impl<C> Curves<C> for $curve<Date, C>
-        where
-            C: Calendar + Clone,
+        impl Curves for $curve<Date>
         {
             #[doc = concat!("Fit the ", stringify!($curve))]
             fn fit(&mut self) -> Result<(), argmin::core::Error> {
@@ -529,16 +510,15 @@ macro_rules! impl_specific_curve {
 
 /// Discount curve data structure.
 #[derive(Builder, Clone, Debug)]
-pub struct DiscountCurve<I, C>
+pub struct DiscountCurve<I>
 where
     I: CurveIndex,
-    C: Calendar,
 {
     /// Map of dates and rates.
     pub curve: Curve<I>,
 
     /// Calendar.
-    pub calendar: Option<C>,
+    pub calendar: Option<Calendar>,
 
     /// Day count convention.
     pub day_count_convention: Option<DayCountConvention>,
@@ -569,16 +549,15 @@ impl_specific_curve!(DiscountCurve, discount_factor);
 
 /// Spot curve data structure.
 #[derive(Builder, Clone, Debug)]
-pub struct SpotCurve<I, C>
+pub struct SpotCurve<I>
 where
     I: CurveIndex,
-    C: Calendar,
 {
     /// Map of dates and rates.
     pub curve: Curve<I>,
 
     /// Calendar.
-    pub calendar: Option<C>,
+    pub calendar: Option<Calendar>,
 
     /// Day count convention.
     pub day_count_convention: Option<DayCountConvention>,
@@ -609,16 +588,15 @@ impl_specific_curve!(SpotCurve, spot_rate);
 
 /// Forward curve data structure.
 #[derive(Builder, Clone, Debug)]
-pub struct ForwardCurve<I, C>
+pub struct ForwardCurve<I>
 where
     I: CurveIndex,
-    C: Calendar,
 {
     /// Map of dates and rates.
     pub curve: Curve<I>,
 
     /// Calendar.
-    pub calendar: Option<C>,
+    pub calendar: Option<Calendar>,
 
     /// Day count convention.
     pub day_count_convention: Option<DayCountConvention>,
@@ -649,15 +627,12 @@ impl_specific_curve!(ForwardCurve, forward_rate);
 
 /// Flat curve data structure.
 #[derive(Builder, Clone, Debug)]
-pub struct FlatCurve<C>
-where
-    C: Calendar,
-{
+pub struct FlatCurve {
     /// Rate of the curve.
     pub rate: f64,
 
     /// Calendar.
-    pub calendar: Option<C>,
+    pub calendar: Option<Calendar>,
 
     /// Day count convention.
     pub day_count_convention: Option<DayCountConvention>,
@@ -666,10 +641,7 @@ where
     pub date_rolling_convention: Option<DateRollingConvention>,
 }
 
-impl<C> FlatCurve<C>
-where
-    C: Calendar,
-{
+impl FlatCurve {
     /// Create a new flat curve.
     pub fn new_flat_curve(rate: f64) -> Self {
         Self {

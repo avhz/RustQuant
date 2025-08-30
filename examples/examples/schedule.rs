@@ -11,7 +11,7 @@ use time::macros::date;
 use RustQuant::time::*;
 
 fn main() {
-    let cal = AustraliaCalendar;
+    let cal = Calendar::new(Market::Australia);
 
     let day_counting_cconvention = DayCountConvention::Actual_365_25;
     let date_rolling_convention = DateRollingConvention::ModifiedRolling;

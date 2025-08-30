@@ -7,39 +7,15 @@
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-//! This module defines Australian holidays and calendars.
-
-use crate::calendar::Calendar;
 use crate::utilities::unpack_date;
 use time::{Date, Month, Weekday};
-use RustQuant_iso::*;
 
-/// New Zealand national holiday calendar.
-pub struct NewZealandCalendar;
+pub(crate) fn is_holiday_impl_new_zealand(date: Date) -> bool {
+    let (y, m, d, wd, yd, em) = unpack_date(date, false);
 
-impl Calendar for NewZealandCalendar {
-    fn new() -> Self {
-        Self
-    }
-
-    fn name(&self) -> &'static str {
-        "New Zealand"
-    }
-
-    fn country_code(&self) -> ISO_3166 {
-        NEW_ZEALAND
-    }
-
-    fn market_identifier_code(&self) -> ISO_10383 {
-        XNZE
-    }
-
-    fn is_holiday(&self, date: Date) -> bool {
-        let (y, m, d, wd, yd, em) = unpack_date(date, false);
-
-        if
-        // New Year's Day (possibly moved to Monday or Tuesday)
-        ((d == 1 || (d == 3 && (wd == Weekday::Monday || wd == Weekday::Tuesday))) && m == Month::January)
+    if
+    // New Year's Day (possibly moved to Monday or Tuesday)
+    ((d == 1 || (d == 3 && (wd == Weekday::Monday || wd == Weekday::Tuesday))) && m == Month::January)
             // Day after New Year's Day (possibly moved to Mon or Tuesday)
             || ((d == 2 || (d == 4 && (wd == Weekday::Monday || wd == Weekday::Tuesday))) && m == Month::January)
             // Anniversary Day, Monday nearest January 22nd
@@ -82,10 +58,9 @@ impl Calendar for NewZealandCalendar {
             || (d == 15 && m == Month::July && (y == 2039 || y == 2050))
             || (d == 18 && m == Month::July && y == 2036)
             || (d == 19 && m == Month::July && (y == 2041 || y == 2047))
-        {
-            return true;
-        }
-
-        false
+    {
+        return true;
     }
+
+    false
 }

@@ -1,6 +1,6 @@
 // ANCHOR: numerical_integration
 
-use std::{f64::consts::PI, time::Instant};
+use std::f64::consts::PI;
 use RustQuant::math::*;
 
 fn main() {

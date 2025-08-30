@@ -7,49 +7,19 @@
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// IMPORTS
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-use crate::calendar::Calendar;
 use crate::utilities::unpack_date;
 use time::{Date, Month, Weekday};
-use RustQuant_iso::*;
-
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// STRUCTS, ENUMS, TRAITS
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-/// Canada national holiday calendar.
-pub struct CanadaCalendar;
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // IMPLEMENTATIONS, METHODS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-impl Calendar for CanadaCalendar {
-    fn new() -> Self {
-        Self
-    }
+pub(crate) fn is_holiday_impl_canada(date: Date) -> bool {
+    let (y, m, d, wd, yd, em) = unpack_date(date, false);
 
-    fn name(&self) -> &'static str {
-        "Canada"
-    }
-
-    fn country_code(&self) -> ISO_3166 {
-        CANADA
-    }
-
-    fn market_identifier_code(&self) -> ISO_10383 {
-        XCNQ
-    }
-
-    fn is_holiday(&self, date: Date) -> bool {
-        let (y, m, d, wd, yd, em) = unpack_date(date, false);
-
-        if (
-            // New Year's Day (possibly moved to Monday)
-            ((d == 1 || ((d == 2 || d == 3) && wd == Weekday::Monday)) && m == Month::January)
+    if (
+        // New Year's Day (possibly moved to Monday)
+        ((d == 1 || ((d == 2 || d == 3) && wd == Weekday::Monday)) && m == Month::January)
 
             // Family Day (third Monday in February, since 2008)
             || ((15..=21).contains(&d) && wd == Weekday::Monday && m == Month::February && y >= 2008)
@@ -84,12 +54,11 @@ impl Calendar for CanadaCalendar {
 
             // Boxing Day (possibly moved to Monday or Tuesday)
             || ((d == 26 || (d == 28 && (wd == Weekday::Monday || wd == Weekday::Tuesday))) && m == Month::December)
-        ) {
-            return true;
-        }
-
-        false
+    ) {
+        return true;
     }
+
+    false
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -98,53 +67,45 @@ impl Calendar for CanadaCalendar {
 
 #[cfg(test)]
 mod test_canada {
-    use super::*;
+    use crate::{Calendar, Market};
     use time::macros::date;
 
-    // Test to verify the name() method.
-    #[test]
-    fn test_name() {
-        let calendar = CanadaCalendar;
-        assert_eq!(calendar.name(), "Canada");
-    }
+    const CALENDAR: Calendar = Calendar::new(Market::Canada);
 
     // Test to verify if weekends are not considered business days.
     #[test]
     fn test_is_weekend() {
-        let calendar = CanadaCalendar;
         let sat = date!(2023 - 08 - 26);
         let sun = date!(2023 - 08 - 27);
-        assert!(!calendar.is_business_day(sat));
-        assert!(!calendar.is_business_day(sun));
+        assert!(!CALENDAR.is_business_day(sat));
+        assert!(!CALENDAR.is_business_day(sun));
     }
 
     // Test to verify if the is_business_day() method properly accounts for public holidays.
     #[test]
     fn test_is_public_holiday() {
-        let calendar = CanadaCalendar;
         let new_years_day = date!(2023 - 01 - 01);
         let family_day = date!(2023 - 02 - 20); // 3rd Monday of February
         let canada_day = date!(2023 - 07 - 01);
         let thanksgiving = date!(2023 - 10 - 09); // 2nd Monday in October
         let christmas = date!(2023 - 12 - 25);
 
-        assert!(!calendar.is_business_day(new_years_day));
-        assert!(!calendar.is_business_day(family_day));
-        assert!(!calendar.is_business_day(canada_day));
-        assert!(!calendar.is_business_day(thanksgiving));
-        assert!(!calendar.is_business_day(christmas));
+        assert!(!CALENDAR.is_business_day(new_years_day));
+        assert!(!CALENDAR.is_business_day(family_day));
+        assert!(!CALENDAR.is_business_day(canada_day));
+        assert!(!CALENDAR.is_business_day(thanksgiving));
+        assert!(!CALENDAR.is_business_day(christmas));
     }
 
     // Test to verify if the is_business_day() method properly accounts for regular business days.
     #[test]
     fn test_is_regular_business_day() {
-        let calendar = CanadaCalendar;
         let regular_day1 = date!(2023 - 03 - 01);
         let regular_day2 = date!(2023 - 07 - 12);
         let regular_day3 = date!(2023 - 11 - 17);
 
-        assert!(calendar.is_business_day(regular_day1));
-        assert!(calendar.is_business_day(regular_day2));
-        assert!(calendar.is_business_day(regular_day3));
+        assert!(CALENDAR.is_business_day(regular_day1));
+        assert!(CALENDAR.is_business_day(regular_day2));
+        assert!(CALENDAR.is_business_day(regular_day3));
     }
 }

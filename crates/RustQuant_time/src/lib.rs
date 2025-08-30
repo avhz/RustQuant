@@ -35,10 +35,6 @@ pub use day_counting::*;
 pub mod frequency;
 pub use frequency::*;
 
-/// The `Holiday` trait.
-pub mod holiday;
-pub use holiday::*;
-
 /// Utility functions for working with dates and times.
 pub mod utilities;
 pub use utilities::*;
@@ -50,7 +46,3 @@ pub use schedule::*;
 /// Date generation rules.
 pub mod date_generation;
 pub use date_generation::*;
-
-/// Stub generation rules.
-pub mod stub_generation;
-pub use stub_generation::*;

@@ -11,7 +11,7 @@
 
 use crate::{calendar::Calendar, constants::EASTER_MONDAYS};
 use time::{
-    util::{days_in_year, days_in_year_month, is_leap_year},
+    util::{days_in_year, is_leap_year},
     Date, Duration, Error, Month, Weekday,
 };
 
@@ -141,7 +141,7 @@ pub fn is_first_day_of_month(date: Date) -> bool {
 
 /// Function to check if Date is last day of the month.
 pub fn is_last_day_of_month(date: Date) -> bool {
-    date.day() == days_in_year_month(date.year(), date.month())
+    date.day() == date.month().length(date.year())
 }
 
 /// Function to check if date is the last day of February.
@@ -155,7 +155,7 @@ pub fn is_last_day_of_february(date: Date) -> bool {
 }
 
 /// Function to get the next business day for a given date and calendar.
-pub fn next_business_day<C: Calendar>(date: Date, calendar: &C) -> Date {
+pub fn next_business_day(date: Date, calendar: &Calendar) -> Date {
     let mut new_date = date;
 
     while !calendar.is_business_day(new_date) {
@@ -166,7 +166,7 @@ pub fn next_business_day<C: Calendar>(date: Date, calendar: &C) -> Date {
 }
 
 /// Function to get the previous business day for a given date and calendar.
-pub fn previous_business_day<C: Calendar>(date: Date, calendar: &C) -> Date {
+pub fn previous_business_day(date: Date, calendar: &Calendar) -> Date {
     let mut new_date = date;
 
     while !calendar.is_business_day(new_date) {
@@ -198,7 +198,7 @@ pub fn get_first_day_of_month(year: i32, month: Month) -> Result<Weekday, Error>
 pub fn get_last_day_of_month(year: i32, month: Month) -> Result<Weekday, Error> {
     let date = Date::from_calendar_date(year, month, 1)?;
 
-    let last_day = date + Duration::days(days_in_year_month(year, month) as i64);
+    let last_day = date + Duration::days(month.length(year) as i64);
 
     Ok(last_day.weekday())
 }
@@ -275,7 +275,7 @@ pub fn get_first_sunday_of_month(year: i32, month: Month) -> Result<Date, Error>
 
 /// Function to get the date of the last Monday of the month.
 pub fn get_last_monday_of_month(year: i32, month: Month) -> Result<Date, Error> {
-    let days_in_month = days_in_year_month(year, month);
+    let days_in_month = month.length(year);
     let last_day_date = Date::from_calendar_date(year, month, days_in_month)?;
 
     match last_day_date.weekday() {
@@ -286,7 +286,7 @@ pub fn get_last_monday_of_month(year: i32, month: Month) -> Result<Date, Error> 
 
 /// Function to get the date of the last Tuesday of the month.
 pub fn get_last_tuesday_of_month(year: i32, month: Month) -> Result<Date, Error> {
-    let days_in_month = days_in_year_month(year, month);
+    let days_in_month = month.length(year);
     let last_day_date = Date::from_calendar_date(year, month, days_in_month)?;
 
     match last_day_date.weekday() {
@@ -297,7 +297,7 @@ pub fn get_last_tuesday_of_month(year: i32, month: Month) -> Result<Date, Error>
 
 /// Function to get the date of the last Wednesday of the month.
 pub fn get_last_wednesday_of_month(year: i32, month: Month) -> Result<Date, Error> {
-    let days_in_month = days_in_year_month(year, month);
+    let days_in_month = month.length(year);
     let last_day_date = Date::from_calendar_date(year, month, days_in_month)?;
 
     match last_day_date.weekday() {
@@ -308,7 +308,7 @@ pub fn get_last_wednesday_of_month(year: i32, month: Month) -> Result<Date, Erro
 
 /// Function to get the date of the last Thursday of the month.
 pub fn get_last_thursday_of_month(year: i32, month: Month) -> Result<Date, Error> {
-    let days_in_month = days_in_year_month(year, month);
+    let days_in_month = month.length(year);
     let last_day_date = Date::from_calendar_date(year, month, days_in_month)?;
 
     match last_day_date.weekday() {
@@ -319,7 +319,7 @@ pub fn get_last_thursday_of_month(year: i32, month: Month) -> Result<Date, Error
 
 /// Function to get the date of the last Friday of the month.
 pub fn get_last_friday_of_month(year: i32, month: Month) -> Result<Date, Error> {
-    let days_in_month = days_in_year_month(year, month);
+    let days_in_month = month.length(year);
     let last_day_date = Date::from_calendar_date(year, month, days_in_month)?;
 
     match last_day_date.weekday() {
@@ -330,7 +330,7 @@ pub fn get_last_friday_of_month(year: i32, month: Month) -> Result<Date, Error> 
 
 /// Function to get the date of the last Saturday of the month.
 pub fn get_last_saturday_of_month(year: i32, month: Month) -> Result<Date, Error> {
-    let days_in_month = days_in_year_month(year, month);
+    let days_in_month = month.length(year);
     let last_day_date = Date::from_calendar_date(year, month, days_in_month)?;
 
     match last_day_date.weekday() {
@@ -341,13 +341,34 @@ pub fn get_last_saturday_of_month(year: i32, month: Month) -> Result<Date, Error
 
 /// Function to get the date of the last Sunday of the month.
 pub fn get_last_sunday_of_month(year: i32, month: Month) -> Result<Date, Error> {
-    let days_in_month = days_in_year_month(year, month);
+    let days_in_month = month.length(year);
     let last_day_date = Date::from_calendar_date(year, month, days_in_month)?;
 
     match last_day_date.weekday() {
         Weekday::Sunday => Ok(last_day_date),
         _ => Ok(last_day_date.prev_occurrence(Weekday::Sunday)),
     }
+}
+
+/// Check if date is Christmas day.
+pub(crate) fn is_christmas_day(date: Date) -> bool {
+    date.month() == Month::December && date.day() == 25
+}
+
+/// Check if date is Christmas Eve.
+pub(crate) fn is_christmas_eve(date: Date) -> bool {
+    date.month() == Month::December && date.day() == 24
+}
+
+/// Check if date is New Years Day.
+pub(crate) fn is_new_years_day(date: Date) -> bool {
+    date.month() == Month::January && date.day() == 1
+}
+
+/// Check if date is New Years Eve.
+pub(crate) fn is_new_years_eve(date: Date) -> bool {
+    (date.day() == 31 || (date.day() == 30 && date.weekday() == Weekday::Friday))
+        && date.month() == Month::December
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

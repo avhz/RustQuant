@@ -7,10 +7,8 @@
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use std::net::SocketAddrV4;
-
 use crate::TypeFlag;
-use argmin::solver::{neldermead::NelderMead, particleswarm::ParticleSwarm};
+use argmin::solver::particleswarm::ParticleSwarm;
 use serde::{Deserialize, Serialize};
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1210,8 +1208,6 @@ impl Bachelier {
 mod sabr {
     use argmin::core::CostFunction;
 
-    use super::Sabr02;
-
     pub(crate) fn sabr_volatility(
         f: f64,
         k: f64,
@@ -1225,7 +1221,7 @@ mod sabr {
             / denominator(f, k, beta, rho, nu)
     }
 
-    fn coefficient(f: f64, k: f64, beta: f64, rho: f64, nu: f64) -> f64 {
+    fn coefficient(f: f64, k: f64, beta: f64, rho: f64, _nu: f64) -> f64 {
         z(f, k, beta) / chi(f, k, beta, rho)
     }
 
@@ -1236,7 +1232,7 @@ mod sabr {
         alpha * (1.0 + (term1 + term2 + term3) * t)
     }
 
-    fn denominator(f: f64, k: f64, beta: f64, rho: f64, nu: f64) -> f64 {
+    fn denominator(f: f64, k: f64, beta: f64, _rho: f64, _nu: f64) -> f64 {
         let term1 = fk_power(f, k, beta);
         let term2 = (1.0 - beta).powi(2) * (f / k).ln().powi(2) / 24.0;
         let term3 = (1.0 - beta).powi(4) * (f / k).ln().powi(4) / 1920.0;
@@ -1369,6 +1365,7 @@ mod tests_sabr {
         let nu = 0.4;
 
         let vol = sabr::sabr_volatility(f, k, t, alpha, beta, rho, nu);
+        println!("SABR Vol: {}", vol);
         assert!((vol - 0.2).abs() < 1e-10);
     }
 

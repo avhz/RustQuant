@@ -68,7 +68,7 @@ impl CurveModel for NelsonSiegelSvensson {
     fn forward_rate(&self, date: Date) -> f64 {
         assert!(date > today(), "Date must be in the future.");
 
-        let tau = DayCountConvention::default().day_count_factor(today(), date);
+        let tau = DayCountConvention::Actual_365_25.day_count_factor(today(), date);
 
         let term1 = f64::exp(-tau / self.lambda1);
         let term2 = (tau / self.lambda1) * term1;
@@ -81,7 +81,7 @@ impl CurveModel for NelsonSiegelSvensson {
     fn spot_rate(&self, date: Date) -> f64 {
         assert!(date > today(), "Date must be in the future.");
 
-        let tau = DayCountConvention::default().day_count_factor(today(), date);
+        let tau = DayCountConvention::Actual_365_25.day_count_factor(today(), date);
 
         let term1 = self.lambda1 * (1. - f64::exp(-tau / self.lambda1)) / tau;
         let term2 = term1 - f64::exp(-tau / self.lambda1);
@@ -92,7 +92,7 @@ impl CurveModel for NelsonSiegelSvensson {
     }
 
     fn discount_factor(&self, date: Date) -> f64 {
-        let tau = DayCountConvention::default().day_count_factor(today(), date);
+        let tau = DayCountConvention::Actual_365_25.day_count_factor(today(), date);
 
         f64::exp(-self.spot_rate(date) * tau / 100.)
     }

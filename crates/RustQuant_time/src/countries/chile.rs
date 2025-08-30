@@ -7,49 +7,19 @@
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// IMPORTS
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-use crate::calendar::Calendar;
 use crate::utilities::unpack_date;
 use time::{Date, Month, Weekday};
-use RustQuant_iso::*;
-
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// STRUCTS, ENUMS, TRAITS
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-/// Chile national holiday calendar.
-pub struct ChileCalendar;
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // IMPLEMENTATIONS, METHODS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-impl Calendar for ChileCalendar {
-    fn new() -> Self {
-        Self
-    }
+pub(crate) fn is_holiday_impl_chile(date: Date) -> bool {
+    let (y, m, d, wd, yd, em) = unpack_date(date, false);
 
-    fn name(&self) -> &'static str {
-        "Chile"
-    }
-
-    fn country_code(&self) -> ISO_3166 {
-        CHILE
-    }
-
-    fn market_identifier_code(&self) -> ISO_10383 {
-        XSGO
-    }
-
-    fn is_holiday(&self, date: Date) -> bool {
-        let (y, m, d, wd, yd, em) = unpack_date(date, false);
-
-        if (
-            // New Year's Day
-            (d == 1 && m == Month::January) || (d == 2 && m == Month::January && wd == Weekday::Monday && y > 2016)
+    if (
+        // New Year's Day
+        (d == 1 && m == Month::January) || (d == 2 && m == Month::January && wd == Weekday::Monday && y > 2016)
 
                 // Good Friday
                 || (yd == em - 3)
@@ -101,12 +71,11 @@ impl Calendar for ChileCalendar {
 
                 // Christmas Day
                 || (d == 25 && m == Month::December)
-        ) {
-            return true;
-        }
-
-        false
+    ) {
+        return true;
     }
+
+    false
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

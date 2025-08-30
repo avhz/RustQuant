@@ -7,49 +7,19 @@
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// IMPORTS
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-use crate::calendar::Calendar;
-use crate::utilities::unpack_date;
+use crate::utilities::*;
 use time::{Date, Month};
-use RustQuant_iso::*;
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// STRUCTS, ENUMS, TRAITS
+// FUNCTIONS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-/// Austria national holiday calendar.
-pub struct AustriaCalendar;
+pub(crate) fn is_holiday_impl_austria(date: Date) -> bool {
+    let (y, m, d, _, yd, em) = unpack_date(date, false);
 
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// IMPLEMENTATIONS, METHODS
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-impl Calendar for AustriaCalendar {
-    fn new() -> Self {
-        Self
-    }
-
-    fn name(&self) -> &'static str {
-        "Austria"
-    }
-
-    fn country_code(&self) -> ISO_3166 {
-        AUSTRIA
-    }
-
-    fn market_identifier_code(&self) -> ISO_10383 {
-        EXAA
-    }
-
-    fn is_holiday(&self, date: Date) -> bool {
-        let (y, m, d, _, yd, em) = unpack_date(date, false);
-
-        if (
-            // New Year's Day
-            (d == 1 && m == Month::January) ||
+    if (
+        // New Year's Day
+        (d == 1 && m == Month::January) ||
 
             // Epiphany
             (d == 6 && m == Month::January) ||
@@ -89,67 +59,13 @@ impl Calendar for AustriaCalendar {
 
             // St. Stephen
             (d == 26 && m == Month::December)
-        ) {
-            return true;
-        }
-
-        false
+    ) {
+        return true;
     }
+
+    false
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // UNIT TESTS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-#[cfg(test)]
-mod test_austria {
-    use super::*;
-    use time::macros::date;
-
-    // Test to verify the name() method.
-    #[test]
-    fn test_name() {
-        let calendar = AustriaCalendar;
-        assert_eq!(calendar.name(), "Austria");
-    }
-
-    // Test to verify if weekends are not considered business days.
-    #[test]
-    fn test_is_weekend() {
-        let calendar = AustriaCalendar;
-        let sat = date!(2023 - 08 - 26);
-        let sun = date!(2023 - 08 - 27);
-        assert!(!calendar.is_business_day(sat));
-        assert!(!calendar.is_business_day(sun));
-    }
-
-    // Test to verify if the is_business_day() method properly accounts for public holidays.
-    #[test]
-    fn test_is_public_holiday() {
-        let calendar = AustriaCalendar;
-        let new_years_day = date!(2023 - 01 - 01);
-        let epiphany = date!(2023 - 01 - 06);
-        let labour_day = date!(2023 - 05 - 01);
-        let national_holiday = date!(2023 - 10 - 26);
-        let christmas = date!(2023 - 12 - 25);
-
-        assert!(!calendar.is_business_day(new_years_day));
-        assert!(!calendar.is_business_day(epiphany));
-        assert!(!calendar.is_business_day(labour_day));
-        assert!(!calendar.is_business_day(national_holiday));
-        assert!(!calendar.is_business_day(christmas));
-    }
-
-    // Test to verify if the is_business_day() method properly accounts for regular business days.
-    #[test]
-    fn test_is_regular_business_day() {
-        let calendar = AustriaCalendar;
-        let regular_day1 = date!(2023 - 02 - 01);
-        let regular_day2 = date!(2023 - 07 - 12);
-        let regular_day3 = date!(2023 - 11 - 17);
-
-        assert!(calendar.is_business_day(regular_day1));
-        assert!(calendar.is_business_day(regular_day2));
-        assert!(calendar.is_business_day(regular_day3));
-    }
-}

@@ -89,21 +89,4 @@ impl Frequency {
             panic!("Unable to infer frequency between the two dates.")
         }
     }
-
-    /// Get the number of times the frequency occurs in a year.
-    pub fn times_in_year(&self) -> isize {
-        match self {
-            Frequency::Daily => DAILY,
-            Frequency::Weekly => WEEKLY,
-            Frequency::BiWeekly => BI_WEEKLY,
-            Frequency::SemiMonthly => SEMI_MONTHLY,
-            Frequency::Monthly => MONTHLY,
-            Frequency::SemiQuarterly => SEMI_QUARTERLY,
-            Frequency::Quarterly => QUARTERLY,
-            Frequency::TriAnnually => TRI_ANNUALLY,
-            Frequency::SemiAnnually => SEMI_ANNUALLY,
-            Frequency::Annually => ANNUALLY,
-            Frequency::Zero => 0,
-        }
-    }
 }

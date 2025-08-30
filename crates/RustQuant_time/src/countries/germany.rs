@@ -7,49 +7,15 @@
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// IMPORTS
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-use crate::calendar::Calendar;
 use crate::utilities::unpack_date;
 use time::{Date, Month};
-use RustQuant_iso::*;
 
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// STRUCTS, ENUMS, TRAITS
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+pub(crate) fn is_holiday_impl_germany(date: Date) -> bool {
+    let (_y, m, d, _wd, yd, em) = unpack_date(date, false);
 
-/// Germany national holiday calendar.
-pub struct GermanyCalendar;
-
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// IMPLEMENTATIONS, METHODS
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-impl Calendar for GermanyCalendar {
-    fn new() -> Self {
-        Self
-    }
-
-    fn name(&self) -> &'static str {
-        "Germany"
-    }
-
-    fn country_code(&self) -> ISO_3166 {
-        GERMANY
-    }
-
-    fn market_identifier_code(&self) -> ISO_10383 {
-        XFRA
-    }
-
-    fn is_holiday(&self, date: Date) -> bool {
-        let (_y, m, d, _wd, yd, em) = unpack_date(date, false);
-
-        if (
-            // New Year's Day
-            d == 1 && m == Month::January
+    if (
+        // New Year's Day
+        d == 1 && m == Month::January
 
             // Good Friday
             || yd == em - 3
@@ -80,12 +46,11 @@ impl Calendar for GermanyCalendar {
 
             // Boxing Day
             || d == 26 && m == Month::December
-        ) {
-            return true;
-        }
-
-        false
+    ) {
+        return true;
     }
+
+    false
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -9,10 +9,6 @@
 
 //! This module defines calendar and holiday related constants.
 
-// Minimum and maximum years for the library
-pub(crate) const MIN_YEAR: i32 = 1901;
-pub(crate) const MAX_YEAR: i32 = 2199;
-
 // Weekend and weekday masks
 pub(crate) const WEEKEND_MASK: &[bool] = &[false, false, false, false, false, true, true];
 pub(crate) const WEEKDAY_MASK: &[bool] = &[true, true, true, true, true, false, false];

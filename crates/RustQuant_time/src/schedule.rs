@@ -7,9 +7,8 @@
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use crate::date_rolling::{DateRoller, DateRollingConvention};
-use crate::day_counting::{DayCountConvention, DayCounter};
-use crate::Calendar;
+use crate::date_rolling::DateRollingConvention;
+use crate::day_counting::DayCountConvention;
 use std::fmt;
 use time::Date;
 
@@ -41,66 +40,14 @@ pub struct Schedule {
     pub date_rolling_convention: DateRollingConvention,
 }
 
-/// The `Scheduler` trait.
-/// This trait is used to generate schedules for a `Calendar`.
-pub trait Scheduler {
-    /// Generate a schedule from a slice of `Date`s.
-    /// For example, a list of coupon payment dates.
-    ///
-    /// Note: The effective date is not included in the dates input, and assumed to be today.
-    ///
-    /// # Arguments
-    ///
-    /// * `dates` - A slice of `Date`s (such as coupon payment dates).
-    /// * `date_rolling_convention` - The date rolling convention.
-    /// * `day_counting_convention` - The day counting convention.
-    fn generate_schedule_from_dates(
-        &self,
-        dates: &[Date],
-        date_rolling_convention: DateRollingConvention,
-        day_counting_convention: DayCountConvention,
-    ) -> Schedule;
-}
-
-impl<C> Scheduler for C
-where
-    C: Calendar,
-{
-    fn generate_schedule_from_dates(
-        &self,
-        dates: &[Date],
-        date_rolling_convention: DateRollingConvention,
-        day_counting_convention: DayCountConvention,
-    ) -> Schedule {
-        let today = crate::today();
-
-        // First we need to roll the dates according to a given convention.
-        let rolled_dates = self.roll_dates(dates, &date_rolling_convention);
-
-        // Then we need to compute the day count factors.
-        let mut day_count_factors = self.day_count_factors(&rolled_dates, &day_counting_convention);
-        day_count_factors.insert(
-            0,
-            self.day_count_factor(today, rolled_dates[0], &day_counting_convention),
-        );
-
-        Schedule {
-            dates: rolled_dates,
-            day_count_factors,
-            day_counting_convention,
-            date_rolling_convention,
-        }
-    }
-}
-
 impl fmt::Display for Schedule {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(
             f,
             "Dates:                     {:?}\n\
             Day Count Factors:          {:?}\n\
-            Day Counting Convention:    {}\n\
-            Date Rolling Convention:    {}",
+            Day Counting Convention:    {:?}\n\
+            Date Rolling Convention:    {:?}",
             self.dates,
             self.day_count_factors,
             self.day_counting_convention,

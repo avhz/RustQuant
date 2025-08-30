@@ -7,49 +7,19 @@
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// IMPORTS
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-use crate::calendar::Calendar;
 use crate::utilities::unpack_date;
 use time::{Date, Month};
-use RustQuant_iso::*;
-
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// STRUCTS, ENUMS, TRAITS
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-/// Czech Republic national holiday calendar.
-pub struct CzechRepublicCalendar;
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // IMPLEMENTATIONS, METHODS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-impl Calendar for CzechRepublicCalendar {
-    fn new() -> Self {
-        Self
-    }
+pub(crate) fn is_holiday_impl_czech_republic(date: Date) -> bool {
+    let (y, m, d, _wd, yd, em) = unpack_date(date, false);
 
-    fn name(&self) -> &'static str {
-        "Czech Republic"
-    }
-
-    fn country_code(&self) -> ISO_3166 {
-        CZECH_REPUBLIC
-    }
-
-    fn market_identifier_code(&self) -> ISO_10383 {
-        XPRA
-    }
-
-    fn is_holiday(&self, date: Date) -> bool {
-        let (y, m, d, _wd, yd, em) = unpack_date(date, false);
-
-        if (
-            // New Year's Day
-            (d == 1 && m == Month::January)
+    if (
+        // New Year's Day
+        (d == 1 && m == Month::January)
 
             // Good Friday
             || (yd == em - 3 && y >= 2016)
@@ -90,12 +60,11 @@ impl Calendar for CzechRepublicCalendar {
             // Miscellaneous
             || (d == 2 && m == Month::January && y == 2004)
             || (d == 31 && m == Month::December && y == 2004)
-        ) {
-            return true;
-        }
-
-        false
+    ) {
+        return true;
     }
+
+    false
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

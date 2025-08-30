@@ -209,7 +209,7 @@ mod tests_plotters {
             println!("File exists. Attempting to remove...");
 
             // Remove the file
-            if let Err(e) = std::fs::remove_file(file) {
+            if let Err(_) = std::fs::remove_file(file) {
                 println!("Failed to remove file");
             } else {
                 println!("Successfully removed file.");

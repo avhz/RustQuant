@@ -215,7 +215,7 @@ impl FiniteDifferencePricer {
     }
 
     fn year_fraction(&self) -> f64 {
-        DayCountConvention::default().day_count_factor(
+        DayCountConvention::Actual_365_25.day_count_factor(
             self.evaluation_date.unwrap_or(today()),
             self.expiration_date,
         )

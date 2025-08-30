@@ -7,11 +7,9 @@
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use crate::calendar::Calendar;
 use crate::utilities::unpack_date;
 use icu;
 use time::{Date, Weekday};
-use RustQuant_iso::*;
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // CONSTANTS
@@ -37,81 +35,43 @@ const JEWISH_HOLIDAYS: [(u8, u8); 16] = [
 ];
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// STRUCTS, ENUMS, TRAITS
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-/// Israel national holiday calendar.
-pub struct IsraelCalendar;
-
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // IMPLEMENTATIONS, METHODS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-impl IsraelCalendar {
-    /// Hebrew weekend is Friday and Saturday,
-    /// as opposed to Saturday and Sunday in the Gregorian calendar.
-    fn is_weekend(&self, date: Date) -> bool {
-        let wd = date.weekday();
-        wd == Weekday::Friday || wd == Weekday::Saturday
-    }
-}
+pub(crate) fn is_holiday_impl_israel(date: Date) -> bool {
+    let (y, m, d, wd, _, _) = unpack_date(date, false);
+    let m = m as u8;
+    let iso_date = icu::calendar::Date::try_new_iso_date(y, m, d)
+        .expect("Failed to initialize ISO Date instance for constructing Hebrew date.");
 
-impl Calendar for IsraelCalendar {
-    fn new() -> Self {
-        Self
-    }
+    let hebrew_date = iso_date.to_calendar(icu::calendar::hebrew::Hebrew);
+    let mut hebrew_month = hebrew_date.month().ordinal as u8;
+    let hebrew_day = hebrew_date.day_of_month().0 as u8;
 
-    fn name(&self) -> &'static str {
-        "Israel"
+    if hebrew_date.is_in_leap_year() && hebrew_month > 7 {
+        hebrew_month -= 1;
     }
 
-    fn country_code(&self) -> ISO_3166 {
-        ISRAEL
-    }
+    // Check if the date is Independence Day or Memorial Day.
+    let is_independence_or_memorial_day = matches!(
+        &(hebrew_month, hebrew_day, wd),
+        (8, 3..=4, Weekday::Thursday)
+            | (8, 2..=3, Weekday::Wednesday)
+            | (8, 5, Weekday::Monday)
+            | (8, 6, Weekday::Tuesday)
+            | (8, 5, Weekday::Wednesday)
+            | (8, 4, Weekday::Tuesday)
+    );
 
-    fn market_identifier_code(&self) -> ISO_10383 {
-        XTAE
-    }
+    // Check if the date is Tisha Beav.
+    let is_tisha_beav = matches!(
+        &(hebrew_month, hebrew_day, wd),
+        (11, 10, Weekday::Sunday) | (11, 9, Weekday::Saturday) | (11, 9, _)
+    );
 
-    fn is_business_day(&self, date: Date) -> bool {
-        !self.is_weekend(date) && !self.is_holiday(date)
-    }
-
-    fn is_holiday(&self, date: Date) -> bool {
-        let (y, m, d, wd, _, _) = unpack_date(date, false);
-        let m = m as u8;
-        let iso_date = icu::calendar::Date::try_new_iso_date(y, m, d)
-            .expect("Failed to initialize ISO Date instance for constructing Hebrew date.");
-
-        let hebrew_date = iso_date.to_calendar(icu::calendar::hebrew::Hebrew);
-        let mut hebrew_month = hebrew_date.month().ordinal as u8;
-        let hebrew_day = hebrew_date.day_of_month().0 as u8;
-
-        if hebrew_date.is_in_leap_year() && hebrew_month > 7 {
-            hebrew_month -= 1;
-        }
-
-        // Check if the date is Independence Day or Memorial Day.
-        let is_independence_or_memorial_day = matches!(
-            &(hebrew_month, hebrew_day, wd),
-            (8, 3..=4, Weekday::Thursday)
-                | (8, 2..=3, Weekday::Wednesday)
-                | (8, 5, Weekday::Monday)
-                | (8, 6, Weekday::Tuesday)
-                | (8, 5, Weekday::Wednesday)
-                | (8, 4, Weekday::Tuesday)
-        );
-
-        // Check if the date is Tisha Beav.
-        let is_tisha_beav = matches!(
-            &(hebrew_month, hebrew_day, wd),
-            (11, 10, Weekday::Sunday) | (11, 9, Weekday::Saturday) | (11, 9, _)
-        );
-
-        JEWISH_HOLIDAYS.contains(&(hebrew_month, hebrew_day))
-            || is_independence_or_memorial_day
-            || is_tisha_beav
-    }
+    JEWISH_HOLIDAYS.contains(&(hebrew_month, hebrew_day))
+        || is_independence_or_memorial_day
+        || is_tisha_beav
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -121,30 +81,24 @@ impl Calendar for IsraelCalendar {
 #[cfg(test)]
 mod test_israel {
     use super::*;
+    use crate::{Calendar, Market};
     use time::macros::date;
     use time::Month;
 
-    // Test to verify the name() method.
-    #[test]
-    fn test_name() {
-        let calendar = IsraelCalendar;
-        assert_eq!(calendar.name(), "Israel");
-    }
+    const CALENDAR: Calendar = Calendar::new(Market::Israel);
 
     // Test to verify if weekends are not considered business days.
     #[test]
     fn test_is_weekend() {
-        let calendar = IsraelCalendar;
         let fri = date!(2023 - 01 - 27);
         let sat = date!(2023 - 01 - 28);
-        assert!(!calendar.is_business_day(fri));
-        assert!(!calendar.is_business_day(sat));
+        assert!(!CALENDAR.is_business_day(fri));
+        assert!(!CALENDAR.is_business_day(sat));
     }
 
     // Test to verify if the is_business_day() method properly accounts for public holidays.
     #[test]
     fn test_is_public_holiday() {
-        let calendar = IsraelCalendar;
         let holidays = vec![
             (2024, 3, 24),  // Purim
             (2024, 4, 22),  // Passover Eve
@@ -205,20 +159,19 @@ mod test_israel {
         ];
         for (y, m, d) in holidays {
             let date = Date::from_calendar_date(y, Month::try_from(m).unwrap(), d).unwrap();
-            assert!(!calendar.is_business_day(date));
+            assert!(!CALENDAR.is_business_day(date));
         }
     }
 
     // Test to verify if the is_business_day() method properly accounts for regular business days.
     #[test]
     fn test_is_regular_business_day() {
-        let calendar = IsraelCalendar;
         let regular_day1 = date!(2021 - 08 - 04);
         let regular_day2 = date!(2024 - 04 - 09);
         let regular_day3 = date!(2023 - 11 - 27);
 
-        assert!(calendar.is_business_day(regular_day1));
-        assert!(calendar.is_business_day(regular_day2));
-        assert!(calendar.is_business_day(regular_day3));
+        assert!(CALENDAR.is_business_day(regular_day1));
+        assert!(CALENDAR.is_business_day(regular_day2));
+        assert!(CALENDAR.is_business_day(regular_day3));
     }
 }

@@ -105,31 +105,9 @@
 //! println!("{:?}", data.data);
 //! ```
 
-/// File reading and writing.
-pub mod io;
-pub use io::*;
-
-/// Yahoo! Finance data reader.
-pub mod yahoo;
-pub use yahoo::*;
-
 /// Base curve data structure and implementations.
 /// Curves (in the financial sense) are functions that map
 /// a time to a value, such as a yield curve or a swap curve.
 /// They may also be known as term structures depending on the context.
 pub mod curves;
 pub use curves::*;
-
-/// Market data structures and implementations.
-pub mod market_data;
-pub use market_data::*;
-
-/// Context data structures and implementations.
-pub mod context_data;
-pub use context_data::*;
-
-// /// Base surface data structure and implementations.
-// /// Surfaces are simply [Curve]s with an additional dimension.
-// /// For example, a volatility surface is a function of time and strike/moneyness.
-// pub mod surface;
-// pub use surface::*;

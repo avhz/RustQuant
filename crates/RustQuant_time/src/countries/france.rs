@@ -7,49 +7,19 @@
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// IMPORTS
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-use crate::calendar::Calendar;
 use crate::utilities::unpack_date;
 use time::{Date, Month};
-use RustQuant_iso::*;
-
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// STRUCTS, ENUMS, TRAITS
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-/// France national holiday calendar.
-pub struct FranceCalendar;
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // IMPLEMENTATIONS, METHODS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-impl Calendar for FranceCalendar {
-    fn new() -> Self {
-        Self
-    }
+pub(crate) fn is_holiday_impl_france(date: Date) -> bool {
+    let (_y, m, d, _wd, yd, em) = unpack_date(date, false);
 
-    fn name(&self) -> &'static str {
-        "France"
-    }
-
-    fn country_code(&self) -> ISO_3166 {
-        FRANCE
-    }
-
-    fn market_identifier_code(&self) -> ISO_10383 {
-        XPAR
-    }
-
-    fn is_holiday(&self, date: Date) -> bool {
-        let (_y, m, d, _wd, yd, em) = unpack_date(date, false);
-
-        if (
-            // Jour de l'An
-            (d == 1 && m == Month::January)
+    if (
+        // Jour de l'An
+        (d == 1 && m == Month::January)
             // Lundi de Paques
             || (yd == em)
             // Fete du Travail
@@ -70,12 +40,11 @@ impl Calendar for FranceCalendar {
             || (d == 11 && m == Month::November)
             // Noel
             || (d == 25 && m == Month::December)
-        ) {
-            return true;
-        }
-
-        false
+    ) {
+        return true;
     }
+
+    false
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

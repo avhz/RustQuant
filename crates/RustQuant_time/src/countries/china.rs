@@ -7,51 +7,19 @@
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// IMPORTS
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-use crate::calendar::Calendar;
 use crate::utilities::unpack_date;
 use time::{Date, Month};
-use RustQuant_iso::iso_10383::XSHG;
-use RustQuant_iso::iso_3166::CHINA;
-use RustQuant_iso::{ISO_10383, ISO_3166};
-
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// STRUCTS, ENUMS, TRAITS
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-/// China national holiday calendar.
-pub struct ChinaCalendar;
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // IMPLEMENTATIONS, METHODS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-impl Calendar for ChinaCalendar {
-    fn new() -> Self {
-        Self
-    }
+pub(crate) fn is_holiday_impl_china(date: Date) -> bool {
+    let (y, m, d, _wd, _yd, _em) = unpack_date(date, false);
 
-    fn name(&self) -> &'static str {
-        "China"
-    }
-
-    fn country_code(&self) -> ISO_3166 {
-        CHINA
-    }
-
-    fn market_identifier_code(&self) -> ISO_10383 {
-        XSHG
-    }
-
-    fn is_holiday(&self, date: Date) -> bool {
-        let (y, m, d, _wd, _yd, _em) = unpack_date(date, false);
-
-        if (
-            // New Year's Day
-            (d == 1 && m == Month::January)
+    if (
+        // New Year's Day
+        (d == 1 && m == Month::January)
                 || (y == 2005 && d == 3 && m == Month::January)
                 || (y == 2006 && (d == 2 || d == 3) && m == Month::January)
                 || (y == 2007 && d <= 3 && m == Month::January)
@@ -187,12 +155,11 @@ impl Calendar for ChinaCalendar {
 
                 // 70th anniversary of the victory of anti-Japanese war
                 || (y == 2015 && (3..=4).contains(&d) && m == Month::September)
-        ) {
-            return true;
-        }
-
-        false
+    ) {
+        return true;
     }
+
+    false
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

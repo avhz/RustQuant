@@ -4,10 +4,10 @@ use RustQuant::data::*;
 use RustQuant::time::*;
 
 fn main() {
-    let _cal = AustraliaCalendar;
+    let _cal = Calendar::new(Market::Australia);
     let _curve = Curve::<Date>::new_from_slice(&DATES, &RATES);
 
-    let mut discount_curve = DiscountCurve::<Date, AustraliaCalendar>::new(&DATES, &RATES);
+    let mut discount_curve = DiscountCurve::<Date>::new(&DATES, &RATES);
 
     let new_dates = [
         date!(2025 - 01 - 01),

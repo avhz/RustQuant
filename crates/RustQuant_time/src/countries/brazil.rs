@@ -7,49 +7,19 @@
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// IMPORTS
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-use crate::calendar::Calendar;
 use crate::utilities::unpack_date;
 use time::{Date, Month};
-use RustQuant_iso::*;
-
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// STRUCTS, ENUMS, TRAITS
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-/// Brazil national holiday calendar.
-pub struct BrazilCalendar;
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // IMPLEMENTATIONS, METHODS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-impl Calendar for BrazilCalendar {
-    fn new() -> Self {
-        Self
-    }
+pub(crate) fn is_holiday_impl_brazil(date: Date) -> bool {
+    let (y, m, d, _, yd, em) = unpack_date(date, false);
 
-    fn name(&self) -> &'static str {
-        "Brazil"
-    }
-
-    fn country_code(&self) -> ISO_3166 {
-        BRAZIL
-    }
-
-    fn market_identifier_code(&self) -> ISO_10383 {
-        BVMF
-    }
-
-    fn is_holiday(&self, date: Date) -> bool {
-        let (y, m, d, _, yd, em) = unpack_date(date, false);
-
-        if (
-            // New Year's Day
-            (d == 1 && m == Month::January)
+    if (
+        // New Year's Day
+        (d == 1 && m == Month::January)
 
             // Tiradentes Day
             || (d == 21 && m == Month::April)
@@ -83,12 +53,11 @@ impl Calendar for BrazilCalendar {
 
             // Corpus Christi
             || (yd == em+59)
-        ) {
-            return true;
-        }
-
-        false
+    ) {
+        return true;
     }
+
+    false
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
