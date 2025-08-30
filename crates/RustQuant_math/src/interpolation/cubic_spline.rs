@@ -193,25 +193,24 @@ where
     // inverse of an upper triangular matrix is equal
     // to calculating the inverse its transpose
     // (a lower triangular matrix) then transposing the result.
-    fn lower_tri_transpose_times_diag_inv(
+    fn lower_tri_transpose_inv_times_diag_inv(
         &self,
         lower_tri_inverse: &[Vec<ValueType>], 
         diagonal: &[IndexType::Delta],
     ) -> Vec<Vec<ValueType>> {
-        let mut upper_tri_row: Vec<ValueType> = vec![];
+        let mut product_row: Vec<ValueType> = vec![];
         let mut product: Vec<Vec<ValueType>> = vec![];
-        let one: ValueType = ValueType::one();
 
         for i in 0..diagonal.len() {
-            upper_tri_row.clear();
+            product_row.clear();
             for j in 0..(i + 1) {
                 if i == j {
-                    upper_tri_row.push(one / diagonal[j].into_value())
+                    product_row.push(ValueType::one() / diagonal[j].into_value())
                 } else {
-                    upper_tri_row.push(lower_tri_inverse[i][j] / diagonal[j].into_value());
+                    product_row.push(lower_tri_inverse[i][j] / diagonal[j].into_value());
                 }
             }
-            product.push(upper_tri_row.clone())
+            product.push(product_row.clone())
         }
 
         self.transpose(product)
@@ -313,7 +312,7 @@ where
 
         let mut inv_lower_tri_matrix: Vec<Vec<ValueType>> = self.invert_lower_tri_matrix(&lower_tri_matrix);
 
-        let upper_tri_matrix: Vec<Vec<ValueType>> = self.lower_tri_transpose_times_diag_inv(
+        let upper_tri_matrix: Vec<Vec<ValueType>> = self.lower_tri_transpose_inv_times_diag_inv(
             &inv_lower_tri_matrix,
             &diag_matrix,
         );
@@ -572,7 +571,7 @@ mod tests_cubic_spline_helper_functions {
     }
 
     #[test]
-    fn lower_tri_transpose_times_diag_inv() {
+    fn lower_tri_transpose_inv_times_diag_inv() {
         let xs: Vec<f64> = vec![1., 2., 3., 4., 5.];
         let ys: Vec<f64> = vec![1., 2., 3., 4., 5.];
 
@@ -581,7 +580,7 @@ mod tests_cubic_spline_helper_functions {
         let diagonal: Vec<f64> = vec![1.0, 2.0, 3.0];
 
         assert!(
-            interpolator.lower_tri_transpose_times_diag_inv(&lower_tri_inverse, &diagonal) == vec![
+            interpolator.lower_tri_transpose_inv_times_diag_inv(&lower_tri_inverse, &diagonal) == vec![
                 vec![1.0, 2.0, 4.0],
                 vec![0.5, 2.5],
                 vec![0.3333333333333333]
