@@ -17,7 +17,6 @@ workspace = true
 RustQuant = { path = "../RustQuant" }
 
 [dependencies]
-ndarray = { workspace = true }
 errorfunctions = { workspace = true }
 RustQuant_utils = { workspace = true }
 

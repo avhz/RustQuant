@@ -18,19 +18,18 @@ workspace = true
 RustQuant = { path = "../RustQuant" }
 
 [dependencies]
-derive_builder = { workspace = true }
-RustQuant_time = { workspace = true }
 RustQuant_instruments = { workspace = true }
-rand = { workspace = true }
 RustQuant_math = { workspace = true }
-yahoo_finance_api = { workspace = true }
-time = { workspace = true }
+RustQuant_time = { workspace = true }
 RustQuant_error = { workspace = true }
-tokio-test = { workspace = true }
+RustQuant_stochastics = { workspace = true }
+
+derive_builder = { workspace = true }
+rand = { workspace = true }
+time = { workspace = true }
 plotly = { workspace = true }
 argmin = { workspace = true }
 argmin-math = { workspace = true }
-RustQuant_stochastics = { workspace = true }
 
 ## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ## RUSTDOC CONFIGURATION
