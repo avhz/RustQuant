@@ -377,6 +377,9 @@ where
     }
 
     fn interpolate(&self, point: IndexType) -> Result<ValueType, RustQuantError> {
+        if !self.fitted {
+            return Err(RustQuantError::Unfitted);
+        }
         let range = self.range();
         if point.partial_cmp(&range.0).unwrap() == std::cmp::Ordering::Less
             || point.partial_cmp(&range.1).unwrap() == std::cmp::Ordering::Greater
@@ -489,6 +492,22 @@ mod tests_cubic_spline_interpolation {
             39.966361318634604,
             interpolator.interpolate(2.5).unwrap(),
             RUSTQUANT_EPSILON
+        );
+    }
+
+    #[test]
+    fn test_cubic_spline_unfitted() {
+
+        let xs: Vec<f64> = vec![0., 1., 2., 3., 4.];
+        let ys: Vec<f64> = vec![0., 1., 16., 81., 256.];
+
+        let interpolator: CubicSplineInterpolator<f64, f64> = CubicSplineInterpolator::new(xs, ys).unwrap();
+
+        assert!(
+            matches!(
+                interpolator.interpolate(2.5),
+                Err(RustQuantError::Unfitted),
+            )
         );
     }
 }
