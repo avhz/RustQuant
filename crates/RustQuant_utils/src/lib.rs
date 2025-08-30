@@ -36,6 +36,19 @@ macro_rules! assert_approx_equal {
     };
 }
 
+/// Forward a method call to the struct.
+#[macro_export]
+macro_rules! forward {
+    ($( Self :: $method:ident ( self $( , $arg:ident : $ty:ty )* ) -> $ret:ty ; )*) => {
+        $(
+            #[inline]
+            fn $method(self $( , $arg : $ty )* ) -> $ret {
+                Self::$method(self $( , $arg )* )
+            }
+        )*
+    };
+}
+
 /// Plot a vector of values.
 #[macro_export]
 macro_rules! plot_vector {

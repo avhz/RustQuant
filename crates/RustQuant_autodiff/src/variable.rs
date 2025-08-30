@@ -18,29 +18,76 @@
 // IMPORTS
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use crate::graph::Graph;
+
+use RustQuant_utils::forward;
+
+use crate::{graph::Graph, DiffOps};
 use std::fmt::Display;
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // STRUCT AND IMPLEMENTATION
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+impl DiffOps for f64 {
+    fn asin_diff(self) -> f64 {
+        if (self > -1.0) && (self < 1.0) {
+            ((1.0 - self.powi(2)).sqrt()).recip()
+        } else {
+            f64::NAN
+        }
+    }
+    fn erfc(self) -> f64 {
+        1.0 - self.erf()
+    }
+    fn erf(self) -> f64 {
+        errorfunctions::RealErrorFunctions::erf(self)
+    }
+    forward! {
+        Self::abs(self) -> Self;
+        Self::signum(self) -> Self;
+        Self::recip(self) -> Self;
+        Self::powi(self, n: i32) -> Self;
+        Self::sqrt(self) -> Self;
+        Self::cbrt(self) -> Self;
+        Self::powf(self, n: Self) -> Self;
+        Self::ln_1p(self) -> Self;
+        Self::exp_m1(self) -> Self;
+        Self::exp2(self) -> Self;
+        Self::log2(self) -> Self;
+        Self::log10(self) -> Self;
+        Self::exp(self) -> Self;
+        Self::ln(self) -> Self;
+        Self::sin(self) -> Self;
+        Self::cos(self) -> Self;
+        Self::tan(self) -> Self;
+        Self::asin(self) -> Self;
+        Self::acos(self) -> Self;
+        Self::atan(self) -> Self;
+        Self::sinh(self) -> Self;
+        Self::cosh(self) -> Self;
+        Self::tanh(self) -> Self;
+        Self::asinh(self) -> Self;
+        Self::acosh(self) -> Self;
+        Self::atanh(self) -> Self;
+    }
+}
+
 /// Struct to contain the initial variables.
 #[derive(Clone, Copy, Debug)]
-pub struct Variable<'v> {
+pub struct Variable<'v, T = f64> {
     /// Pointer to the graph.
-    pub graph: &'v Graph,
+    pub graph: &'v Graph<T>,
     /// Index to the vertex.
     pub index: usize,
     /// Value associated to the vertex.
-    pub value: f64, // Value,
+    pub value: T, // Value,
 }
 
-impl<'v> Variable<'v> {
+impl<'v, T: Copy> Variable<'v, T> {
     /// Instantiate a new variable.
     #[must_use]
     #[inline]
-    pub const fn new(graph: &'v Graph, index: usize, value: f64) -> Self {
+    pub const fn new(graph: &'v Graph<T>, index: usize, value: T) -> Self {
         Variable {
             graph,
             index,
@@ -51,7 +98,7 @@ impl<'v> Variable<'v> {
     /// Function to return the value contained in a vertex.
     #[must_use]
     #[inline]
-    pub fn value(&self) -> f64 {
+    pub fn value(&self) -> T {
         self.value
     }
 
@@ -65,10 +112,12 @@ impl<'v> Variable<'v> {
     /// Function to return the graph.
     #[must_use]
     #[inline]
-    pub fn graph(&self) -> &'v Graph {
+    pub fn graph(&self) -> &'v Graph<T> {
         self.graph
     }
+}
 
+impl<'v> Variable<'v, f64> {
     /// Check if variable is finite.
     #[must_use]
     #[inline]
