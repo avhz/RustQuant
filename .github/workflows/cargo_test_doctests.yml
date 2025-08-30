@@ -26,4 +26,4 @@ jobs:
       # TEST THE LIBRARY
       # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       - name: Run doc tests.
-        run: cargo test --doc --verbose --all-features --all-targets --no-fail-fast
+        run: cargo test --doc --verbose --all-features --no-fail-fast
