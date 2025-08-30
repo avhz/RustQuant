@@ -23,7 +23,6 @@ RustQuant_time = { workspace = true }
 RustQuant_instruments = { workspace = true }
 rand = { workspace = true }
 RustQuant_math = { workspace = true }
-polars = { workspace = true }
 yahoo_finance_api = { workspace = true }
 time = { workspace = true }
 RustQuant_error = { workspace = true }

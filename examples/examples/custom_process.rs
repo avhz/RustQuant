@@ -22,7 +22,9 @@
 
 use std::f64::consts::PI;
 use RustQuant::{
-    math::Sequence, prelude::StochasticScheme, stochastics::{process::StochasticProcess, StochasticProcessConfig}, utils::plot_vector
+    math::Sequence,
+    prelude::StochasticScheme,
+    stochastics::{process::StochasticProcess, StochasticProcessConfig},
 };
 
 fn main() {
@@ -33,7 +35,7 @@ fn main() {
     let y = x.iter().map(|&t| ricker_wavelet(t, 1.)).collect::<Vec<_>>();
 
     // Plot the wavelet.
-    plot_vector!(y, "./images/ricker_wavelet.png");
+    // plot_vector!(y, "./images/ricker_wavelet.png");
 
     // Create a custom Ito process instance.
     let custom_process = CustomItoProcess {
@@ -43,10 +45,17 @@ fn main() {
 
     // Generate a path and plot it.
     let config = StochasticProcessConfig::new(
-        0.01, 0.0, 10.0, 500, StochasticScheme::EulerMaruyama, 1, false, None
+        0.01,
+        0.0,
+        10.0,
+        500,
+        StochasticScheme::EulerMaruyama,
+        1,
+        false,
+        None,
     );
     let output = custom_process.generate(&config);
-    plot_vector!(output.paths[0], "./images/ricker_wavelet_process.png");
+    // plot_vector!(output.paths[0], "./images/ricker_wavelet_process.png");
 }
 
 // Your custom stochastic process parameters.

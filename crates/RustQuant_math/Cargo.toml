@@ -29,7 +29,6 @@ rust_decimal = { workspace = true }
 rand = { workspace = true }
 rand_distr = { workspace = true }
 statrs = { workspace = true }
-polars = { workspace = true }
 
 ## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ## RUSTDOC CONFIGURATION

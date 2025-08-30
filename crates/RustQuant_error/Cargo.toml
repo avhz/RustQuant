@@ -17,7 +17,6 @@ workspace = true
 [dependencies]
 thiserror = { workspace = true }
 rand_distr = { workspace = true }
-polars = { workspace = true }
 yahoo_finance_api = { workspace = true }
 
 ## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

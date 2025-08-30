@@ -47,10 +47,6 @@ pub enum RustQuantError {
     #[error("Yahoo! Finance error: {0}")]
     YahooError(#[from] yahoo_finance_api::YahooError),
 
-    /// Error variant arising from Polars.
-    #[error("Polars error: {0}")]
-    PolarsError(#[from] polars::error::PolarsError),
-
     /// Error variant arising from [`std::io`].
     #[error("IO error: {0}")]
     IoError(#[from] std::io::Error),

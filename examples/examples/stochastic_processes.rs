@@ -9,7 +9,7 @@
 // See the ./images/ directory for the output.
 
 use RustQuant::stochastics::*;
-use RustQuant::utils::plot_vector;
+// use RustQuant::utils::plot_vector;
 
 const INITIAL_VALUE: f64 = 10.0;
 const START_TIME: f64 = 0.0;
@@ -56,19 +56,19 @@ fn main() {
     let cev_out = cev.generate(&config);
 
     // Plot the paths.
-    plot_vector!(abm_out.paths[0].clone(), "./images/arithmetic_brownian_motion.png");
-    plot_vector!(bdt_out.paths[0].clone(), "./images/black_derman_toy.png");
-    plot_vector!(bm_out.paths[0].clone(),  "./images/brownian_motion.png");
-    plot_vector!(cir_out.paths[0].clone(), "./images/cox_ingersoll_ross.png");
-    plot_vector!(ev_out.paths[0].clone(),  "./images/extended_vasicek.png");
-    plot_vector!(gbm_out.paths[0].clone(), "./images/geometric_brownian_motion.png");
-    plot_vector!(hl_out.paths[0].clone(),  "./images/ho_lee.png");
-    plot_vector!(hw_out.paths[0].clone(),  "./images/hull_white.png");
-    plot_vector!(ou_out.paths[0].clone(),  "./images/ornstein_uhlenbeck.png");
-    plot_vector!(fbm_out.paths[0].clone(), "./images/fractional_brownian_motion.png");
-    plot_vector!(mjd_out.paths[0].clone(), "./images/merton_jump_diffusion.png");
-    plot_vector!(gbb_out.paths[0].clone(), "./images/geometric_brownian_bridge.png");
-    plot_vector!(cev_out.paths[0].clone(), "./images/constant_elasticity_of_variance.png");
+    // plot_vector!(abm_out.paths[0].clone(), "./images/arithmetic_brownian_motion.png");
+    // plot_vector!(bdt_out.paths[0].clone(), "./images/black_derman_toy.png");
+    // plot_vector!(bm_out.paths[0].clone(),  "./images/brownian_motion.png");
+    // plot_vector!(cir_out.paths[0].clone(), "./images/cox_ingersoll_ross.png");
+    // plot_vector!(ev_out.paths[0].clone(),  "./images/extended_vasicek.png");
+    // plot_vector!(gbm_out.paths[0].clone(), "./images/geometric_brownian_motion.png");
+    // plot_vector!(hl_out.paths[0].clone(),  "./images/ho_lee.png");
+    // plot_vector!(hw_out.paths[0].clone(),  "./images/hull_white.png");
+    // plot_vector!(ou_out.paths[0].clone(),  "./images/ornstein_uhlenbeck.png");
+    // plot_vector!(fbm_out.paths[0].clone(), "./images/fractional_brownian_motion.png");
+    // plot_vector!(mjd_out.paths[0].clone(), "./images/merton_jump_diffusion.png");
+    // plot_vector!(gbb_out.paths[0].clone(), "./images/geometric_brownian_bridge.png");
+    // plot_vector!(cev_out.paths[0].clone(), "./images/constant_elasticity_of_variance.png");
 
     plot_trajectories(&gbm_out, true);
 }

@@ -15,7 +15,7 @@ metadata.workspace = true
 workspace = true
 
 [dependencies]
-plotters = { workspace = true }
+# plotters = { workspace = true }
 
 ## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ## RUSTDOC CONFIGURATION

@@ -21,6 +21,6 @@ rand = { workspace = true }
 nalgebra = { workspace = true }
 rand_distr = { workspace = true }
 statrs = { workspace = true }
-polars = { workspace = true }
 finitediff = { workspace = true }
-plotters = { workspace = true }
+# polars = { workspace = true }
+# plotters = { workspace = true }
