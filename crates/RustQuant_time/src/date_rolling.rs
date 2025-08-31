@@ -9,6 +9,7 @@
 
 use super::{next_business_day, previous_business_day};
 use crate::calendar::Calendar;
+use pyo3::{pyclass, pymethods};
 use time::Date;
 
 /// Date rolling business day conventions.
@@ -22,6 +23,7 @@ use time::Date;
 /// same business calendar.
 /// """
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
+#[pyclass]
 pub enum DateRollingConvention {
     /// Actual: paid on the actual day, even if it is a non-business day.
     Actual,
@@ -59,18 +61,22 @@ impl Default for DateRollingConvention {
     }
 }
 
+#[pymethods]
 impl DateRollingConvention {
     /// Adjust (roll) the date according: Actual convention.
+    #[staticmethod]
     pub(crate) fn roll_date_actual(date: Date, _calendar: &Calendar) -> Date {
         date
     }
 
     /// Adjust (roll) the date according: Following convention.
+    #[staticmethod]
     pub(crate) fn roll_date_following(date: Date, calendar: &Calendar) -> Date {
         next_business_day(date, calendar)
     }
 
     /// Adjust (roll) the date according: Modified following convention.
+    #[staticmethod]
     pub(crate) fn roll_date_modified_following(date: Date, calendar: &Calendar) -> Date {
         let mut new_date = next_business_day(date, calendar);
 
@@ -82,6 +88,7 @@ impl DateRollingConvention {
     }
 
     /// Adjust (roll) the date according: Modified preceding convention.
+    #[staticmethod]
     pub(crate) fn roll_date_modified_preceding(date: Date, calendar: &Calendar) -> Date {
         let mut new_date = previous_business_day(date, calendar);
 
@@ -93,6 +100,7 @@ impl DateRollingConvention {
     }
 
     /// Adjust (roll) the date according: Modified rolling convention.
+    #[staticmethod]
     pub(crate) fn roll_date_modified_rolling(date: Date, calendar: &Calendar) -> Date {
         let mut new_date = date;
 
@@ -104,6 +112,7 @@ impl DateRollingConvention {
     }
 
     /// Adjust (roll) the date according: Preceding convention.
+    #[staticmethod]
     pub(crate) fn roll_date_preceding(date: Date, calendar: &Calendar) -> Date {
         previous_business_day(date, calendar)
     }

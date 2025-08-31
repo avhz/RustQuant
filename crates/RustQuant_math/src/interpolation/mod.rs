@@ -7,7 +7,7 @@
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use std::ops::{Div, Mul, Sub, AddAssign};
+use std::ops::{AddAssign, Div, Mul, Sub};
 use RustQuant_error::RustQuantError;
 
 pub mod linear_interpolator;
@@ -23,7 +23,10 @@ pub use b_splines::*;
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 /// Trait describing requirements to be interpolated.
-pub trait InterpolationValue: num::Num + AddAssign + std::fmt::Debug + Copy + Clone + Sized {}
+pub trait InterpolationValue:
+    num::Num + AddAssign + std::fmt::Debug + Copy + Clone + Sized
+{
+}
 
 /// Trait describing requirements to be an index of interpolation.
 pub trait InterpolationIndex:
@@ -39,7 +42,7 @@ pub trait InterpolationIndex:
 
 /// Interpolator trait.
 /// This trait is implemented by all interpolation models.
-pub trait Interpolator<IndexType, ValueType>
+pub trait Interpolator<IndexType, ValueType>: Send + Sync
 where
     IndexType: InterpolationIndex,
     ValueType: InterpolationValue,
@@ -63,7 +66,10 @@ where
     fn add_point(&mut self, point: (IndexType, ValueType));
 }
 
-impl<T> InterpolationValue for T where T: num::Num + AddAssign + std::fmt::Debug + Copy + Clone + Sized {}
+impl<T> InterpolationValue for T where
+    T: num::Num + AddAssign + std::fmt::Debug + Copy + Clone + Sized
+{
+}
 
 macro_rules! impl_interpolation_index {
     ($a:ty, $b:ty, $c:ty) => {

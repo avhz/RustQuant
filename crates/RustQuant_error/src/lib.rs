@@ -40,12 +40,20 @@ pub enum RustQuantError {
     #[error{"An input was missing: {0}"}]
     MissingInput(String),
 
+    /// This error indicates that a mutex was poisoned.
+    #[error("Mutex poisoned: {0}")]
+    MutexPoison(#[from] std::sync::PoisonError<()>),
+
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // Data related errors
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     /// Error variant arising from [`std::io`].
     #[error("IO error: {0}")]
     IoError(#[from] std::io::Error),
+
+    /// Error relating to PyO3
+    #[error("PyO3 error: {0}")]
+    PyO3Error(#[from] pyo3::PyErr),
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // Statistical distribution related errors
@@ -146,4 +154,10 @@ macro_rules! error {
         }
         .into()
     };
+}
+
+impl From<RustQuantError> for pyo3::PyErr {
+    fn from(err: RustQuantError) -> pyo3::PyErr {
+        pyo3::exceptions::PyValueError::new_err(err.to_string())
+    }
 }

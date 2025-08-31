@@ -26,7 +26,7 @@ license = "MIT OR Apache-2.0"
 
 [workspace]
 resolver = "2"
-members = [ "crates/*", "examples"]
+members = [ "crates/*", "examples", "bindings" ]
 
 [workspace.lints.rust]
 missing_docs = "forbid"
@@ -115,6 +115,8 @@ polars = { version = "0.44.0", features = ["docs-selection"] }
 # https://docs.rs/serde/latest/serde/
 serde = { version = "1.0.213", features = ["derive"] }
 
+# https://docs.rs/crate/pyo3/latest
+pyo3 = {version = "0.26.0", features = ["extension-module", "time"]}
 
 ## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ## PYTHON BINDINGS

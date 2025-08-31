@@ -8,6 +8,7 @@
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 use super::{contains_leap_year, days_between, is_last_day_of_february, leap_year_count};
+use pyo3::{pyclass, pymethods};
 use std::fmt;
 use time::{util::is_leap_year, Date, Month};
 
@@ -30,6 +31,7 @@ use time::{util::is_leap_year, Date, Month};
 /// """
 #[allow(non_camel_case_types)]
 #[derive(Clone, Copy, Debug)]
+#[pyclass]
 pub enum DayCountConvention {
     /// The '1/1' day count, which always returns a day count of 1.
     One_One,

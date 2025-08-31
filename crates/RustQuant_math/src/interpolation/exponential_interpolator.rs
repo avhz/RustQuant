@@ -22,8 +22,8 @@ use RustQuant_error::RustQuantError;
 /// Exponential Interpolator.
 pub struct ExponentialInterpolator<IndexType, ValueType>
 where
-    IndexType: InterpolationIndex<DeltaDiv = ValueType>,
-    ValueType: InterpolationValue,
+    IndexType: InterpolationIndex<DeltaDiv = ValueType> + Send + Sync,
+    ValueType: InterpolationValue + Send + Sync,
 {
     /// X-axis values for the interpolator.
     pub xs: Vec<IndexType>,
@@ -41,8 +41,8 @@ where
 
 impl<IndexType, ValueType> ExponentialInterpolator<IndexType, ValueType>
 where
-    IndexType: InterpolationIndex<DeltaDiv = ValueType>,
-    ValueType: InterpolationValue,
+    IndexType: InterpolationIndex<DeltaDiv = ValueType> + Send + Sync,
+    ValueType: InterpolationValue + Send + Sync,
 {
     /// Create a new ExponentialInterpolator.
     ///
@@ -76,8 +76,8 @@ where
 impl<IndexType, ValueType> Interpolator<IndexType, ValueType>
     for ExponentialInterpolator<IndexType, ValueType>
 where
-    IndexType: InterpolationIndex<DeltaDiv = ValueType>,
-    ValueType: InterpolationValue + Float,
+    IndexType: InterpolationIndex<DeltaDiv = ValueType> + Send + Sync,
+    ValueType: InterpolationValue + Float + Send + Sync,
 {
     fn fit(&mut self) -> Result<(), RustQuantError> {
         self.fitted = true;

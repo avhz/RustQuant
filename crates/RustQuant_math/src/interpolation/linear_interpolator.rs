@@ -19,8 +19,8 @@ use RustQuant_error::RustQuantError;
 /// Linear Interpolator.
 pub struct LinearInterpolator<IndexType, ValueType>
 where
-    IndexType: InterpolationIndex<DeltaDiv = ValueType>,
-    ValueType: InterpolationValue,
+    IndexType: InterpolationIndex<DeltaDiv = ValueType> + Send + Sync,
+    ValueType: InterpolationValue + Send + Sync,
 {
     /// X-axis values for the interpolator.
     pub xs: Vec<IndexType>,
@@ -38,8 +38,8 @@ where
 
 impl<IndexType, ValueType> LinearInterpolator<IndexType, ValueType>
 where
-    IndexType: InterpolationIndex<DeltaDiv = ValueType>,
-    ValueType: InterpolationValue,
+    IndexType: InterpolationIndex<DeltaDiv = ValueType> + Send + Sync,
+    ValueType: InterpolationValue + Send + Sync,
 {
     /// Create a new LinearInterpolator.
     ///
@@ -73,8 +73,8 @@ where
 impl<IndexType, ValueType> Interpolator<IndexType, ValueType>
     for LinearInterpolator<IndexType, ValueType>
 where
-    IndexType: InterpolationIndex<DeltaDiv = ValueType>,
-    ValueType: InterpolationValue,
+    IndexType: InterpolationIndex<DeltaDiv = ValueType> + Send + Sync,
+    ValueType: InterpolationValue + Send + Sync,
 {
     fn fit(&mut self) -> Result<(), RustQuantError> {
         self.fitted = true;

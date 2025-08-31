@@ -9,6 +9,7 @@
 
 use crate::date_rolling::DateRollingConvention;
 use crate::day_counting::DayCountConvention;
+use pyo3::{pyclass, pymethods};
 use std::fmt;
 use time::Date;
 
@@ -26,6 +27,7 @@ use time::Date;
 /// The Schedule struct is used to represent these schedules,
 /// and pricing methods should be implemented using date/time functionality.
 #[derive(Clone, Debug)]
+#[pyclass]
 pub struct Schedule {
     /// The dates of the schedule.
     pub dates: Vec<Date>,

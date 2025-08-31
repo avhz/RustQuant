@@ -14,11 +14,13 @@ use crate::date_rolling::*;
 use crate::day_counting::*;
 use crate::schedule::Schedule;
 
+use pyo3::{pyclass, pymethods};
 use std::collections::BTreeSet;
 use time::{Date, Duration, Weekday};
 
 /// Market calendars as defined by MIC (ISO 10383) codes.
 #[derive(Debug, Clone, Copy)]
+#[pyclass]
 pub enum Market {
     /// Null calendar.
     ///
@@ -99,6 +101,7 @@ pub enum Market {
 
 /// Calendar struct.
 #[derive(Debug, Clone)]
+#[pyclass]
 pub struct Calendar {
     /// Market the calendar is associated with.
     pub market: Market,
@@ -107,8 +110,10 @@ pub struct Calendar {
     extra: BTreeSet<Date>,
 }
 
+#[pymethods]
 impl Calendar {
     /// Create a new calendar instance.
+    #[new]
     pub const fn new(market: Market) -> Self {
         Self {
             market,
@@ -127,9 +132,9 @@ impl Calendar {
     }
 
     /// Add multiple holidays to the calendar.
-    pub fn add_holidays(&mut self, dates: &[Date]) {
+    pub fn add_holidays(&mut self, dates: Vec<Date>) {
         for d in dates {
-            self.add_holiday(*d);
+            self.add_holiday(d);
         }
     }
 
@@ -176,10 +181,10 @@ impl Calendar {
     }
 
     /// Roll multiple dates given a DateRollingConvention type.
-    pub fn roll_dates(&self, dates: &[Date], convention: DateRollingConvention) -> Vec<Date> {
+    pub fn roll_dates(&self, dates: Vec<Date>, convention: DateRollingConvention) -> Vec<Date> {
         dates
-            .iter()
-            .map(|&date| self.roll_date(date, convention))
+            .into_iter()
+            .map(|date| self.roll_date(date, convention))
             .collect()
     }
 
@@ -298,7 +303,7 @@ impl Calendar {
     ///
     /// assert_eq!(calendar.calendar_day_counts(dates), expected);
     /// ```
-    pub fn calendar_day_counts(&self, dates: &[Date]) -> Vec<i64> {
+    pub fn calendar_day_counts(&self, dates: Vec<Date>) -> Vec<i64> {
         dates
             .windows(2)
             .map(|window| self.calendar_day_count(window[0], window[1]))
@@ -329,7 +334,7 @@ impl Calendar {
     ///
     /// assert_eq!(calendar.business_day_counts(dates), expected);
     /// ```
-    pub fn business_day_counts(&self, dates: &[Date]) -> Vec<i64> {
+    pub fn business_day_counts(&self, dates: Vec<Date>) -> Vec<i64> {
         dates
             .windows(2)
             .map(|window| self.business_day_count(window[0], window[1]))
@@ -362,7 +367,7 @@ impl Calendar {
     ///
     /// assert_eq!(calendar.day_count_factors(dates, &convention), expected);
     /// ```
-    pub fn day_count_factors(&self, dates: &[Date], convention: DayCountConvention) -> Vec<f64> {
+    pub fn day_count_factors(&self, dates: Vec<Date>, convention: DayCountConvention) -> Vec<f64> {
         dates
             .windows(2)
             .map(|window| self.day_count_factor(window[0], window[1], convention))
@@ -372,7 +377,7 @@ impl Calendar {
     /// Generate a schedule from a set of dates.
     pub fn generate_schedule_from_dates(
         &self,
-        dates: &[Date],
+        dates: Vec<Date>,
         date_rolling_convention: DateRollingConvention,
         day_counting_convention: DayCountConvention,
     ) -> Schedule {
@@ -382,7 +387,8 @@ impl Calendar {
         let rolled_dates = self.roll_dates(dates, date_rolling_convention);
 
         // Then we need to compute the day count factors.
-        let mut day_count_factors = self.day_count_factors(&rolled_dates, day_counting_convention);
+        let mut day_count_factors =
+            self.day_count_factors(rolled_dates.clone(), day_counting_convention);
         day_count_factors.insert(
             0,
             self.day_count_factor(today, rolled_dates[0], day_counting_convention),
