@@ -10,7 +10,7 @@
 [workspace.package]
 authors = ["avhz <RustQuantContact@gmail.com>"]
 description = "A Rust library for quantitative finance."
-version = "0.4.0"
+version = "0.5.0"
 edition = "2021"
 readme = "README.md"
 repository = "https://github.com/avhz/RustQuant"
@@ -65,22 +65,22 @@ rustdoc-args = ["--html-in-header", "katex.html", "--cfg", "docsrs"]
 
 [workspace.dependencies]
 ## RustQuant Crates
-RustQuant_autodiff = { version = "0.4.0", path = "crates/RustQuant_autodiff" }
-RustQuant_cashflows = { version = "0.4.0", path = "crates/RustQuant_cashflows" }
-RustQuant_data = { version = "0.4.0", path = "crates/RustQuant_data" }
-RustQuant_enums = { version = "0.4.0", path = "crates/RustQuant_enums" }
-RustQuant_error = { version = "0.4.0", path = "crates/RustQuant_error" }
-RustQuant_instruments = { version = "0.4.0", path = "crates/RustQuant_instruments" }
-RustQuant_iso = { version = "0.4.0", path = "crates/RustQuant_iso" }
-RustQuant_math = { version = "0.4.0", path = "crates/RustQuant_math" }
-RustQuant_models = { version = "0.4.0", path = "crates/RustQuant_models" }
-RustQuant_ml = { version = "0.4.0", path = "crates/RustQuant_ml" }
-RustQuant_portfolios = { version = "0.4.0", path = "crates/RustQuant_portfolios" }
-RustQuant_pricing = { version = "0.4.0", path = "crates/RustQuant_pricing" }
-RustQuant_stochastics = { version = "0.4.0", path = "crates/RustQuant_stochastics" }
-RustQuant_time = { version = "0.4.0", path = "crates/RustQuant_time" }
-RustQuant_trading = { version = "0.4.0", path = "crates/RustQuant_trading" }
-RustQuant_utils = { version = "0.4.0", path = "crates/RustQuant_utils" }
+RustQuant_autodiff = { version = "0.5.0", path = "crates/RustQuant_autodiff" }
+RustQuant_cashflows = { version = "0.5.0", path = "crates/RustQuant_cashflows" }
+RustQuant_data = { version = "0.5.0", path = "crates/RustQuant_data" }
+RustQuant_enums = { version = "0.5.0", path = "crates/RustQuant_enums" }
+RustQuant_error = { version = "0.5.0", path = "crates/RustQuant_error" }
+RustQuant_instruments = { version = "0.5.0", path = "crates/RustQuant_instruments" }
+RustQuant_iso = { version = "0.5.0", path = "crates/RustQuant_iso" }
+RustQuant_math = { version = "0.5.0", path = "crates/RustQuant_math" }
+RustQuant_models = { version = "0.5.0", path = "crates/RustQuant_models" }
+RustQuant_ml = { version = "0.5.0", path = "crates/RustQuant_ml" }
+RustQuant_portfolios = { version = "0.5.0", path = "crates/RustQuant_portfolios" }
+RustQuant_pricing = { version = "0.5.0", path = "crates/RustQuant_pricing" }
+RustQuant_stochastics = { version = "0.5.0", path = "crates/RustQuant_stochastics" }
+RustQuant_time = { version = "0.5.0", path = "crates/RustQuant_time" }
+RustQuant_trading = { version = "0.5.0", path = "crates/RustQuant_trading" }
+RustQuant_utils = { version = "0.5.0", path = "crates/RustQuant_utils" }
 
 ## External Crates
 argmin = "0.10.0"           # https://docs.rs/argmin/latest/argmin/
