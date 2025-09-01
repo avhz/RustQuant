@@ -495,6 +495,24 @@ mod tests_cubic_spline_interpolation {
     }
 
     #[test]
+    fn test_cubic_interpolation_add_range_and_no_refit() {
+        let xs: Vec<f64> = vec![0., 1., 2., 3., 4.];
+        let ys: Vec<f64> = vec![0., 1., 16., 81., 256.];
+
+        let mut interpolator: CubicSplineInterpolator<f64, f64> = CubicSplineInterpolator::new(xs, ys).unwrap();
+        let _ = interpolator.fit();
+
+        interpolator.add_point((5.0, 625.0));
+
+        assert!(
+            matches!(
+                interpolator.interpolate(2.5),
+                Err(RustQuantError::Unfitted),
+            )
+        );
+    }
+
+    #[test]
     fn test_cubic_spline_unfitted() {
 
         let xs: Vec<f64> = vec![0., 1., 2., 3., 4.];
