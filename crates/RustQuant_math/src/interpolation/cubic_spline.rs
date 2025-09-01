@@ -161,11 +161,9 @@ where
         let mut transposed_matrix: Vec<Vec<ValueType>> = vec![];
 
         for i in 0..matrix.len() {
-            let mut row: Vec<ValueType> = vec![];
-            for j in i..matrix.len() {
-                row.push(matrix[j][i]);
-            }
-            transposed_matrix.push(row);
+            transposed_matrix.push(
+                (i..matrix.len()).map(|j| matrix[j][i]).collect()
+            );
         }
         transposed_matrix
     }
@@ -201,6 +199,7 @@ where
         let mut product_row: Vec<ValueType> = vec![];
         let mut product: Vec<Vec<ValueType>> = vec![];
 
+        #[allow(clippy::needless_range_loop)]
         for i in 0..diagonal.len() {
             product_row.clear();
             for j in 0..(i + 1) {
@@ -232,12 +231,12 @@ where
         let mut matrix_entry: ValueType;
 
         for i in 0..upper_tri_matrix.len() {
-            for j in 0..lower_tri_matrix_transpose.len() {
+            for (j, lower_tri_matrix_transpose_entry) in lower_tri_matrix_transpose.iter().enumerate() {
                 matrix_entry = ValueType::zero();
                 let lower_diff: usize = (i as i64 - j as i64).max(0) as usize;
                 let upper_diff: usize = (j as i64 - i as i64).max(0) as usize;
-                for k in 0..(upper_tri_matrix[i].len().min(lower_tri_matrix_transpose[j].len())) {
-                    matrix_entry = matrix_entry + upper_tri_matrix[i][k + upper_diff] * lower_tri_matrix_transpose[j][k + lower_diff];
+                for k in 0..(upper_tri_matrix[i].len().min(lower_tri_matrix_transpose_entry.len())) {
+                    matrix_entry += upper_tri_matrix[i][k + upper_diff] * lower_tri_matrix_transpose_entry[k + lower_diff];
                 }
                 product[i].push(matrix_entry);
             }
@@ -246,6 +245,7 @@ where
     }
     
     // Compute the spline value at a given point.
+    #[allow(clippy::too_many_arguments)]
     fn spline(
         &self,
         point: IndexType,
@@ -348,10 +348,10 @@ where
         self.second_derivatives = vec![ValueType::zero(); tridiagonal_inverse.len()];
         let mut matrix_entry: ValueType;
 
-        for i in 0..tridiagonal_inverse.len() {
+        for (i, tridiagonal_inverse_row) in tridiagonal_inverse.iter().enumerate() {
             matrix_entry = self.second_derivatives[i];
-            for j in 0..tridiagonal_inverse[i].len() {
-                matrix_entry = matrix_entry + tridiagonal_inverse[i][j] * rhs_vector[j];
+            for (j,  tridiagonal_inverse_entry) in tridiagonal_inverse_row.iter().enumerate() {
+                matrix_entry += *tridiagonal_inverse_entry * rhs_vector[j];
             }
             self.second_derivatives[i] = matrix_entry;
         }
