@@ -372,7 +372,7 @@ where
         let idx = self.xs.partition_point(|&x| x < point.0);
         self.xs.insert(idx, point.0);
         self.ys.insert(idx, point.1);
-        let _ = self.fit();
+        self.fitted = false;
     }
 
     fn interpolate(&self, point: IndexType) -> Result<ValueType, RustQuantError> {
