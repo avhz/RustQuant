@@ -7,10 +7,6 @@
 ##      - LICENSE-MIT.md
 ## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-## GENERAL CONFIGURATION
-## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 [package]
 name = "RustQuant"
 
@@ -35,12 +31,14 @@ workspace = true
 RustQuant_autodiff = { workspace = true }
 RustQuant_cashflows = { workspace = true }
 RustQuant_data = { workspace = true }
+RustQuant_enums = { workspace = true }
 RustQuant_error = { workspace = true }
 RustQuant_instruments = { workspace = true }
 RustQuant_iso = { workspace = true }
 RustQuant_math = { workspace = true }
 RustQuant_ml = { workspace = true }
 RustQuant_portfolios = { workspace = true }
+RustQuant_pricing = { workspace = true }
 RustQuant_stochastics = { workspace = true }
 RustQuant_time = { workspace = true }
 RustQuant_trading = { workspace = true }

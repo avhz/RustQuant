@@ -22,5 +22,5 @@ nalgebra = { workspace = true }
 rand_distr = { workspace = true }
 statrs = { workspace = true }
 finitediff = { workspace = true }
-# polars = { workspace = true }
-# plotters = { workspace = true }
+pyo3 = { workspace = true }
+

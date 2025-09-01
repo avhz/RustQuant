@@ -1,8 +1,8 @@
 from pprint import pprint as print
 from datetime import date
+
 from RustQuant.data import (
-    SpotCurve,
-    PyCurve,
+    Curve,
     CurveType,
     InterpolationMethod,
 )
@@ -10,12 +10,7 @@ from RustQuant.time import (
     Calendar,
     Market,
 )
-import RustQuant.data
-import RustQuant
 
-RustQuant.data.SpotCurve.new()
-RustQuant.__dir__()
-RustQuant.data.__dir__()
 
 dates = [
     date(2026, 1, 1),
@@ -32,7 +27,7 @@ rates = [
     0.013,
 ]
 
-crv = PyCurve(dates, rates, CurveType.Spot, InterpolationMethod.Linear)
+crv = Curve(dates, rates, CurveType.Spot, InterpolationMethod.Linear)
 print(crv.get_rate(date(2026, 6, 1)))
 
 
@@ -43,14 +38,6 @@ new_dates = [
     date(2026, 6, 4),
     date(2026, 6, 5),
 ]
-
-curve = SpotCurve(dates, rates)
-print(curve.__dir__())
-
-curve.plot()
-curve.get_rates(new_dates)
-
-curve.fit()
 
 cal = Calendar(Market.Australia)
 print(cal.__dir__())

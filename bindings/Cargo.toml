@@ -3,7 +3,6 @@ name = "RustQuant_pyo3"
 version = "0.1.0"
 edition = "2021"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 [lib]
 name = "RustQuant"
 crate-type = ["cdylib"]
@@ -11,5 +10,5 @@ path = "rust/lib.rs"
 
 [dependencies]
 RustQuant = {path = "../crates/RustQuant"}
-pyo3 = {workspace = true}
+pyo3 = { workspace = true }
 time = { workspace = true }

@@ -68,6 +68,7 @@ rustdoc-args = ["--html-in-header", "katex.html", "--cfg", "docsrs"]
 RustQuant_autodiff = { version = "0.4.0", path = "crates/RustQuant_autodiff" }
 RustQuant_cashflows = { version = "0.4.0", path = "crates/RustQuant_cashflows" }
 RustQuant_data = { version = "0.4.0", path = "crates/RustQuant_data" }
+RustQuant_enums = { version = "0.4.0", path = "crates/RustQuant_enums" }
 RustQuant_error = { version = "0.4.0", path = "crates/RustQuant_error" }
 RustQuant_instruments = { version = "0.4.0", path = "crates/RustQuant_instruments" }
 RustQuant_iso = { version = "0.4.0", path = "crates/RustQuant_iso" }
@@ -116,17 +117,4 @@ polars = { version = "0.44.0", features = ["docs-selection"] }
 serde = { version = "1.0.213", features = ["derive"] }
 
 # https://docs.rs/crate/pyo3/latest
-pyo3 = {version = "0.26.0", features = ["extension-module", "time"]}
-
-## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-## PYTHON BINDINGS
-## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-# [lib]
-# name = "RustQuant"
-# crate-type = ["cdylib"]
-
-# [dependencies.pyo3]
-# version = "0.22.0"
-# features = ["extension-module"]
-# features = ["abi3-py37", "extension-module"]
+pyo3 = {version = "0.26.0", features = ["time"]   }

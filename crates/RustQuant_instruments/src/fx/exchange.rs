@@ -67,8 +67,8 @@ impl Exchange {
     ///
     /// # Example
     /// ```
-    /// use RustQuant::instruments::*;
-    /// use RustQuant::iso::*;
+    /// use RustQuant_instruments::*;
+    /// use RustQuant_iso::*;
     ///
     /// let mut exchange = Exchange::new();
     ///
@@ -128,7 +128,7 @@ impl Exchange {
     ///
     /// # Example
     /// ```
-    /// use RustQuant::instruments::*;
+    /// use RustQuant_instruments::*;
     ///
     /// let mut exchange = Exchange::new();
     ///
@@ -174,9 +174,8 @@ impl ExchangeRate {
     ///
     /// # Example
     /// ```
-    /// use RustQuant::instruments::*;
-    /// use RustQuant::utils::assert_approx_equal;
-    ///
+    /// # use RustQuant_instruments::*;
+    /// # use RustQuant_utils::assert_approx_equal;
     /// // Use USD and EUR currency constants from the money module.
     /// let usd = Money::new(USD, 100.0);
     /// let eur_usd = ExchangeRate::new(USD, EUR, 0.9186955);  // 1 USD = 0.9186955 EUR

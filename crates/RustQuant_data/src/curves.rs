@@ -179,9 +179,29 @@ impl Curve {
         }
     }
 
+    /// Get a rate, and simultaneously add it to the nodes.
+    pub fn get_rate_and_insert(&mut self, date: Date) -> Option<f64> {
+        match self.nodes.get(&date) {
+            Some(rate) => Some(*rate),
+            None => {
+                let rate = self.interpolator.interpolate(date).ok()?;
+                self.nodes.insert(date, rate);
+                Some(rate)
+            }
+        }
+    }
+
     /// Get multiple rates from the curve.
     pub fn get_rates(&self, dates: Vec<Date>) -> Vec<Option<f64>> {
         dates.iter().map(|date| self.get_rate(*date)).collect()
+    }
+
+    /// Get multiple rates from the curve, and simultaneously add them to the nodes.
+    pub fn get_rates_and_insert(&mut self, dates: Vec<Date>) -> Vec<Option<f64>> {
+        dates
+            .iter()
+            .map(|date| self.get_rate_and_insert(*date))
+            .collect()
     }
 
     /// Set a rate in the curve.

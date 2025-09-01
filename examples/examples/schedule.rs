@@ -13,7 +13,7 @@ use RustQuant::time::*;
 fn main() {
     let cal = Calendar::new(Market::Australia);
 
-    let day_counting_cconvention = DayCountConvention::Actual_365_25;
+    let day_counting_convention = DayCountConvention::Actual_365_25;
     let date_rolling_convention = DateRollingConvention::ModifiedRolling;
 
     // Semi-annual coupon payment dates.
@@ -29,9 +29,9 @@ fn main() {
     // - The day count factor for each period,
     // - The day counting and date rolling conventions.
     let schedule = cal.generate_schedule_from_dates(
-        coupon_dates,
+        coupon_dates.to_vec(),
         date_rolling_convention,
-        day_counting_cconvention,
+        day_counting_convention,
     );
 
     // You will see that the dates that fall on New Year's Day are rolled to the next business day.
