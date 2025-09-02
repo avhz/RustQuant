@@ -116,7 +116,7 @@ macro_rules! impl_num_delta_into_value {
     ($b:ty, $c:ty) => {
         impl IntoValue<$c> for $b {
             fn into_value(self) -> $c {
-                self as $c
+                self
             }
         }   
     };
