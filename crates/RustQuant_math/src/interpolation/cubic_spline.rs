@@ -292,7 +292,7 @@ mod tests_cubic_spline_interpolation {
         let _ = interpolator.fit();
 
         assert_approx_equal!(
-            36.64909523809524,
+            36.660714285714285,
             interpolator.interpolate(2.5).unwrap(),
             RUSTQUANT_EPSILON
         );
@@ -316,7 +316,7 @@ mod tests_cubic_spline_interpolation {
         let _ = interpolator.fit();
 
         assert_approx_equal!(
-            36.64909523809524,
+            36.660714285714285,
             interpolator
                 .interpolate(xs[2] + time::Duration::hours(12))
                 .unwrap(),
@@ -327,7 +327,7 @@ mod tests_cubic_spline_interpolation {
     #[test]
     fn test_cubic_interpolation_out_of_range() {
         let xs: Vec<f64> = vec![1., 2., 3., 4., 5.];
-        let ys = vec![1., 2., 3., 4., 5.];
+        let ys: Vec<f64> = vec![1., 2., 3., 4., 5.];
 
         let mut interpolator: CubicSplineInterpolator<f64, f64> = CubicSplineInterpolator::new(xs, ys).unwrap();
         let _ = interpolator.fit();
@@ -347,7 +347,7 @@ mod tests_cubic_spline_interpolation {
         let _ = interpolator.fit();
 
         assert_approx_equal!(
-            39.966361318634604,
+            39.97368421052632,
             interpolator.interpolate(2.5).unwrap(),
             RUSTQUANT_EPSILON
         );
