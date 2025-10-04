@@ -393,107 +393,60 @@ mod tests_cubic_spline_helper_functions {
     use super::*;
 
     #[test]
-    fn test_compute_lower_tri_and_diagonal_matrices() {
+    fn test_cholesky_decomposition() {
         let xs: Vec<f64> = vec![1., 2., 3., 4., 5.];
         let ys: Vec<f64> = vec![1., 2., 3., 4., 5.];
 
-        let time_steps: Vec<f64> = xs.windows(2)
+        let mut interpolator: CubicSplineInterpolator<f64, f64> = CubicSplineInterpolator::new(xs, ys).unwrap();
+        interpolator.time_steps = interpolator.xs.windows(2)
             .map(|x| (x[1] - x[0]))
             .collect();
-
-        let interpolator: CubicSplineInterpolator<f64, f64> = CubicSplineInterpolator::new(xs, ys).unwrap();
-        let (lower_triangular, diagonal) = interpolator.compute_lower_tri_and_diagonal_matrices(&time_steps);
-
-        assert!(lower_triangular == vec![4.0, 3.75, 3.7333333333333334]);
-        assert!(diagonal == vec![0.25, 0.26666666666666666]);
-    }
-
-    #[test]
-    fn test_invert_lower_tri_matrix() {
-        let xs: Vec<f64> = vec![1., 2., 3., 4., 5.];
-        let ys: Vec<f64> = vec![1., 2., 3., 4., 5.];
-
-        let interpolator: CubicSplineInterpolator<f64, f64> = CubicSplineInterpolator::new(xs, ys).unwrap();
-        let inv_lower_tri_matrix: Vec<Vec<f64>> = interpolator.invert_lower_tri_matrix(&[3.0, 2.0, 1.0]);
-
-        assert!(
-            inv_lower_tri_matrix == vec![
-                vec![1.0],
-                vec![-3.0, 1.0],
-                vec![6.0, -2.0, 1.0],
-                vec![-6.0, 2.0, -1.0, 1.0]
-            ]
-        )
-    }
-
-    #[test]
-    fn test_transpose() {
-        let xs: Vec<f64> = vec![1., 2., 3., 4., 5.];
-        let ys: Vec<f64> = vec![1., 2., 3., 4., 5.];
-
-        let interpolator: CubicSplineInterpolator<f64, f64> = CubicSplineInterpolator::new(xs, ys).unwrap();
-        let transposed_matrix = interpolator.transpose(vec![
-            vec![1.0],
-            vec![2.0, 3.0],
-            vec![4.0, 5.0, 6.0],
-        ]);
-
-        assert!(
-            transposed_matrix == vec![
-                vec![1.0, 2.0, 4.0],
-                vec![3.0, 5.0],
-                vec![6.0],
-            ]
-        );
-    }
-
-    #[test]
-    fn lower_tri_transpose_inv_times_diag_inv() {
-        let xs: Vec<f64> = vec![1., 2., 3., 4., 5.];
-        let ys: Vec<f64> = vec![1., 2., 3., 4., 5.];
-
-        let interpolator: CubicSplineInterpolator<f64, f64> = CubicSplineInterpolator::new(xs, ys).unwrap();
-        let lower_tri_inverse: Vec<Vec<f64>> = vec![vec![1.0], vec![2.0, 3.0], vec![4.0, 5.0, 6.0]];
-        let diagonal: Vec<f64> = vec![1.0, 2.0, 3.0];
-
-        assert!(
-            interpolator.lower_tri_transpose_inv_times_diag_inv(&lower_tri_inverse, &diagonal) == vec![
-                vec![1.0, 2.0, 4.0],
-                vec![0.5, 2.5],
-                vec![0.3333333333333333]
-            ]
-        );
-    }
-
-    #[test]
-    fn test_upper_tri_times_lower_tri() {
-        let xs: Vec<f64> = vec![1., 2., 3., 4., 5.];
-        let ys: Vec<f64> = vec![1., 2., 3., 4., 5.];
-
-        let interpolator: CubicSplineInterpolator<f64, f64> = CubicSplineInterpolator::new(xs, ys).unwrap();
-        let upper_tri_matrix = vec![
-            vec![1.0, 2.0, 3.0],
-            vec![4.0, 5.0],
-            vec![6.0],
-        ];
-        let lower_tri_matrix_transpose = vec![
-            vec![-1.0, -2.0, -3.0],
-            vec![-4.0, -5.0],
-            vec![-6.0],
+        let result: Vec<Vec<f64>> = interpolator.cholesky_decomposition();
+        let expected: &[&[f64]] = &[
+            &[2.0],
+            &[0.5, 1.9364916731037085],
+            &[0.5163977794943222, 1.9321835661585918],
         ];
 
-        let product: Vec<Vec<f64>> = interpolator.upper_tri_times_lower_tri(
-            &upper_tri_matrix,
-            &lower_tri_matrix_transpose
-        );
+        assert_eq!(result, expected);
+    }
 
-        assert!(
-            product == vec![
-                [-14.0, -23.0, -18.0],
-                [-23.0, -41.0, -30.0],
-                [-18.0, -30.0, -36.0]
-            ]
+    #[test]
+    fn test_forward_substitution() {
+        let xs: Vec<f64> = vec![1., 2., 3., 4., 5.];
+        let ys: Vec<f64> = vec![1., 2., 3., 4., 5.];
+
+        let interpolator: CubicSplineInterpolator<f64, f64> = CubicSplineInterpolator::new(xs, ys).unwrap();
+        let result: Vec<f64> = interpolator.forward_substitution(
+            &[
+                [2.0].to_vec(),
+                [1.0, 2.0].to_vec(),
+                [1.0, 2.0].to_vec(),
+            ],
+            &[1.0, 1.0, 1.0]
         );
+        let expected: &[f64] = &[0.5, 0.25, 0.375];
+        
+        assert_eq!(result, expected);
+    }
+
+    #[test]
+    fn test_backward_substitution() {
+        let xs: Vec<f64> = vec![1., 2., 3., 4., 5.];
+        let ys: Vec<f64> = vec![1., 2., 3., 4., 5.];
+
+        let interpolator: CubicSplineInterpolator<f64, f64> = CubicSplineInterpolator::new(xs, ys).unwrap();
+        let result: Vec<f64> = interpolator.backward_substitution(
+            &[
+                [2.0].to_vec(),
+                [1.0, 2.0].to_vec(),
+                [1.0, 2.0].to_vec(),
+            ],
+            &[1.0, 1.0, 1.0]
+        );
+        let expected: &[f64] = &[0.375, 0.25, 0.5];
+        
+        assert_eq!(result, expected);
     }
 
     #[test]
@@ -513,6 +466,6 @@ mod tests_cubic_spline_helper_functions {
             156.85714285714286
         );
 
-        assert!(spline_result == 36.64909523809524);
+        assert_eq!(spline_result, 36.64909523809524);
     }
 }
