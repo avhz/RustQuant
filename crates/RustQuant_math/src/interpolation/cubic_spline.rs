@@ -78,170 +78,52 @@ where
         })
     }
 
-    // Compute L and D matrices in A = L * D * L^T
-    // Computation of L optimized by tracking sub-diagonal entries
-    // as diagonal entries of L are always 1
-    // and all other entries outside the sub-diagonal are 0
-    //
-    // E.g. the matrix
-    // [ 1 0 0 0 ]
-    // [ a 1 0 0 ]
-    // [ 0 b 1 0 ]
-    // [ 0 0 c 1 ]
-    // is represented as [a, b, c]
-    fn compute_lower_tri_and_diagonal_matrices(
-        &self, 
-        time_steps: &[IndexType::Delta]
-    ) -> (
-        Vec<IndexType::Delta>,
-        Vec<ValueType>
-    ) {
-        let mut diagonal: Vec<IndexType::Delta>  = time_steps
-            .windows(2)
-            .map(|t| {
-                (t[0] + t[1]) * ValueType::from_f64(2.0).unwrap()
-            }).collect();
+    fn cholesky_decomposition(&self) -> Vec<Vec<ValueType>> {
+        let n: usize = self.time_steps.len();
+        let mut lower_tri_matrix: Vec<Vec<ValueType>> = vec![vec![]; n - 1];
 
-        let mut lower_tri_matrix_sub_diag_entries: Vec<ValueType> = Vec::with_capacity(diagonal.len() - 1);
+        let mut prev_diag: ValueType = (ValueType::from_f64(2.0).unwrap() * (self.time_steps[0] + self.time_steps[1]).into_value()).square_root();
+        lower_tri_matrix[0].push(prev_diag);
+        let mut prev_sub_diag: ValueType;
 
-        for i in 1..diagonal.len() {
-            let prev_diag: IndexType::Delta = diagonal[i - 1];
-            let t_prev: IndexType::Delta = time_steps[i - 1];
+        for (i, time) in self.time_steps[1..(self.time_steps.len() - 1)].iter().enumerate() {
+            prev_sub_diag = time.into_value() / prev_diag;
+            lower_tri_matrix[i + 1].push(prev_sub_diag);
 
-            diagonal[i] = diagonal[i] - t_prev * (t_prev / prev_diag);
-            lower_tri_matrix_sub_diag_entries.push(t_prev / prev_diag);
+            prev_diag = (ValueType::from_f64(2.0).unwrap() * (*time + self.time_steps[i + 1]).into_value() - (prev_sub_diag * prev_sub_diag)).square_root();
+            lower_tri_matrix[i + 1].push(prev_diag)
         }
 
-        (diagonal, lower_tri_matrix_sub_diag_entries)
+        lower_tri_matrix
     }
 
-    // L * D * L^T inverts to (L^T)^-1 * D^-1 * L^-1
-    // This method computes L^-1
-    //
-    // The inverse of a lower triangular matrix
-    // is a lower triangular matrix
-    // represented as a vector of vectors
-    // without the known 0 entries
-    // i.e.
-    //
-    // [a 0 0 0]
-    // [b c 0 0]
-    // [d e f 0]
-    // [g h i j]
-    //
-    // is represented as
-    //
-    // [[a], [b, c], [d, e, f], [g, h, i, j]]
-    fn invert_lower_tri_matrix(
-        &self,
-        lower_tri_matrix_sub_diag_entries: &[ValueType]
-    ) -> Vec<Vec<ValueType>> {
-        
-        let mut temp: ValueType;
-        let mut inverse: Vec<Vec<ValueType>> = vec![vec![]; lower_tri_matrix_sub_diag_entries.len() + 1];
-        
-        inverse[0].push(ValueType::one());
-        
-        for i in 0..lower_tri_matrix_sub_diag_entries.len() {
-            temp = ValueType::one();
-            for j in i..lower_tri_matrix_sub_diag_entries.len() {
-                temp *= - lower_tri_matrix_sub_diag_entries[j];
-                inverse[j + 1].push(temp)
-            }
-            inverse[i + 1].push(ValueType::one());
-        }
-
-        inverse
-    }
-
-    // Transpose a matrix
-    fn transpose(
-        &self, matrix: Vec<Vec<ValueType>>
-    ) -> Vec<Vec<ValueType>> {
-        let mut transposed_matrix: Vec<Vec<ValueType>> = vec![];
-
-        for i in 0..matrix.len() {
-            transposed_matrix.push(
-                (i..matrix.len()).map(|j| matrix[j][i]).collect()
-            );
-        }
-        transposed_matrix
-    }
+    fn backward_substitution(&self, matrix: &[Vec<ValueType>], rhs: &[ValueType]) -> Vec<ValueType> {
     
-    // L * D * L^T inverts to (L^T)^-1 * D^-1 * L^-1
-    // This method computes (L^T)^-1 * D^-1
-    //
-    // The inverse of an upper triangular matrix
-    // will be a upper triangular matrix
-    // represented as an vector of vectors
-    // without the known 0 entries
-    // i.e.
-    //
-    // [a b c d]
-    // [0 e f g]
-    // [0 0 h i]
-    // [0 0 0 j]
-    //
-    // is represented as
-    //
-    // [[a, b, c, d], [e, f, g], [h, i], [j]]
-    //
-    // Note that the method undertaken here takes
-    // advantage of the fact that calculating the 
-    // inverse of an upper triangular matrix is equal
-    // to calculating the inverse its transpose
-    // (a lower triangular matrix) then transposing the result.
-    fn lower_tri_transpose_inv_times_diag_inv(
-        &self,
-        lower_tri_inverse: &[Vec<ValueType>], 
-        diagonal: &[IndexType::Delta],
-    ) -> Vec<Vec<ValueType>> {
-        let mut product_row: Vec<ValueType> = vec![];
-        let mut product: Vec<Vec<ValueType>> = vec![];
+        let matrix_len: usize = matrix.len();
+        let mut prev_value: ValueType = rhs[matrix_len - 1] / matrix[matrix_len - 1][1];
+        let mut result: Vec<ValueType> = vec![prev_value];
 
-        #[allow(clippy::needless_range_loop)]
-        for i in 0..diagonal.len() {
-            product_row.clear();
-            for j in 0..(i + 1) {
-                if i == j {
-                    product_row.push(ValueType::one() / diagonal[j].into_value())
-                } else {
-                    product_row.push(lower_tri_inverse[i][j] / diagonal[j].into_value());
-                }
-            }
-            product.push(product_row.clone())
+        for i in (1..(matrix_len - 1)).rev() {
+            prev_value = (rhs[i] - matrix[i + 1][0] * prev_value) / matrix[i][1];
+            result.insert(0, prev_value)
         }
 
-        self.transpose(product)
-    }
+        result.insert(0, (rhs[0] - matrix[1][0] * prev_value) / matrix[0][0]);
+
+        result
+    } 
+
+    fn forward_substitution(&self, matrix: &[Vec<ValueType>], rhs: &[ValueType]) -> Vec<ValueType> {
     
-    // Multiply (L^T)^-1 * D^-1 (Upper triangular matrix) with L^-1 (Lower triangular matrix)
-    // to finally get the inverse of A = L * D * L^T
-    // The product is represented as a vector of vectors.
-    //
-    // Note that the *transpose* of the lower triangular matrix
-    // is used to simplify the matrix multiplication process
-    fn upper_tri_times_lower_tri(
-        &self, 
-        upper_tri_matrix: &[Vec<ValueType>], 
-        lower_tri_matrix_transpose: &[Vec<ValueType>]
-    ) -> Vec<Vec<ValueType>>
-    {
-        let mut product: Vec<Vec<ValueType>> = vec![vec![]; upper_tri_matrix.len()];
-        let mut matrix_entry: ValueType;
+        let mut prev_value: ValueType = rhs[0] / matrix[0][0];
+        let mut result: Vec<ValueType> = vec![prev_value];
 
-        for i in 0..upper_tri_matrix.len() {
-            for (j, lower_tri_matrix_transpose_entry) in lower_tri_matrix_transpose.iter().enumerate() {
-                matrix_entry = ValueType::zero();
-                let lower_diff: usize = (i as i64 - j as i64).max(0) as usize;
-                let upper_diff: usize = (j as i64 - i as i64).max(0) as usize;
-                for k in 0..(upper_tri_matrix[i].len().min(lower_tri_matrix_transpose_entry.len())) {
-                    matrix_entry += upper_tri_matrix[i][k + upper_diff] * lower_tri_matrix_transpose_entry[k + lower_diff];
-                }
-                product[i].push(matrix_entry);
-            }
+        for i in 1..matrix.len() {
+            prev_value = (rhs[i] - matrix[i][0] * prev_value) / matrix[i][1];
+            result.push(prev_value)
         }
-        product
+
+        result
     }
     
     // Compute the spline value at a given point.
@@ -308,22 +190,7 @@ where
             .map(|x| (x[1] - x[0]))
             .collect();
 
-        let (diag_matrix, lower_tri_matrix) = self.compute_lower_tri_and_diagonal_matrices(&self.time_steps);
-
-        let mut inv_lower_tri_matrix: Vec<Vec<ValueType>> = self.invert_lower_tri_matrix(&lower_tri_matrix);
-
-        let upper_tri_matrix: Vec<Vec<ValueType>> = self.lower_tri_transpose_inv_times_diag_inv(
-            &inv_lower_tri_matrix,
-            &diag_matrix,
-        );
-
-        inv_lower_tri_matrix = self.transpose(inv_lower_tri_matrix);
-        let tridiagonal_inverse: Vec<Vec<ValueType>> = self.upper_tri_times_lower_tri(
-            &upper_tri_matrix,
-            &inv_lower_tri_matrix
-        );
-
-        let rhs_vector: Vec<ValueType> = self.xs.iter().zip(self.ys.iter())
+        let mut rhs: Vec<ValueType> = self.xs.iter().zip(self.ys.iter())
             .collect::<Vec<(&IndexType, &ValueType)>>()
             .windows(3)
             .map(|window| {
@@ -345,17 +212,9 @@ where
                 )
             }).collect();
 
-        self.second_derivatives = vec![ValueType::zero(); tridiagonal_inverse.len()];
-        let mut matrix_entry: ValueType;
-
-        for (i, tridiagonal_inverse_row) in tridiagonal_inverse.iter().enumerate() {
-            matrix_entry = self.second_derivatives[i];
-            for (j,  tridiagonal_inverse_entry) in tridiagonal_inverse_row.iter().enumerate() {
-                matrix_entry += *tridiagonal_inverse_entry * rhs_vector[j];
-            }
-            self.second_derivatives[i] = matrix_entry;
-        }
-
+        let lower_tri_matrix: Vec<Vec<ValueType>> = self.cholesky_decomposition();
+        rhs = self.forward_substitution(&lower_tri_matrix, &rhs);
+        self.second_derivatives = self.backward_substitution(&lower_tri_matrix, &rhs);
         self.second_derivatives.insert(0, ValueType::zero());
         self.second_derivatives.push(ValueType::zero());
 
