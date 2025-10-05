@@ -125,7 +125,7 @@ impl Curve {
         };            
 
         Ok(Self {
-            nodes: dates.into_iter().zip(rates.into_iter()).map(|(a, b)| (OrderedFloat(a), b)).collect(),
+            nodes: dates.into_iter().zip(rates).map(|(a, b)| (OrderedFloat(a), b)).collect(),
             curve_type,
             interpolation_method,
             interpolator,
@@ -278,7 +278,7 @@ impl Curve {
         let left = self.nodes.range(..OrderedFloat(index)).next_back().unwrap().0;
         let right = self.nodes.range(OrderedFloat(index)..).next().unwrap().0;
 
-        return (left.0, right.0);
+        (left.0, right.0)
     }
 
     /// Shift the curve by a constant value.
