@@ -7,7 +7,7 @@
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use std::{i8, ops::{Add, AddAssign, Div, Mul, MulAssign, Neg, Sub}};
+use std::ops::{Add, AddAssign, Div, Mul, MulAssign, Neg, Sub};
 use rust_decimal::prelude::*;
 use RustQuant_error::RustQuantError;
 

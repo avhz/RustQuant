@@ -187,7 +187,7 @@ where
     fn fit(&mut self) -> Result<(), RustQuantError> {
 
         self.time_steps = self.xs.windows(2)
-            .map(|x| (x[1] - x[0]))
+            .map(|x| x[1] - x[0])
             .collect();
 
         let mut rhs: Vec<ValueType> = self.xs.iter().zip(self.ys.iter())
