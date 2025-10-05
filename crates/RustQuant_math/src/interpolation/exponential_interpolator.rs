@@ -173,7 +173,6 @@ where
 #[cfg(test)]
 mod tests_exponential_interpolation {
     use super::*;
-    use time::macros::date;
     use RustQuant_utils::{assert_approx_equal, RUSTQUANT_EPSILON};
 
     #[test]
