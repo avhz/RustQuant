@@ -299,32 +299,6 @@ mod tests_cubic_spline_interpolation {
     }
 
     #[test]
-    fn test_natural_cubic_interpolation_dates() {
-        let now: time::OffsetDateTime = time::OffsetDateTime::now_utc();
-
-        let xs: Vec<time::OffsetDateTime> = vec![
-            now,
-            now + time::Duration::days(1),
-            now + time::Duration::days(2),
-            now + time::Duration::days(3),
-            now + time::Duration::days(4),
-        ];
-
-        let ys: Vec<f64> = vec![0., 1., 16., 81., 256.];
-
-        let mut interpolator: CubicSplineInterpolator<time::OffsetDateTime, f64> = CubicSplineInterpolator::new(xs.clone(), ys).unwrap();
-        let _ = interpolator.fit();
-
-        assert_approx_equal!(
-            36.660714285714285,
-            interpolator
-                .interpolate(xs[2] + time::Duration::hours(12))
-                .unwrap(),
-            RUSTQUANT_EPSILON
-        );
-    }
-
-    #[test]
     fn test_cubic_interpolation_out_of_range() {
         let xs: Vec<f64> = vec![1., 2., 3., 4., 5.];
         let ys: Vec<f64> = vec![1., 2., 3., 4., 5.];

@@ -131,16 +131,6 @@ macro_rules! impl_num_delta_into_value {
     };
 }
 
-macro_rules! impl_time_delta_into_value {
-    ($b:ty, $c:ty) => {
-        impl IntoValue<$c> for $b {
-            fn into_value(self) -> $c {
-                self.as_seconds_f64()
-            }
-        }
-    };
-}
-
 macro_rules! impl_int_square_root {
     ($c:ty) => {
         impl SquareRoot<$c> for $c {
@@ -198,13 +188,6 @@ impl_interpolation_index!(f64, f64, f64);
 impl_num_delta_into_value!(f64, f64);
 impl_float_square_root!(f32);
 impl_float_square_root!(f64);
-
-// Implement InterpolationIndex for date/time types.
-impl_interpolation_index!(time::Date, time::Duration, f64);
-impl_interpolation_index!(time::Time, time::Duration, f64);
-impl_interpolation_index!(time::OffsetDateTime, time::Duration, f64);
-impl_interpolation_index!(time::PrimitiveDateTime, time::Duration, f64);
-impl_time_delta_into_value!(time::Duration, f64);
 
 // Implement InterpolationIndex for Decimal type.
 impl_interpolation_index!(

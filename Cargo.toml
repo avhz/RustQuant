@@ -100,6 +100,7 @@ rayon = "1.9.0"             # https://docs.rs/rayon/latest/rayon/
 rust_decimal = { version = "1.34.3", features = ["maths"] }     # https://docs.rs/rust_decimal/latest/rust_decimal/
 statrs = "0.17.1"           # https://docs.rs/statrs/latest/statrs/
 thiserror = "1.0.57"        # https://docs.rs/thiserror/latest/thiserror/
+ordered-float = "5.1.0"    # https://docs.rs/ordered-float/latest/ordered_float/
 
 # https://docs.rs/ndarray/latest/ndarray/
 ndarray = { version = "0.16.1", features = ["rayon"] }
