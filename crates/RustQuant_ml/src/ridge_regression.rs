@@ -80,11 +80,11 @@ impl RidgeRegressionInput<f64> {
 
         let n_col: usize = features_matrix.ncols();
         let features_matrix_transpose = features_matrix.transpose();
-        let mut regularization_matrix = DMatrix::<f64>::identity(n_col, n_col);
+        let mut regularisation_matrix = DMatrix::<f64>::identity(n_col, n_col);
         
-        if self.fit_intercept { regularization_matrix[(0,0)] = 0.0; }
+        if self.fit_intercept { regularisation_matrix[(0,0)] = 0.0; }
     
-        let ridge_matrix = (&features_matrix_transpose * features_matrix) + self.lambda * regularization_matrix;
+        let ridge_matrix = (&features_matrix_transpose * features_matrix) + self.lambda * regularisation_matrix;
 
         let ridge_matrix_inv = ridge_matrix
             .try_inverse()
@@ -122,7 +122,6 @@ impl RidgeRegressionOutput<f64> {
 #[cfg(test)]
 mod tests_ridge_regression {
     use super::*;
-    use std::f64::EPSILON as EPS;
     use RustQuant_utils::assert_approx_equal;
 
     struct DataForTests {
@@ -189,7 +188,7 @@ mod tests_ridge_regression {
                     -0.420_204_780_485_896_43,
                     0.490_065_457_911_238_96
                 ][i],
-                EPS
+                f64::EPSILON
             );
         }
 
@@ -203,7 +202,7 @@ mod tests_ridge_regression {
                     -0.153_704_818_231_581,
                     0.312_493_346_002_296_7
                 ][i],
-                EPS
+                f64::EPSILON
             );
         }
         Ok(())
@@ -234,7 +233,7 @@ mod tests_ridge_regression {
                     -0.371_997_155_606_467_07,
                     0.104_115_015_026_450_71,
                 ][i],
-                EPS
+                f64::EPSILON
             );
         }
 
@@ -249,7 +248,7 @@ mod tests_ridge_regression {
                     -1.038_257_347_797_051_1,
                     -0.738_103_402_522_953_9,
                 ][i],
-                EPS
+                f64::EPSILON
             );
         }
         Ok(())
