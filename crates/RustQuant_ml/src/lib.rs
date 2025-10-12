@@ -33,3 +33,8 @@ pub use linear_regression::*;
 /// Logistic regression.
 pub mod logistic_regression;
 pub use logistic_regression::*;
+
+/// Ridge regression.
+pub mod ridge_regression;
+pub use ridge_regression::*;
+
