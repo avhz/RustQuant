@@ -73,7 +73,7 @@ impl LassoInput<f64> {
         let n_cols = self.x.ncols();
         let n_rows = self.x.nrows() as f64;
         let mut features_matrix = self.x.clone();
-        let mut response_vec = self.y.clone();
+        let mut residuals = self.y.clone();
         let feature_means = DVector::from_iterator(
                 self.x.ncols(),
                 (0..self.x.ncols()).map(|j| self.x.column(j).mean())
@@ -88,10 +88,9 @@ impl LassoInput<f64> {
                     features_matrix[(i, j)] -= mean;
                 }
             }
-            response_vec = &self.y - DVector::from_element(self.x.nrows(), self.y.mean());
+            residuals -= DVector::from_element(self.x.nrows(), self.y.mean());
         }
             
-        let mut residual = response_vec;
         let mut coefficients = DVector::<f64>::zeros(n_cols);
 
         for _ in 0..self.max_iter {
@@ -100,7 +99,7 @@ impl LassoInput<f64> {
                 
                 let feature_vals_col_j = features_matrix.column(j);
                 let col_norm: f64 = feature_vals_col_j.dot(&feature_vals_col_j);
-                let rho: f64 = (residual.dot(&feature_vals_col_j) + coefficients[j] * col_norm) / n_rows;
+                let rho: f64 = (residuals.dot(&feature_vals_col_j) + coefficients[j] * col_norm) / n_rows;
                 
                 let new_coefficient_j: f64 = if rho < -self.lambda {
                     (rho + self.lambda) / (col_norm / n_rows)
@@ -112,7 +111,7 @@ impl LassoInput<f64> {
 
                 let delta: f64 = new_coefficient_j - coefficients[j];
                 if delta.abs() > 0.0 {
-                    residual -= &feature_vals_col_j * delta;
+                    residuals -= &feature_vals_col_j * delta;
                 }
                 coefficients[j] = new_coefficient_j;
                 max_delta = max_delta.max(delta.abs());
