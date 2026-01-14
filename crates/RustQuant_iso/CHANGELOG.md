@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.5.0](https://github.com/avhz/RustQuant/compare/RustQuant_iso-v0.4.0...RustQuant_iso-v0.5.0) - 2026-01-14
+
+### Other
+
+- Update README.md
+
 ## [0.4.0](https://github.com/avhz/RustQuant/compare/RustQuant_iso-v0.3.1...RustQuant_iso-v0.4.0) - 2024-11-22
 
 ### Other

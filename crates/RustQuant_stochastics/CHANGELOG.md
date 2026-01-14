@@ -6,6 +6,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.5.0](https://github.com/avhz/RustQuant/compare/RustQuant_stochastics-v0.4.0...RustQuant_stochastics-v0.5.0) - 2026-01-14
+
+### Other
+
+- Merge pull request #300 from lifechange777/patch-4
+- #303 - refactored Calendar trait to struct
+- Amend all references to monte_carlo():
+- Amend stochastic processes to utilise dedicate Monte-Carlo engine
+- Move fractional stochastic functionalities to a dedicated module + amend logic to keep same functionality with easier intuition
+- Centralise Monte-Carlo engine in a separate module
+- Major overhaul: monte_carlo() to become the standard simulation method, replacing euler_maruyama()
+
 ## [0.3.1](https://github.com/avhz/RustQuant/compare/RustQuant_stochastics-v0.3.0...RustQuant_stochastics-v0.3.1) - 2024-11-10
 
 ### Other

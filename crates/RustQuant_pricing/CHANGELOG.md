@@ -1,4 +1,5 @@
 # Changelog
+
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
@@ -6,66 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [0.5.0](https://github.com/avhz/RustQuant/compare/RustQuant_math-v0.4.0...RustQuant_math-v0.5.0) - 2026-01-14
-
-### Added
-
-- PyO3 bindings initial work
-
-### Other
-
-- Merge pull request #300 from lifechange777/patch-4
-- remove plotters and polars deps
-- Amend unit tests to ensure correct error message is prompted
-- Remove unnecessary cloning in tests
-- Create b_spline submodule + make struct publicly accessible
-- Amend traits to utilise AddAssign operation + provide ability to display InterpolationIndex (for BSplineOutsideOfRange error)
-- Unit tests
-- Implement Interpolator trait for BSplineInterpolator struct
-- Define B-Spline struct, constructor + method for the Cox de Boor algorithm
-
-## [0.3.1](https://github.com/avhz/RustQuant/compare/RustQuant_math-v0.3.0...RustQuant_math-v0.3.1) - 2024-11-10
-
-### Other
-
-- fix failing doc-tests (add RustQuant dev-dep)
-
-## [0.3.0](https://github.com/avhz/RustQuant/compare/RustQuant_math-v0.2.12...RustQuant_math-v0.3.0) - 2024-11-07
-
-### Other
-
-- some small lints
-- cleanup autodiff
-
-## [0.2.12](https://github.com/avhz/RustQuant/compare/RustQuant_math-v0.2.11...RustQuant_math-v0.2.12) - 2024-10-29
-
-### Other
-
-- katex header in sub-crates
-
-## [0.2.11](https://github.com/avhz/RustQuant/compare/RustQuant_math-v0.2.10...RustQuant_math-v0.2.11) - 2024-10-28
-
-### Other
-
-- release v0.2.10
-
-## [0.2.10](https://github.com/avhz/RustQuant/releases/tag/RustQuant_math-v0.2.10) - 2024-10-28
+## [0.5.0](https://github.com/avhz/RustQuant/compare/RustQuant_pricing-v0.4.0...RustQuant_pricing-v0.5.0) - 2026-01-14
 
 ### Fixed
 
+- pyo3 test/example errors on MacOS
 - underscored whitespace between badges
 - restructure `Money` module into `Instruments` and `Cashflows`
 - fixed gbm paths
 
 ### Other
 
-- release
-- examples crate
-- MAJOR RE-STRUCTURE INTO SUB-CRATES
+- Merge pull request #300 from lifechange777/patch-4
+- update README.md
 - update readme
 - Update README.md
 - Add license scan report and status
-- update module table and fix badge whitespaces, resolves [#249](https://github.com/avhz/RustQuant/pull/249) 
+- update module table and fix badge whitespaces, resolves #249 
 - Update README.md
 - Update README.md (expired Discord link)
 - remove more unused dependencies.
@@ -119,7 +77,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Update README.
 - Update README.
 - Update README
-- Closed [#55](https://github.com/avhz/RustQuant/pull/55) (`autodiff` Graphviz update); working on logistic regression.
+- Closed #55 (`autodiff` Graphviz update); working on logistic regression.
 - Update readme
 - Pre-publish commit: v0.0.20
 - Add CHANGELOG and update readme.
@@ -135,10 +93,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Update README (cleaning up the stochastic process notation).
 - Update readme (dynamics for HW and EV models)
 - Update readme badges
-- Merge pull request [#45](https://github.com/avhz/RustQuant/pull/45) from aatmunbaxi/impl-ho-lee
+- Merge pull request #45 from aatmunbaxi/impl-ho-lee
 - Update README
 - Update README.md
-- Closing [#27](https://github.com/avhz/RustQuant/pull/27): download price history from Yahoo! Finance.
+- Closing #27: download price history from Yahoo! Finance.
 - Update readme.
 - Update readme.
 - Update readme.
@@ -211,9 +169,3 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Update LICENSE
 - Added option pricer files (need to complete).
 - Updated README
-
-## [0.2.10](https://github.com/avhz/RustQuant/compare/RustQuant_math-v0.2.9...RustQuant_math-v0.2.10) - 2024-10-28
-
-### Other
-- examples crate
-- MAJOR RE-STRUCTURE INTO SUB-CRATES
