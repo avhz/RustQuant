@@ -33,3 +33,7 @@ pub use linear_regression::*;
 /// Logistic regression.
 pub mod logistic_regression;
 pub use logistic_regression::*;
+
+/// lasso regression.
+pub mod lasso;
+pub use lasso::*;
