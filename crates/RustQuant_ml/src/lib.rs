@@ -34,6 +34,10 @@ pub use linear_regression::*;
 pub mod logistic_regression;
 pub use logistic_regression::*;
 
+/// Ridge regression.
+pub mod ridge_regression;
+pub use ridge_regression::*;
+
 /// lasso regression.
 pub mod lasso;
 pub use lasso::*;
