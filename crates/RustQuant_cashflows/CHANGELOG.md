@@ -6,6 +6,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.5.0](https://github.com/avhz/RustQuant/compare/RustQuant_cashflows-v0.4.0...RustQuant_cashflows-v0.5.0) - 2026-01-14
+
+### Fixed
+
+- fix reset function, add documentation
+
+### Other
+
+- Update README.md
+- correct import in doc tests
+- small doc adaptation according to the fix
+- documentation improvement of set_value
+
 ## [0.3.1](https://github.com/avhz/RustQuant/compare/RustQuant_cashflows-v0.3.0...RustQuant_cashflows-v0.3.1) - 2024-11-10
 
 ### Other
