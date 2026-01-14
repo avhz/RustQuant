@@ -129,7 +129,6 @@ where
 #[cfg(test)]
 mod tests_linear_interpolation {
     use super::*;
-    use time::macros::date;
     use RustQuant_utils::{assert_approx_equal, RUSTQUANT_EPSILON};
 
     #[test]
@@ -161,52 +160,5 @@ mod tests_linear_interpolation {
         let _ = interpolator.fit();
 
         assert!(interpolator.interpolate(6.).is_err());
-    }
-
-    #[test]
-    fn test_linear_interpolation_dates() {
-        let now = time::OffsetDateTime::now_utc();
-
-        let xs = vec![
-            now,
-            now + time::Duration::days(1),
-            now + time::Duration::days(2),
-            now + time::Duration::days(3),
-            now + time::Duration::days(4),
-        ];
-
-        let ys = vec![1., 2., 3., 4., 5.];
-
-        let mut interpolator = LinearInterpolator::new(xs.clone(), ys).unwrap();
-        let _ = interpolator.fit();
-
-        assert_approx_equal!(
-            2.5,
-            interpolator
-                .interpolate(xs[1] + time::Duration::hours(12))
-                .unwrap(),
-            RUSTQUANT_EPSILON
-        );
-    }
-
-    #[test]
-    fn test_linear_interpolation_dates_textbook() {
-        let d_1m = date!(1990 - 06 - 16);
-        let d_2m = date!(1990 - 07 - 17);
-
-        let r_1m = 0.9870;
-        let r_2m = 0.9753;
-
-        let dates = vec![d_1m, d_2m];
-        let rates = vec![r_1m, r_2m];
-
-        let interpolator = LinearInterpolator::new(dates, rates).unwrap();
-
-        let d = date!(1990 - 06 - 20);
-        assert_approx_equal!(
-            interpolator.interpolate(d).unwrap(),
-            0.9854903225806452,
-            RUSTQUANT_EPSILON
-        );
     }
 }

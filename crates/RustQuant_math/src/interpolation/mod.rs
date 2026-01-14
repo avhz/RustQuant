@@ -7,7 +7,8 @@
 //      - LICENSE-MIT.md
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-use std::ops::{AddAssign, Div, Mul, Sub};
+use std::ops::{Add, AddAssign, Div, Mul, MulAssign, Neg, Sub};
+use rust_decimal::prelude::*;
 use RustQuant_error::RustQuantError;
 
 pub mod linear_interpolator;
@@ -19,22 +20,53 @@ pub use exponential_interpolator::*;
 pub mod b_splines;
 pub use b_splines::*;
 
+pub mod cubic_spline;
+pub use cubic_spline::*;
+
+
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 /// Trait describing requirements to be interpolated.
-pub trait InterpolationValue:
-    num::Num + AddAssign + std::fmt::Debug + Copy + Clone + Sized
-{
+pub trait InterpolationValue: num::Num 
+    + num::FromPrimitive 
+    + Neg<Output = Self> 
+    + AddAssign
+    + MulAssign
+    + SquareRoot<Self>
+    + Copy
+    + Clone
+    + Sized
+    + std::fmt::Display
+    + std::fmt::Debug
+    + Send
+    + Sync {}
+
+/// Trait to convert a Delta type into a value of `ValueType`.
+pub trait IntoValue<ValueType> {
+    /// Convert `self` into `ValueType`.
+    fn into_value(self) -> ValueType;
+}
+
+/// Trait to compute the square root of a value.
+pub trait SquareRoot<ValueType> {
+    /// Calculate square root of a value.
+    fn square_root(self) -> ValueType;
 }
 
 /// Trait describing requirements to be an index of interpolation.
 pub trait InterpolationIndex:
-    Sub<Self, Output = Self::Delta> + PartialOrd + Copy + Clone + Sized + std::fmt::Display
+    Sub<Self, Output = Self::Delta> + PartialOrd + Copy + Clone + Sized + std::fmt::Display + Send + Sync
 {
     /// Type of the difference of `Self` - `Self`
     type Delta: Div<Self::Delta, Output = Self::DeltaDiv>
-        + Mul<Self::DeltaDiv, Output = Self::Delta>;
+        + Mul<Self::DeltaDiv, Output = Self::Delta>
+        + Add<Self::Delta, Output = Self::Delta>
+        + Sub<Self::Delta, Output = Self::Delta>
+        + IntoValue<Self::DeltaDiv>
+        + Copy
+        + Send
+        + Sync;
 
     /// Type of `Delta` / `Delta`
     type DeltaDiv: InterpolationValue;
@@ -66,10 +98,19 @@ where
     fn add_point(&mut self, point: (IndexType, ValueType));
 }
 
-impl<T> InterpolationValue for T where
-    T: num::Num + AddAssign + std::fmt::Debug + Copy + Clone + Sized
-{
-}
+impl<T> InterpolationValue for T where T: num::Num 
+    + num::FromPrimitive 
+    + Neg<Output = Self> 
+    + AddAssign
+    + MulAssign
+    + SquareRoot<Self>
+    + Copy
+    + Clone
+    + Sized
+    + std::fmt::Display
+    + std::fmt::Debug 
+    + Send
+    + Sync {}
 
 macro_rules! impl_interpolation_index {
     ($a:ty, $b:ty, $c:ty) => {
@@ -80,31 +121,73 @@ macro_rules! impl_interpolation_index {
     };
 }
 
+macro_rules! impl_num_delta_into_value {
+    ($b:ty, $c:ty) => {
+        impl IntoValue<$c> for $b {
+            fn into_value(self) -> $c {
+                self
+            }
+        }   
+    };
+}
+
+macro_rules! impl_int_square_root {
+    ($c:ty) => {
+        impl SquareRoot<$c> for $c {
+            fn square_root(self) -> $c {
+                self.isqrt()
+            }
+        }   
+    };
+}
+
+macro_rules! impl_float_square_root {
+    ($c:ty) => {
+        impl SquareRoot<$c> for $c {
+            fn square_root(self) -> $c {
+                self.sqrt()
+            }
+        }   
+    };
+}
+
+macro_rules! impl_decimal_square_root {
+    ($c:ty) => {
+        impl SquareRoot<$c> for $c {
+            fn square_root(self) -> $c {
+                self.sqrt().unwrap()
+            }
+        }   
+    };
+}
+
 // Implement InterpolationIndex for all signed integer types.
 impl_interpolation_index!(i8, i8, i8);
+impl_num_delta_into_value!(i8, i8);
+impl_int_square_root!(i8);
 impl_interpolation_index!(i16, i16, i16);
+impl_num_delta_into_value!(i16, i16);
+impl_int_square_root!(i16);
 impl_interpolation_index!(i32, i32, i32);
+impl_num_delta_into_value!(i32, i32);
+impl_int_square_root!(i32);
 impl_interpolation_index!(i64, i64, i64);
+impl_num_delta_into_value!(i64, i64);
+impl_int_square_root!(i64);
 impl_interpolation_index!(i128, i128, i128);
+impl_num_delta_into_value!(i128, i128);
+impl_int_square_root!(i128);
 impl_interpolation_index!(isize, isize, isize);
-
-// Implement InterpolationIndex for all unsigned integer types.
-impl_interpolation_index!(u8, u8, u8);
-impl_interpolation_index!(u16, u16, u16);
-impl_interpolation_index!(u32, u32, u32);
-impl_interpolation_index!(u64, u64, u64);
-impl_interpolation_index!(u128, u128, u128);
-impl_interpolation_index!(usize, usize, usize);
+impl_num_delta_into_value!(isize, isize);
+impl_int_square_root!(isize);
 
 // Implement InterpolationIndex for all floating point types.
 impl_interpolation_index!(f32, f32, f32);
+impl_num_delta_into_value!(f32, f32);
 impl_interpolation_index!(f64, f64, f64);
-
-// Implement InterpolationIndex for date/time types.
-impl_interpolation_index!(time::Date, time::Duration, f64);
-impl_interpolation_index!(time::Time, time::Duration, f64);
-impl_interpolation_index!(time::OffsetDateTime, time::Duration, f64);
-impl_interpolation_index!(time::PrimitiveDateTime, time::Duration, f64);
+impl_num_delta_into_value!(f64, f64);
+impl_float_square_root!(f32);
+impl_float_square_root!(f64);
 
 // Implement InterpolationIndex for Decimal type.
 impl_interpolation_index!(
@@ -112,3 +195,5 @@ impl_interpolation_index!(
     rust_decimal::Decimal,
     rust_decimal::Decimal
 );
+impl_num_delta_into_value!(rust_decimal::Decimal, rust_decimal::Decimal);
+impl_decimal_square_root!(rust_decimal::Decimal);
