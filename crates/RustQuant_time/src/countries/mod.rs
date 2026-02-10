@@ -118,5 +118,5 @@ pub mod switzerland;
 pub(crate) use switzerland::*;
 
 /// Turkey holidays and calendars.
-pub mod turkey;
-pub use turkey::*;
+pub(crate) mod turkey;
+pub(crate) use turkey::*;
