@@ -40,6 +40,17 @@ pub struct Gamma {
 impl Gamma {
     /// New instance of a Gamma distribution.
     ///
+    /// # Examples
+    /// ```
+    /// # use RustQuant::utils::assert_approx_equal;
+    /// # use RustQuant::math::distributions::*;
+    ///
+    /// let gamma = Gamma::new(2.0, 3.0);
+    ///
+    /// assert_approx_equal!(gamma.mean(), 2.0 / 3.0, 1e-12);
+    /// assert_approx_equal!(gamma.variance(), 2.0 / 9.0, 1e-12);
+    /// ```
+    ///
     /// # Panics
     ///
     /// Panics if alpha and beta are not positive.
@@ -52,6 +63,19 @@ impl Gamma {
 }
 
 impl Distribution for Gamma {
+    /// Characteristic function of the Gamma distribution.
+    ///
+    /// # Examples
+    /// ```
+    /// # use RustQuant::utils::assert_approx_equal;
+    /// # use RustQuant::math::distributions::*;
+    ///
+    /// let gamma = Gamma::new(1.0, 1.0);
+    /// let cf = gamma.cf(1.0);
+    ///
+    /// assert_approx_equal!(cf.re, 0.5, 1e-10);
+    /// assert_approx_equal!(cf.im, 0.5, 1e-10);
+    /// ```
     fn cf(&self, t: f64) -> Complex<f64> {
         let i: Complex<f64> = Complex::i();
         let alpha = self.alpha;
@@ -60,6 +84,17 @@ impl Distribution for Gamma {
         (1.0 - i * t / beta).powf(-alpha)
     }
 
+    /// Probability density function of the Gamma distribution.
+    ///
+    /// # Examples
+    /// ```
+    /// # use RustQuant::utils::assert_approx_equal;
+    /// # use RustQuant::math::distributions::*;
+    ///
+    /// // Gamma(1,1) is equivalent to Exp(1).
+    /// let gamma = Gamma::new(1.0, 1.0);
+    /// assert_approx_equal!(gamma.pdf(1.0), 0.367_879_441_171_442_5, 1e-12);
+    /// ```
     fn pdf(&self, x: f64) -> f64 {
         assert!(x > 0.0);
 
@@ -73,6 +108,16 @@ impl Distribution for Gamma {
         self.pdf(x)
     }
 
+    /// Cumulative distribution function of the Gamma distribution.
+    ///
+    /// # Examples
+    /// ```
+    /// # use RustQuant::utils::assert_approx_equal;
+    /// # use RustQuant::math::distributions::*;
+    ///
+    /// let gamma = Gamma::new(1.0, 1.0);
+    /// assert_approx_equal!(gamma.cdf(1.0), 0.632_120_558_828_558_1, 1e-12);
+    /// ```
     fn cdf(&self, x: f64) -> f64 {
         assert!(x > 0.0);
 
@@ -86,6 +131,16 @@ impl Distribution for Gamma {
         unimplemented!()
     }
 
+    /// Mean of the Gamma distribution.
+    ///
+    /// # Examples
+    /// ```
+    /// # use RustQuant::utils::assert_approx_equal;
+    /// # use RustQuant::math::distributions::*;
+    ///
+    /// let gamma = Gamma::new(2.0, 4.0);
+    /// assert_approx_equal!(gamma.mean(), 0.5, 1e-12);
+    /// ```
     fn mean(&self) -> f64 {
         self.alpha / self.beta
     }
@@ -102,6 +157,16 @@ impl Distribution for Gamma {
         }
     }
 
+    /// Variance of the Gamma distribution.
+    ///
+    /// # Examples
+    /// ```
+    /// # use RustQuant::utils::assert_approx_equal;
+    /// # use RustQuant::math::distributions::*;
+    ///
+    /// let gamma = Gamma::new(2.0, 4.0);
+    /// assert_approx_equal!(gamma.variance(), 0.125, 1e-12);
+    /// ```
     fn variance(&self) -> f64 {
         self.alpha / self.beta.powi(2)
     }
