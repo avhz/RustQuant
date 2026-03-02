@@ -79,6 +79,8 @@ pub enum Market {
     Netherlands,
     /// New Zealand national calendar.
     NewZealand,
+    /// Norway national calendar.
+    Norway,
     /// Singapore national calendar.
     Singapore,
     /// United Kingdom national calendar.
@@ -431,6 +433,7 @@ impl Calendar {
                 Market::Mexico => is_holiday_impl_mexico(date),
                 Market::Netherlands => is_holiday_impl_netherlands(date),
                 Market::NewZealand => is_holiday_impl_new_zealand(date),
+                Market::Norway => is_holiday_impl_norway(date),
                 Market::Singapore => is_holiday_impl_singapore(date),
                 Market::UnitedKingdom => is_holiday_impl_united_kingdom(date),
                 Market::UnitedStates => is_holiday_impl_united_states(date),
