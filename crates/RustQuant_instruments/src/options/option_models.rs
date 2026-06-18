@@ -1086,8 +1086,8 @@ mod bachelier {
             sum1 += v * eta.powi(k as i32);
         }
 
-        // for k in 1..=B.len() {
-        for (k, v) in B.iter().enumerate().skip(1) {
+        // for k in 0..B.len() {
+        for (k, v) in B.iter().enumerate() {
             sum2 += v * eta.powi(k as i32);
         }
 
@@ -1388,5 +1388,29 @@ mod tests_sabr {
         assert!((sabr.alpha - 0.2).abs() < 1e-10);
         assert!((sabr.rho - 0.0).abs() < 1e-10);
         assert!((sabr.nu - 0.4).abs() < 1e-10);
+    }
+}
+
+#[cfg(test)]
+mod tests_bachelier {
+    use super::*;
+
+    #[test]
+    fn test_bachelier_put_call_iv_symmetry() {
+        let f = 100.0;
+        let r = 0.0;
+        let v = 20.0;
+        let k = 95.0;
+        let t = 1.0;
+
+        let model = Bachelier::new(f, r, v);
+
+        let call_price = model.price(k, t, TypeFlag::Call);
+        let call_iv = model.iv(call_price, k, t, TypeFlag::Call);
+
+        let put_price = model.price(k, t, TypeFlag::Put);
+        let put_iv = model.iv(put_price, k, t, TypeFlag::Put);
+
+        assert!((put_iv - call_iv).abs() < 1e-10);
     }
 }
