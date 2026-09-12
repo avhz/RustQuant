@@ -89,6 +89,10 @@ pub(crate) use israel::*;
 pub mod italy;
 pub(crate) use italy::*;
 
+/// Japan holidays and calendars.
+pub mod japan;
+pub(crate) use japan::*;
+
 /// Mexico holidays and calendars
 pub mod mexico;
 pub(crate) use mexico::*;

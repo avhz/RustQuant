@@ -73,6 +73,8 @@ pub enum Market {
     Israel,
     /// Italy national calendar.
     Italy,
+    /// Japan national calendar.
+    Japan,
     /// Mexico national calendar.
     Mexico,
     /// Netherlands national calendar.
@@ -430,6 +432,7 @@ impl Calendar {
                 Market::Indonesia => is_holiday_impl_indonesia(date),
                 Market::Israel => is_holiday_impl_israel(date),
                 Market::Italy => is_holiday_impl_italy(date),
+                Market::Japan => is_holiday_impl_japan(date),
                 Market::Mexico => is_holiday_impl_mexico(date),
                 Market::Netherlands => is_holiday_impl_netherlands(date),
                 Market::NewZealand => is_holiday_impl_new_zealand(date),
