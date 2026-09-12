@@ -101,6 +101,10 @@ pub(crate) use netherlands::*;
 pub mod new_zealand;
 pub(crate) use new_zealand::*;
 
+/// Norway holidays and calendars.
+pub mod norway;
+pub(crate) use norway::*;
+
 /// Singapore holidays and calendars.
 pub mod singapore;
 pub(crate) use singapore::*;
