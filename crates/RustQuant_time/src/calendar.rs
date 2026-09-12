@@ -91,6 +91,8 @@ pub enum Market {
     UnitedStates,
     /// Switzerland national calendar.
     Switzerland,
+    /// Turkey national calendar.
+    Turkey,
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // MARKETS / EXCHANGES
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -441,6 +443,7 @@ impl Calendar {
                 Market::UnitedKingdom => is_holiday_impl_united_kingdom(date),
                 Market::UnitedStates => is_holiday_impl_united_states(date),
                 Market::Switzerland => is_holiday_impl_switzerland(date),
+                Market::Turkey => is_holiday_impl_turkey(date),
                 // Special case markets:
                 Market::None => false,
                 Market::Weekends => false,
