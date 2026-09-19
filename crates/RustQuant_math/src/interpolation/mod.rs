@@ -19,6 +19,9 @@ pub use exponential_interpolator::*;
 pub mod b_splines;
 pub use b_splines::*;
 
+pub mod lagrange_interpolator;
+pub use lagrange_interpolator::*;
+
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
