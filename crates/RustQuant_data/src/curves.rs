@@ -35,7 +35,7 @@ use plotly::{common::Mode, Plot, Scatter};
 use pyo3::{pyclass, pymethods, PyResult};
 use std::collections::BTreeMap;
 use std::sync::Arc;
-use time::Date;
+use ordered_float::OrderedFloat;
 use RustQuant_math::interpolation::{ExponentialInterpolator, Interpolator, LinearInterpolator};
 use RustQuant_stochastics::{CurveModel, NelsonSiegelSvensson};
 
@@ -84,7 +84,7 @@ pub enum InterpolationMethod {
 #[pyclass]
 pub struct Curve {
     /// The nodes of the curve.
-    nodes: BTreeMap<Date, f64>,
+    nodes: BTreeMap<OrderedFloat<f64>, f64>,
 
     /// The type of the curve.
     curve_type: CurveType,
@@ -93,7 +93,7 @@ pub struct Curve {
     interpolation_method: InterpolationMethod,
 
     /// Interpolator backend.
-    interpolator: Arc<dyn Interpolator<Date, f64>>,
+    interpolator: Arc<dyn Interpolator<f64, f64>>,
 
     /// Nelson-Siegel-Svensson curve parameters.
     nss: Option<NelsonSiegelSvensson>,
@@ -104,12 +104,12 @@ impl Curve {
     /// Create a new curve.
     #[new]
     pub fn new(
-        dates: Vec<Date>,
+        dates: Vec<f64>,
         rates: Vec<f64>,
         curve_type: CurveType,
         interpolation_method: InterpolationMethod,
     ) -> PyResult<Self> {
-        let interpolator: Arc<dyn Interpolator<Date, f64>> = match interpolation_method {
+        let interpolator: Arc<dyn Interpolator<f64, f64>> = match interpolation_method {
             InterpolationMethod::Linear => {
                 Arc::new(LinearInterpolator::new(dates.clone(), rates.clone())?)
             }
@@ -122,10 +122,10 @@ impl Curve {
             InterpolationMethod::Lagrange => {
                 todo!("Implement LagrangeInterpolator")
             }
-        };
+        };            
 
         Ok(Self {
-            nodes: dates.into_iter().zip(rates.into_iter()).collect(),
+            nodes: dates.into_iter().zip(rates).map(|(a, b)| (OrderedFloat(a), b)).collect(),
             curve_type,
             interpolation_method,
             interpolator,
@@ -133,38 +133,39 @@ impl Curve {
         })
     }
 
-    /// Create a new Curve from a list of nodes.
-    #[staticmethod]
-    pub fn from_nodes(
-        nodes: BTreeMap<Date, f64>,
-        curve_type: CurveType,
-        interpolation_method: InterpolationMethod,
-    ) -> PyResult<Self> {
-        let interpolator: Arc<dyn Interpolator<Date, f64>> = match interpolation_method {
-            InterpolationMethod::Linear => Arc::new(LinearInterpolator::new(
-                nodes.keys().cloned().collect(),
-                nodes.values().cloned().collect(),
-            )?),
-            InterpolationMethod::Exponential => Arc::new(ExponentialInterpolator::new(
-                nodes.keys().cloned().collect(),
-                nodes.values().cloned().collect(),
-            )?),
-            InterpolationMethod::CubicSpline => {
-                todo!("Implement CubicSplineInterpolator")
-            }
-            InterpolationMethod::Lagrange => {
-                todo!("Implement LagrangeInterpolator")
-            }
-        };
 
-        Ok(Self {
-            nodes,
-            curve_type,
-            interpolation_method,
-            interpolator,
-            nss: None,
-        })
-    }
+    // /// Create a new Curve from a list of nodes.
+    // #[staticmethod]
+    // pub fn from_nodes(
+    //     nodes: BTreeMap<Date, f64>,
+    //     curve_type: CurveType,
+    //     interpolation_method: InterpolationMethod,
+    // ) -> PyResult<Self> {
+    //     let interpolator: Arc<dyn Interpolator<Date, f64>> = match interpolation_method {
+    //         InterpolationMethod::Linear => Arc::new(LinearInterpolator::new(
+    //             nodes.keys().cloned().collect(),
+    //             nodes.values().cloned().collect(),
+    //         )?),
+    //         InterpolationMethod::Exponential => Arc::new(ExponentialInterpolator::new(
+    //             nodes.keys().cloned().collect(),
+    //             nodes.values().cloned().collect(),
+    //         )?),
+    //         InterpolationMethod::CubicSpline => {
+    //             todo!("Implement CubicSplineInterpolator")
+    //         }
+    //         InterpolationMethod::Lagrange => {
+    //             todo!("Implement LagrangeInterpolator")
+    //         }
+    //     };
+
+    //     Ok(Self {
+    //         nodes,
+    //         curve_type,
+    //         interpolation_method,
+    //         interpolator,
+    //         nss: None,
+    //     })
+    // }
 
     /// Get the interpolation method used by the curve.
     pub fn interpolation_method(&self) -> InterpolationMethod {
@@ -172,32 +173,32 @@ impl Curve {
     }
 
     /// Get a rate from the curve.
-    pub fn get_rate(&self, date: Date) -> Option<f64> {
-        match self.nodes.get(&date) {
+    pub fn get_rate(&self, date: f64) -> Option<f64> {
+        match self.nodes.get(&OrderedFloat(date)) {
             Some(rate) => Some(*rate),
             None => self.interpolator.interpolate(date).ok(),
         }
     }
 
     /// Get a rate, and simultaneously add it to the nodes.
-    pub fn get_rate_and_insert(&mut self, date: Date) -> Option<f64> {
-        match self.nodes.get(&date) {
+    pub fn get_rate_and_insert(&mut self, date: f64) -> Option<f64> {
+        match self.nodes.get(&OrderedFloat(date)) {
             Some(rate) => Some(*rate),
             None => {
                 let rate = self.interpolator.interpolate(date).ok()?;
-                self.nodes.insert(date, rate);
+                self.nodes.insert(OrderedFloat(date), rate);
                 Some(rate)
             }
         }
     }
 
     /// Get multiple rates from the curve.
-    pub fn get_rates(&self, dates: Vec<Date>) -> Vec<Option<f64>> {
+    pub fn get_rates(&self, dates: Vec<f64>) -> Vec<Option<f64>> {
         dates.iter().map(|date| self.get_rate(*date)).collect()
     }
 
     /// Get multiple rates from the curve, and simultaneously add them to the nodes.
-    pub fn get_rates_and_insert(&mut self, dates: Vec<Date>) -> Vec<Option<f64>> {
+    pub fn get_rates_and_insert(&mut self, dates: Vec<f64>) -> Vec<Option<f64>> {
         dates
             .iter()
             .map(|date| self.get_rate_and_insert(*date))
@@ -205,30 +206,36 @@ impl Curve {
     }
 
     /// Set a rate in the curve.
-    pub fn set_rate(&mut self, date: Date, rate: f64) {
-        self.nodes.insert(date, rate);
+    pub fn set_rate(&mut self, date: f64, rate: f64) {
+        self.nodes.insert(OrderedFloat(date), rate);
     }
 
     /// Set multiple rates in the curve.
-    pub fn set_rates(&mut self, rates: Vec<(Date, f64)>) {
+    pub fn set_rates(&mut self, rates: Vec<(f64, f64)>) {
         for (date, rate) in rates {
             self.set_rate(date, rate);
         }
     }
 
     /// Get the first date in the curve.
-    pub fn first_date(&self) -> Option<&Date> {
-        self.nodes.keys().next()
+    pub fn first_date(&self) -> Option<&f64> {
+        match self.nodes.keys().next() {
+            Some(date) => Some(&date.0),
+            None => None,
+        }
     }
 
     /// Get the last date in the curve.
-    pub fn last_date(&self) -> Option<&Date> {
-        self.nodes.keys().next_back()
+    pub fn last_date(&self) -> Option<&f64> {
+        match self.nodes.keys().next_back() {
+            Some(date) => Some(&date.0),
+            None => None,
+        }
     }
 
     /// Get the dates of the curve.
-    pub fn dates(&self) -> Vec<Date> {
-        self.nodes.keys().cloned().collect()
+    pub fn dates(&self) -> Vec<f64> {
+        self.nodes.keys().map(|k| k.0).collect()//.cloned().collect()
     }
 
     /// Get the rates of the curve.
@@ -257,7 +264,7 @@ impl Curve {
     }
 
     /// Get the bracketing indices for a specific index.
-    pub fn get_brackets(&self, index: Date) -> (Date, Date) {
+    pub fn get_brackets(&self, index: f64) -> (f64, f64) {
         let first = self.first_date().unwrap();
         let last = self.last_date().unwrap();
 
@@ -268,10 +275,10 @@ impl Curve {
             return (*last, *last);
         }
 
-        let left = self.nodes.range(..index).next_back().unwrap().0;
-        let right = self.nodes.range(index..).next().unwrap().0;
+        let left = self.nodes.range(..OrderedFloat(index)).next_back().unwrap().0;
+        let right = self.nodes.range(OrderedFloat(index)..).next().unwrap().0;
 
-        return (*left, *right);
+        (left.0, right.0)
     }
 
     /// Shift the curve by a constant value.
@@ -326,7 +333,7 @@ impl CostFunction for Curve {
 
         let y_model = x
             .into_iter()
-            .map(|date| curve_function(&nss, *date))
+            .map(|date| curve_function(&nss, **date))
             .collect::<Vec<f64>>();
 
         let data = std::iter::zip(y, y_model);

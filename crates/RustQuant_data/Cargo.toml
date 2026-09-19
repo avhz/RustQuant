@@ -30,8 +30,8 @@ time = { workspace = true }
 plotly = { workspace = true }
 argmin = { workspace = true }
 argmin-math = { workspace = true }
-pyo3 = { workspace = true }
-
+ordered-float = { workspace=true }
+pyo3 = { workspace=true }
 
 ## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ## RUSTDOC CONFIGURATION

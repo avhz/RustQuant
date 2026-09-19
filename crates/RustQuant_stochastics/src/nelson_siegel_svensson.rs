@@ -65,10 +65,10 @@ impl NelsonSiegelSvensson {
 
 impl CurveModel for NelsonSiegelSvensson {
     /// Returns the forward rate for a given date.
-    fn forward_rate(&self, date: Date) -> f64 {
-        assert!(date > today(), "Date must be in the future.");
+    fn forward_rate(&self, tau: f64) -> f64 {
+        // assert!(date > today(), "Date must be in the future.");
 
-        let tau = DayCountConvention::Actual_365_25.day_count_factor(today(), date);
+        // let tau = DayCountConvention::Actual_365_25.day_count_factor(today(), date);
 
         let term1 = f64::exp(-tau / self.lambda1);
         let term2 = (tau / self.lambda1) * term1;
@@ -78,10 +78,10 @@ impl CurveModel for NelsonSiegelSvensson {
     }
 
     /// Returns the spot rate for a given date.
-    fn spot_rate(&self, date: Date) -> f64 {
-        assert!(date > today(), "Date must be in the future.");
+    fn spot_rate(&self, tau: f64) -> f64 {
+        // assert!(date > today(), "Date must be in the future.");
 
-        let tau = DayCountConvention::Actual_365_25.day_count_factor(today(), date);
+        // let tau = DayCountConvention::Actual_365_25.day_count_factor(today(), date);
 
         let term1 = self.lambda1 * (1. - f64::exp(-tau / self.lambda1)) / tau;
         let term2 = term1 - f64::exp(-tau / self.lambda1);
@@ -91,10 +91,10 @@ impl CurveModel for NelsonSiegelSvensson {
         self.beta0 + self.beta1 * term1 + self.beta2 * term2 + self.beta3 * term3
     }
 
-    fn discount_factor(&self, date: Date) -> f64 {
-        let tau = DayCountConvention::Actual_365_25.day_count_factor(today(), date);
+    fn discount_factor(&self, tau: f64) -> f64 {
+        // let tau = DayCountConvention::Actual_365_25.day_count_factor(today(), date);
 
-        f64::exp(-self.spot_rate(date) * tau / 100.)
+        f64::exp(-self.spot_rate(tau) * tau / 100.)
     }
 }
 
@@ -105,7 +105,6 @@ impl CurveModel for NelsonSiegelSvensson {
 #[cfg(test)]
 mod tests_nelson_siegel_svensson {
     use super::*;
-    use time::Duration;
 
     #[test]
     fn test_nelson_siegel_svensson() {
@@ -119,8 +118,8 @@ mod tests_nelson_siegel_svensson {
         };
 
         let dates = (2..365 * 30)
-            .map(|i| today() + Duration::days(i))
-            .collect::<Vec<Date>>();
+            .map(|i| 1.0 / (i as f64))
+            .collect::<Vec<f64>>();
 
         let _forward_curve = dates
             .iter()

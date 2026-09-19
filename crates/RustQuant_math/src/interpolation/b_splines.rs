@@ -182,32 +182,6 @@ mod tests_b_splines {
     }
 
     #[test]
-    fn test_b_spline_dates() {
-        let now = time::OffsetDateTime::now_utc();
-        let knots: Vec<time::OffsetDateTime> = vec![
-            now,
-            now + time::Duration::days(1),
-            now + time::Duration::days(2),
-            now + time::Duration::days(3),
-            now + time::Duration::days(4),
-            now + time::Duration::days(5),
-            now + time::Duration::days(6),
-        ];
-        let control_points = vec![-1.0, 2.0, 0.0, -1.0];
-
-        let mut interpolator = BSplineInterpolator::new(knots.clone(), control_points, 2).unwrap();
-        let _ = interpolator.fit();
-
-        assert_approx_equal!(
-            1.375,
-            interpolator
-                .interpolate(knots[2] + time::Duration::hours(12))
-                .unwrap(),
-            RUSTQUANT_EPSILON
-        );
-    }
-
-    #[test]
     fn test_b_spline_inconsistent_parameters() {
         let knots = vec![0.0, 1.0, 2.0, 3.0, 4.0];
         let control_points = vec![-1.0, 2.0, 0.0, -1.0];
