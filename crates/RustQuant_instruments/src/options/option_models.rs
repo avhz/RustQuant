@@ -1398,8 +1398,6 @@ mod tests_bachelier_iv {
         let f = 100.0;
         let t = 1.0;
 
-        // Away from the money the denominator polynomial dominates, so an
-        // off-by-one in its powers shows up here and not at the money.
         for k in [90.0, 95.0, 99.0, 101.0, 105.0, 110.0] {
             for sigma in [5.0, 10.0, 20.0] {
                 let model = Bachelier::new(f, 0.0, sigma);
