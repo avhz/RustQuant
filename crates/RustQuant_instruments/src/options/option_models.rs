@@ -1063,9 +1063,8 @@ mod bachelier {
             sum1 += v * eta.powi(k as i32);
         }
 
-        // for k in 0..B.len() {
         for (k, v) in B.iter().enumerate() {
-            sum2 += v * eta.powi(k as i32);
+            sum2 += v * eta.powi(k as i32 + 1);
         }
 
         let hn = eta.sqrt() * sum1 / (1. + sum2);
@@ -1086,9 +1085,8 @@ mod bachelier {
             sum1 += v * eta.powi(k as i32);
         }
 
-        // for k in 1..=B.len() {
-        for (k, v) in B.iter().enumerate().skip(1) {
-            sum2 += v * eta.powi(k as i32);
+        for (k, v) in B.iter().enumerate() {
+            sum2 += v * eta.powi(k as i32 + 1);
         }
 
         let hn = eta.sqrt() * sum1 / (1. + sum2);
@@ -1388,5 +1386,28 @@ mod tests_sabr {
         assert!((sabr.alpha - 0.2).abs() < 1e-10);
         assert!((sabr.rho - 0.0).abs() < 1e-10);
         assert!((sabr.nu - 0.4).abs() < 1e-10);
+    }
+}
+
+#[cfg(test)]
+mod tests_bachelier_iv {
+    use super::*;
+
+    #[test]
+    fn test_bachelier_iv_roundtrip() {
+        let f = 100.0;
+        let t = 1.0;
+
+        for k in [90.0, 95.0, 99.0, 101.0, 105.0, 110.0] {
+            for sigma in [5.0, 10.0, 20.0] {
+                let model = Bachelier::new(f, 0.0, sigma);
+
+                for flag in [TypeFlag::Call, TypeFlag::Put] {
+                    let price = model.price(k, t, flag);
+                    let iv = model.iv(price, k, t, flag);
+                    assert!((iv - sigma).abs() / sigma < 1e-10);
+                }
+            }
+        }
     }
 }
