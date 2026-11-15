@@ -15,6 +15,9 @@ pub mod limit_order_book;
 /// Order definition.
 pub mod order;
 
+/// Trade classification and order flow toxicity (VPIN).
+pub mod order_flow;
+
 /// Contains a limit orderbook (LOB) implementation.
 pub mod order_book;
 
