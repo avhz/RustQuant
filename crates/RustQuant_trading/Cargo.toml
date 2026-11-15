@@ -16,8 +16,12 @@ workspace = true
 
 [dev-dependencies]
 RustQuant = { path = "../RustQuant" }
+RustQuant_utils = { workspace = true }
 
 [dependencies]
+RustQuant_error = { workspace = true }
+RustQuant_math = { workspace = true }
+
 time = { workspace = true }
 
 ## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
