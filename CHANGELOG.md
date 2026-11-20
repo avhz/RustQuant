@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- Preserve continuous Gamma samples instead of truncating them to integers. (@jackiectl2)
+
 ## [0.2.9](https://github.com/avhz/RustQuant/compare/v0.2.8...v0.2.9) - 2024-10-27
 
 ### Added
