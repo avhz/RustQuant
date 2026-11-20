@@ -204,7 +204,7 @@ impl Distribution for Gamma {
         let mut variates: Vec<f64> = Vec::with_capacity(n);
 
         for _ in 0..variates.capacity() {
-            variates.push(dist.sample(&mut rng) as usize as f64);
+            variates.push(dist.sample(&mut rng));
         }
 
         Ok(variates)
@@ -219,6 +219,15 @@ impl Distribution for Gamma {
 mod tests {
     use super::*;
     use RustQuant_utils::{assert_approx_equal, RUSTQUANT_EPSILON as EPS};
+
+    #[test]
+    fn test_gamma_samples_retain_fractional_values() {
+        let samples = Gamma::new(2.0, 3.0).sample(64).unwrap();
+
+        assert_eq!(samples.len(), 64);
+        assert!(samples.iter().all(|x| x.is_finite() && *x > 0.0));
+        assert!(samples.iter().any(|x| x.fract() != 0.0));
+    }
 
     #[test]
     fn test_gamma_characteristic_function() {
